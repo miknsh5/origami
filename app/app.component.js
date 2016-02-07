@@ -1,4 +1,4 @@
-System.register(['angular2/core', './hero-detail.component', './hero.service'], function(exports_1) {
+System.register(['angular2/core', 'angular2/router', 'angular2/http', 'angular2-jwt'], function(exports_1) {
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
         var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
         if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -8,44 +8,101 @@ System.register(['angular2/core', './hero-detail.component', './hero.service'], 
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1, hero_detail_component_1, hero_service_1;
-    var HEROES, AppComponent;
+    var core_1, router_1, http_1, angular2_jwt_1;
+    var PublicRoute, PrivateRoute, AppComponent;
     return {
         setters:[
             function (core_1_1) {
                 core_1 = core_1_1;
             },
-            function (hero_detail_component_1_1) {
-                hero_detail_component_1 = hero_detail_component_1_1;
+            function (router_1_1) {
+                router_1 = router_1_1;
             },
-            function (hero_service_1_1) {
-                hero_service_1 = hero_service_1_1;
+            function (http_1_1) {
+                http_1 = http_1_1;
+            },
+            function (angular2_jwt_1_1) {
+                angular2_jwt_1 = angular2_jwt_1_1;
             }],
         execute: function() {
-            AppComponent = (function () {
-                function AppComponent(_heroService) {
-                    this._heroService = _heroService;
-                    this.title = 'tour of heroes';
-                    this.heroes = HEROES;
+            PublicRoute = (function () {
+                function PublicRoute() {
                 }
-                AppComponent.prototype.getHeroes = function () {
-                    var _this = this;
-                    this._heroService.getHeroes().then(function (heroes) { return _this.heroes = heroes; });
+                PublicRoute = __decorate([
+                    core_1.Component({
+                        selector: 'public-route'
+                    }),
+                    core_1.View({
+                        template: "<h1>Hello from a public route</h1>"
+                    }), 
+                    __metadata('design:paramtypes', [])
+                ], PublicRoute);
+                return PublicRoute;
+            })();
+            PrivateRoute = (function () {
+                function PrivateRoute() {
+                }
+                PrivateRoute = __decorate([
+                    core_1.Component({
+                        selector: 'private-route'
+                    }),
+                    core_1.View({
+                        template: "<h1>Hello from private route</h1>"
+                    }),
+                    router_1.CanActivate(function () { return angular2_jwt_1.tokenNotExpired(); }), 
+                    __metadata('design:paramtypes', [])
+                ], PrivateRoute);
+                return PrivateRoute;
+            })();
+            AppComponent = (function () {
+                function AppComponent(http, authHttp) {
+                    this.http = http;
+                    this.authHttp = authHttp;
+                    this.lock = new Auth0Lock('bRQg0MUBHOozAIXyHONfZRWsT7JeIqT5', 'axd-origami.auth0.com');
+                    this.jwtHelper = new angular2_jwt_1.JwtHelper();
+                }
+                AppComponent.prototype.login = function () {
+                    this.lock.show(function (err, profile, id_token) {
+                        if (err) {
+                            throw new Error(err);
+                        }
+                        localStorage.setItem('profile', JSON.stringify(profile));
+                        localStorage.setItem('id_token', id_token);
+                    });
                 };
-                AppComponent.prototype.ngOnInit = function () {
-                    this.getHeroes();
+                AppComponent.prototype.logout = function () {
+                    localStorage.removeItem('profile');
+                    localStorage.removeItem('id_token');
                 };
-                AppComponent.prototype.onSelect = function (hero) { this.selectedHero = hero; };
+                AppComponent.prototype.loggedIn = function () {
+                    return angular2_jwt_1.tokenNotExpired();
+                };
+                AppComponent.prototype.getThing = function () {
+                    this.http.get('http://localhost:3001/ping')
+                        .subscribe(function (data) { return console.log(data.json()); }, function (err) { return console.log(err); }, function () { return console.log('Complete'); });
+                };
+                AppComponent.prototype.getSecretThing = function () {
+                    this.authHttp.get('http://localhost:3001/secured/ping')
+                        .subscribe(function (data) { return console.log(data.json()); }, function (err) { return console.log(err); }, function () { return console.log('Complete'); });
+                };
+                AppComponent.prototype.tokenSubscription = function () {
+                    this.authHttp.tokenStream.subscribe(function (data) { return console.log(data); }, function (err) { return console.log(err); }, function () { return console.log('Complete'); });
+                };
+                AppComponent.prototype.useJwtHelper = function () {
+                    var token = localStorage.getItem('id_token');
+                    console.log(this.jwtHelper.decodeToken(token), this.jwtHelper.getTokenExpirationDate(token), this.jwtHelper.isTokenExpired(token));
+                };
                 AppComponent = __decorate([
                     core_1.Component({
-                        selector: 'my-app',
-                        styles: ["\n      .selected {\n        background-color: #CFD8DC !important;\n        color: white;\n      }\n      .heroes {\n        margin: 0 0 2em 0;\n        list-style-type: none;\n        padding: 0;\n        width: 10em;\n      }\n      .heroes li {\n        cursor: pointer;\n        position: relative;\n        left: 0;\n        background-color: #EEE;\n        margin: .5em;\n        padding: .3em 0em;\n        height: 1.6em;\n        border-radius: 4px;\n      }\n      .heroes li.selected:hover {\n        color: white;\n      }\n      .heroes li:hover {\n        color: #607D8B;\n        background-color: #EEE;\n        left: .1em;\n      }\n      .heroes .text {\n        position: relative;\n        top: -3px;\n      }\n      .heroes .badge {\n        display: inline-block;\n        font-size: small;\n        color: white;\n        padding: 0.8em 0.7em 0em 0.7em;\n        background-color: #607D8B;\n        line-height: 1em;\n        position: relative;\n        left: -1px;\n        top: -4px;\n        height: 1.8em;\n        margin-right: .8em;\n        border-radius: 4px 0px 0px 4px;\n      }\n    "],
-                        inputs: ['hero'],
-                        directives: [hero_detail_component_1.HeroDetailComponent],
-                        template: "\n      <h1>{{title}}</h1>\n      <h2>My Heroes</h2>\n      <my-hero-detail [hero]=\"selectedHero\"></my-hero-detail>\n      <ul class=\"heroes\">\n          <li [class.selected]=\"hero=== selectedHero\"\n              *ngFor=\"#hero of heroes\"\n              (click)=\"onSelect(hero)\">\n              <span class=\"badge\">{{hero.id}}</span>: {{hero.name}}\n          </li>\n      </ul>\n      ",
-                        providers: [hero_service_1.HeroService]
-                    }), 
-                    __metadata('design:paramtypes', [hero_service_1.HeroService])
+                        selector: 'app',
+                        directives: [router_1.ROUTER_DIRECTIVES],
+                        template: "\n    <h1>Welcome to Angular2 with Auth0</h1>\n    <button *ngIf=\"!loggedIn()\" (click)=\"login()\">Login</button>\n    <button *ngIf=\"loggedIn()\" (click)=\"logout()\">Logout</button>\n    <hr>\n    <div>\n      <button [routerLink]=\"['./PublicRoute']\">Public Route</button>\n      <button *ngIf=\"loggedIn()\" [routerLink]=\"['./PrivateRoute']\">Private Route</button>\n      <router-outlet></router-outlet>\n    </div>\n    <hr>\n    <button (click)=\"getThing()\">Get Thing</button>\n    <button *ngIf=\"loggedIn()\" (click)=\"tokenSubscription()\">Show Token from Observable</button>\n    <button (click)=\"getSecretThing()\">Get Secret Thing</button>\n    <button *ngIf=\"loggedIn()\" (click)=\"useJwtHelper()\">Use Jwt Helper</button>\n  "
+                    }),
+                    router_1.RouteConfig([
+                        { path: '/public-route', component: PublicRoute, as: 'PublicRoute' },
+                        { path: '/private-route', component: PrivateRoute, as: 'PrivateRoute' }
+                    ]), 
+                    __metadata('design:paramtypes', [http_1.Http, angular2_jwt_1.AuthHttp])
                 ], AppComponent);
                 return AppComponent;
             })();

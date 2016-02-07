@@ -1,94 +1,118 @@
-import {Component, OnInit} from 'angular2/core';
-import {Hero} from './hero';
-import {HeroDetailComponent} from './hero-detail.component';
-import {HeroService} from './hero.service';
+import {Component, View, provide} from 'angular2/core';
+import {RouteConfig, Router, APP_BASE_HREF, ROUTER_PROVIDERS, ROUTER_DIRECTIVES, CanActivate} from 'angular2/router';
+import {HTTP_PROVIDERS, Http} from 'angular2/http';
+import {AuthHttp, AuthConfig, tokenNotExpired, JwtHelper} from 'angular2-jwt';
 
-var HEROES:Hero[];
+declare var Auth0Lock;
 
 @Component({
-    selector: 'my-app',
-    styles: [`
-      .selected {
-        background-color: #CFD8DC !important;
-        color: white;
-      }
-      .heroes {
-        margin: 0 0 2em 0;
-        list-style-type: none;
-        padding: 0;
-        width: 10em;
-      }
-      .heroes li {
-        cursor: pointer;
-        position: relative;
-        left: 0;
-        background-color: #EEE;
-        margin: .5em;
-        padding: .3em 0em;
-        height: 1.6em;
-        border-radius: 4px;
-      }
-      .heroes li.selected:hover {
-        color: white;
-      }
-      .heroes li:hover {
-        color: #607D8B;
-        background-color: #EEE;
-        left: .1em;
-      }
-      .heroes .text {
-        position: relative;
-        top: -3px;
-      }
-      .heroes .badge {
-        display: inline-block;
-        font-size: small;
-        color: white;
-        padding: 0.8em 0.7em 0em 0.7em;
-        background-color: #607D8B;
-        line-height: 1em;
-        position: relative;
-        left: -1px;
-        top: -4px;
-        height: 1.8em;
-        margin-right: .8em;
-        border-radius: 4px 0px 0px 4px;
-      }
-    `],
-    inputs: ['hero'],
-    directives: [HeroDetailComponent],
-    template: `
-      <h1>{{title}}</h1>
-      <h2>My Heroes</h2>
-      <my-hero-detail [hero]="selectedHero"></my-hero-detail>
-      <ul class="heroes">
-          <li [class.selected]="hero=== selectedHero"
-              *ngFor="#hero of heroes"
-              (click)="onSelect(hero)">
-              <span class="badge">{{hero.id}}</span>: {{hero.name}}
-          </li>
-      </ul>
-      `,
-    providers: [HeroService]
+    selector: 'public-route'
+})
+@View({
+    template: `<h1>Hello from a public route</h1>`
+})
+class PublicRoute {}
+
+@Component({
+    selector: 'private-route'
 })
 
+@View({
+    template: `<h1>Hello from private route</h1>`
+})
 
-export class AppComponent implements OnInit {
-    public title = 'tour of heroes';
-    public heroes = HEROES;
-    public selectedHero:Hero;
+@CanActivate(() => tokenNotExpired())
 
-    constructor(private _heroService: HeroService) { }
+class PrivateRoute {}
 
-    getHeroes() {
-        this._heroService.getHeroes().then(heroes => this.heroes = heroes);
+@Component({
+    selector: 'app',
+    directives: [ ROUTER_DIRECTIVES ],
+    template: `
+    <h1>Welcome to Angular2 with Auth0</h1>
+    <button *ngIf="!loggedIn()" (click)="login()">Login</button>
+    <button *ngIf="loggedIn()" (click)="logout()">Logout</button>
+    <hr>
+    <div>
+      <button [routerLink]="['./PublicRoute']">Public Route</button>
+      <button *ngIf="loggedIn()" [routerLink]="['./PrivateRoute']">Private Route</button>
+      <router-outlet></router-outlet>
+    </div>
+    <hr>
+    <button (click)="getThing()">Get Thing</button>
+    <button *ngIf="loggedIn()" (click)="tokenSubscription()">Show Token from Observable</button>
+    <button (click)="getSecretThing()">Get Secret Thing</button>
+    <button *ngIf="loggedIn()" (click)="useJwtHelper()">Use Jwt Helper</button>
+  `
+})
+
+@RouteConfig([
+    { path: '/public-route', component: PublicRoute, as: 'PublicRoute' },
+    { path: '/private-route', component: PrivateRoute, as: 'PrivateRoute' }
+])
+
+export class AppComponent {
+
+    lock = new Auth0Lock('bRQg0MUBHOozAIXyHONfZRWsT7JeIqT5', 'axd-origami.auth0.com');
+    jwtHelper: JwtHelper = new JwtHelper();
+
+    constructor(public http: Http, public authHttp: AuthHttp) {}
+
+    login() {
+        this.lock.show((err: string, profile: string, id_token: string) => {
+
+            if (err) {
+                throw new Error(err);
+            }
+
+            localStorage.setItem('profile', JSON.stringify(profile));
+            localStorage.setItem('id_token', id_token);
+
+        });
     }
 
-    ngOnInit() {
-        this.getHeroes();
+    logout() {
+        localStorage.removeItem('profile');
+        localStorage.removeItem('id_token');
     }
 
-    onSelect(hero: Hero) { this.selectedHero = hero; }
+    loggedIn() {
+        return tokenNotExpired();
+    }
 
+    getThing() {
+        this.http.get('http://localhost:3001/ping')
+            .subscribe(
+                data => console.log(data.json()),
+                err => console.log(err),
+                () => console.log('Complete')
+            );
+    }
+
+    getSecretThing() {
+        this.authHttp.get('http://localhost:3001/secured/ping')
+            .subscribe(
+                data => console.log(data.json()),
+                err => console.log(err),
+                () => console.log('Complete')
+            );
+    }
+
+    tokenSubscription() {
+        this.authHttp.tokenStream.subscribe(
+            data => console.log(data),
+            err => console.log(err),
+            () => console.log('Complete')
+        );
+    }
+
+    useJwtHelper() {
+        var token = localStorage.getItem('id_token');
+
+        console.log(
+            this.jwtHelper.decodeToken(token),
+            this.jwtHelper.getTokenExpirationDate(token),
+            this.jwtHelper.isTokenExpired(token)
+        );
+    }
 }
-
