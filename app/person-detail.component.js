@@ -33,4 +33,4 @@ System.register(['angular2/core'], function(exports_1) {
         }
     }
 });
-//# sourceMappingURL=person-detail.component.jsjs.map
+//# sourceMappingURL=person-detail.component.js.map

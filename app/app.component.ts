@@ -13,14 +13,6 @@ declare var Auth0Lock;
 })
 class PublicRoute {}
 
-@Component({
-    selector: 'private-route'
-})
-
-@View({
-    template: `<h1>Hello from private route</h1>`
-})
-
 @CanActivate(() => tokenNotExpired())
 
 class PrivateRoute {}
@@ -29,7 +21,7 @@ class PrivateRoute {}
     selector: 'app',
     directives: [ ROUTER_DIRECTIVES ],
     template: `
-    <h1>Welcome to Angular2 with Auth0</h1>
+    <h1>Welcome to Origami</h1>
     <button *ngIf="!loggedIn()" (click)="login()">Login</button>
     <button *ngIf="loggedIn()" (click)="logout()">Logout</button>
     <hr>

@@ -43,12 +43,6 @@ System.register(['angular2/core', 'angular2/router', 'angular2/http', 'angular2-
                 function PrivateRoute() {
                 }
                 PrivateRoute = __decorate([
-                    core_1.Component({
-                        selector: 'private-route'
-                    }),
-                    core_1.View({
-                        template: "<h1>Hello from private route</h1>"
-                    }),
                     router_1.CanActivate(function () { return angular2_jwt_1.tokenNotExpired(); }), 
                     __metadata('design:paramtypes', [])
                 ], PrivateRoute);
@@ -96,7 +90,7 @@ System.register(['angular2/core', 'angular2/router', 'angular2/http', 'angular2-
                     core_1.Component({
                         selector: 'app',
                         directives: [router_1.ROUTER_DIRECTIVES],
-                        template: "\n    <h1>Welcome to Angular2 with Auth0</h1>\n    <button *ngIf=\"!loggedIn()\" (click)=\"login()\">Login</button>\n    <button *ngIf=\"loggedIn()\" (click)=\"logout()\">Logout</button>\n    <hr>\n    <div>\n      <button [routerLink]=\"['./PublicRoute']\">Public Route</button>\n      <button *ngIf=\"loggedIn()\" [routerLink]=\"['./PrivateRoute']\">Private Route</button>\n      <router-outlet></router-outlet>\n    </div>\n    <hr>\n    <button (click)=\"getThing()\">Get Thing</button>\n    <button *ngIf=\"loggedIn()\" (click)=\"tokenSubscription()\">Show Token from Observable</button>\n    <button (click)=\"getSecretThing()\">Get Secret Thing</button>\n    <button *ngIf=\"loggedIn()\" (click)=\"useJwtHelper()\">Use Jwt Helper</button>\n  "
+                        template: "\n    <h1>Welcome to Origami</h1>\n    <button *ngIf=\"!loggedIn()\" (click)=\"login()\">Login</button>\n    <button *ngIf=\"loggedIn()\" (click)=\"logout()\">Logout</button>\n    <hr>\n    <div>\n      <button [routerLink]=\"['./PublicRoute']\">Public Route</button>\n      <button *ngIf=\"loggedIn()\" [routerLink]=\"['./PrivateRoute']\">Private Route</button>\n      <router-outlet></router-outlet>\n    </div>\n    <hr>\n    <button (click)=\"getThing()\">Get Thing</button>\n    <button *ngIf=\"loggedIn()\" (click)=\"tokenSubscription()\">Show Token from Observable</button>\n    <button (click)=\"getSecretThing()\">Get Secret Thing</button>\n    <button *ngIf=\"loggedIn()\" (click)=\"useJwtHelper()\">Use Jwt Helper</button>\n  "
                     }),
                     router_1.RouteConfig([
                         { path: '/public-route', component: PublicRoute, as: 'PublicRoute' },
