@@ -1,20 +1,20 @@
 import {Component} from 'angular2/core';
-import {Hero} from './hero';
+import {Person} from './person';
 
 @Component({
     selector: 'my-hero-detail',
-    inputs: ['hero'],
+    inputs: ['person'],
     template: `
-      <div *ngIf="hero">
+      <div *ngIf="person">
         <h2>{{hero.name}} details!</h2>
         <div><label>id: </label>{{hero.id}}</div>
         <div>
           <label>name: </label>
-          <input [(ngModel)]="hero.name" placeholder="name"/>
+          <input [(ngModel)]="person.name" placeholder="name"/>
         </div>
       </div>
     `,
 })
-export class HeroDetailComponent {
-    public hero: Hero;
+export class PersonDetailComponent {
+    public person: Person;
 }

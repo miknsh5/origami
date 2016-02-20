@@ -9,28 +9,28 @@ System.register(['angular2/core'], function(exports_1) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
     var core_1;
-    var HeroDetailComponent;
+    var PersonDetailComponent;
     return {
         setters:[
             function (core_1_1) {
                 core_1 = core_1_1;
             }],
         execute: function() {
-            HeroDetailComponent = (function () {
-                function HeroDetailComponent() {
+            PersonDetailComponent = (function () {
+                function PersonDetailComponent() {
                 }
-                HeroDetailComponent = __decorate([
+                PersonDetailComponent = __decorate([
                     core_1.Component({
                         selector: 'my-hero-detail',
-                        inputs: ['hero'],
-                        template: "\n      <div *ngIf=\"hero\">\n        <h2>{{hero.name}} details!</h2>\n        <div><label>id: </label>{{hero.id}}</div>\n        <div>\n          <label>name: </label>\n          <input [(ngModel)]=\"hero.name\" placeholder=\"name\"/>\n        </div>\n      </div>\n    ",
+                        inputs: ['person'],
+                        template: "\n      <div *ngIf=\"person\">\n        <h2>{{hero.name}} details!</h2>\n        <div><label>id: </label>{{hero.id}}</div>\n        <div>\n          <label>name: </label>\n          <input [(ngModel)]=\"person.name\" placeholder=\"name\"/>\n        </div>\n      </div>\n    ",
                     }), 
                     __metadata('design:paramtypes', [])
-                ], HeroDetailComponent);
-                return HeroDetailComponent;
+                ], PersonDetailComponent);
+                return PersonDetailComponent;
             })();
-            exports_1("HeroDetailComponent", HeroDetailComponent);
+            exports_1("PersonDetailComponent", PersonDetailComponent);
         }
     }
 });
-//# sourceMappingURL=hero-detail.component.js.map
+//# sourceMappingURL=person-detail.component.jsjs.map
