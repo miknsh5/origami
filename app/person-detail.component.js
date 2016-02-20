@@ -21,9 +21,10 @@ System.register(['angular2/core'], function(exports_1) {
                 }
                 PersonDetailComponent = __decorate([
                     core_1.Component({
-                        selector: 'my-hero-detail',
+                        selector: 'my-person-detail',
                         inputs: ['person'],
-                        template: "\n      <div *ngIf=\"person\">\n        <h2>{{hero.name}} details!</h2>\n        <div><label>id: </label>{{hero.id}}</div>\n        <div>\n          <label>name: </label>\n          <input [(ngModel)]=\"person.name\" placeholder=\"name\"/>\n        </div>\n      </div>\n    ",
+                        template: "\n      <div class=\"detail-wrap\"></div>\n    ",
+                        styles: ["\n        .detail-wrap {\n            height: 50px;\n            width: 15px;\n            position:absolute;\n            background-color: #029BFF;\n            bottom: 5px;\n            left:0;\n        }\n\n    "],
                     }), 
                     __metadata('design:paramtypes', [])
                 ], PersonDetailComponent);

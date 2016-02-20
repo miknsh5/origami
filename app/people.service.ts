@@ -1,4 +1,3 @@
-//import {Hero} from './person';
 import {Injectable} from 'angular2/core';
 import {PEOPLE} from './mock-people';
 

@@ -1,110 +1,46 @@
-import {Component, View, provide} from 'angular2/core';
-import {RouteConfig, Router, APP_BASE_HREF, ROUTER_PROVIDERS, ROUTER_DIRECTIVES, CanActivate} from 'angular2/router';
-import {HTTP_PROVIDERS, Http} from 'angular2/http';
-import {AuthHttp, AuthConfig, tokenNotExpired, JwtHelper} from 'angular2-jwt';
+import {Component} from 'angular2/core';
+import {OnInit} from 'angular2/core';
+import {Person} from './person';
+import {PersonDetailComponent} from './person-detail.component';
+import {PeopleService} from './people.service';
+import {SearchbarComponent} from './searchbar.component';
+import {NavComponent} from './nav.component';
 
-declare var Auth0Lock;
-
-@Component({
-    selector: 'public-route'
-})
-@View({
-    template: `<h1>Hello from a public route</h1>`
-})
-class PublicRoute {}
-
-@CanActivate(() => tokenNotExpired())
-
-class PrivateRoute {}
 
 @Component({
     selector: 'app',
-    directives: [ ROUTER_DIRECTIVES ],
+    directives: [PersonDetailComponent, SearchbarComponent, NavComponent],
     template: `
     <h1>Welcome to Origami</h1>
-    <button *ngIf="!loggedIn()" (click)="login()">Login</button>
-    <button *ngIf="loggedIn()" (click)="logout()">Logout</button>
-    <hr>
-    <div>
-      <button [routerLink]="['./PublicRoute']">Public Route</button>
-      <button *ngIf="loggedIn()" [routerLink]="['./PrivateRoute']">Private Route</button>
-      <router-outlet></router-outlet>
-    </div>
-    <hr>
-    <button (click)="getThing()">Get Thing</button>
-    <button *ngIf="loggedIn()" (click)="tokenSubscription()">Show Token from Observable</button>
-    <button (click)="getSecretThing()">Get Secret Thing</button>
-    <button *ngIf="loggedIn()" (click)="useJwtHelper()">Use Jwt Helper</button>
-  `
+    <ul>
+      <li *ngFor="#person of people">
+        <span class="badge">{{person.name}}</span> {{person.manager}}
+      </li>
+    </ul>
+    <my-person-detail>MyPerson</my-person-detail>
+    <searchbar></searchbar>
+  `,
+    styles: [`
+
+    `],
+    providers: [PeopleService]
 })
 
-@RouteConfig([
-    { path: '/public-route', component: PublicRoute, as: 'PublicRoute' },
-    { path: '/private-route', component: PrivateRoute, as: 'PrivateRoute' }
-])
 
-export class AppComponent {
+export class AppComponent implements OnInit {
+    people: Person[];
 
-    lock = new Auth0Lock('bRQg0MUBHOozAIXyHONfZRWsT7JeIqT5', 'axd-origami.auth0.com');
-    jwtHelper: JwtHelper = new JwtHelper();
+    constructor(private _peopleService: PeopleService) { }
 
-    constructor(public http: Http, public authHttp: AuthHttp) {}
-
-    login() {
-        this.lock.show((err: string, profile: string, id_token: string) => {
-
-            if (err) {
-                throw new Error(err);
-            }
-
-            localStorage.setItem('profile', JSON.stringify(profile));
-            localStorage.setItem('id_token', id_token);
-
-        });
+    getPeople(){
+        this._peopleService.getPeople().then(people => this.people = people);
     }
 
-    logout() {
-        localStorage.removeItem('profile');
-        localStorage.removeItem('id_token');
+    ngOnInit(){
+       this.getPeople();
     }
 
-    loggedIn() {
-        return tokenNotExpired();
-    }
+    //lock = new Auth0Lock('bRQg0MUBHOozAIXyHONfZRWsT7JeIqT5', 'axd-origami.auth0.com');
 
-    getThing() {
-        this.http.get('http://localhost:3001/ping')
-            .subscribe(
-                data => console.log(data.json()),
-                err => console.log(err),
-                () => console.log('Complete')
-            );
-    }
 
-    getSecretThing() {
-        this.authHttp.get('http://localhost:3001/secured/ping')
-            .subscribe(
-                data => console.log(data.json()),
-                err => console.log(err),
-                () => console.log('Complete')
-            );
-    }
-
-    tokenSubscription() {
-        this.authHttp.tokenStream.subscribe(
-            data => console.log(data),
-            err => console.log(err),
-            () => console.log('Complete')
-        );
-    }
-
-    useJwtHelper() {
-        var token = localStorage.getItem('id_token');
-
-        console.log(
-            this.jwtHelper.decodeToken(token),
-            this.jwtHelper.getTokenExpirationDate(token),
-            this.jwtHelper.isTokenExpired(token)
-        );
-    }
 }
