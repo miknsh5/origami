@@ -11,6 +11,7 @@ import {NavComponent} from './nav.component';
     selector: 'app',
     directives: [PersonDetailComponent, SearchbarComponent, NavComponent],
     template: `
+    <nav></nav>
     <h1>Welcome to Origami</h1>
     <ul>
       <li *ngFor="#person of people">

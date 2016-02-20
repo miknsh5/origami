@@ -43,7 +43,7 @@ System.register(['angular2/core', './person-detail.component', './people.service
                     core_1.Component({
                         selector: 'app',
                         directives: [person_detail_component_1.PersonDetailComponent, searchbar_component_1.SearchbarComponent, nav_component_1.NavComponent],
-                        template: "\n    <h1>Welcome to Origami</h1>\n    <ul>\n      <li *ngFor=\"#person of people\">\n        <span class=\"badge\">{{person.name}}</span> {{person.manager}}\n      </li>\n    </ul>\n    <my-person-detail>MyPerson</my-person-detail>\n    <searchbar></searchbar>\n  ",
+                        template: "\n    <nav></nav>\n    <h1>Welcome to Origami</h1>\n    <ul>\n      <li *ngFor=\"#person of people\">\n        <span class=\"badge\">{{person.name}}</span> {{person.manager}}\n      </li>\n    </ul>\n    <my-person-detail>MyPerson</my-person-detail>\n    <searchbar></searchbar>\n  ",
                         styles: ["\n\n    "],
                         providers: [people_service_1.PeopleService]
                     }), 
