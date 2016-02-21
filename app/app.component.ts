@@ -15,14 +15,20 @@ import {NavComponent} from './nav.component';
     <h1>Welcome to Origami</h1>
     <ul>
       <li *ngFor="#person of people">
-        <span (click)="selectPerson(person)" class="badge">{{person.name}}</span> {{person.manager}}
+        <span (click)="selectPerson(person)" class="badge person">{{person.name}}</span> {{person.manager}}
       </li>
     </ul>
     <my-person-detail [selectedPerson]="newPerson"></my-person-detail>
     <searchbar></searchbar>
   `,
     styles: [`
-
+        .person {
+            cursor: pointer;
+            color: #222222;
+        }
+       .person:hover {
+            color: #029BFF;
+        }
     `],
     providers: [PeopleService]
 })
