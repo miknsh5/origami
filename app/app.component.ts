@@ -1,4 +1,4 @@
-import {Component} from 'angular2/core';
+import {Component, Output, EventEmitter} from 'angular2/core';
 import {OnInit} from 'angular2/core';
 import {Person} from './person';
 import {PersonDetailComponent} from './person-detail.component';
@@ -15,10 +15,10 @@ import {NavComponent} from './nav.component';
     <h1>Welcome to Origami</h1>
     <ul>
       <li *ngFor="#person of people">
-        <span class="badge">{{person.name}}</span> {{person.manager}}
+        <span (click)="selectPerson(person)" class="badge">{{person.name}}</span> {{person.manager}}
       </li>
     </ul>
-    <my-person-detail>MyPerson</my-person-detail>
+    <my-person-detail [selectedPerson]="newPerson"></my-person-detail>
     <searchbar></searchbar>
   `,
     styles: [`
@@ -30,6 +30,13 @@ import {NavComponent} from './nav.component';
 
 export class AppComponent implements OnInit {
     people: Person[];
+
+    @Output() newPerson = new EventEmitter<Person>();
+
+    selectPerson(person){
+        this.newPerson = person;
+        console.log("Selected! " + person.name);
+    }
 
     constructor(private _peopleService: PeopleService) { }
 

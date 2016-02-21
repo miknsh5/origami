@@ -14,7 +14,7 @@ import {Component} from 'angular2/core';
             width: 300px;
             height: 50px;
             position: fixed;
-            left: 20px;
+            left: 255px;
             bottom: 5px;
          }
 
