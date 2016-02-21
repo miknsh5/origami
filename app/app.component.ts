@@ -6,18 +6,31 @@ import {PeopleService} from './people.service';
 import {SearchbarComponent} from './searchbar.component';
 import {NavComponent} from './nav.component';
 
+import {provide} from 'angular2/core';
+import {RouteConfig, Router, APP_BASE_HREF, ROUTER_PROVIDERS, ROUTER_DIRECTIVES, CanActivate} from 'angular2/router';
+import {HTTP_PROVIDERS, Http} from 'angular2/http';
+import {AuthHttp, tokenNotExpired, JwtHelper} from 'angular2-jwt';
+
+
 
 @Component({
     selector: 'app',
-    directives: [PersonDetailComponent, SearchbarComponent, NavComponent],
+    directives: [PersonDetailComponent, SearchbarComponent, NavComponent, ROUTER_DIRECTIVES],
     template: `
     <nav></nav>
-    <h1>Welcome to Origami</h1>
-    <ul>
-      <li *ngFor="#person of people">
-        <span (click)="selectPerson(person)" class="badge person">{{person.name}}</span> {{person.manager}}
-      </li>
-    </ul>
+    <div class="auth-panel">
+        <h2>Authentication</h2>
+        <button *ngIf="!loggedIn()" (click)="login()">Login</button>
+        <button *ngIf="loggedIn()" (click)="logout()">Logout</button>
+    </div>
+    <div class="main-canvas">
+        <h1>Welcome to Origami</h1>
+        <ul *ngIf="loggedIn()">
+          <li *ngFor="#person of people">
+            <span (click)="selectPerson(person)" class="badge person">{{person.name}}</span> {{person.manager}}
+          </li>
+        </ul>
+    </div>
     <my-person-detail [selectedPerson]="newPerson"></my-person-detail>
     <searchbar></searchbar>
   `,
@@ -26,8 +39,19 @@ import {NavComponent} from './nav.component';
             cursor: pointer;
             color: #222222;
         }
+        .auth-panel {
+            position:absolute;
+            top:20px;
+            right: 20px;
+        }
        .person:hover {
             color: #029BFF;
+        }
+        .main-canvas {
+            padding: 50px;
+            position: absolute;
+            left: 200px;
+            top: 0;
         }
     `],
     providers: [PeopleService]
@@ -54,7 +78,29 @@ export class AppComponent implements OnInit {
        this.getPeople();
     }
 
-    //lock = new Auth0Lock('bRQg0MUBHOozAIXyHONfZRWsT7JeIqT5', 'axd-origami.auth0.com');
 
+    lock: Auth0Lock = new Auth0Lock('bRQg0MUBHOozAIXyHONfZRWsT7JeIqT5', 'axd-origami.auth0.com');
+
+    login() {
+        this.lock.show(function(err, profile, id_token) {
+
+            if(err) {
+                throw new Error(err);
+            }
+
+            localStorage.setItem('profile', JSON.stringify(profile));
+            localStorage.setItem('id_token', id_token);
+
+        });
+    }
+
+    logout() {
+        localStorage.removeItem('profile');
+        localStorage.removeItem('id_token');
+    }
+
+    loggedIn() {
+        return tokenNotExpired();
+    }
 
 }

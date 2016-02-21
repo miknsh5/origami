@@ -9,7 +9,7 @@ import {Person} from './person';
         <div class="controls"></div>
         <div *ngIf="selectedPerson" class="text-wrap">
             <div class="title-name">{{selectedPerson.name}}</div>
-            <div class="title-position">{{selectedPerson.manager}}</div>
+            <div class="title-position">{{selectedPerson.title}}</div>
         </div>
       </div>
     `,
