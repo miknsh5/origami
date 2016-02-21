@@ -1,2 +1,9 @@
 # origami
-Here's some content
+
+```bash
+npm install
+```
+
+```bash
+npm start
+```
