@@ -1,17 +1,24 @@
+// Core
 import {Component, Output, EventEmitter} from 'angular2/core';
 import {OnInit} from 'angular2/core';
-import {Person} from './person';
-import {PersonDetailComponent} from './person-detail.component';
-import {PeopleService} from './people.service';
-import {SearchbarComponent} from './searchbar.component';
-import {NavComponent} from './nav.component';
-
 import {provide} from 'angular2/core';
 import {RouteConfig, Router, APP_BASE_HREF, ROUTER_PROVIDERS, ROUTER_DIRECTIVES, CanActivate} from 'angular2/router';
 import {HTTP_PROVIDERS, Http} from 'angular2/http';
 import {AuthHttp, tokenNotExpired, JwtHelper} from 'angular2-jwt';
 
+// Interfaces
+import {Person} from './person';
+//import {UserProfile} from './user-profile';
 
+// Components
+import {PersonDetailComponent} from './person-detail.component';
+import {SearchbarComponent} from './searchbar.component';
+import {NavComponent} from './nav.component';
+
+// Services
+import {PeopleService} from './people.service';
+
+declare var Auth0Lock;
 
 @Component({
     selector: 'app',
@@ -21,7 +28,10 @@ import {AuthHttp, tokenNotExpired, JwtHelper} from 'angular2-jwt';
     <div class="auth-panel">
         <h2>Authentication</h2>
         <button *ngIf="!loggedIn()" (click)="login()">Login</button>
-        <button *ngIf="loggedIn()" (click)="logout()">Logout</button>
+        <div *ngIf="loggedIn()">
+            <!--<h4>Welcome {{userProfile.name}}</h4>-->
+            <button (click)="logout()">Logout</button>
+        </div>
     </div>
     <div class="main-canvas">
         <h1>Welcome to Origami</h1>
@@ -63,6 +73,8 @@ export class AppComponent implements OnInit {
 
     @Output() newPerson = new EventEmitter<Person>();
 
+    lock = new Auth0Lock('bRQg0MUBHOozAIXyHONfZRWsT7JeIqT5', 'axd-origami.auth0.com');
+
     selectPerson(person){
         this.newPerson = person;
         console.log("Selected! " + person.name);
@@ -75,11 +87,11 @@ export class AppComponent implements OnInit {
     }
 
     ngOnInit(){
-       this.getPeople();
+        this.getPeople();
+
+        //check if token exists in local storage for logged in user.
+        //this.getUserProfile();
     }
-
-
-    lock: Auth0Lock = new Auth0Lock('bRQg0MUBHOozAIXyHONfZRWsT7JeIqT5', 'axd-origami.auth0.com');
 
     login() {
         this.lock.show(function(err, profile, id_token) {
@@ -90,8 +102,8 @@ export class AppComponent implements OnInit {
 
             localStorage.setItem('profile', JSON.stringify(profile));
             localStorage.setItem('id_token', id_token);
-
         });
+
     }
 
     logout() {
