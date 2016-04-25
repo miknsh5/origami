@@ -7,6 +7,7 @@ import {Person} from './person';
     template: `
       <div class="detail-wrap">
         <div class="controls">
+          <div class="close-icon" (click)="closeclicked()"></div>
          <div class="edit-icon" (click)="editClicked()"></div>
         </div>
         
@@ -16,8 +17,8 @@ import {Person} from './person';
             <div class="title-position">{{selectedPerson.title}}</div>
         </div>
        <div *ngIf="selectedPerson && EditableMode" class="text-wrap">
-       <input class="title-name-edit" [(ngModel)]="selectedPerson.name" (blur)="editClicked()" />
-       <input class="title-position-edit" [(ngModel)]="selectedPerson.title" (blur)="editClicked()"  />
+       <input class="title-name-edit" [(ngModel)]="selectedPerson.name"  />
+       <input class="title-position-edit" [(ngModel)]="selectedPerson.title"   />
        </div>
       </div>
     `,
@@ -74,7 +75,16 @@ import {Person} from './person';
         }
           .edit-icon {
             background-image: url("app/images/pen.png");
-            top: 6px;
+            bottom: 2px;
+            position: absolute;
+            height: 20px;
+            width: 20px;
+            background-repeat: no-repeat;
+            left:4px;
+        } 
+        .close-icon {
+            background-image: url("app/images/close.png");
+            top:6px;
             position: absolute;
             height: 20px;
             width: 20px;
