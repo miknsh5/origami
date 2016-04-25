@@ -1,13 +1,14 @@
-import {Component, Input} from 'angular2/core';
+import {Component, Input,Output,EventEmitter} from 'angular2/core';
 import {Person} from './person';
+
 
 @Component({
     selector: 'my-person-detail',
-    inputs: ['selectedPerson'],
+   
     template: `
       <div class="detail-wrap">
         <div class="controls">
-          <div class="close-icon" (click)="closeclicked()"></div>
+          <div class="close-icon" (click)="deleteClicked(selectedPerson)"></div>
          <div class="edit-icon" (click)="editClicked()"></div>
         </div>
         
@@ -95,10 +96,17 @@ import {Person} from './person';
     `],
 })
 export class PersonDetailComponent {
+   @Input() selectedPerson:Person;
+    @Output() deleteNode = new EventEmitter<Person>();
    EditableMode:boolean=false;
     editClicked()
     {
         alert("edit clicked");
         this.EditableMode=!this.EditableMode;
+    }
+    deleteClicked()
+    {
+        
+        this.deleteNode.emit(this.selectedPerson);
     }
 }

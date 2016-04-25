@@ -41,7 +41,7 @@ declare var Auth0Lock;
           </li>
         </ul>
     </div>
-    <my-person-detail [selectedPerson]="newPerson"></my-person-detail>
+    <my-person-detail #personDetail [selectedPerson]="newPerson" (deleteNode)="onNodeDeleted($event)"></my-person-detail>
     <searchbar></searchbar>
   `,
     styles: [`
@@ -84,6 +84,17 @@ export class AppComponent implements OnInit {
 
     getPeople(){
         this._peopleService.getPeople().then(people => this.people = people);
+    }
+    onNodeDeleted(deleted)
+    {
+        
+     
+        let index =this. people.indexOf(deleted, 0);
+        if (index > -1) {
+         this.people.splice(index, 1);
+         this.newPerson=null;
+    }
+       
     }
 
     ngOnInit(){
