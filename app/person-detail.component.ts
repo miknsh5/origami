@@ -9,7 +9,7 @@ import {Person} from './person';
       <div class="detail-wrap">
         <div class="controls">
           <div class="close-icon" (click)="deleteClicked(selectedPerson)"></div>
-         <div class="edit-icon" (click)="editClicked()"></div>
+         <div class="edit-icon" [style.background-image]="getEditImage()" (click)="editClicked()"></div>
         </div>
         
         <div *ngIf="selectedPerson && !EditableMode" class="text-wrap">
@@ -75,7 +75,7 @@ import {Person} from './person';
         .selected {
         }
           .edit-icon {
-            background-image: url("app/images/pen.png");
+           
             bottom: 2px;
             position: absolute;
             height: 20px;
@@ -101,12 +101,23 @@ export class PersonDetailComponent {
    EditableMode:boolean=false;
     editClicked()
     {
-        alert("edit clicked");
+       
         this.EditableMode=!this.EditableMode;
     }
     deleteClicked()
     {
         
         this.deleteNode.emit(this.selectedPerson);
+    }
+    getEditImage()
+    {
+        if(!this.EditableMode)
+        {
+        return 'url("app/images/pen.png")';
+        }
+        else
+        {
+            return 'url("app/images/save.png")';
+        }
     }
 }
