@@ -6,11 +6,19 @@ import {Person} from './person';
     inputs: ['selectedPerson'],
     template: `
       <div class="detail-wrap">
-        <div class="controls"></div>
-        <div *ngIf="selectedPerson" class="text-wrap">
+        <div class="controls">
+         <div class="edit-icon" (click)="editClicked()"></div>
+        </div>
+        
+        <div *ngIf="selectedPerson && !EditableMode" class="text-wrap">
+       
             <div class="title-name">{{selectedPerson.name}}</div>
             <div class="title-position">{{selectedPerson.title}}</div>
         </div>
+       <div *ngIf="selectedPerson && EditableMode" class="text-wrap">
+       <input class="title-name-edit" [(ngModel)]="selectedPerson.name" (blur)="editClicked()" />
+       <input class="title-position-edit" [(ngModel)]="selectedPerson.title" (blur)="editClicked()"  />
+       </div>
       </div>
     `,
     styles:[`
@@ -46,15 +54,41 @@ import {Person} from './person';
             font-size: 1.1em;
             font-weight: bolder;
         }
+         .title-name-edit {
+            font-size: 0.9em;
+            font-weight: bolder;
+            width:200px;
+            height:15px;
+        }
 
         .title-position {
             font-size: 0.9em;
         }
+        .title-position-edit {
+            font-size: 0.8em;
+            width:200px;
+            height:10px;
+        }
 
         .selected {
         }
+          .edit-icon {
+            background-image: url("app/images/pen.png");
+            top: 6px;
+            position: absolute;
+            height: 20px;
+            width: 20px;
+            background-repeat: no-repeat;
+            left:4px;
+        } 
 
     `],
 })
 export class PersonDetailComponent {
+   EditableMode:boolean=false;
+    editClicked()
+    {
+        alert("edit clicked");
+        this.EditableMode=!this.EditableMode;
+    }
 }
