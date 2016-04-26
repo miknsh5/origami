@@ -10,9 +10,9 @@ import {NgForm} from 'angular2/common';
       <form  #origamiform="ngForm">
         <div class="origamicontrols">
           <div class="close-icon" (click)="deleteClicked(selectedPerson)"></div>
-         <div *ngIf="!EditableMode" class="edit-icon" [style.background-image]="getEditImage()"  (click)="editClicked()"></div>
+         <div *ngIf="!EditableMode" class="edit-icon"   (click)="editClicked()"></div>
          
-         <button *ngIf="EditableMode" class="edit-icon" [style.background-image]="getEditImage()" [disabled]="!origamiform.form.valid"  (click)="editSaved(origamiform.value)"></button>
+         <button type="button" *ngIf="EditableMode" class="save-icon"   [disabled]="!origamiform.form.valid"  (click)="editSaved(origamiform.value)"></button>
 
         </div>
         
@@ -22,9 +22,10 @@ import {NgForm} from 'angular2/common';
             <div class="title-position">{{selectedPerson.title}}</div>
         </div>
        <div *ngIf="selectedPerson && EditableMode" class="form-group text-wrap">
-       <input type="text"  class="title-name-edit form-control" required  ngControl="employeename" [ngModel]="selectedPerson.name"/>
+       <input type="text"  class="title-name-edit form-control" required  ngControl="employeename" #employeename="ngForm" [ngModel]="selectedPerson.name"/>
+   
        <input class="title-position-edit form-control" [ngModel]="selectedPerson.title" required ngControl="employeetitle"  />
-       </div>
+       </div>   
        </form>
       </div>
     `,
@@ -47,11 +48,12 @@ import {NgForm} from 'angular2/common';
             background-color: #1565C0;
             display:inline-block;
             float:left;
+            position:absolute;
         }
 
         .text-wrap {
             position:relative;
-            left: 20px;
+            left: 40px;
             margin: 8px 0;
             color: #FFFFFF;
             font-family: 'Roboto', sans-serif;
@@ -66,6 +68,7 @@ import {NgForm} from 'angular2/common';
             font-weight: bolder;
             width:200px;
             height:15px;
+            border:none;
         }
 
         .title-position {
@@ -74,19 +77,33 @@ import {NgForm} from 'angular2/common';
         .title-position-edit {
             font-size: 0.8em;
             width:200px;
-            height:10px;
+            height:12px;
+              border:none;
         }
 
         .selected {
         }
           .edit-icon {
-           
+             background-image: url("app/images/pen.png");
             bottom: 2px;
             position: absolute;
             height: 20px;
             width: 20px;
             background-repeat: no-repeat;
             left:4px;
+        } 
+        .save-icon {
+            background-image: url("app/images/save.png");
+            bottom: 2px;
+            position: absolute;
+            height: 15px;
+            width: 15px;
+           
+            left:4px;
+            padding: 0;
+            border: none;
+          background-repeat: no-repeat;
+          background-size:contain;
         } 
         .close-icon {
             background-image: url("app/images/close.png");
@@ -97,6 +114,13 @@ import {NgForm} from 'angular2/common';
             background-repeat: no-repeat;
             left:4px;
         } 
+        .ng-valid[required] {
+  border-left: 5px solid #42A948; /* green */
+}
+
+.ng-invalid {
+  border-left: 5px solid #a94442; /* red */
+}
 
     `],
 })
@@ -108,7 +132,7 @@ export class PersonDetailComponent {
     editSaved(value:Object)
     { this.data = JSON.stringify(value, null, 2)
        
-       alert(this.data);
+     
         
         this.selectedPerson.name= value.employeename;
         this.selectedPerson.title= value.employeetitle;
@@ -123,19 +147,6 @@ export class PersonDetailComponent {
         
         this.deleteNode.emit(this.selectedPerson);
     }
-    getEditImage()
-    {
-        if(!this.EditableMode)
-        {
-        return 'url("app/images/pen.png")';
-        }
-        else
-        {
-            return 'url("app/images/save.png")';
-        }
-    }
-    onSubmit(value:Object)
-    {
-        alert("submit called"+value.employeename + value.employeetitle );
-    }
+    
+    
 }   
