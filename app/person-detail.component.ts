@@ -1,15 +1,19 @@
 import {Component, Input,Output,EventEmitter} from 'angular2/core';
 import {Person} from './person';
-
+import {NgForm} from 'angular2/common';
 
 @Component({
     selector: 'my-person-detail',
    
     template: `
       <div class="detail-wrap">
-        <div class="controls">
+      <form  #origamiform="ngForm">
+        <div class="origamicontrols">
           <div class="close-icon" (click)="deleteClicked(selectedPerson)"></div>
-         <div class="edit-icon" [style.background-image]="getEditImage()" (click)="editClicked()"></div>
+         <div *ngIf="!EditableMode" class="edit-icon" [style.background-image]="getEditImage()"  (click)="editClicked()"></div>
+         
+         <button *ngIf="EditableMode" class="edit-icon" [style.background-image]="getEditImage()" [disabled]="!origamiform.form.valid"  (click)="editSaved(origamiform.value)"></button>
+
         </div>
         
         <div *ngIf="selectedPerson && !EditableMode" class="text-wrap">
@@ -17,10 +21,11 @@ import {Person} from './person';
             <div class="title-name">{{selectedPerson.name}}</div>
             <div class="title-position">{{selectedPerson.title}}</div>
         </div>
-       <div *ngIf="selectedPerson && EditableMode" class="text-wrap">
-       <input class="title-name-edit" [(ngModel)]="selectedPerson.name"  />
-       <input class="title-position-edit" [(ngModel)]="selectedPerson.title"   />
+       <div *ngIf="selectedPerson && EditableMode" class="form-group text-wrap">
+       <input type="text"  class="title-name-edit form-control" required  ngControl="employeename" [ngModel]="selectedPerson.name"/>
+       <input class="title-position-edit form-control" [ngModel]="selectedPerson.title" required ngControl="employeetitle"  />
        </div>
+       </form>
       </div>
     `,
     styles:[`
@@ -33,8 +38,8 @@ import {Person} from './person';
             left:0;
         }
 
-        .controls {
-            position:relative;
+        .origamicontrols {
+           
             left: 10px;
             top:0;
             width: 25px;
@@ -98,11 +103,20 @@ import {Person} from './person';
 export class PersonDetailComponent {
    @Input() selectedPerson:Person;
     @Output() deleteNode = new EventEmitter<Person>();
+    data:String;
    EditableMode:boolean=false;
+    editSaved(value:Object)
+    { this.data = JSON.stringify(value, null, 2)
+       
+       alert(this.data);
+        
+        this.selectedPerson.name= value.employeename;
+        this.selectedPerson.title= value.employeetitle;
+        this.EditableMode=false;
+    }
     editClicked()
     {
-       
-        this.EditableMode=!this.EditableMode;
+        this.EditableMode= true;
     }
     deleteClicked()
     {
@@ -120,4 +134,8 @@ export class PersonDetailComponent {
             return 'url("app/images/save.png")';
         }
     }
-}
+    onSubmit(value:Object)
+    {
+        alert("submit called"+value.employeename + value.employeetitle );
+    }
+}   
