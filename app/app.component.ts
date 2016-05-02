@@ -27,6 +27,7 @@ declare var Auth0Lock;
     <nav></nav>
     <div class="auth-panel">
         <h2>Authentication</h2>
+        <button (click)="loadChart()">Load</button>
         <button *ngIf="!loggedIn()" (click)="login()">Login</button>
         <div *ngIf="loggedIn()">
             <!--<h4>Welcome {{userProfile.name}}</h4>-->
@@ -64,12 +65,13 @@ declare var Auth0Lock;
             top: 0;
         }
     `],
-    providers: [PeopleService]
+    providers: [HTTP_PROVIDERS,PeopleService]
 })
 
 
 export class AppComponent implements OnInit {
     people: Person[];
+    errorMessage:string;
 
     @Output() newPerson = new EventEmitter<Person>();
 
@@ -79,7 +81,10 @@ export class AppComponent implements OnInit {
         this.newPerson = person;
         console.log("Selected! " + person.name);
     }
-
+loadChart()
+{
+   this.getPeople() ;
+}
     constructor(private _peopleService: PeopleService) { }
 
     getPeople(){
@@ -98,8 +103,8 @@ export class AppComponent implements OnInit {
     }
 
     ngOnInit(){
-        this.getPeople();
-
+        
+  this.getPeople();
         //check if token exists in local storage for logged in user.
         //this.getUserProfile();
     }
