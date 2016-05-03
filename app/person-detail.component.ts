@@ -141,12 +141,12 @@ export class PersonDetailComponent {
     editClicked()
     {
         
-        alert(this.selectedNode);
+      
         this.EditableMode= true;
     }
     deleteClicked()
     {
-        alert("delete clicked");
+       
         this.deleteNode.emit(this.selectedNode);
     }
     

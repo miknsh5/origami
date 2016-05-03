@@ -39,12 +39,11 @@ declare var Auth0Lock;
         <h1>Welcome to {{organizationChart.OrganizationName}}</h1>
         <ul *ngIf="loggedIn()">
           <li *ngFor="#node of orgNodes">
-            <span (click)="selectNode(node)"  class="badge person">{{node.NodeFirstName}}</span> {{node.Description}}
+            <span (click)="selectNode(node)"  class="badge person">{{node.NodeFirstName}}</span> <span class="badge title">{{node.Description}}</span>
               <ul *ngIf="node.ChildNodes">
           <li *ngFor="#childNode of node.ChildNodes">
-            <span (click)="selectNode(childNode)"  class="badge person">{{childNode.NodeFirstName}}</span> {{childNode.Description}}
-            
-          </li>
+            <span (click)="selectNode(childNode)"  class="badge person">{{childNode.NodeFirstName}}</span> <span class="badge title">{{childNode.Description}}</span>
+                      </li>
         </ul>
           </li>
         </ul>
@@ -56,6 +55,11 @@ declare var Auth0Lock;
         .person {
             cursor: pointer;
             color: #222222;
+        }
+         .title {
+            cursor: pointer;
+            color: #222222;
+             font-style: italic;
         }
         .auth-panel {
             position:absolute;
@@ -85,7 +89,7 @@ export class AppComponent implements OnInit {
     lock = new Auth0Lock('bRQg0MUBHOozAIXyHONfZRWsT7JeIqT5', 'axd-origami.auth0.com');
 
     selectNode(node){
-        alert(node);
+      
         this.selectedNode = node;
         console.log("Selected! " + node.NodeFirstName);
     }
@@ -119,7 +123,7 @@ loadChart()
   }
     onNodeDeleted(deleted)
     {
-        alert("deleted called "+ deleted);
+      
      
         let index =this.orgNodes.indexOf(deleted, 0);
         if (index > -1) {
