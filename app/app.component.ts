@@ -10,7 +10,7 @@ import {OrgNode} from './Models/OrgNode';
 // Interfaces
 import {Person} from './person';
 //import {UserProfile} from './user-profile';
-
+import {Observable}     from 'rxjs/Observable';
 // Components
 import {PersonDetailComponent} from './person-detail.component';
 import {SearchbarComponent} from './searchbar.component';
@@ -40,6 +40,12 @@ declare var Auth0Lock;
         <ul *ngIf="loggedIn()">
           <li *ngFor="#node of orgNodes">
             <span class="badge person">{{node.NodeFirstName}}</span> {{node.Description}}
+              <ul *ngIf="node.ChildNodes">
+          <li *ngFor="#childNode of node.ChildNodes">
+            <span class="badge person">{{childNode.NodeFirstName}}</span> {{childNode.Description}}
+            
+          </li>
+        </ul>
           </li>
         </ul>
     </div>
@@ -88,11 +94,27 @@ loadChart()
     constructor(private _peopleService: PeopleService) { }
 
     getOrgChartAndNodes(){
-       this.organizationChart= this._peopleService.getPeople();
-       alert(this.organizationChart);
-       this.orgNodes=this.organizationChart.OrgNodes;
+        this._peopleService.getPeople().subscribe(
+      data => this.setData(data) ,
+      err => this.handleError(err),
+      () => console.log('Random Quote Complete'));
+     
+      // alert(this.organizationChart);
+     
        
     }
+    private setData(data:any)
+    {
+        this.organizationChart= data;
+        this.orgNodes= this.organizationChart.OrgNodes;
+    }
+    private handleError (error: any) {
+    // In a real world app, we might send the error to remote logging infrastructure
+    let errMsg = error.message || 'Server error';
+    alert(errMsg);
+    console.error(errMsg); // log to console instead
+    return Observable.throw(errMsg);
+  }
   /*  onNodeDeleted(deleted)
     {
         

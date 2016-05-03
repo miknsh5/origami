@@ -14,4 +14,4 @@ System.register([], function(exports_1, context_1) {
         }
     }
 });
-//# sourceMappingURL=orgchart.js.map
+//# sourceMappingURL=OrgChart.js.map
