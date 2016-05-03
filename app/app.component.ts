@@ -141,7 +141,7 @@ loadChart()
 
     ngOnInit(){
         
- // this.getOrgChartAndNodes();
+  this.getOrgChartAndNodes();
         //check if token exists in local storage for logged in user.
         //this.getUserProfile();
     }
