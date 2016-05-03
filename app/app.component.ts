@@ -39,16 +39,17 @@ declare var Auth0Lock;
         <h1>Welcome to {{organizationChart.OrganizationName}}</h1>
         <ul *ngIf="loggedIn()">
           <li *ngFor="#node of orgNodes">
-            <span class="badge person">{{node.NodeFirstName}}</span> {{node.Description}}
+            <span (click)="selectNode(node)"  class="badge person">{{node.NodeFirstName}}</span> {{node.Description}}
               <ul *ngIf="node.ChildNodes">
           <li *ngFor="#childNode of node.ChildNodes">
-            <span class="badge person">{{childNode.NodeFirstName}}</span> {{childNode.Description}}
+            <span (click)="selectNode(childNode)"  class="badge person">{{childNode.NodeFirstName}}</span> {{childNode.Description}}
             
           </li>
         </ul>
           </li>
         </ul>
     </div>
+     <my-person-detail #personDetail [selectedNode]="selectedNode" (deleteNode)="onNodeDeleted($event)"></my-person-detail>
     <searchbar></searchbar>
   `,
     styles: [`
@@ -79,13 +80,14 @@ export class AppComponent implements OnInit {
     organizationChart:OrgChart;
     errorMessage:string;
     orgNodes:OrgNode[];    
-    @Output() newPerson = new EventEmitter<Person>();
+    @Output() selectedNode = new EventEmitter<OrgNode>();
 
     lock = new Auth0Lock('bRQg0MUBHOozAIXyHONfZRWsT7JeIqT5', 'axd-origami.auth0.com');
 
-    selectPerson(person){
-        this.newPerson = person;
-        console.log("Selected! " + person.name);
+    selectNode(node){
+        alert(node);
+        this.selectedNode = node;
+        console.log("Selected! " + node.NodeFirstName);
     }
 loadChart()
 {
@@ -115,17 +117,27 @@ loadChart()
     console.error(errMsg); // log to console instead
     return Observable.throw(errMsg);
   }
-  /*  onNodeDeleted(deleted)
+    onNodeDeleted(deleted)
     {
-        
+        alert("deleted called "+ deleted);
      
-        let index =this. people.indexOf(deleted, 0);
+        let index =this.orgNodes.indexOf(deleted, 0);
         if (index > -1) {
-         this.people.splice(index, 1);
-         this.newPerson=null;
-    }
+         this.orgNodes.splice(index, 1);
+         this.selectedNode=null;
+        }
+        else{
+            this.orgNodes.forEach(element => {
+                let index= element.ChildNodes.indexOf(deleted, 0);
+                if(index>-1)
+                {
+                    element.ChildNodes.splice(index,1);
+                    this.selectedNode= null;
+                }
+            });
+        }
        
-    }*/
+    }
 
     ngOnInit(){
         
