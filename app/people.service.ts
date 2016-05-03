@@ -2,22 +2,22 @@ import {Injectable} from 'angular2/core';
 import {PEOPLE} from './mock-people';
 import {Http, Response} from 'angular2/http';
 import {Observable}     from 'rxjs/Observable';
-
+import {OrgChart} from './Models/orgChart';
 @Injectable()
 
 export class PeopleService {
     constructor(private http:Http){}
      private _origamiUrl = 'origamiapi.azurewebsites.net/api/Org/GetOrgChart?orgID=2';
-     randomQuote:any;
+     randomQuote:OrgChart;
     getPeople() {
       this.http.get('http://origamiapi.azurewebsites.net/api/Org/GetOrgChart?orgID=2')
-    .map(res => res.text())
+    .map(res => res.json())
     .subscribe(
       data => this.randomQuote = data,
       err => this.handleError(err),
       () => console.log('Random Quote Complete')
     );
-        alert(this.randomQuote);
+        alert(this.randomQuote.OrgNodes[0].NodeFirstName);
         return Promise.resolve(PEOPLE);
     }
       private extractData(res: Response) {
