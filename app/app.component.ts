@@ -5,7 +5,8 @@ import {provide} from 'angular2/core';
 import {RouteConfig, Router, APP_BASE_HREF, ROUTER_PROVIDERS, ROUTER_DIRECTIVES, CanActivate} from 'angular2/router';
 import {HTTP_PROVIDERS, Http} from 'angular2/http';
 import {AuthHttp, tokenNotExpired, JwtHelper} from 'angular2-jwt';
-
+import {OrgChart} from './Models/OrgChart';
+import {OrgNode} from './Models/OrgNode';
 // Interfaces
 import {Person} from './person';
 //import {UserProfile} from './user-profile';
@@ -34,15 +35,14 @@ declare var Auth0Lock;
             <button (click)="logout()">Logout</button>
         </div>
     </div>
-    <div class="main-canvas">
-        <h1>Welcome to Origami</h1>
+    <div class="main-canvas" *ngIf="organizationChart">
+        <h1>Welcome to {{organizationChart.OrganizationName}}</h1>
         <ul *ngIf="loggedIn()">
-          <li *ngFor="#person of people">
-            <span (click)="selectPerson(person)" class="badge person">{{person.name}}</span> {{person.manager}}
+          <li *ngFor="#node of orgNodes">
+            <span class="badge person">{{node.NodeFirstName}}</span> {{node.Description}}
           </li>
         </ul>
     </div>
-    <my-person-detail #personDetail [selectedPerson]="newPerson" (deleteNode)="onNodeDeleted($event)"></my-person-detail>
     <searchbar></searchbar>
   `,
     styles: [`
@@ -70,9 +70,9 @@ declare var Auth0Lock;
 
 
 export class AppComponent implements OnInit {
-    people: Person[];
+    organizationChart:OrgChart;
     errorMessage:string;
-
+    orgNodes:OrgNode[];    
     @Output() newPerson = new EventEmitter<Person>();
 
     lock = new Auth0Lock('bRQg0MUBHOozAIXyHONfZRWsT7JeIqT5', 'axd-origami.auth0.com');
@@ -83,14 +83,17 @@ export class AppComponent implements OnInit {
     }
 loadChart()
 {
-   this.getPeople() ;
+   this.getOrgChartAndNodes() ;
 }
     constructor(private _peopleService: PeopleService) { }
 
-    getPeople(){
-        this._peopleService.getPeople().then(people => this.people = people);
+    getOrgChartAndNodes(){
+       this.organizationChart= this._peopleService.getPeople();
+       alert(this.organizationChart);
+       this.orgNodes=this.organizationChart.OrgNodes;
+       
     }
-    onNodeDeleted(deleted)
+  /*  onNodeDeleted(deleted)
     {
         
      
@@ -100,11 +103,11 @@ loadChart()
          this.newPerson=null;
     }
        
-    }
+    }*/
 
     ngOnInit(){
         
-  this.getPeople();
+ // this.getOrgChartAndNodes();
         //check if token exists in local storage for logged in user.
         //this.getUserProfile();
     }

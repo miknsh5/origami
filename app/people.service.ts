@@ -7,18 +7,17 @@ import {OrgChart} from './Models/orgChart';
 
 export class PeopleService {
     constructor(private http:Http){}
-     private _origamiUrl = 'origamiapi.azurewebsites.net/api/Org/GetOrgChart?orgID=2';
-     randomQuote:OrgChart;
+     private _origamiUrl = 'http://origamiapi.azurewebsites.net/api/Org/GetOrgChart?orgID=2';
+     organizationChart:OrgChart;
     getPeople() {
-      this.http.get('http://origamiapi.azurewebsites.net/api/Org/GetOrgChart?orgID=2')
+      this.http.get(this._origamiUrl)
     .map(res => res.json())
     .subscribe(
-      data => this.randomQuote = data,
+      data => this.organizationChart = data,
       err => this.handleError(err),
       () => console.log('Random Quote Complete')
     );
-        alert(this.randomQuote.OrgNodes[0].NodeFirstName);
-        return Promise.resolve(PEOPLE);
+      return this.organizationChart;
     }
       private extractData(res: Response) {
     if (res.status < 200 || res.status >= 300) {
