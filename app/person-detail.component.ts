@@ -1,27 +1,27 @@
-import {Component, Input,Output,EventEmitter} from 'angular2/core';
+import {Component, Input, Output, EventEmitter} from 'angular2/core';
 import {OrgNode} from './Models/OrgNode';
 import {NgForm} from 'angular2/common';
 
 @Component({
     selector: 'my-person-detail',
-   
+
     template: `
       <div class="detail-wrap">
-      <form  #origamiform="ngForm">
+      <form  #origamiform="ngForm" (ngSubmit)="onSubmit(origamiform)>
         <div class="origamicontrols">
           <div class="close-icon" (click)="deleteClicked(selectedNode)"></div>
-         <div *ngIf="!EditableMode" class="edit-icon"   (click)="editClicked()"></div>
+         <div *ngIf="!editableMode" class="edit-icon"   (click)="editClicked()"></div>
          
-         <button type="button" *ngIf="EditableMode" class="save-icon"   [disabled]="!origamiform.form.valid"  (click)="editSaved(origamiform.value)"></button>
+         <button type="submit" *ngIf="editableMode" class="save-icon"   [disabled]="!origamiform.form.valid" ></button>
 
         </div>
         
-        <div *ngIf="selectedNode && !EditableMode" class="text-wrap">
+        <div *ngIf="selectedNode && !editableMode" class="text-wrap">
        
             <div class="title-name">{{selectedNode.NodeFirstName}}</div>
             <div class="title-position">{{selectedNode.Description}}</div>
         </div>
-       <div *ngIf="selectedNode && EditableMode" class="form-group text-wrap">
+       <div *ngIf="selectedNode && editableMode" class="form-group text-wrap">
        <input type="text"  class="title-name-edit form-control" required  ngControl="employeename" #employeename="ngForm" [ngModel]="selectedNode.NodeFirstName"/>
    
        <input class="title-position-edit form-control" [ngModel]="selectedNode.Description" required ngControl="employeetitle"  />
@@ -29,7 +29,7 @@ import {NgForm} from 'angular2/common';
        </form>
       </div>
     `,
-    styles:[`
+    styles: [`
         .detail-wrap {
             height: 50px;
             width: 250px;
@@ -125,30 +125,24 @@ import {NgForm} from 'angular2/common';
     `],
 })
 export class PersonDetailComponent {
-   @Input() selectedNode:OrgNode;
+    @Input() selectedNode: OrgNode;
     @Output() deleteNode = new EventEmitter<OrgNode>();
-    data:String;
-   EditableMode:boolean=false;
-    editSaved(value:Object)
-    { this.data = JSON.stringify(value, null, 2)
-       
-     
-        
-        this.selectedNode.NodeFirstName= value.employeename;
-        this.selectedNode.Description= value.employeetitle;
-        this.EditableMode=false;
+    data: String;
+    editableMode: boolean = false;
+
+    onSubmit(form: NgForm) {
+        this.data = JSON.stringify(form.value, null, 2)
+        this.selectedNode.NodeFirstName = form.value.employeename;
+        this.selectedNode.Description = form.value.employeetitle;
+        this.editableMode = false;
     }
-    editClicked()
-    {
-        
-      
-        this.EditableMode= true;
+    editClicked() {
+        if (this.selectedNode) {
+            this.editableMode = true;
+        }
     }
-    deleteClicked()
-    {
-       
+    deleteClicked() {
         this.deleteNode.emit(this.selectedNode);
+        this.editableMode = false;
     }
-    
-    
 }   
