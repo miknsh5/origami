@@ -1,6 +1,6 @@
-import {Component, Input,Output,EventEmitter} from 'angular2/core';
-import {OrgNode} from './Models/OrgNode';
-import {NgForm} from 'angular2/common';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { OrgNode } from './Models/OrgNode';
+import { NgForm } from '@angular/common';
 
 @Component({
     selector: 'my-person-detail',

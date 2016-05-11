@@ -1,29 +1,28 @@
 // Core
-import {Component, Output, EventEmitter} from 'angular2/core';
-import {OnInit} from 'angular2/core';
-import {provide} from 'angular2/core';
-import {RouteConfig, Router, APP_BASE_HREF, ROUTER_PROVIDERS, ROUTER_DIRECTIVES, CanActivate} from 'angular2/router';
-import {HTTP_PROVIDERS, Http} from 'angular2/http';
-import {AuthHttp, tokenNotExpired, JwtHelper} from 'angular2-jwt';
-import {OrgChart} from './Models/OrgChart';
-import {OrgNode} from './Models/OrgNode';
+import { Component, Output, EventEmitter } from '@angular/core';
+import { OnInit } from '@angular/core';
+import { provide } from '@angular/core';
+import { HTTP_PROVIDERS, Http } from '@angular/http';
+import { AuthHttp, tokenNotExpired, JwtHelper } from 'angular2-jwt';
+import { OrgChart } from './Models/OrgChart';
+import { OrgNode } from './Models/OrgNode';
+
 // Interfaces
-import {Person} from './person';
-//import {UserProfile} from './user-profile';
-import {Observable}     from 'rxjs/Observable';
+import { Observable } from 'rxjs/Observable';
+
 // Components
-import {PersonDetailComponent} from './person-detail.component';
-import {SearchbarComponent} from './searchbar.component';
-import {NavComponent} from './nav.component';
+import { PersonDetailComponent } from './person-detail.component';
+import { SearchbarComponent } from './searchbar.component';
+import { NavComponent } from './nav.component';
 
 // Services
-import {PeopleService} from './people.service';
+import { PeopleService } from './people.service';
 
 declare var Auth0Lock;
 
 @Component({
     selector: 'app',
-    directives: [PersonDetailComponent, SearchbarComponent, NavComponent, ROUTER_DIRECTIVES],
+    directives: [PersonDetailComponent, SearchbarComponent, NavComponent],
     template: `
     <nav></nav>
     <div class="auth-panel">
@@ -76,91 +75,81 @@ declare var Auth0Lock;
             top: 0;
         }
     `],
-    providers: [HTTP_PROVIDERS,PeopleService]
+    providers: [HTTP_PROVIDERS, PeopleService]
 })
 
 
 export class AppComponent implements OnInit {
-    organizationChart:OrgChart;
-    errorMessage:string;
-    orgNodes:OrgNode[];    
+    organizationChart: OrgChart;
+    errorMessage: string;
+    orgNodes: OrgNode[];
     @Output() selectedNode = new EventEmitter<OrgNode>();
 
     lock = new Auth0Lock('bRQg0MUBHOozAIXyHONfZRWsT7JeIqT5', 'axd-origami.auth0.com');
 
-    selectNode(node){
-      
+    selectNode(node) {
+
         this.selectedNode = node;
         console.log("Selected! " + node.NodeFirstName);
     }
-loadChart()
-{
-   this.getOrgChartAndNodes() ;
-}
+    
+    loadChart() {
+        this.getOrgChartAndNodes();
+    }
+    
     constructor(private _peopleService: PeopleService) { }
 
-    getOrgChartAndNodes(){
+    getOrgChartAndNodes() {
         this._peopleService.getPeople().subscribe(
-      data => this.setData(data) ,
-      err => this.handleError(err),
-      () => console.log('Random Quote Complete'));
-     
-      // alert(this.organizationChart);
-     
-       
+            data => this.setData(data),
+            err => this.handleError(err),
+            () => console.log('Random Quote Complete'));
     }
-    private setData(data:any)
-    {
-        this.organizationChart= data;
-        this.orgNodes= this.organizationChart.OrgNodes;
+    
+    private setData(data: any) {
+        this.organizationChart = data;
+        this.orgNodes = this.organizationChart.OrgNodes;
     }
-    private handleError (error: any) {
-    // In a real world app, we might send the error to remote logging infrastructure
-    let errMsg = error.message || 'Server error';
-    alert(errMsg);
-    console.error(errMsg); // log to console instead
-    return Observable.throw(errMsg);
-  }
-    onNodeDeleted(deleted)
-    {
-      
-     
-        let index =this.orgNodes.indexOf(deleted, 0);
+    
+    private handleError(error: any) {
+        // In a real world app, we might send the error to remote logging infrastructure
+        let errMsg = error.message || 'Server error';
+        alert(errMsg);
+        console.error(errMsg); // log to console instead
+        return Observable.throw(errMsg);
+    }
+    
+    onNodeDeleted(deleted) {
+        let index = this.orgNodes.indexOf(deleted, 0);
         if (index > -1) {
-         this.orgNodes.splice(index, 1);
-         this.selectedNode=null;
+            this.orgNodes.splice(index, 1);
+            this.selectedNode = null;
         }
-        else{
+        else {
             this.orgNodes.forEach(element => {
-                let index= element.children.indexOf(deleted, 0);
-                if(index>-1)
-                {
-                    element.children.splice(index,1);
-                    this.selectedNode= null;
+                let index = element.children.indexOf(deleted, 0);
+                if (index > -1) {
+                    element.children.splice(index, 1);
+                    this.selectedNode = null;
                 }
             });
         }
-       
     }
 
-    ngOnInit(){
-        
-  this.getOrgChartAndNodes();
+    ngOnInit() {
+        this.getOrgChartAndNodes();
         //check if token exists in local storage for logged in user.
         //this.getUserProfile();
     }
 
     login() {
-        this.lock.show(function(err, profile, id_token) {
-
-            if(err) {
+        this.lock.show(function (err, profile, id_token) {
+            if (err) {
                 throw new Error(err);
             }
-
             localStorage.setItem('profile', JSON.stringify(profile));
             localStorage.setItem('id_token', id_token);
         });
-
     }
 
     logout() {
