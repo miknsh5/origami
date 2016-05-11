@@ -1,0 +1,27 @@
+.person {
+    cursor: pointer;
+    color: #222222;
+}
+
+.title {
+    cursor: pointer;
+    color: #222222;
+    font-style: italic;
+}
+
+.auth-panel {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
+
+.person:hover {
+    color: #029BFF;
+}
+
+.main-canvas {
+    padding: 50px;
+    position: absolute;
+    left: 200px;
+    top: 0;
+}
