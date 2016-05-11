@@ -40,8 +40,8 @@ declare var Auth0Lock;
         <ul *ngIf="loggedIn()">
           <li *ngFor="#node of orgNodes">
             <span (click)="selectNode(node)"  class="badge person">{{node.NodeFirstName}}</span> <span class="badge title">{{node.Description}}</span>
-              <ul *ngIf="node.ChildNodes">
-          <li *ngFor="#childNode of node.ChildNodes">
+              <ul *ngIf="node.children">
+          <li *ngFor="#childNode of node.children">
             <span (click)="selectNode(childNode)"  class="badge person">{{childNode.NodeFirstName}}</span> <span class="badge title">{{childNode.Description}}</span>
                       </li>
         </ul>
@@ -132,10 +132,10 @@ loadChart()
         }
         else{
             this.orgNodes.forEach(element => {
-                let index= element.ChildNodes.indexOf(deleted, 0);
+                let index= element.children.indexOf(deleted, 0);
                 if(index>-1)
                 {
-                    element.ChildNodes.splice(index,1);
+                    element.children.splice(index,1);
                     this.selectedNode= null;
                 }
             });

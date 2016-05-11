@@ -5,5 +5,5 @@ export class OrgNode{
    NodeID:number ;
    OrgID:number;
    ParentNodeID:number;
-   ChildNodes:OrgNode[];
+   children:OrgNode[];
 }
