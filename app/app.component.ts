@@ -24,32 +24,32 @@ declare var Auth0Lock;
     selector: 'app',
     directives: [PersonDetailComponent, SearchbarComponent, NavComponent],
     template: `
-    <nav></nav>
-    <div class="auth-panel">
-        <h2>Authentication</h2>
-        <button (click)="loadChart()">Load</button>
-        <button *ngIf="!loggedIn()" (click)="login()">Login</button>
-        <div *ngIf="loggedIn()">
-            <!--<h4>Welcome {{userProfile.name}}</h4>-->
-            <button (click)="logout()">Logout</button>
+        <nav></nav>
+        <div class="auth-panel">
+            <h2>Authentication</h2>
+            <button (click)="loadChart()">Load</button>
+            <button *ngIf="!loggedIn()" (click)="login()">Login</button>
+            <div *ngIf="loggedIn()">
+                <!--<h4>Welcome {{userProfile.name}}</h4>-->
+                <button (click)="logout()">Logout</button>
+            </div>
         </div>
-    </div>
-    <div class="main-canvas" *ngIf="organizationChart">
-        <h1>Welcome to {{organizationChart.OrganizationName}}</h1>
-        <ul *ngIf="loggedIn()">
-          <li *ngFor="#node of orgNodes">
-            <span (click)="selectNode(node)"  class="badge person">{{node.NodeFirstName}}</span> <span class="badge title">{{node.Description}}</span>
-              <ul *ngIf="node.children">
-          <li *ngFor="#childNode of node.children">
-            <span (click)="selectNode(childNode)"  class="badge person">{{childNode.NodeFirstName}}</span> <span class="badge title">{{childNode.Description}}</span>
-                      </li>
-        </ul>
-          </li>
-        </ul>
-    </div>
-     <my-person-detail #personDetail [selectedNode]="selectedNode" (deleteNode)="onNodeDeleted($event)"></my-person-detail>
-    <searchbar></searchbar>
-  `,
+        <div class="main-canvas" *ngIf="organizationChart">
+            <h1>Welcome to {{organizationChart.OrganizationName}}</h1>
+            <ul *ngIf="loggedIn()">
+                <li *ngFor="let node of orgNodes">
+                    <span (click)="selectNode(node)"  class="badge person">{{node.NodeFirstName}}</span> <span class="badge title">{{node.Description}}</span>
+                    <ul *ngIf="node.children">
+                        <li *ngFor="let childNode of node.children">
+                            <span (click)="selectNode(childNode)"  class="badge person">{{childNode.NodeFirstName}}</span> <span class="badge title">{{childNode.Description}}</span>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        <my-person-detail #personDetail [selectedNode]="selectedNode" (deleteNode)="onNodeDeleted($event)"></my-person-detail>
+        <searchbar></searchbar>
+    `,
     styles: [`
         .person {
             cursor: pointer;
@@ -92,11 +92,11 @@ export class AppComponent implements OnInit {
         this.selectedNode = node;
         console.log("Selected! " + node.NodeFirstName);
     }
-    
+
     loadChart() {
         this.getOrgChartAndNodes();
     }
-    
+
     constructor(private _peopleService: PeopleService) { }
 
     getOrgChartAndNodes() {
@@ -105,12 +105,13 @@ export class AppComponent implements OnInit {
             err => this.handleError(err),
             () => console.log('Random Quote Complete'));
     }
-    
+
     private setData(data: any) {
-        this.organizationChart = data;
+        this.organizationChart = data;        
         this.orgNodes = this.organizationChart.OrgNodes;
+        console.log(this.organizationChart);
     }
-    
+
     private handleError(error: any) {
         // In a real world app, we might send the error to remote logging infrastructure
         let errMsg = error.message || 'Server error';
@@ -118,7 +119,7 @@ export class AppComponent implements OnInit {
         console.error(errMsg); // log to console instead
         return Observable.throw(errMsg);
     }
-    
+
     onNodeDeleted(deleted) {
         let index = this.orgNodes.indexOf(deleted, 0);
         if (index > -1) {
