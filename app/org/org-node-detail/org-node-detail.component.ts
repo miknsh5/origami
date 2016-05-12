@@ -4,7 +4,7 @@ import { COMMON_DIRECTIVES, NgForm, FORM_DIRECTIVES } from '@angular/common';
 import { OrgNodeModel } from '../shared/index';
 
 @Component({
-    selector: 'org-node-detail',
+    selector: 'origami-org-node-detail',
     templateUrl: 'app/org/org-node-detail/org-node-detail.component.html',
     styleUrls: ['app/org/org-node-detail/org-node-detail.component.css'],
     directives: [ FORM_DIRECTIVES, COMMON_DIRECTIVES ] 
