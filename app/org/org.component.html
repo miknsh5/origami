@@ -1,0 +1,21 @@
+<div class="auth-panel">
+    <h2>My Organization</h2>
+    <button (click)="logout()">Logout</button>
+    <button (click)="getAllNodes()">Load Data</button>
+</div>
+<div class="main-canvas" *ngIf="orgChart">
+    <h1>Welcome to {{orgChart.OrganizationName}}</h1>
+    <ul>
+        <li *ngFor="let node of orgNodes">
+            <span (click)="onNodeSelected(node)" class="badge person">{{node.NodeFirstName}}</span> <span class="badge title">{{node.Description}}</span>
+            <ul *ngIf="node.children">
+                <li *ngFor="let childNode of node.children">
+                    <span (click)="onNodeSelected(childNode)" class="badge person">{{childNode.NodeFirstName}}</span>
+                    <span
+                        class="badge title">{{childNode.Description}}</span>
+                </li>
+            </ul>
+        </li>
+    </ul>
+</div>
+<origami-org-node-detail #nodeDetail [selectedNode]="selectedNode" (deleteNode)="onNodeDelete($event)"></origami-org-node-detail>

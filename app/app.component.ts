@@ -1,39 +1,25 @@
 // Core
-import { Component, Output, EventEmitter } from '@angular/core';
-import { OnInit } from '@angular/core';
-import { provide } from '@angular/core';
-import { HTTP_PROVIDERS, Http } from '@angular/http';
-import { AuthHttp, tokenNotExpired } from 'angular2-jwt';
+import { Component, OnInit, Output, EventEmitter, provide } from '@angular/core';
+import { CORE_DIRECTIVES } from '@angular/common';
+import { ROUTER_DIRECTIVES, ROUTER_PROVIDERS, RouteConfig } from '@angular/router-deprecated';
 
-declare var Auth0Lock;
+import { LoginComponent } from './login/login.component';
+import { OrgComponent } from './org/index';
 
 @Component({
     selector: 'origami',
-    templateUrl: 'app/app.component.html',
-    styleUrls: ['app/app.component.css'],
+    directives: [CORE_DIRECTIVES, ROUTER_DIRECTIVES],
+    template: '<router-outlet></router-outlet>',
+    providers: [ROUTER_PROVIDERS]
 })
 
-export class AppComponent implements OnInit {
-    lock = new Auth0Lock('bRQg0MUBHOozAIXyHONfZRWsT7JeIqT5', 'axd-origami.auth0.com');
+@RouteConfig([
+    { path: '/', redirectTo:['Login'] },    
+    { path: '/login', name: 'Login', component: LoginComponent, useAsDefault: true },
+    { path: '/home', name: 'Home', component: OrgComponent },
+    { path: '/**', name: 'Other', redirectTo: ['Login'] }
+])
 
-    ngOnInit() { }
-
-    login() {
-        this.lock.show(function (err, profile, id_token) {
-            if (err) {
-                throw new Error(err);
-            }
-            localStorage.setItem('profile', JSON.stringify(profile));
-            localStorage.setItem('id_token', id_token);
-        });
-    }
-
-    logout() {
-        localStorage.removeItem('profile');
-        localStorage.removeItem('id_token');
-    }
-
-    loggedIn() {
-        return tokenNotExpired();
-    }
+export class AppComponent {
+        
 }
