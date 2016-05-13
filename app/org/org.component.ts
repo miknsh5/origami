@@ -11,57 +11,55 @@ import { OrgChartModel, OrgNodeModel, OrgService } from './shared/index';
     directives: [OrgNodeDetailComponent],
     templateUrl: 'app/org/org.component.html',
     styleUrls: ['app/org/org.component.css'],
-    providers: [OrgService, HTTP_PROVIDERS] 
+    providers: [OrgService, HTTP_PROVIDERS]
 })
 
 export class OrgComponent implements OnInit {
     orgChart: OrgChartModel;
     orgNodes: OrgNodeModel[];
     @Output() selectedNode = new EventEmitter<OrgNodeModel>();
-    
-    constructor(private orgService: OrgService, private router: Router) {     
-        this.getAllNodes(); 
-    }   
-    
-    ngOnInit() {
-       alert();
+
+    constructor(private orgService: OrgService, private router: Router) {
+        this.getAllNodes();
     }
-    
-    getAllNodes(){
+
+    ngOnInit() {
+    }
+
+    getAllNodes() {
         this.orgService.getNodes()
             .subscribe(data => this.setOrgChartData(data),
             err => this.orgService.logError(err),
             () => console.log('Random Quote Complete'));
     }
-    
+
     onNodeSelected(node) {
         this.selectedNode = node;
-    } 
-    
+    }
+
     onNodeDelete(deletedNode) {
-        let index =this.orgNodes.indexOf(deletedNode, 0);
+        let index = this.orgNodes.indexOf(deletedNode, 0);
         if (index > -1) {
-         this.orgNodes.splice(index, 1);
-         this.selectedNode=null;
+            this.orgNodes.splice(index, 1);
+            this.selectedNode = null;
         }
-        else{
+        else {
             this.orgNodes.forEach(element => {
-                let index= element.children.indexOf(deletedNode, 0);
-                if(index>-1)
-                {
-                    element.children.splice(index,1);
-                    this.selectedNode= null;
+                let index = element.children.indexOf(deletedNode, 0);
+                if (index > -1) {
+                    element.children.splice(index, 1);
+                    this.selectedNode = null;
                 }
             });
         }
     }
-    
-    private setOrgChartData(data: any){
+
+    private setOrgChartData(data: any) {
         this.orgChart = data;
         this.orgNodes = this.orgChart.OrgNodes;
         console.log(this.orgChart);
     }
-    
+
     logout() {
         localStorage.removeItem('profile');
         localStorage.removeItem('id_token');
