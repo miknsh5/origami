@@ -18,4 +18,4 @@
         </li>
     </ul>
 </div>
-<origami-org-node-detail #nodeDetail [selectedNode]="selectedNode" (deleteNode)="onNodeDelete($event)"></origami-org-node-detail>
+<origami-org-node-detail #nodeDetail [selectedOrgNode]="selectedNode" (deleteNode)="onNodeDeleted($event)" (updateNode)="onNodeUpdated($event)"></origami-org-node-detail>

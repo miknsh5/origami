@@ -18,6 +18,7 @@ export class OrgComponent implements OnInit {
     orgChart: OrgChartModel;
     orgNodes: OrgNodeModel[];
     @Output() selectedNode = new EventEmitter<OrgNodeModel>();
+   
 
     constructor(private orgService: OrgService, private router: Router) {
         this.getAllNodes();
@@ -34,10 +35,10 @@ export class OrgComponent implements OnInit {
     }
 
     onNodeSelected(node) {
-        this.selectedNode = node;
+           this.selectedNode = node;          
     }
 
-    onNodeDelete(deletedNode) {
+    onNodeDeleted(deletedNode) {
         let index = this.orgNodes.indexOf(deletedNode, 0);
         if (index > -1) {
             this.orgNodes.splice(index, 1);
@@ -52,6 +53,11 @@ export class OrgComponent implements OnInit {
                 }
             });
         }
+    }
+    
+    onNodeUpdated(updatedNode){
+           if(updatedNode){       
+       }   
     }
 
     private setOrgChartData(data: any) {

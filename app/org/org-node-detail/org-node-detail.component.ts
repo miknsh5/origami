@@ -12,30 +12,37 @@ import { OrgNodeModel, OrgService } from '../shared/index';
 })
 
 export class OrgNodeDetailComponent {
-    @Input() selectedNode: OrgNodeModel;
+    @Input() selectedOrgNode: OrgNodeModel;
     @Output() deleteNode = new EventEmitter<OrgNodeModel>();
+    @Output() updateNode = new EventEmitter<OrgNodeModel>();
+
     private isEditMode: boolean;
     private isSuccess;
-    private node: OrgNodeModel;
+    private editNodeDetails: OrgNodeModel;
 
     constructor(private orgService: OrgService) {
     }
 
     private onSubmit(form: NgForm) {
         let data = JSON.stringify(form.value, null, 2);
-        this.node = this.selectedNode;
-        this.node.NodeFirstName = form.value.firstName;
-        this.node.NodeLastName = form.value.lastName;
-        this.node.Description = form.value.description;
-        let status = this.editNode(this.selectedNode);
-
+        //this.editNodeDetails = this.selectedOrgNode;
+        this.editNodeDetails = new OrgNodeModel();
+        this.editNodeDetails.NodeFirstName = form.value.firstName;
+        this.editNodeDetails.NodeLastName = form.value.lastName;
+        this.editNodeDetails.Description = form.value.description;
+        this.editNodeDetails.children = this.selectedOrgNode.children;
+        this.editNodeDetails.NodeID = this.selectedOrgNode.NodeID;
+        this.editNodeDetails.OrgID = this.selectedOrgNode.OrgID;
+        this.editNodeDetails.ParentNodeID = this.selectedOrgNode.ParentNodeID;
+        this.editNode(this.editNodeDetails);
     }
 
     private editNode(node) {
         if (!node) { return; }
-        this.orgService.updateNodes(node)
-            .subscribe(data => this.setNodeData(data),
-            error => this.handelError(error),
+        this.orgService.updateNode(node)
+            .map(res => res.json())
+            .subscribe(data => this.emitUpdateNodeNotification(data),
+            error => this.handleError(error),
             () => console.log('Node Updated Complete'));
 
     }
@@ -45,32 +52,31 @@ export class OrgNodeDetailComponent {
 
     private onDeleteNodeClicked() {
 
-        if (this.selectedNode.children.length === 0) {
-            this.orgService.deleteNode(this.selectedNode.NodeID)
-                .subscribe(data => this.deleteNodes(data),
-                error => this.handelError(error),
+        if (this.selectedOrgNode.children.length === 0) {
+            this.orgService.deleteNode(this.selectedOrgNode.NodeID)
+                .subscribe(data => this.emitDeleteNodeNotification(data),
+                error => this.handleError(error),
                 () => console.log('Node Deleted Complete'));
         }
         else {
             alert("Delete Child Node First.!");
         }
-
-
     }
-    private deleteNodes(data) {
+    private emitDeleteNodeNotification(data) {
         if (data === true) {
-            this.deleteNode.emit(this.selectedNode);
+            this.deleteNode.emit(this.selectedOrgNode);
         }
     }
-    private setNodeData(data) {
+
+    private emitUpdateNodeNotification(data) {
         if (data === true) {
             this.isEditMode = false;
-            this.selectedNode = this.node;
-            this.node = null;
+            this.updateNode.emit(this.editNodeDetails);
+            this.editNodeDetails = null;
         }
     }
 
-    private handelError(err) {
+    private handleError(err) {
         alert("OOPs..!!Could not update..!! ");
         console.log(err);
     }

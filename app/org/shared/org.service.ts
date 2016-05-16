@@ -17,18 +17,19 @@ export class OrgService {
             .map(node => node.json());
     }
 
-    updateNodes(orgNode) {
+    updateNode(orgNode) {
         let node = JSON.stringify(orgNode);
         let headers = new Headers({ 'Content-Type': 'application/json' });
         let options = new RequestOptions({ headers: headers });
-        return this.http.post(this.origamiUrl + this.updateUrl, node, options)
-            .map(res => res.json());
+        let url = this.origamiUrl + this.updateUrl;
+        return this.http.post(url, node, options);
     }
 
     deleteNode(orgNodeID) {
         let headers = new Headers({ 'Content-Type': 'application/json' });
         let options = new RequestOptions({ headers: headers });
-        return this.http.delete(this.origamiUrl + this.deleteUrl + orgNodeID, options)
+        let url=this.origamiUrl + this.deleteUrl + orgNodeID
+        return this.http.delete(url, options)
             .map(res => res.json());
     }
 
