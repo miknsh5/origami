@@ -47,46 +47,49 @@ System.register(['@angular/core', '@angular/http', '@angular/router-deprecated',
                 OrgComponent.prototype.onNodeSelected = function (node) {
                     this.selectedNode = node;
                 };
-                OrgComponent.prototype.onNodeDeleted = function (deletedNode) {
+                OrgComponent.prototype.updateJSON = function () {
+                    this.treeJson = JSON.parse(JSON.stringify(this.orgNodes));
+                    // alert(JSON.stringify(this.orgNodes));
+                };
+                OrgComponent.prototype.deleteNodeFromArray = function (nodes) {
                     var _this = this;
-                    var index = this.orgNodes.indexOf(deletedNode, 0);
+                    var index = -1;
+                    nodes.forEach(function (element) {
+                        if (_this.compareNodeID(element, _this.selectedNode)) {
+                            index = nodes.indexOf(element);
+                        }
+                    });
                     if (index > -1) {
-                        this.orgNodes.splice(index, 1);
+                        nodes.splice(index, 1);
                         this.selectedNode = null;
                     }
                     else {
-                        this.orgNodes.forEach(function (element) {
-                            var index = element.children.indexOf(deletedNode, 0);
-                            if (index > -1) {
-                                element.children.splice(index, 1);
-                                _this.selectedNode = null;
+                        for (var i = 0; i < nodes.length; i++) {
+                            var element = nodes[i];
+                            if (element.children) {
+                                this.deleteNodeFromArray(element.children);
                             }
-                        });
+                        }
                     }
                 };
-                OrgComponent.prototype.onNodeUpdated = function (updatedNode) {
+                OrgComponent.prototype.onNodeDeleted = function (deleted) {
+                    this.deleteNodeFromArray(this.orgNodes);
+                    this.updateJSON();
+                };
+                OrgComponent.prototype.onNodeUpdated = function (selected) {
+                    this.selectedNode = selected;
+                    this.updateOrgNode(this.orgNodes[0]);
+                    this.updateJSON();
+                };
+                OrgComponent.prototype.updateOrgNode = function (node) {
                     var _this = this;
-                    if (updatedNode) {
-                        if (this.compareNodeID(updatedNode, this.selectedNode)) {
-                            var index = this.orgNodes.indexOf(this.selectedNode, 0);
-                            if (index > -1) {
-                                this.selectedNode = updatedNode;
-                                this.orgChart.OrgNodes[index] = this.selectedNode;
-                                this.setOrgChartData(this.orgChart);
-                                this.selectedNode = null;
-                            }
-                            else {
-                                this.orgNodes.forEach(function (element) {
-                                    var index = element.children.indexOf(_this.selectedNode, 0);
-                                    console.log(index);
-                                    if (index > -1) {
-                                        _this.selectedNode = updatedNode;
-                                        element.children[index] = _this.selectedNode;
-                                        _this.setOrgChartData(_this.orgChart);
-                                        _this.selectedNode = null;
-                                    }
-                                });
-                            }
+                    if (this.compareNodeID(node, this.selectedNode)) {
+                        node.NodeFirstName = this.selectedNode.NodeFirstName;
+                        return;
+                    }
+                    else {
+                        if (node.children) {
+                            node.children.forEach(function (element) { return _this.updateOrgNode(element); });
                         }
                     }
                 };

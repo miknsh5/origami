@@ -21,7 +21,7 @@ export class OrgNodeDetailComponent {
 
 
     private doesChildNodeExist(node: OrgNodeModel): boolean {
-        return (node.children.length > 0);
+        return (node.children!=null);
     }
     constructor(private orgService: OrgService) {
     }
@@ -53,7 +53,7 @@ export class OrgNodeDetailComponent {
 
     private onDeleteNodeClicked() {
 
-        if (this.selectedOrgNode.children.length === 0) {
+        if (this.selectedOrgNode.children==null ) {
             this.orgService.deleteNode(this.selectedOrgNode.NodeID)
                 .subscribe(data => this.emitDeleteNodeNotification(data),
                 error => this.handleError(error),

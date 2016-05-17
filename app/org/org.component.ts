@@ -31,50 +31,73 @@ export class OrgComponent {
             () => console.log('Random Quote Complete'));
     }
 
+ 
     onNodeSelected(node) {
         this.selectedNode = node;
     }
 
 
-    onNodeDeleted(deletedNode) {
-        let index = this.orgNodes.indexOf(deletedNode, 0);
-        if (index > -1) {
-            this.orgNodes.splice(index, 1);
-            this.selectedNode = null;
-        }
-        else {
-            this.orgNodes.forEach(element => {
-                let index = element.children.indexOf(deletedNode, 0);
-                if (index > -1) {
-                    element.children.splice(index, 1);
-                    this.selectedNode = null;
-                }
-            });
-        }
+   
+ updateJSON()
+    {
+             this.treeJson = JSON.parse(JSON.stringify(this.orgNodes));
+            // alert(JSON.stringify(this.orgNodes));
     }
+    
+     deleteNodeFromArray(nodes:OrgNodeModel[])
+   {
+       let index=-1;
+         nodes.forEach(element => {
+             if(this.compareNodeID(element,this.selectedNode))
+             {
+                 index= nodes.indexOf(element);
+                 
+             }
+         });
+        if (index > -1) {
+            nodes.splice(index, 1);
+            this.selectedNode = null;
+            
+        }
+        else{
+            for (var i = 0; i < nodes.length; i++) {
+                var element = nodes[i];
+                if(element.children)
+                {
+                    this.deleteNodeFromArray(element.children);
+                }
+                
+            }
+        }
+   
+   }
 
-    onNodeUpdated(updatedNode) {
-        if (updatedNode) {
-            if (this.compareNodeID(updatedNode, this.selectedNode)) {
-                let index = this.orgNodes.indexOf(this.selectedNode, 0);
-                if (index > -1) {
-                    this.selectedNode = updatedNode;
-                    this.orgChart.OrgNodes[index] = this.selectedNode;
-                    this.setOrgChartData(this.orgChart);
-                    this.selectedNode = null;
-                }
-                else {
-                    this.orgNodes.forEach(element => {
-                        let index = element.children.indexOf(this.selectedNode, 0);
-                        console.log(index);
-                        if (index > -1) {
-                            this.selectedNode = updatedNode;
-                            element.children[index] = this.selectedNode;
-                            this.setOrgChartData(this.orgChart);
-                            this.selectedNode = null;
-                        }
-                    });
-                }
+
+    onNodeDeleted(deleted) {
+
+     this.deleteNodeFromArray(this.orgNodes);
+       
+        this.updateJSON();
+    }
+     onNodeUpdated(selected)
+    {
+      this.selectedNode= selected;
+     this.updateOrgNode(this.orgNodes[0]);
+      
+      this.updateJSON();
+    }
+    
+     updateOrgNode(node:OrgNodeModel)
+    {
+        if(this.compareNodeID(node,this.selectedNode))
+        {
+            node.NodeFirstName=this.selectedNode.NodeFirstName;
+            
+            return;
+        }else{
+            if(node.children)
+            {
+            node.children.forEach(element=>this.updateOrgNode(element));
             }
         }
     }

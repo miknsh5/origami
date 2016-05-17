@@ -28,7 +28,7 @@ System.register(['@angular/core', 'd3'], function(exports_1, context_1) {
             OrgTree = (function () {
                 function OrgTree(elementRef, width, height) {
                     this.duration = 1555;
-                    this.selectedNode = new core_1.EventEmitter();
+                    this.selectNode = new core_1.EventEmitter();
                     var el = elementRef.nativeElement;
                     this.graph = d3.select(el);
                 }
@@ -133,7 +133,7 @@ System.register(['@angular/core', 'd3'], function(exports_1, context_1) {
                     });
                 };
                 OrgTree.prototype.click = function (d) {
-                    this.selectedNode.emit(d);
+                    this.selectNode.emit(d);
                     if (d.children) {
                         d._children = d.children;
                         d.children = null;
@@ -153,11 +153,11 @@ System.register(['@angular/core', 'd3'], function(exports_1, context_1) {
                 __decorate([
                     core_1.Output(), 
                     __metadata('design:type', Object)
-                ], OrgTree.prototype, "selectedNode", void 0);
+                ], OrgTree.prototype, "selectNode", void 0);
                 OrgTree = __decorate([
                     core_1.Directive({
                         selector: 'tree-graph',
-                        inputs: ['treeData']
+                        inputs: ['treeData'],
                     }),
                     __param(0, core_2.Inject(core_1.ElementRef)),
                     __param(1, core_1.Attribute('width')),

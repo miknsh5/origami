@@ -7,7 +7,8 @@ import { OrgNodeModel } from '../shared/index';
 
 @Directive({
     selector: 'tree-graph',
-    inputs: ['treeData']
+    inputs: ['treeData'],
+    
 
 })
 
@@ -20,7 +21,7 @@ export class OrgTree implements OnInit {
     duration:number=1555;
     nodes:any;
     links:any;
-   @Output() selectedNode = new EventEmitter<OrgNodeModel>();
+   @Output() selectNode = new EventEmitter<OrgNodeModel>();
     treeData: any;
     constructor(
         @Inject(ElementRef) elementRef: ElementRef,
@@ -168,7 +169,7 @@ node.select("text").text(function(d){return d.NodeFirstName;})
     click(d)
     {
        
-         this.selectedNode.emit(d);
+         this.selectNode.emit(d);
           if (d.children) {
     d._children = d.children;
     d.children = null;

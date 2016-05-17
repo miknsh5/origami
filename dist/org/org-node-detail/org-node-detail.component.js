@@ -31,7 +31,7 @@ System.register(['@angular/core', '@angular/common', '../shared/index'], functio
                     this.updateNode = new core_1.EventEmitter();
                 }
                 OrgNodeDetailComponent.prototype.doesChildNodeExist = function (node) {
-                    return (node.children.length > 0);
+                    return (node.children != null);
                 };
                 OrgNodeDetailComponent.prototype.onSubmit = function (form) {
                     var data = JSON.stringify(form.value, null, 2);
@@ -59,7 +59,7 @@ System.register(['@angular/core', '@angular/common', '../shared/index'], functio
                 };
                 OrgNodeDetailComponent.prototype.onDeleteNodeClicked = function () {
                     var _this = this;
-                    if (this.selectedOrgNode.children.length === 0) {
+                    if (this.selectedOrgNode.children == null) {
                         this.orgService.deleteNode(this.selectedOrgNode.NodeID)
                             .subscribe(function (data) { return _this.emitDeleteNodeNotification(data); }, function (error) { return _this.handleError(error); }, function () { return console.log('Node Deleted Complete'); });
                     }
