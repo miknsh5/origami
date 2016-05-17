@@ -17,15 +17,17 @@ export class OrgNodeDetailComponent {
     @Output() updateNode = new EventEmitter<OrgNodeModel>();
 
     private isEditMode: boolean;
-    private isSuccess;
     private editNodeDetails: OrgNodeModel;
 
+
+    private doesChildNodeExist(node: OrgNodeModel): boolean {
+        return (node.children.length > 0);
+    }
     constructor(private orgService: OrgService) {
     }
 
     private onSubmit(form: NgForm) {
         let data = JSON.stringify(form.value, null, 2);
-        //this.editNodeDetails = this.selectedOrgNode;
         this.editNodeDetails = new OrgNodeModel();
         this.editNodeDetails.NodeFirstName = form.value.firstName;
         this.editNodeDetails.NodeLastName = form.value.lastName;
@@ -44,7 +46,6 @@ export class OrgNodeDetailComponent {
             .subscribe(data => this.emitUpdateNodeNotification(data),
             error => this.handleError(error),
             () => console.log('Node Updated Complete'));
-
     }
     private onEditNodeClicked() {
         this.isEditMode = true;
@@ -59,7 +60,7 @@ export class OrgNodeDetailComponent {
                 () => console.log('Node Deleted Complete'));
         }
         else {
-            alert("Delete Child Node First.!");
+            alert("Delete Child Node First!");
         }
     }
     private emitDeleteNodeNotification(data) {
@@ -80,5 +81,4 @@ export class OrgNodeDetailComponent {
         alert("OOPs..!!Could not update..!! ");
         console.log(err);
     }
-
 }   

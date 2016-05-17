@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter, OnInit } from '@angular/core';
+import { Component, Output, EventEmitter} from '@angular/core';
 import { HTTP_PROVIDERS } from '@angular/http';
 import { CanActivate, Router } from '@angular/router-deprecated';
 import { tokenNotExpired } from 'angular2-jwt';
@@ -14,17 +14,13 @@ import { OrgChartModel, OrgNodeModel, OrgService } from './shared/index';
     providers: [OrgService, HTTP_PROVIDERS]
 })
 
-export class OrgComponent implements OnInit {
+export class OrgComponent {
     orgChart: OrgChartModel;
     orgNodes: OrgNodeModel[];
-    @Output() selectedNode = new EventEmitter<OrgNodeModel>();
-   
+    @Output() selectedNode: OrgNodeModel;
 
     constructor(private orgService: OrgService, private router: Router) {
         this.getAllNodes();
-    }
-
-    ngOnInit() {
     }
 
     getAllNodes() {
@@ -35,8 +31,9 @@ export class OrgComponent implements OnInit {
     }
 
     onNodeSelected(node) {
-           this.selectedNode = node;          
+        this.selectedNode = node;
     }
+
 
     onNodeDeleted(deletedNode) {
         let index = this.orgNodes.indexOf(deletedNode, 0);
@@ -54,10 +51,34 @@ export class OrgComponent implements OnInit {
             });
         }
     }
-    
-    onNodeUpdated(updatedNode){
-           if(updatedNode){       
-       }   
+
+    onNodeUpdated(updatedNode) {
+        if (updatedNode) {
+            if (this.compareNodeID(updatedNode, this.selectedNode)) {
+                let index = this.orgNodes.indexOf(this.selectedNode, 0);
+                if (index > -1) {
+                    this.selectedNode = updatedNode;
+                    this.orgChart.OrgNodes[index] = this.selectedNode;
+                    this.setOrgChartData(this.orgChart);
+                    this.selectedNode = null;
+                }
+                else {
+                    this.orgNodes.forEach(element => {
+                        let index = element.children.indexOf(this.selectedNode, 0);
+                        console.log(index);
+                        if (index > -1) {
+                            this.selectedNode = updatedNode;
+                            element.children[index] = this.selectedNode;
+                            this.setOrgChartData(this.orgChart);
+                            this.selectedNode = null;
+                        }
+                    });
+                }
+            }
+        }
+    }
+    private compareNodeID(updatedNode: OrgNodeModel, currentNode: OrgNodeModel): boolean {
+        return updatedNode.NodeID === currentNode.NodeID;
     }
 
     private setOrgChartData(data: any) {

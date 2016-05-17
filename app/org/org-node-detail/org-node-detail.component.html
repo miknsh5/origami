@@ -1,10 +1,12 @@
-<div class="detail-wrap">
-    <form #orgform="ngForm" *ngIf="selectedOrgNode" (ngSubmit)="onSubmit(orgform)">
-        <div class="orgFormcontrols" *ngIf="selectedOrgNode">
-            <div class="close-icon" (click)="onDeleteNodeClicked(selectedOrgNode)"></div>
+<div class="detail-wrap" >
+    <form #orgform="ngForm"  *ngIf="selectedOrgNode"  (ngSubmit)="onSubmit(orgform)">
+        
+        <div class="orgFormcontrols" *ngIf="selectedOrgNode"  >
+            <div  class="close-icon" *ngIf="!doesChildNodeExist(selectedOrgNode)" (click)="onDeleteNodeClicked(selectedOrgNode)" ></div>
             <div *ngIf="!isEditMode" class="edit-icon" (click)="onEditNodeClicked()"></div>
             <button type="submit" *ngIf="isEditMode" class="save-icon" [disabled]="!orgform.form.valid"></button>
-        </div>
+        </div> 
+        
         <div *ngIf="selectedOrgNode && !isEditMode" class="text-wrap">
             <div class="title-name">{{selectedOrgNode.NodeFirstName}} {{selectedOrgNode.NodeLastName}}</div>
             <div class="title-position">{{selectedOrgNode.Description}}</div>
@@ -16,3 +18,4 @@
         </div>
     </form>
 </div>
+
