@@ -5,10 +5,10 @@ import { tokenNotExpired } from 'angular2-jwt';
 
 import { OrgNodeDetailComponent } from './org-node-detail/index';
 import { OrgChartModel, OrgNodeModel, OrgService } from './shared/index';
-
+import {OrgTree} from './d3-tree/org-tree';
 @Component({
     selector: 'origami-org',
-    directives: [OrgNodeDetailComponent],
+    directives: [OrgTree, OrgNodeDetailComponent],
     templateUrl: 'app/org/org.component.html',
     styleUrls: ['app/org/org.component.css'],
     providers: [OrgService, HTTP_PROVIDERS]
@@ -17,6 +17,7 @@ import { OrgChartModel, OrgNodeModel, OrgService } from './shared/index';
 export class OrgComponent {
     orgChart: OrgChartModel;
     orgNodes: OrgNodeModel[];
+      treeJson: any;
     @Output() selectedNode: OrgNodeModel;
 
     constructor(private orgService: OrgService, private router: Router) {
@@ -84,6 +85,7 @@ export class OrgComponent {
     private setOrgChartData(data: any) {
         this.orgChart = data;
         this.orgNodes = this.orgChart.OrgNodes;
+          this.treeJson = JSON.parse(JSON.stringify(this.orgNodes));
         console.log(this.orgChart);
     }
 
