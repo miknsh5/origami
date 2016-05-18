@@ -23,6 +23,7 @@ export class OrgTree implements OnInit {
     links:any;
     
    @Output() selectNode = new EventEmitter<OrgNodeModel>();
+   selectedNode:any;
     treeData: any;
     constructor(
         @Inject(ElementRef) elementRef: ElementRef,
@@ -88,9 +89,10 @@ export class OrgTree implements OnInit {
       .attr("transform", function(d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
       .on("click", (ev)=>this.click(ev));
 
-  nodeEnter.append("circle")
-      .attr("r", 1e-6)
-      .style("fill", function(d) { return d._children ? "lightsteelblue" : "#0060C6"; });
+    nodeEnter.append("circle")
+    .attr("class","selectme").attr("id","circle")
+        .attr("r", 1e-6)
+        .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
 
   nodeEnter.append("text")
       .attr("x", function(d) { return d.children || d._children ? -10 : 10; })
@@ -113,7 +115,14 @@ node.select("text").text(function(d){return d.NodeFirstName;})
       .style("fill-opacity", 1);
 
 
-  
+  d3.selectAll(".selectme")
+    .on("click", function() {
+        d3.selectAll(".selectme").style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; })
+        d3.select(this).style("fill", function(d) { return d._children ? "green" : "#0060C6"; });
+        this.selectedNode = this;
+       
+    })
+    
   
   // Transition exiting nodes to the parent's new position.
  /* var nodeExit = node.exit().transition().
@@ -192,7 +201,9 @@ node.select("text").text(function(d){return d.NodeFirstName;})
     d.children = d._children;
     d._children = null;
   }
+  
   this.render(d);
+
    this.centerNode(d);
     }
     
