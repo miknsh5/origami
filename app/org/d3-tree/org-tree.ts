@@ -21,6 +21,7 @@ export class OrgTree implements OnInit {
     duration:number=1555;
     nodes:any;
     links:any;
+    
    @Output() selectNode = new EventEmitter<OrgNodeModel>();
     treeData: any;
     constructor(
@@ -50,7 +51,21 @@ export class OrgTree implements OnInit {
             
          this.root = this.treeData[0];
         this.render(this.root);
+         this.centerNode(this.root);
     }
+    
+      centerNode(source) {
+   
+     let x = -source.y0;
+        let y = -source.x0;
+          x = x * 1 + 720 / 2;
+        y = y * 1 + 460 / 2;
+        d3.select('g').transition()
+            .duration(this.duration)
+            .attr("transform", "translate(" + x + "," + y + ")");
+       
+    }
+
 
     render(source) {
        
@@ -75,7 +90,7 @@ export class OrgTree implements OnInit {
 
   nodeEnter.append("circle")
       .attr("r", 1e-6)
-      .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
+      .style("fill", function(d) { return d._children ? "lightsteelblue" : "#0060C6"; });
 
   nodeEnter.append("text")
       .attr("x", function(d) { return d.children || d._children ? -10 : 10; })
@@ -142,7 +157,7 @@ node.select("text").text(function(d){return d.NodeFirstName;})
      
       .attr("d", function(d) {
        
-       return diagCoords;
+       return diagCoords2;
       });
 
   // Transition links to their new position.
@@ -178,6 +193,7 @@ node.select("text").text(function(d){return d.NodeFirstName;})
     d._children = null;
   }
   this.render(d);
+   this.centerNode(d);
     }
     
     ngOnChanges(changes: {[propertyName: string]: SimpleChange})
