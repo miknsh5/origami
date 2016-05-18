@@ -9,6 +9,7 @@ export class OrgService {
     private getUrl = '/api/Org/GetOrgChart?orgID=1';
     private updateUrl = '/api/Org/EditNode';
     private deleteUrl = '/api/Org/DeleteNode?nodeID=';
+    private addUrl ='/api/Org/AddNode';
 
     constructor(private http: Http) { }
 
@@ -22,7 +23,8 @@ export class OrgService {
         let headers = new Headers({ 'Content-Type': 'application/json' });
         let options = new RequestOptions({ headers: headers });
         let url = this.origamiUrl + this.updateUrl;
-        return this.http.post(url, node, options);
+        return this.http.post(url, node, options)
+          .map(res => res.json());
     }
 
     deleteNode(orgNodeID) {
@@ -31,6 +33,15 @@ export class OrgService {
         let url = this.origamiUrl + this.deleteUrl + orgNodeID
         return this.http.delete(url, options)
             .map(res => res.json());
+    }
+    
+    addNode(orgNode){
+         let node = JSON.stringify(orgNode);
+         let headers = new Headers({ 'Content-Type': 'application/json' });
+        let options = new RequestOptions({ headers: headers });
+        let url = this.origamiUrl + this.addUrl
+        return this.http.post(url, node, options)
+        .map(res => res.json());
     }
 
     logError(err: any) {

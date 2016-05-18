@@ -21,6 +21,8 @@ export class OrgNodeDetailComponent {
 
 
     private doesChildNodeExist(node: OrgNodeModel): boolean {
+       
+        console.log(node.children!=null);
         return (node.children!=null);
     }
     constructor(private orgService: OrgService) {
@@ -37,13 +39,12 @@ export class OrgNodeDetailComponent {
         this.editNodeDetails.OrgID = this.selectedOrgNode.OrgID;
         this.editNodeDetails.ParentNodeID = this.selectedOrgNode.ParentNodeID;
         this.editNode(this.editNodeDetails);
-    }
+     }
 
     private editNode(node) {
         if (!node) { return; }
         this.orgService.updateNode(node)
-            .map(res => res.json())
-            .subscribe(data => this.emitUpdateNodeNotification(data),
+                  .subscribe(data => this.emitUpdateNodeNotification(data),
             error => this.handleError(error),
             () => console.log('Node Updated Complete'));
     }
@@ -52,7 +53,7 @@ export class OrgNodeDetailComponent {
     }
 
     private onDeleteNodeClicked() {
-
+       
         if (this.selectedOrgNode.children==null ) {
             this.orgService.deleteNode(this.selectedOrgNode.NodeID)
                 .subscribe(data => this.emitDeleteNodeNotification(data),
@@ -78,7 +79,7 @@ export class OrgNodeDetailComponent {
     }
 
     private handleError(err) {
-        alert("OOPs..!!Could not update..!! ");
+        alert("OOPs!! Something went wrong!! ");
         console.log(err);
     }
 }   

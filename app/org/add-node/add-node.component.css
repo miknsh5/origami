@@ -1,0 +1,29 @@
+.search-wrap {
+            background-color: #009688;
+            width: 300px;
+            height: 50px;
+            position: fixed;
+            left: 255px;
+            bottom: 5px;
+         }
+
+        .search-input {
+            height: 25px;
+            margin: 15px;
+            margin-top: 10px;
+            margin-left: 15%;
+            width: 80%;
+            background-color: #009688;
+            border-color: #ccc;
+
+        }
+
+        .search-icon {
+            background-image: url("app/images/plus.png");
+            top: 16px;
+            position: absolute;
+            height: 20px;
+            width: 20px;
+            background-repeat: no-repeat;
+            left: 12px;
+        }

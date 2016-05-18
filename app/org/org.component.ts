@@ -3,12 +3,13 @@ import { HTTP_PROVIDERS } from '@angular/http';
 import { CanActivate, Router } from '@angular/router-deprecated';
 import { tokenNotExpired } from 'angular2-jwt';
 
+import {AddNodeComponent} from './add-node/add-node.component';
 import { OrgNodeDetailComponent } from './org-node-detail/index';
 import { OrgChartModel, OrgNodeModel, OrgService } from './shared/index';
 import {OrgTree} from './d3-tree/org-tree';
 @Component({
     selector: 'origami-org',
-    directives: [OrgTree, OrgNodeDetailComponent],
+    directives: [OrgTree, OrgNodeDetailComponent,AddNodeComponent],
     templateUrl: 'app/org/org.component.html',
     styleUrls: ['app/org/org.component.css'],
     providers: [OrgService, HTTP_PROVIDERS]
@@ -36,8 +37,32 @@ export class OrgComponent {
         this.selectedNode = node;
     }
 
-
+ onNodeAdded(added:OrgNodeModel)
+    {
+      this.addChildToSelectedOrgNode(added,this.orgNodes[0]);
+      this.updateJSON();
+    }
    
+      addChildToSelectedOrgNode(newNode:OrgNodeModel,node:OrgNodeModel)
+    {
+        if(this.compareNodeID(node,this.selectedNode))
+        {
+            if(!node.children)
+            {
+                node.children= new Array<OrgNodeModel>();
+                
+            }
+            newNode.ParentNodeID= node.NodeID;
+            node.children.push(newNode);
+            
+            return;
+        }else{
+            if(node.children)
+            {
+            node.children.forEach(element=>this.addChildToSelectedOrgNode(newNode,element));
+            }
+        }
+    }
  updateJSON()
     {
              this.treeJson = JSON.parse(JSON.stringify(this.orgNodes));
