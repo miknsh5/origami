@@ -80,7 +80,7 @@ export class OrgTree implements OnInit {
 
   // Update the nodes…
   var node = this.svg.selectAll("g.node")
-      .data(this.nodes, function(d) { return d.id || (d.id = ++i); });
+      .data(this.nodes, function(d) { return d.NodeID || ( ++i); });
 
 
 // Enter any new nodes at the parent's previous position.
@@ -92,7 +92,7 @@ export class OrgTree implements OnInit {
     nodeEnter.append("circle")
     .attr("class","selectme").attr("id","circle")
         .attr("r", 1e-6)
-        .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
+      
 
   nodeEnter.append("text")
       .attr("x", function(d) { return d.children || d._children ? -10 : 10; })
@@ -102,6 +102,7 @@ export class OrgTree implements OnInit {
       .style("fill-opacity", 1e-6);
 
 node.select("text").text(function(d){return d.NodeFirstName;})
+node.select("circle").style("fill", function(d) { console.log(d.IsSelected);return d.IsSelected ? "green" : "red"; });
   // Transition nodes to their new position.
   var nodeUpdate = node.transition()
       .duration(this.duration)
@@ -109,7 +110,7 @@ node.select("text").text(function(d){return d.NodeFirstName;})
 
   nodeUpdate.select("circle")
       .attr("r", 4.5)
-      .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
+     // .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
 
   nodeUpdate.select("text")
       .style("fill-opacity", 1);
@@ -158,7 +159,7 @@ node.select("text").text(function(d){return d.NodeFirstName;})
         
   // Update the links…
   var link = this.svg.selectAll("path.link")
-      .data(this.links, function(d) { return d.target.id; });
+      .data(this.links, function(d) { return d.target.NodeID; });
 
   // Enter any new links at the parent's previous position.
   link.enter().insert("path", "g")
@@ -190,9 +191,17 @@ node.select("text").text(function(d){return d.NodeFirstName;})
     d.y0 = d.y;
   });
     }
+    
+    selectedid:number;
+   selectedOrgNode: OrgNodeModel ;
     click(d)
     {
-       
+      d.IsSelected=true;
+      if(this.selectedOrgNode)
+      {
+      this.selectedOrgNode.IsSelected= false;
+      }
+      this.selectedOrgNode= d;
          this.selectNode.emit(d);
           if (d.children) {
     d._children = d.children;

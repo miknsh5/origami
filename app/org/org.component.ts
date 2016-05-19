@@ -134,7 +134,7 @@ export class OrgComponent {
         this.orgChart = data;
         this.orgNodes = this.orgChart.OrgNodes;
           this.treeJson = JSON.parse(JSON.stringify(this.orgNodes));
-        console.log(this.orgChart);
+       // console.log(this.orgChart);
     }
 
     logout() {
