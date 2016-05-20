@@ -198,10 +198,12 @@ keyDown(d)
     }
  else if((event as KeyboardEvent).keyCode==37)
  {
-      let parentID= this.selectedOrgNode.ParentNodeID;
-      if(parentID!=null || parentID!=0)
+     
+      let node = this.selectedOrgNode as d3.layout.tree.Node
+      
+      if(node.parent!=null )
       {
-      let parentNode= this.getNode(parentID,this.root);
+      let parentNode= node.parent;
       this.highlightSelectedNode(parentNode);
       this.render(parentNode);
       }
