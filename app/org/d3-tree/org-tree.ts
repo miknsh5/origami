@@ -21,6 +21,7 @@ export class OrgTree implements OnInit {
     duration:number=1555;
     nodes:any;
     links:any;
+    nodeID:number=300;
     
    @Output() selectNode = new EventEmitter<OrgNodeModel>();
    selectedNode:any;
@@ -184,14 +185,127 @@ node.select("circle").style("fill", function(d) { console.log(d.IsSelected);retu
     d.x0 = d.x;
     d.y0 = d.y;
   });
+  d3.select('body').on('keydown',(ev)=>this.keyDown(ev))
     }
     
+keyDown(d)
+{
+    if((event as KeyboardEvent).keyCode==13)
+    {
+        let parentID= this.selectedOrgNode.ParentNodeID;
+        this.addEmptyChildToSelectedOrgNode(parentID, this.root)
+        this.render(this.root);
+    }
+ else if((event as KeyboardEvent).keyCode==37)
+ {
+      let parentID= this.selectedOrgNode.ParentNodeID;
+      if(parentID!=null || parentID!=0)
+      {
+      let parentNode= this.getNode(parentID,this.root);
+      this.highlightSelectedNode(parentNode);
+      this.render(parentNode);
+      }
+ }
+ else if((event as KeyboardEvent).keyCode==39)
+ {
+     if(this.selectedOrgNode.children)
+     {
+         let node= this.selectedOrgNode.children[0];
+         this.highlightSelectedNode(node);
+         this.render(node);
+     }
+ }
+ else if((event as KeyboardEvent).keyCode==38)
+ {
+     let node = this.selectedOrgNode as d3.layout.tree.Node;
+     if(node.parent!=null)
+     {
+     let siblings= node.parent.children;
+     let index= siblings.indexOf(node);
+     if(index>0)
+     {
+         let elderSibling= siblings[index-1];
+         this.highlightSelectedNode(elderSibling);
+         this.render(elderSibling);
+     }
+     }
+ }
+ else if((event as KeyboardEvent).keyCode==40)
+ {
+     let node = this.selectedOrgNode as d3.layout.tree.Node;
+     if(node.parent!=null)
+     {
+     let siblings= node.parent.children;
+     let index= siblings.indexOf(node);
+     if(index<siblings.length-1)
+     {
+         let youngerSibling= siblings[index+1];
+         this.highlightSelectedNode(youngerSibling);
+         this.render(youngerSibling);
+     }
+     }
+ }
+}
 
+getNode(nodeID:number, node:OrgNodeModel)
+{
+   if(node.NodeID==nodeID)
+        {
+           
+           return node;
+            
+           
+        }else{
+           
+            if(node.children)
+            {
+            node.children.forEach(element=>this.getNode(nodeID,element));
+            }
+        }  
+}
+   addEmptyChildToSelectedOrgNode(parentID:number,node:OrgNodeModel)
+    {
+        if(this.selectedOrgNode==null)
+        {
+            return;
+        }
+        if(node.NodeID==parentID)
+        {
+           
+            if(!node.children)
+            {
+                node.children= new Array<OrgNodeModel>();
+                
+            }
+            let newNode= new OrgNodeModel();
+            newNode.ParentNodeID= parentID;
+            newNode.NodeID=this.nodeID;
+            this.nodeID++;
+          
+            node.children.push(newNode);
+            
+            return;
+        }else{
+           
+            if(node.children)
+            {
+            node.children.forEach(element=>this.addEmptyChildToSelectedOrgNode(parentID,element));
+            }
+        }
+    }
    selectedOrgNode: OrgNodeModel ;
     click(d)
     {
     this.highlightSelectedNode(d);
-      
+     this.expandCollapse(d);
+  this.render(d);
+
+   this.centerNode(d);
+    }
+    
+    expandCollapse(d)
+    {
+        
       if (d.children) {
     d._children = d.children;
     d.children = null;
@@ -199,12 +313,8 @@ node.select("circle").style("fill", function(d) { console.log(d.IsSelected);retu
     d.children = d._children;
     d._children = null;
   }
-  
-  this.render(d);
-
-   this.centerNode(d);
+   
     }
-    
     highlightSelectedNode(d)
     {
         

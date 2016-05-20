@@ -43,10 +43,16 @@ export class OrgNodeDetailComponent {
 
     private editNode(node) {
         if (!node) { return; }
-        this.orgService.updateNode(node)
+        
+        //to be removed
+         this.isEditMode = false;
+            this.updateNode.emit(node);
+            this.editNodeDetails = null;
+            
+        /*this.orgService.updateNode(node)
                   .subscribe(data => this.emitUpdateNodeNotification(data),
             error => this.handleError(error),
-            () => console.log('Node Updated Complete'));
+            () => console.log('Node Updated Complete'));*/
     }
     private onEditNodeClicked() {
         this.isEditMode = true;
