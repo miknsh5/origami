@@ -80,7 +80,7 @@ export class OrgTree implements OnInit {
 
   // Update the nodes…
   var node = this.svg.selectAll("g.node")
-      .data(this.nodes, function(d) { return d.id || (d.id = ++i); });
+      .data(this.nodes, function(d) { return d.NodeID || ( ++i); });
 
 
 // Enter any new nodes at the parent's previous position.
@@ -90,9 +90,9 @@ export class OrgTree implements OnInit {
       .on("click", (ev)=>this.click(ev));
 
     nodeEnter.append("circle")
-    .attr("class","selectme").attr("id","circle")
+    
         .attr("r", 1e-6)
-        .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
+      
 
   nodeEnter.append("text")
       .attr("x", function(d) { return d.children || d._children ? -10 : 10; })
@@ -102,6 +102,7 @@ export class OrgTree implements OnInit {
       .style("fill-opacity", 1e-6);
 
 node.select("text").text(function(d){return d.NodeFirstName;})
+node.select("circle").style("fill", function(d) { console.log(d.IsSelected);return d.IsSelected ? "green" : "#fff"; });
   // Transition nodes to their new position.
   var nodeUpdate = node.transition()
       .duration(this.duration)
@@ -109,19 +110,13 @@ node.select("text").text(function(d){return d.NodeFirstName;})
 
   nodeUpdate.select("circle")
       .attr("r", 4.5)
-      .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
+      .style("fill", function(d) { console.log(d.NodeFirstName+ d.IsSelected);return d.IsSelected ? "green" : "#fff"; });;
 
   nodeUpdate.select("text")
       .style("fill-opacity", 1);
 
 
-  d3.selectAll(".selectme")
-    .on("click", function() {
-        d3.selectAll(".selectme").style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; })
-        d3.select(this).style("fill", function(d) { return d._children ? "green" : "#0060C6"; });
-        this.selectedNode = this;
-       
-    })
+ 
     
   
   // Transition exiting nodes to the parent's new position.
@@ -158,7 +153,7 @@ node.select("text").text(function(d){return d.NodeFirstName;})
         
   // Update the links…
   var link = this.svg.selectAll("path.link")
-      .data(this.links, function(d) { return d.target.id; });
+      .data(this.links, function(d) { return d.target.NodeID; });
 
   // Enter any new links at the parent's previous position.
   link.enter().insert("path", "g")
@@ -190,11 +185,14 @@ node.select("text").text(function(d){return d.NodeFirstName;})
     d.y0 = d.y;
   });
     }
+    
+
+   selectedOrgNode: OrgNodeModel ;
     click(d)
     {
-       
-         this.selectNode.emit(d);
-          if (d.children) {
+    this.highlightSelectedNode(d);
+      
+      if (d.children) {
     d._children = d.children;
     d.children = null;
   } else {
@@ -207,6 +205,17 @@ node.select("text").text(function(d){return d.NodeFirstName;})
    this.centerNode(d);
     }
     
+    highlightSelectedNode(d)
+    {
+        
+      if(this.selectedOrgNode)
+      {
+      this.selectedOrgNode.IsSelected= false;
+      }
+        d.IsSelected=true;
+      this.selectedOrgNode= d;
+      this.selectNode.emit(d);
+    }
     ngOnChanges(changes: {[propertyName: string]: SimpleChange})
     {
         if(this.tree!=null)
@@ -214,7 +223,27 @@ node.select("text").text(function(d){return d.NodeFirstName;})
     
         
       this.root =this.treeData[0];//JSON.parse(JSON.stringify(this.treeData[0]));
+      this.updateSelectedOrgNode(this.root);
         this.render(this.treeData[0]);
         
     }
-}}
+}
+ updateSelectedOrgNode(node:OrgNodeModel)
+    {
+        if(this.compareNodeID(node,this.selectedOrgNode))
+        {
+           this.selectedOrgNode=node;
+            return;
+        }else{
+          
+            if(node.children)
+            {
+            node.children.forEach(element=>this.updateSelectedOrgNode(element));
+            }
+        }
+    }
+    private compareNodeID(updatedNode: OrgNodeModel, currentNode: OrgNodeModel): boolean {
+        return updatedNode.NodeID === currentNode.NodeID;
+    }
+
+}

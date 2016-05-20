@@ -1,7 +1,8 @@
 node_modules
 .DS_Store
+dist/
 app/**/*.js
 app/**/*.map
 dist/**/**/*.js
 dist/**/**/*.map
-dist
+

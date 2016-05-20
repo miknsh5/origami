@@ -22,7 +22,7 @@ export class OrgNodeDetailComponent {
 
     private doesChildNodeExist(node: OrgNodeModel): boolean {
        
-        console.log(node.children!=null);
+       // console.log(node.children!=null);
         return (node.children!=null);
     }
     constructor(private orgService: OrgService) {
