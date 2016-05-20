@@ -186,14 +186,31 @@ node.select("circle").style("fill", function(d) { console.log(d.IsSelected);retu
     d.y0 = d.y;
   });
   d3.select('body').on('keydown',(ev)=>this.keyDown(ev))
+  d3.select('body').on('click', (ev)=>this.bodyClicked(ev))
     }
     
+    bodyClicked(d)
+    {
+        this.deselectNode();
+    }
+    
+    deselectNode()
+    {
+          this.highlightSelectedNode(null);
+        this.render(this.root);
+    }
 keyDown(d)
 {
     if(this.selectedOrgNode==null)
     {
         return;
     }
+    //esc
+    if((event as KeyboardEvent).keyCode==27)
+    {
+      this.deselectNode();
+    }
+    //enter
     if((event as KeyboardEvent).keyCode==13)
     {
         let parentID= this.selectedOrgNode.ParentNodeID;
@@ -201,12 +218,14 @@ keyDown(d)
        this.highlightAndCenterNode(newNode);
         
     }
+    //tab
     else if( (event as KeyboardEvent).keyCode==9)
     {
         let newNode= this.addEmptyChildToParent(this.selectedOrgNode);
        this.highlightAndCenterNode(newNode);
         
     }
+    //left arrow
  else if((event as KeyboardEvent).keyCode==37)
  {
      
@@ -219,6 +238,7 @@ keyDown(d)
       
       }
  }
+ //right arrow
  else if((event as KeyboardEvent).keyCode==39)
  {
      if(this.selectedOrgNode.children)
@@ -228,6 +248,7 @@ keyDown(d)
         
      }
  }
+ //top arrow
  else if((event as KeyboardEvent).keyCode==38)
  {
      let node = this.selectedOrgNode as d3.layout.tree.Node;
@@ -243,6 +264,7 @@ keyDown(d)
      }
      }
  }
+ //bottom arrow
  else if((event as KeyboardEvent).keyCode==40)
  {
      let node = this.selectedOrgNode as d3.layout.tree.Node;
@@ -332,7 +354,7 @@ getNode(nodeID:number, node:OrgNodeModel)
    }
     click(d)
     {
-    
+    event.stopPropagation();
      this.expandCollapse(d);
  
 this.highlightAndCenterNode(d);
@@ -358,9 +380,14 @@ this.highlightAndCenterNode(d);
       {
       this.selectedOrgNode.IsSelected= false;
       }
+      if(d!=null)
+      {
         d.IsSelected=true;
+          this.selectNode.emit(d);
+      }
       this.selectedOrgNode= d;
-      this.selectNode.emit(d);
+    
+      
     }
     ngOnChanges(changes: {[propertyName: string]: SimpleChange})
     {
