@@ -47,6 +47,7 @@ export class OrgComponent {
     {
         if(this.compareNodeID(node,this.selectedNode))
         {
+            node.IsSelected= true;
             if(!node.children)
             {
                 node.children= new Array<OrgNodeModel>();
@@ -57,6 +58,7 @@ export class OrgComponent {
             
             return;
         }else{
+            node.IsSelected= false;
             if(node.children)
             {
             node.children.forEach(element=>this.addChildToSelectedOrgNode(newNode,element));
@@ -117,9 +119,10 @@ export class OrgComponent {
         if(this.compareNodeID(node,this.selectedNode))
         {
             node.NodeFirstName=this.selectedNode.NodeFirstName;
-            
+            node.IsSelected=true;
             return;
         }else{
+            node.IsSelected= false;
             if(node.children)
             {
             node.children.forEach(element=>this.updateOrgNode(element));
