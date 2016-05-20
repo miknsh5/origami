@@ -190,11 +190,22 @@ node.select("circle").style("fill", function(d) { console.log(d.IsSelected);retu
     
 keyDown(d)
 {
+    if(this.selectedOrgNode==null)
+    {
+        return;
+    }
     if((event as KeyboardEvent).keyCode==13)
     {
         let parentID= this.selectedOrgNode.ParentNodeID;
-        this.addEmptyChildToSelectedOrgNode(parentID, this.root)
-        this.render(this.root);
+       let newNode= this.addEmptyChildToSelectedOrgNode(parentID, this.root)
+       this.highlightAndCenterNode(newNode);
+        
+    }
+    else if( (event as KeyboardEvent).keyCode==9)
+    {
+        let newNode= this.addEmptyChildToParent(this.selectedOrgNode);
+       this.highlightAndCenterNode(newNode);
+        
     }
  else if((event as KeyboardEvent).keyCode==37)
  {
@@ -204,8 +215,8 @@ keyDown(d)
       if(node.parent!=null )
       {
       let parentNode= node.parent;
-      this.highlightSelectedNode(parentNode);
-      this.render(parentNode);
+      this.highlightAndCenterNode(parentNode);
+      
       }
  }
  else if((event as KeyboardEvent).keyCode==39)
@@ -213,8 +224,8 @@ keyDown(d)
      if(this.selectedOrgNode.children)
      {
          let node= this.selectedOrgNode.children[0];
-         this.highlightSelectedNode(node);
-         this.render(node);
+         this.highlightAndCenterNode(node);
+        
      }
  }
  else if((event as KeyboardEvent).keyCode==38)
@@ -227,8 +238,8 @@ keyDown(d)
      if(index>0)
      {
          let elderSibling= siblings[index-1];
-         this.highlightSelectedNode(elderSibling);
-         this.render(elderSibling);
+         this.highlightAndCenterNode(elderSibling);
+         
      }
      }
  }
@@ -242,8 +253,8 @@ keyDown(d)
      if(index<siblings.length-1)
      {
          let youngerSibling= siblings[index+1];
-         this.highlightSelectedNode(youngerSibling);
-         this.render(youngerSibling);
+         this.highlightAndCenterNode(youngerSibling);
+         
      }
      }
  }
@@ -274,35 +285,58 @@ getNode(nodeID:number, node:OrgNodeModel)
         if(node.NodeID==parentID)
         {
            
-            if(!node.children)
+          let newNode= this.addEmptyChildToParent(node);
+            return newNode;
+        }else{
+           
+            if(node.children)
+            {
+                for (var index = 0; index < node.children.length; index++) {
+                    var element = node.children[index];
+                     let newNode=  this.addEmptyChildToSelectedOrgNode(parentID,element);
+              if(newNode!=null)
+              {
+                  return newNode;
+                  
+                  
+              }
+                }
+           
+            }
+        }
+    }
+   selectedOrgNode: OrgNodeModel ;
+   
+   addEmptyChildToParent(node:OrgNodeModel)
+   {
+       if(!node.children)
             {
                 node.children= new Array<OrgNodeModel>();
                 
             }
             let newNode= new OrgNodeModel();
-            newNode.ParentNodeID= parentID;
+            newNode.ParentNodeID= node.NodeID;
             newNode.NodeID=this.nodeID;
             this.nodeID++;
           
             node.children.push(newNode);
             
-            return;
-        }else{
-           
-            if(node.children)
-            {
-            node.children.forEach(element=>this.addEmptyChildToSelectedOrgNode(parentID,element));
-            }
-        }
-    }
-   selectedOrgNode: OrgNodeModel ;
+            return newNode;
+   }
+   
+   highlightAndCenterNode(d)
+   {
+       this.highlightSelectedNode(d);
+        this.render(d);
+        this.centerNode(d);
+   }
     click(d)
     {
-    this.highlightSelectedNode(d);
+    
      this.expandCollapse(d);
-  this.render(d);
-
-   this.centerNode(d);
+ 
+this.highlightAndCenterNode(d);
+   
     }
     
     expandCollapse(d)
