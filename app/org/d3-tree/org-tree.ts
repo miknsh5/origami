@@ -52,10 +52,23 @@ export class OrgTree implements OnInit {
           
             
          this.root = this.treeData[0];
+       this.root.children.forEach(element => {
+          this.collapseTree(element); 
+       });
+       this.highlightSelectedNode(this.root);
         this.render(this.root);
          this.centerNode(this.root);
     }
-    
+       collapseTree(d) {
+    if (d.children) {
+      d._children = d.children;
+      d._children = d.children;
+      d._children.forEach(element => {
+          this.collapseTree(element);
+      });
+      d.children = null;
+    }
+  }
       centerNode(source) {
    
      let x = -source.y0;
@@ -282,6 +295,7 @@ keyDown(d)
      }
  }
 }
+
 
 getNode(nodeID:number, node:OrgNodeModel)
 {
