@@ -223,11 +223,7 @@ node.select("circle").style("fill", function(d) { console.log(d.IsSelected);retu
   d3.select('body').on('click', (ev)=>this.bodyClicked(ev))
     }
     
-    getAbbreviatedName(d:OrgNodeModel)
-    {
-        return d.NodeFirstName.slice(0,1);
-        
-    }
+   
     bodyClicked(d)
     {
         this.deselectNode();
