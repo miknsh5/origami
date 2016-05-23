@@ -378,15 +378,35 @@ getNode(nodeID:number, node:OrgNodeModel)
     d.children = d._children;
     d._children = null;
   }
-   
     }
+    
+   showChildren(d)
+{
+    if(!d.children)
+    {
+     d.children = d._children;
+    d._children = null;
+}  
+}
+hideChildren(d)
+{
+     if (d.children) {
+    d._children = d.children;
+    d.children = null;
+  }  
+} 
+
+    
     highlightSelectedNode(d)
     {
         
       if(this.selectedOrgNode)
       {
       this.selectedOrgNode.IsSelected= false;
-      
+      if(this.selectedOrgNode.NodeID!=d.ParentNodeID)
+      {
+      this.hideChildren(this.selectedOrgNode);
+      }
       }
       if(d!=null)
       {
@@ -394,7 +414,7 @@ getNode(nodeID:number, node:OrgNodeModel)
           this.selectNode.emit(d);
       }
       this.selectedOrgNode= d;
-    
+    this.showChildren(d);
       
     }
     ngOnChanges(changes: {[propertyName: string]: SimpleChange})
