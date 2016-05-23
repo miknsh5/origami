@@ -72,7 +72,7 @@ export class OrgTree implements OnInit {
     render(source) {
        
         let i: number = 0;
-           this.nodes = this.tree.nodes(this.root).reverse(),
+           this.nodes = this.tree.nodes(this.root).reverse();
       this.links = this.tree.links(this.nodes);
   source.x0=source.x;
   source.y0=source.y;
@@ -159,7 +159,8 @@ node.select("circle").style("fill", function(d) { console.log(d.IsSelected);retu
   // Enter any new links at the parent's previous position.
   link.enter().insert("path", "g")
       .attr("class", "link")
-     
+     .attr("id",function(d){console.log("link"+d.source.NodeID+"-"+d.target.NodeID);return ("link"+d.source.NodeID+"-"+d.target.NodeID)})
+    
       .attr("d", function(d) {
        
        return diagCoords2;
@@ -170,7 +171,7 @@ node.select("circle").style("fill", function(d) { console.log(d.IsSelected);retu
       .duration(this.duration)
       .attr("d", this.diagonal)
      ;
-
+ link.style("stroke", function(d){return(d.source.IsSelected? "#ccc":"none")})
   // Transition exiting nodes to the parent's new position.
   link.exit().transition()
       .duration(this.duration)
@@ -327,7 +328,7 @@ getNode(nodeID:number, node:OrgNodeModel)
             }
         }
     }
-   selectedOrgNode: OrgNodeModel ;
+   selectedOrgNode: any ;
    
    addEmptyChildToParent(node:OrgNodeModel)
    {
@@ -357,8 +358,14 @@ getNode(nodeID:number, node:OrgNodeModel)
     event.stopPropagation();
      this.expandCollapse(d);
  
-this.highlightAndCenterNode(d);
-   
+    this.highlightAndCenterNode(d);
+   /* d3.selectAll("path").style("stroke", "none");
+    if(d.children)
+    {
+    d.children.forEach(element => {
+          d3.selectAll("#link"+d.NodeID + "-" + element.NodeID).style("stroke", "green")
+    });
+    }*/
     }
     
     expandCollapse(d)
@@ -379,6 +386,7 @@ this.highlightAndCenterNode(d);
       if(this.selectedOrgNode)
       {
       this.selectedOrgNode.IsSelected= false;
+      
       }
       if(d!=null)
       {
