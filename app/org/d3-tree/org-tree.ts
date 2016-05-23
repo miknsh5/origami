@@ -123,8 +123,8 @@ export class OrgTree implements OnInit {
      
       .style("fill-opacity", 1);
 node.select("#abbr").text(function(d){
-    let fn;
-    let ln;
+    let fn="";
+    let ln="";
     if(d.NodeFirstName)
     {
     fn=  d.NodeFirstName.slice(0,1);
