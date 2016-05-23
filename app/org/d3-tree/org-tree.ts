@@ -109,13 +109,33 @@ export class OrgTree implements OnInit {
       
 
   nodeEnter.append("text")
-      .attr("x", function(d) { return d.children || d._children ? -10 : 10; })
+      .attr("x", function(d) { return  15; })
       .attr("dy", ".35em")
-      .attr("text-anchor", function(d) { return d.children || d._children ? "end" : "start"; })
+      .attr("text-anchor", function(d) { return  "start"; })
      
       .style("fill-opacity", 1e-6);
-
-node.select("text").text(function(d){return d.NodeFirstName;})
+      
+      
+        nodeEnter.append("text")
+     .attr("id","abbr")
+      .attr("dy", ".35em")
+      .attr("text-anchor", "middle" )
+     
+      .style("fill-opacity", 1);
+node.select("#abbr").text(function(d){
+    let fn;
+    let ln;
+    if(d.NodeFirstName)
+    {
+    fn=  d.NodeFirstName.slice(0,1);
+    }
+    if(d.NodeLastName)
+    {
+        ln= d.NodeLastName.slice(0,1);
+    }
+    return fn+ln;
+})
+node.select("text").text(function(d){return d.IsSelected?"":d.NodeFirstName;})
 node.select("circle").style("fill", function(d) { console.log(d.IsSelected);return d.IsSelected ? "green" : "#fff"; });
   // Transition nodes to their new position.
   var nodeUpdate = node.transition()
@@ -123,7 +143,7 @@ node.select("circle").style("fill", function(d) { console.log(d.IsSelected);retu
       .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; });
 
   nodeUpdate.select("circle")
-      .attr("r", 4.5)
+      .attr("r", 12.5)
       .style("fill", function(d) { console.log(d.NodeFirstName+ d.IsSelected);return d.IsSelected ? "green" : "#fff"; });;
 
   nodeUpdate.select("text")
@@ -203,6 +223,11 @@ node.select("circle").style("fill", function(d) { console.log(d.IsSelected);retu
   d3.select('body').on('click', (ev)=>this.bodyClicked(ev))
     }
     
+    getAbbreviatedName(d:OrgNodeModel)
+    {
+        return d.NodeFirstName.slice(0,1);
+        
+    }
     bodyClicked(d)
     {
         this.deselectNode();
