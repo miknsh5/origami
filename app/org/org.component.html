@@ -1,13 +1,28 @@
 <div class="auth-panel">
-    <h2>My Organization</h2>
+    <h2>{{orgChart.OrganizationName}}</h2>
     <button (click)="logout()">Logout</button>
     <button (click)="getAllNodes()">Load Data</button>
 </div>
+
 <div class="main-canvas" *ngIf="orgChart">
-    <h1>Welcome to {{orgChart.OrganizationName}}</h1>
-     <tree-graph [treeData]=treeJson width="1000" height="130" (selectNode)="onNodeSelected($event)"></tree-graph>
+    <tree-graph
+            [treeData]=treeJson
+            width="1000"
+            height="130"
+            (selectNode)="onNodeSelected($event)">
+    </tree-graph>
 </div>
-<origami-org-node-detail #nodeDetail [selectedOrgNode]="selectedNode" (deleteNode)="onNodeDeleted($event)" (updateNode)="onNodeUpdated($event)"></origami-org-node-detail>
+
+<origami-org-node-detail
+        #nodeDetail
+        [selectedOrgNode]="selectedNode"
+        (deleteNode)="onNodeDeleted($event)"
+        (updateNode)="onNodeUpdated($event)">
+</origami-org-node-detail>
+
 <div>
-      <origami-add-node (addNode)="onNodeAdded($event)" [selectedNode]="selectedNode" ></origami-add-node>       
-    </div>
+    <origami-add-node
+            (addNode)="onNodeAdded($event)"
+            [selectedNode]="selectedNode" >
+    </origami-add-node>
+</div>
