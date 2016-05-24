@@ -12,23 +12,22 @@ import { OrgNodeModel, OrgService } from '../shared/index';
 })
 
 export class OrgNodeDetailComponent {
-    @Input() selectedOrgNode: OrgNodeModel;
+    @Input() selectedOrgNode:OrgNodeModel;
     @Output() deleteNode = new EventEmitter<OrgNodeModel>();
     @Output() updateNode = new EventEmitter<OrgNodeModel>();
 
-    private isEditMode: boolean;
-    private editNodeDetails: OrgNodeModel;
+    private isEditMode:boolean;
+    private editNodeDetails:OrgNodeModel;
 
-
-    private doesChildNodeExist(node: OrgNodeModel): boolean {
-       
-       // console.log(node.children!=null);
-        return (node.children!=null);
-    }
-    constructor(private orgService: OrgService) {
+    private doesChildNodeExist(node:OrgNodeModel):boolean {
+        // console.log(node.children!=null);
+        return (node.children != null);
     }
 
-    private onSubmit(form: NgForm) {
+    constructor(private orgService:OrgService) {
+    }
+
+    private onSubmit(form:NgForm) {
         let data = JSON.stringify(form.value, null, 2);
         this.editNodeDetails = new OrgNodeModel();
         this.editNodeDetails.NodeFirstName = form.value.firstName;
@@ -39,31 +38,34 @@ export class OrgNodeDetailComponent {
         this.editNodeDetails.OrgID = this.selectedOrgNode.OrgID;
         this.editNodeDetails.ParentNodeID = this.selectedOrgNode.ParentNodeID;
         this.editNode(this.editNodeDetails);
-     }
+    }
 
     private editNode(node) {
-        if (!node) { return; }
+        if (!node) {
+            return;
+        }
         this.orgService.updateNode(node)
-                  .subscribe(data => this.emitUpdateNodeNotification(data),
-            error => this.handleError(error),
-            () => console.log('Node Updated Complete'));
+            .subscribe(data => this.emitUpdateNodeNotification(data),
+                error => this.handleError(error),
+                () => console.log('Node Updated Complete'));
     }
+
     private onEditNodeClicked() {
         this.isEditMode = true;
     }
 
     private onDeleteNodeClicked() {
-       
-        if (this.selectedOrgNode.children==null ) {
+        if (this.selectedOrgNode.children == null) {
             this.orgService.deleteNode(this.selectedOrgNode.NodeID)
                 .subscribe(data => this.emitDeleteNodeNotification(data),
-                error => this.handleError(error),
-                () => console.log('Node Deleted Complete'));
+                    error => this.handleError(error),
+                    () => console.log('Node Deleted Complete'));
         }
         else {
             alert("Delete Child Node First!");
         }
     }
+
     private emitDeleteNodeNotification(data) {
         if (data === true) {
             this.deleteNode.emit(this.selectedOrgNode);
