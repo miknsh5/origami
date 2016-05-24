@@ -39,13 +39,13 @@ export class OrgComponent {
 
  onNodeAdded(added:OrgNodeModel)
     {
-      this.addChildToSelectedOrgNode(added,this.orgNodes[0]);
-      this.updateJSON();
+      this.addChildToParentOrgNode(added,this.orgNodes[0]);
+      //this.updateJSON();
     }
    
-      addChildToSelectedOrgNode(newNode:OrgNodeModel,node:OrgNodeModel)
+      addChildToParentOrgNode(newNode:OrgNodeModel,node:OrgNodeModel)
     {
-        if(this.compareNodeID(node,this.selectedNode))
+        if(node.NodeID==newNode.ParentNodeID)
         {
             node.IsSelected= true;
             if(!node.children)
@@ -53,7 +53,7 @@ export class OrgComponent {
                 node.children= new Array<OrgNodeModel>();
                 
             }
-            newNode.ParentNodeID= node.NodeID;
+            
             node.children.push(newNode);
             
             return;
@@ -61,7 +61,7 @@ export class OrgComponent {
             node.IsSelected= false;
             if(node.children)
             {
-            node.children.forEach(element=>this.addChildToSelectedOrgNode(newNode,element));
+            node.children.forEach(element=>this.addChildToParentOrgNode(newNode,element));
             }
         }
     }
@@ -74,6 +74,8 @@ export class OrgComponent {
      deleteNodeFromArray(nodes:OrgNodeModel[])
    {
        let index=-1;
+       if(this.selectedNode!=null)
+       {
          nodes.forEach(element => {
              if(this.compareNodeID(element,this.selectedNode))
              {
@@ -97,7 +99,7 @@ export class OrgComponent {
             }
         }
    
-   }
+   }}
 
 
     onNodeDeleted(deleted) {
@@ -119,6 +121,8 @@ export class OrgComponent {
         if(this.compareNodeID(node,this.selectedNode))
         {
             node.NodeFirstName=this.selectedNode.NodeFirstName;
+            node.NodeLastName= this.selectedNode.NodeLastName;
+            node.Description= this.selectedNode.Description;
             node.IsSelected=true;
             return;
         }else{
@@ -130,8 +134,13 @@ export class OrgComponent {
         }
     }
     private compareNodeID(updatedNode: OrgNodeModel, currentNode: OrgNodeModel): boolean {
+       if(updatedNode!=null && currentNode!=null)
+       {
         return updatedNode.NodeID === currentNode.NodeID;
+    }else{
+        return false;
     }
+}
 
     private setOrgChartData(data: any) {
         this.orgChart = data;

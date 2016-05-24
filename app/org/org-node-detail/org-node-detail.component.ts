@@ -41,18 +41,18 @@ export class OrgNodeDetailComponent {
         this.editNode(this.editNodeDetails);
      }
 
-    private editNode(node) {
+    private editNode(node:OrgNodeModel) {
         if (!node) { return; }
         
-        //to be removed
-         this.isEditMode = false;
+         /*this.isEditMode = false;
             this.updateNode.emit(node);
-            this.editNodeDetails = null;
-            
-        /*this.orgService.updateNode(node)
+            this.editNodeDetails = null;*/
+            //we don't really need to send any child info to the server at this point
+            node.children=null;
+        this.orgService.updateNode(node)
                   .subscribe(data => this.emitUpdateNodeNotification(data),
             error => this.handleError(error),
-            () => console.log('Node Updated Complete'));*/
+            () => console.log('Node Updated Complete'));
     }
     private onEditNodeClicked() {
         this.isEditMode = true;
@@ -87,5 +87,7 @@ export class OrgNodeDetailComponent {
     private handleError(err) {
         alert("OOPs!! Something went wrong!! ");
         console.log(err);
+         this.isEditMode = false;
+          this.editNodeDetails = null;
     }
 }   

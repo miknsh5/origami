@@ -3,7 +3,7 @@ import {Component, Input,Output, Directive,EventEmitter, Attribute, OnChanges, D
 import {Inject} from '@angular/core';
 
 import * as d3 from 'd3';
-import { OrgNodeModel } from '../shared/index';
+import { OrgNodeModel ,OrgService} from '../shared/index';
 
 @Directive({
     selector: 'tree-graph',
@@ -24,9 +24,10 @@ export class OrgTree implements OnInit {
     nodeID:number=300;
     
    @Output() selectNode = new EventEmitter<OrgNodeModel>();
+     @Output() addNode = new EventEmitter<OrgNodeModel>();
    selectedNode:any;
     treeData: any;
-    constructor(
+    constructor(private orgService: OrgService,
         @Inject(ElementRef) elementRef: ElementRef,
         @Attribute('width') width: number,
         @Attribute('height') height: number) {
@@ -250,14 +251,16 @@ keyDown(d)
     {
         let parentID= this.selectedOrgNode.ParentNodeID;
        let newNode= this.addEmptyChildToSelectedOrgNode(parentID, this.root)
-       this.highlightAndCenterNode(newNode);
+       this.addNewNode(newNode);
+        this.highlightAndCenterNode(newNode);
         
     }
     //tab
     else if( (event as KeyboardEvent).keyCode==9)
     {
         let newNode= this.addEmptyChildToParent(this.selectedOrgNode);
-       this.highlightAndCenterNode(newNode);
+         this.addNewNode(newNode);
+            this.highlightAndCenterNode(newNode);
         
     }
     //left arrow
@@ -374,8 +377,9 @@ getNode(nodeID:number, node:OrgNodeModel)
             }
             let newNode= new OrgNodeModel();
             newNode.ParentNodeID= node.NodeID;
-            newNode.NodeID=this.nodeID;
-            this.nodeID++;
+            newNode.NodeFirstName="FN";
+            newNode.NodeLastName="LN"
+            newNode.OrgID= node.OrgID;
           
             node.children.push(newNode);
             
@@ -438,18 +442,20 @@ hideChildren(d)
       if(this.selectedOrgNode)
       {
       this.selectedOrgNode.IsSelected= false;
-      if(this.selectedOrgNode.NodeID!=d.ParentNodeID)
-      {
-      this.hideChildren(this.selectedOrgNode);
-      }
+      
       }
       if(d!=null)
       {
+          if(this.selectedOrgNode!=null && this.selectedOrgNode.NodeID!=d.ParentNodeID)
+         {
+            this.hideChildren(this.selectedOrgNode);
+         }
         d.IsSelected=true;
-          this.selectNode.emit(d);
+        this.selectNode.emit(d);
+        this.showChildren(d);
       }
       this.selectedOrgNode= d;
-    this.showChildren(d);
+    
       
     }
     ngOnChanges(changes: {[propertyName: string]: SimpleChange})
@@ -459,7 +465,10 @@ hideChildren(d)
     
         
       this.root =this.treeData[0];//JSON.parse(JSON.stringify(this.treeData[0]));
+      if(this.selectedOrgNode!=null)
+      {
       this.updateSelectedOrgNode(this.root);
+      }
         this.render(this.treeData[0]);
         
     }
@@ -480,6 +489,26 @@ hideChildren(d)
     }
     private compareNodeID(updatedNode: OrgNodeModel, currentNode: OrgNodeModel): boolean {
         return updatedNode.NodeID === currentNode.NodeID;
+    }
+    
+       private addNewNode(node) {
+        if (!node) { return; }
+        this.orgService.addNode(node)
+            .subscribe(data => this.emitaddNodeNotification(data),
+            error => this.handleError(error),
+            () => console.log('Node Added Complete'));
+    }
+    emitaddNodeNotification(data :OrgNodeModel){
+      if(data){
+        console.log(data);
+          this.addNode.emit(data);     
+        
+      }
+               
+    }
+     private handleError(err) {
+        alert("Node could not be added on the server ");
+        console.log(err);
     }
 
 }

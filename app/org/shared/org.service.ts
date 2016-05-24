@@ -5,7 +5,7 @@ import { Observable } from 'rxjs/Observable';
 
 @Injectable()
 export class OrgService {
-    private origamiUrl = 'http://origamiapi-staging.azurewebsites.net';
+    private origamiUrl = 'http://localhost:54574';
     private getUrl = '/api/Org/GetOrgChart?orgID=1';
     private updateUrl = '/api/Org/EditNode';
     private deleteUrl = '/api/Org/DeleteNode?nodeID=';

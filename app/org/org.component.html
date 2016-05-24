@@ -5,9 +5,9 @@
 </div>
 <div class="main-canvas" *ngIf="orgChart">
     <h1>Welcome to {{orgChart.OrganizationName}}</h1>
-     <tree-graph [treeData]=treeJson width="1000" height="130" (selectNode)="onNodeSelected($event)"></tree-graph>
+     <tree-graph [treeData]=treeJson width="1000" height="130" (selectNode)="onNodeSelected($event)" (addNode)="onNodeAdded($event)"></tree-graph>
 </div>
 <origami-org-node-detail #nodeDetail [selectedOrgNode]="selectedNode" (deleteNode)="onNodeDeleted($event)" (updateNode)="onNodeUpdated($event)"></origami-org-node-detail>
 <div>
-      <origami-add-node (addNode)="onNodeAdded($event)" [selectedNode]="selectedNode" ></origami-add-node>       
+      <origami-add-node  [selectedNode]="selectedNode" ></origami-add-node>       
     </div>
