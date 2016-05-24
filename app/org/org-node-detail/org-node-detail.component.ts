@@ -21,9 +21,9 @@ export class OrgNodeDetailComponent {
 
 
     private doesChildNodeExist(node: OrgNodeModel): boolean {
-       
-       // console.log(node.children!=null);
-        return (node.children!=null);
+
+        // console.log(node.children!=null);
+        return (node.children != null);
     }
     constructor(private orgService: OrgService) {
     }
@@ -39,18 +39,18 @@ export class OrgNodeDetailComponent {
         this.editNodeDetails.OrgID = this.selectedOrgNode.OrgID;
         this.editNodeDetails.ParentNodeID = this.selectedOrgNode.ParentNodeID;
         this.editNode(this.editNodeDetails);
-     }
+    }
 
-    private editNode(node:OrgNodeModel) {
+    private editNode(node: OrgNodeModel) {
         if (!node) { return; }
-        
-         /*this.isEditMode = false;
-            this.updateNode.emit(node);
-            this.editNodeDetails = null;*/
-            //we don't really need to send any child info to the server at this point
-            node.children=null;
+
+        /*this.isEditMode = false;
+           this.updateNode.emit(node);
+           this.editNodeDetails = null;*/
+        //we don't really need to send any child info to the server at this point
+        node.children = null;
         this.orgService.updateNode(node)
-                  .subscribe(data => this.emitUpdateNodeNotification(data),
+            .subscribe(data => this.emitUpdateNodeNotification(data),
             error => this.handleError(error),
             () => console.log('Node Updated Complete'));
     }
@@ -59,8 +59,8 @@ export class OrgNodeDetailComponent {
     }
 
     private onDeleteNodeClicked() {
-       
-        if (this.selectedOrgNode.children==null ) {
+
+        if (this.selectedOrgNode.children == null) {
             this.orgService.deleteNode(this.selectedOrgNode.NodeID)
                 .subscribe(data => this.emitDeleteNodeNotification(data),
                 error => this.handleError(error),
@@ -87,7 +87,7 @@ export class OrgNodeDetailComponent {
     private handleError(err) {
         alert("OOPs!! Something went wrong!! ");
         console.log(err);
-         this.isEditMode = false;
-          this.editNodeDetails = null;
+        this.isEditMode = false;
+        this.editNodeDetails = null;
     }
 }   
