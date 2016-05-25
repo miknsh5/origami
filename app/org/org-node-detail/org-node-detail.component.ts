@@ -1,13 +1,13 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { COMMON_DIRECTIVES, NgForm, FORM_DIRECTIVES } from '@angular/common';
+import { Component, Input, Output, EventEmitter } from "@angular/core";
+import { COMMON_DIRECTIVES, NgForm, FORM_DIRECTIVES } from "@angular/common";
 
-import { OrgNodeModel, OrgService } from '../shared/index';
+import { OrgNodeModel, OrgService } from "../shared/index";
 
 
 @Component({
-    selector: 'origami-org-node-detail',
-    templateUrl: 'app/org/org-node-detail/org-node-detail.component.html',
-    styleUrls: ['app/org/org-node-detail/org-node-detail.component.css'],
+    selector: "origami-org-node-detail",
+    templateUrl: "app/org/org-node-detail/org-node-detail.component.html",
+    styleUrls: ["app/org/org-node-detail/org-node-detail.component.css"],
     directives: [FORM_DIRECTIVES, COMMON_DIRECTIVES]
 })
 
@@ -49,12 +49,12 @@ export class OrgNodeDetailComponent {
         /*this.isEditMode = false;
            this.updateNode.emit(node);
            this.editNodeDetails = null;*/
-        //we don't really need to send any child info to the server at this point
+        //we don"t really need to send any child info to the server at this point
         node.children = null;
         this.orgService.updateNode(node)
             .subscribe(data => this.emitUpdateNodeNotification(data),
             error => this.handleError(error),
-            () => console.log('Node Updated Complete'));
+            () => console.log("Node Updated Complete"));
     }
     private onEditNodeClicked() {
         this.isEditMode = true;
@@ -66,7 +66,7 @@ export class OrgNodeDetailComponent {
             this.orgService.deleteNode(this.selectedOrgNode.NodeID)
                 .subscribe(data => this.emitDeleteNodeNotification(data),
                 error => this.handleError(error),
-                () => console.log('Node Deleted Complete'));
+                () => console.log("Node Deleted Complete"));
         }
         else {
             alert("Delete Child Node First!");

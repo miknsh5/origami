@@ -1,18 +1,18 @@
 import * as angular from "@angular/core";
-import {Component, Input, Output, Directive, EventEmitter, Attribute, OnChanges, DoCheck, ElementRef, OnInit, SimpleChange} from '@angular/core';
+import {Component, Input, Output, Directive, EventEmitter, Attribute, OnChanges, DoCheck, ElementRef, OnInit, SimpleChange} from "@angular/core";
 import {Inject} from "@angular/core";
 
-import * as d3 from 'd3';
-import { OrgNodeModel, OrgService} from '../shared/index';
+import * as d3 from "d3";
+import { OrgNodeModel, OrgService} from "../shared/index";
 
 @Directive({
-    selector: 'tree-graph',
-    inputs: ['treeData'],
+    selector: "tree-graph",
+    inputs: ["treeData"],
 
 
 })
 
-export class OrgTree implements OnInit {
+export class OrgTree  implements OnInit {
     tree: any;
     diagonal: any;
     svg: any;
@@ -29,8 +29,8 @@ export class OrgTree implements OnInit {
     treeData: any;
     constructor(private orgService: OrgService,
         @Inject(ElementRef) elementRef: ElementRef,
-        @Attribute('width') width: number,
-        @Attribute('height') height: number) {
+        @Attribute("width") width: number,
+        @Attribute("height") height: number) {
 
         let el: any = elementRef.nativeElement;
         this.graph = d3.select(el);
@@ -76,7 +76,7 @@ export class OrgTree implements OnInit {
         let y = -source.x0;
         x = x * 1 + 720 / 2;
         y = y * 1 + 460 / 2;
-        d3.select('g').transition()
+        d3.select("g").transition()
             .duration(this.duration)
             .attr("transform", "translate(" + x + "," + y + ")");
 
@@ -98,7 +98,7 @@ export class OrgTree implements OnInit {
             .data(this.nodes, function (d) { return d.NodeID || (++i); });
 
 
-        // Enter any new nodes at the parent's previous position.
+        // Enter any new nodes at the parent"s previous position.
         let nodeEnter = node.enter().append("g")
             .attr("class", "node")
             .attr("transform", function (d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
@@ -106,7 +106,7 @@ export class OrgTree implements OnInit {
 
         nodeEnter.append("circle")
 
-            .attr("r", 1e-6)
+            .attr("r", 1e-6);
 
 
         nodeEnter.append("text")
@@ -133,11 +133,11 @@ export class OrgTree implements OnInit {
                 ln = d.NodeLastName.slice(0, 1);
             }
             return fn + ln;
-        })
+        });
         node.select("text").text(function (d) { return d.IsSelected ? "" : d.NodeFirstName; })
         node.select("circle").style("fill", function (d) { console.log(d.IsSelected); return d.IsSelected ? "green" : "#fff"; });
         // Transition nodes to their new position.
-        var nodeUpdate = node.transition()
+        let nodeUpdate = node.transition()
             .duration(this.duration)
             .attr("transform", function (d) { return "translate(" + d.y + "," + d.x + ")"; });
 
@@ -152,8 +152,8 @@ export class OrgTree implements OnInit {
 
 
 
-        // Transition exiting nodes to the parent's new position.
-        /* var nodeExit = node.exit().transition().
+        // Transition exiting nodes to the parent"s new position.
+        /* let nodeExit = node.exit().transition().
              duration(this.duration)
              
              .remove();
@@ -166,7 +166,7 @@ export class OrgTree implements OnInit {
              .duration(this.duration)
              .remove(); */
 
-        var nodeExit = node.exit().transition().delay(100).
+        let nodeExit = node.exit().transition().delay(100).
             duration(this.duration)
             .attr("transform", function (d) { return "translate(" + source.y + "," + source.x + ")"; })
             .remove();
@@ -178,17 +178,17 @@ export class OrgTree implements OnInit {
             .style("fill-opacity", 1e-6);
 
 
-        var sourceCoords = { x: source.x0, y: source.y0 };
-        var diagCoords = this.diagonal({ source: sourceCoords, target: sourceCoords });
+        let sourceCoords = { x: source.x0, y: source.y0 };
+        let diagCoords = this.diagonal({ source: sourceCoords, target: sourceCoords });
 
-        var sourceCoords2 = { x: source.x, y: source.y };
-        var diagCoords2 = this.diagonal({ source: sourceCoords2, target: sourceCoords2 });
+        let sourceCoords2 = { x: source.x, y: source.y };
+        let diagCoords2 = this.diagonal({ source: sourceCoords2, target: sourceCoords2 });
 
         // Update the links…
-        var link = this.svg.selectAll("path.link")
+        let link = this.svg.selectAll("path.link")
             .data(this.links, function (d) { return d.target.NodeID; });
 
-        // Enter any new links at the parent's previous position.
+        // Enter any new links at the parent"s previous position.
         link.enter().insert("path", "g")
             .attr("class", "link")
             .attr("id", function (d) { console.log("link" + d.source.NodeID + "-" + d.target.NodeID); return ("link" + d.source.NodeID + "-" + d.target.NodeID) })
@@ -203,8 +203,8 @@ export class OrgTree implements OnInit {
             .duration(this.duration)
             .attr("d", this.diagonal)
             ;
-        link.style("stroke", function (d) { return (d.source.IsSelected ? "#ccc" : "none") })
-        // Transition exiting nodes to the parent's new position.
+        link.style("stroke", function (d) { return (d.source.IsSelected ? "#ccc" : "none") ;})
+        // Transition exiting nodes to the parent"s new position.
         link.exit().transition()
             .duration(this.duration)
             .attr("d", function (d) {
@@ -218,8 +218,8 @@ export class OrgTree implements OnInit {
             d.x0 = d.x;
             d.y0 = d.y;
         });
-        d3.select('body').on('keydown', (ev) => this.keyDown(ev))
-        d3.select('body').on('click', (ev) => this.bodyClicked(ev))
+        d3.select("body").on("keydown", (ev) => this.keyDown(ev))
+        d3.select("body").on("click", (ev) => this.bodyClicked(ev))
     }
 
 
@@ -307,7 +307,7 @@ export class OrgTree implements OnInit {
 
 
     getNode(nodeID: number, node: OrgNodeModel) {
-        if (node.NodeID == nodeID) {
+        if (node.NodeID === nodeID) {
 
             return node;
 
@@ -323,15 +323,15 @@ export class OrgTree implements OnInit {
         if (this.selectedOrgNode == null) {
             return;
         }
-        if (node.NodeID == parentID) {
+        if (node.NodeID === parentID) {
 
             let newNode = this.addEmptyChildToParent(node);
             return newNode;
         } else {
 
             if (node.children) {
-                for (var index = 0; index < node.children.length; index++) {
-                    var element = node.children[index];
+                for (let index = 0; index < node.children.length; index++) {
+                    let element = node.children[index];
                     let newNode = this.addEmptyChildToSelectedOrgNode(parentID, element);
                     if (newNode != null) {
                         return newNode;
@@ -412,7 +412,7 @@ export class OrgTree implements OnInit {
 
         }
         if (d != null) {
-            if (this.selectedOrgNode != null && this.selectedOrgNode.NodeID != d.ParentNodeID) {
+            if (this.selectedOrgNode != null && this.selectedOrgNode.NodeID !== d.ParentNodeID) {
                 this.hideChildren(this.selectedOrgNode);
             }
             d.IsSelected = true;
@@ -455,7 +455,7 @@ export class OrgTree implements OnInit {
         this.orgService.addNode(node)
             .subscribe(data => this.emitaddNodeNotification(data),
             error => this.handleError(error),
-            () => console.log('Node Added Complete'));
+            () => console.log("Node Added Complete"));
     }
     emitaddNodeNotification(data: OrgNodeModel) {
         if (data) {

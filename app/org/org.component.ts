@@ -1,17 +1,17 @@
-import { Component, Output, EventEmitter} from '@angular/core';
-import { HTTP_PROVIDERS } from '@angular/http';
-import { CanActivate, Router } from '@angular/router-deprecated';
-import { tokenNotExpired } from 'angular2-jwt';
+import { Component, Output, EventEmitter} from "@angular/core";
+import { HTTP_PROVIDERS } from "@angular/http";
+import { CanActivate, Router } from "@angular/router-deprecated";
+import { tokenNotExpired } from "angular2-jwt";
 
-import {AddNodeComponent} from './add-node/add-node.component';
-import { OrgNodeDetailComponent } from './org-node-detail/index';
-import { OrgChartModel, OrgNodeModel, OrgService } from './shared/index';
-import {OrgTree} from './d3-tree/org-tree';
+import {AddNodeComponent} from "./add-node/add-node.component";
+import { OrgNodeDetailComponent } from "./org-node-detail/index";
+import { OrgChartModel, OrgNodeModel, OrgService } from "./shared/index";
+import {OrgTree} from "./d3-tree/org-tree";
 @Component({
-    selector: 'origami-org',
+    selector: "origami-org",
     directives: [OrgTree, OrgNodeDetailComponent, AddNodeComponent],
-    templateUrl: 'app/org/org.component.html',
-    styleUrls: ['app/org/org.component.css'],
+    templateUrl: "app/org/org.component.html",
+    styleUrls: ["app/org/org.component.css"],
     providers: [OrgService, HTTP_PROVIDERS]
 })
 
@@ -29,7 +29,7 @@ export class OrgComponent {
         this.orgService.getNodes()
             .subscribe(data => this.setOrgChartData(data),
             err => this.orgService.logError(err),
-            () => console.log('Random Quote Complete'));
+            () => console.log("Random Quote Complete"));
     }
 
 
@@ -43,7 +43,7 @@ export class OrgComponent {
     }
 
     addChildToParentOrgNode(newNode: OrgNodeModel, node: OrgNodeModel) {
-        if (node.NodeID == newNode.ParentNodeID) {
+        if (node.NodeID === newNode.ParentNodeID) {
             node.IsSelected = true;
             if (!node.children) {
                 node.children = new Array<OrgNodeModel>();
@@ -80,8 +80,8 @@ export class OrgComponent {
 
             }
             else {
-                for (var i = 0; i < nodes.length; i++) {
-                    var element = nodes[i];
+                for (let i = 0; i < nodes.length; i++) {
+                    let element = nodes[i];
                     if (element.children) {
                         this.deleteNodeFromArray(element.children);
                     }
@@ -136,9 +136,9 @@ export class OrgComponent {
     }
 
     logout() {
-        localStorage.removeItem('profile');
-        localStorage.removeItem('id_token');
-        this.router.navigate(['/Login']);
+        localStorage.removeItem("profile");
+        localStorage.removeItem("id_token");
+        this.router.navigate(["/Login"]);
     }
 
 }   
