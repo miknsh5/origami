@@ -41,6 +41,7 @@
     "lite-server": "^2.2.0",
     "open": "0.0.5",
     "serve-static": "^1.10.0",
+    "tslint": "^3.10.2",
     "typescript": "^1.8.10",
     "typings": "^0.8.1"
   }
