@@ -232,9 +232,14 @@ node.select("circle").style("fill", function(d) { console.log(d.IsSelected);retu
     
     deselectNode()
     {
-          this.highlightSelectedNode(null);
+        if(this.selectedOrgNode!=null)
+        {
+             this.highlightSelectedNode(null);
         this.render(this.root);
+        }
+         
     }
+    
 keyDown(d)
 {
     if(this.selectedOrgNode==null)
@@ -252,7 +257,7 @@ keyDown(d)
         let parentID= this.selectedOrgNode.ParentNodeID;
        let newNode= this.addEmptyChildToSelectedOrgNode(parentID, this.root)
        this.addNewNode(newNode);
-        this.highlightAndCenterNode(newNode);
+      
         
     }
     //tab
@@ -260,7 +265,7 @@ keyDown(d)
     {
         let newNode= this.addEmptyChildToParent(this.selectedOrgNode);
          this.addNewNode(newNode);
-            this.highlightAndCenterNode(newNode);
+           
         
     }
     //left arrow
@@ -501,6 +506,7 @@ hideChildren(d)
     emitaddNodeNotification(data :OrgNodeModel){
       if(data){
         console.log(data);
+      this.highlightSelectedNode(data);
           this.addNode.emit(data);     
         
       }

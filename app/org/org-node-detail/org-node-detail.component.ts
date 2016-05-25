@@ -19,7 +19,10 @@ export class OrgNodeDetailComponent {
     private isEditMode: boolean;
     private editNodeDetails: OrgNodeModel;
 
-
+killKeydownEvent()
+{
+   event.stopPropagation();
+}
     private doesChildNodeExist(node: OrgNodeModel): boolean {
 
         // console.log(node.children!=null);

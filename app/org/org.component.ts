@@ -39,7 +39,7 @@ export class OrgComponent {
 
     onNodeAdded(added: OrgNodeModel) {
         this.addChildToParentOrgNode(added, this.orgNodes[0]);
-        //this.updateJSON();
+        this.updateJSON();
     }
 
     addChildToParentOrgNode(newNode: OrgNodeModel, node: OrgNodeModel) {
