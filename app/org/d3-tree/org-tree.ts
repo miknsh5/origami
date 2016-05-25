@@ -221,8 +221,10 @@ export class OrgTree implements OnInit {
 
 
     bodyClicked(d) {
+        if(event.srcElement.nodeName=="svg")
+        {
         this.deselectNode();
-    }
+    }}
 
     deselectNode() {
         if (this.selectedOrgNode != null) {
