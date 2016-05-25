@@ -49,7 +49,7 @@ export class OrgNodeDetailComponent {
         /*this.isEditMode = false;
            this.updateNode.emit(node);
            this.editNodeDetails = null;*/
-        //we don"t really need to send any child info to the server at this point
+        // we don"t really need to send any child info to the server at this point
         node.children = null;
         this.orgService.updateNode(node)
             .subscribe(data => this.emitUpdateNodeNotification(data),

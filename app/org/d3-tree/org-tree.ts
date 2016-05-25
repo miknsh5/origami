@@ -6,13 +6,10 @@ import * as d3 from "d3";
 import { OrgNodeModel, OrgService} from "../shared/index";
 
 @Directive({
-    selector: "tree-graph",
-    inputs: ["treeData"],
+    selector: "tree-graph"
+  })
 
-
-})
-
-export class OrgTree  implements OnInit {
+export class OrgTree implements OnInit {
     tree: any;
     diagonal: any;
     svg: any;
@@ -26,7 +23,7 @@ export class OrgTree  implements OnInit {
     @Output() selectNode = new EventEmitter<OrgNodeModel>();
     @Output() addNode = new EventEmitter<OrgNodeModel>();
     selectedNode: any;
-    treeData: any;
+    @Input() treeData: any;
     constructor(private orgService: OrgService,
         @Inject(ElementRef) elementRef: ElementRef,
         @Attribute("width") width: number,
@@ -134,7 +131,7 @@ export class OrgTree  implements OnInit {
             }
             return fn + ln;
         });
-        node.select("text").text(function (d) { return d.IsSelected ? "" : d.NodeFirstName; })
+        node.select("text").text(function (d) { return d.IsSelected ? "" : d.NodeFirstName; });
         node.select("circle").style("fill", function (d) { console.log(d.IsSelected); return d.IsSelected ? "green" : "#fff"; });
         // Transition nodes to their new position.
         let nodeUpdate = node.transition()
@@ -191,7 +188,7 @@ export class OrgTree  implements OnInit {
         // Enter any new links at the parent"s previous position.
         link.enter().insert("path", "g")
             .attr("class", "link")
-            .attr("id", function (d) { console.log("link" + d.source.NodeID + "-" + d.target.NodeID); return ("link" + d.source.NodeID + "-" + d.target.NodeID) })
+            .attr("id", function (d) { console.log("link" + d.source.NodeID + "-" + d.target.NodeID); return ("link" + d.source.NodeID + "-" + d.target.NodeID); })
 
             .attr("d", function (d) {
 
@@ -203,7 +200,7 @@ export class OrgTree  implements OnInit {
             .duration(this.duration)
             .attr("d", this.diagonal)
             ;
-        link.style("stroke", function (d) { return (d.source.IsSelected ? "#ccc" : "none") ;})
+        link.style("stroke", function (d) { return (d.source.IsSelected ? "#ccc" : "none"); });
         // Transition exiting nodes to the parent"s new position.
         link.exit().transition()
             .duration(this.duration)
@@ -218,8 +215,8 @@ export class OrgTree  implements OnInit {
             d.x0 = d.x;
             d.y0 = d.y;
         });
-        d3.select("body").on("keydown", (ev) => this.keyDown(ev))
-        d3.select("body").on("click", (ev) => this.bodyClicked(ev))
+        d3.select("body").on("keydown", (ev) => this.keyDown(ev));
+        d3.select("body").on("click", (ev) => this.bodyClicked(ev));
     }
 
 
@@ -239,29 +236,29 @@ export class OrgTree  implements OnInit {
         if (this.selectedOrgNode == null) {
             return;
         }
-        //esc
+        // esc
         if ((event as KeyboardEvent).keyCode === 27) {
             this.deselectNode();
         }
-        //enter
+        // enter
         if ((event as KeyboardEvent).keyCode === 13) {
             let parentID = this.selectedOrgNode.ParentNodeID;
-            let newNode = this.addEmptyChildToSelectedOrgNode(parentID, this.root)
+            let newNode = this.addEmptyChildToSelectedOrgNode(parentID, this.root);
             this.addNewNode(newNode);
 
 
         }
-        //tab
+        // tab
         else if ((event as KeyboardEvent).keyCode === 9) {
             let newNode = this.addEmptyChildToParent(this.selectedOrgNode);
             this.addNewNode(newNode);
 
 
         }
-        //left arrow
+        // left arrow
         else if ((event as KeyboardEvent).keyCode === 37) {
 
-            let node = this.selectedOrgNode as d3.layout.tree.Node
+            let node = this.selectedOrgNode as d3.layout.tree.Node;
 
             if (node.parent != null) {
                 let parentNode = node.parent;
@@ -269,7 +266,7 @@ export class OrgTree  implements OnInit {
 
             }
         }
-        //right arrow
+        // right arrow
         else if ((event as KeyboardEvent).keyCode === 39) {
             if (this.selectedOrgNode.children) {
                 let node = this.selectedOrgNode.children[0];
@@ -277,7 +274,7 @@ export class OrgTree  implements OnInit {
 
             }
         }
-        //top arrow
+        // top arrow
         else if ((event as KeyboardEvent).keyCode === 38) {
             let node = this.selectedOrgNode as d3.layout.tree.Node;
             if (node.parent != null) {
@@ -290,7 +287,7 @@ export class OrgTree  implements OnInit {
                 }
             }
         }
-        //bottom arrow
+        // bottom arrow
         else if ((event as KeyboardEvent).keyCode === 40) {
             let node = this.selectedOrgNode as d3.layout.tree.Node;
             if (node.parent != null) {
@@ -353,7 +350,7 @@ export class OrgTree  implements OnInit {
         let newNode = new OrgNodeModel();
         newNode.ParentNodeID = node.NodeID;
         newNode.NodeFirstName = "FN";
-        newNode.NodeLastName = "LN"
+        newNode.NodeLastName = "LN";
         newNode.OrgID = node.OrgID;
 
         node.children.push(newNode);
@@ -427,7 +424,7 @@ export class OrgTree  implements OnInit {
         if (this.tree != null) {
 
 
-            this.root = this.treeData[0];//JSON.parse(JSON.stringify(this.treeData[0]));
+            this.root = this.treeData[0];
             if (this.selectedOrgNode != null) {
                 this.updateSelectedOrgNode(this.root);
             }
