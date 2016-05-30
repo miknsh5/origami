@@ -9,7 +9,7 @@ import { OrgNodeModel, OrgService} from "../shared/index";
     selector: "tree-graph"
 })
 
-export class OrgTree implements OnInit {
+export class OrgTree implements OnInit, OnChanges {
     tree: any;
     diagonal: any;
     svg: any;
@@ -57,6 +57,7 @@ export class OrgTree implements OnInit {
         this.render(this.root);
         this.centerNode(this.root);
     }
+
     collapseTree(d) {
         if (d.children) {
             d._children = d.children;
@@ -67,29 +68,52 @@ export class OrgTree implements OnInit {
             d.children = null;
         }
     }
-     centerNode(source) {
-
-        let x =source.y0;
-        let y =source.x0;
-        x =  720 / 2-x;
-        y =  460 / 2-y;
+    centerNode(source) {
+        let x = source.y0;
+        let y = source.x0;
+        x = 720 / 2 - x;
+        y = 460 / 2 - y;
         d3.select("g").transition()
             .duration(this.duration)
             .attr("transform", "translate(" + x + "," + y + ")");
-
+        if (this.root.NodeID !== source.NodeID) {
+            let parentNode = source.parent;
+            this.moveParentNodesToCenter(parentNode, source);
+            let grandParent = this.getGrandParentID(parentNode);
+            if (grandParent != null) {
+                this.moveParentNodesToCenter(grandParent, source);
+            }
+        }
     }
 
+    getGrandParentID(node: d3.layout.tree.Node) {
+        if (node.parent != null) {
+            let orgNode = node.parent as OrgNodeModel;
+            return orgNode;
+        }
+        return null;
+    }
 
+    moveParentNodesToCenter(parentNode, source) {
+        if (parentNode) {
+            d3.selectAll("g.node")
+                .filter(function (d) {
+                    return d.NodeID === parentNode.NodeID;
+                }).transition()
+                .duration(this.duration)
+                .attr("transform", "translate(" + parentNode.y + " , " + source.x + ")");
+        }
+    }
 
     render(source) {
 
         let i: number = 0;
         this.nodes = this.tree.nodes(this.root).reverse();
-     
+
         this.nodes.forEach(element => {
-            element.Show=this.isAncestorOrRelated(element);
+            element.Show = this.isAncestorOrRelated(element);
         });
-           this.nodes= this.nodes.filter(function(d){return d.Show});
+        this.nodes = this.nodes.filter(function (d) { return d.Show; });
         this.links = this.tree.links(this.nodes);
         console.log(this.nodes);
         console.log(this.links);
@@ -106,12 +130,11 @@ export class OrgTree implements OnInit {
 
         // Enter any new nodes at the parent"s previous position.
         let nodeEnter = node.enter().append("g")
-               .attr("class", "node")
+            .attr("class", "node")
             .attr("transform", function (d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
             .on("click", (ev) => this.click(ev));
 
         nodeEnter.append("circle")
-
             .attr("r", 1e-6);
 
 
@@ -119,7 +142,6 @@ export class OrgTree implements OnInit {
             .attr("x", function (d) { return 15; })
             .attr("dy", ".35em")
             .attr("text-anchor", function (d) { return "start"; })
-
             .style("fill-opacity", 1e-6);
 
 
@@ -142,11 +164,11 @@ export class OrgTree implements OnInit {
         });
         node.select("text").text(function (d) { return d.IsSelected ? "" : d.NodeFirstName; });
         node.select("circle").style("fill", function (d) { console.log(d.IsSelected); return d.IsSelected ? "green" : "#fff"; });
-      
+
         // Transition nodes to their new position.
         let nodeUpdate = node.transition()
             .duration(this.duration)
-            .attr("transform", function (d) {  return "translate(" + d.y + "," + d.x + ")"; });
+            .attr("transform", function (d) { return "translate(" + d.y + "," + d.x + ")"; });
 
         nodeUpdate.select("circle")
             .attr("r", 12.5)
@@ -201,15 +223,14 @@ export class OrgTree implements OnInit {
             .attr("id", function (d) { console.log("link" + d.source.NodeID + "-" + d.target.NodeID); return ("link" + d.source.NodeID + "-" + d.target.NodeID); })
 
             .attr("d", function (d) {
-
                 return diagCoords2;
             });
 
         // Transition links to their new position.
         link.transition()
             .duration(this.duration)
-            .attr("d", this.diagonal)
-            ;
+            .attr("d", this.diagonal);
+
         link.style("stroke", function (d) { return (d.source.IsSelected ? "#ccc" : "none"); });
         // Transition exiting nodes to the parent"s new position.
         link.exit().transition()
@@ -372,10 +393,9 @@ export class OrgTree implements OnInit {
 
     highlightAndCenterNode(d) {
         this.highlightSelectedNode(d);
-      
+
         this.render(d);
-          this.centerNode(d);
-       
+        this.centerNode(d);
     }
     click(d) {
         event.stopPropagation();
@@ -470,7 +490,7 @@ export class OrgTree implements OnInit {
     }
     emitaddNodeNotification(data: OrgNodeModel) {
         if (data) {
-            console.log(data);
+            // console.log(data);
             this.highlightSelectedNode(data);
             this.addNode.emit(data);
 
@@ -484,9 +504,9 @@ export class OrgTree implements OnInit {
 
     private isAncestorOrRelated(node: OrgNodeModel) {
         if (this.selectedOrgNode != null) {
-            //if this is the selected node, or sibling or selected node's parent or selected nodes child
-            if ((this.selectedOrgNode.NodeID == node.NodeID) || (this.selectedOrgNode.ParentNodeID == node.ParentNodeID) || (this.selectedOrgNode.ParentNodeID == node.NodeID)||(this.selectedOrgNode.NodeID == node.ParentNodeID)) {
-               console.log("showing"+node.NodeFirstName);
+            // if this is the selected node, or sibling or selected node's parent or selected nodes child
+            if ((this.selectedOrgNode.NodeID === node.NodeID) || (this.selectedOrgNode.ParentNodeID === node.ParentNodeID) || (this.selectedOrgNode.ParentNodeID === node.NodeID) || (this.selectedOrgNode.NodeID === node.ParentNodeID)) {
+                console.log("showing" + node.NodeFirstName);
                 return true;
             }
             else { return false; }
