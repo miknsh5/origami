@@ -15,7 +15,7 @@ export class OrgTree implements OnInit {
     svg: any;
     graph: any;
     root: any;
-    duration: number = 1;
+    duration: number = 10;
     nodes: any;
     links: any;
     nodeID: number = 300;
@@ -67,12 +67,12 @@ export class OrgTree implements OnInit {
             d.children = null;
         }
     }
-     centerNode(source) {
+    centerNode(source) {
 
-        let x =source.y0;
-        let y =source.x0;
-        x =  720 / 2-x;
-        y =  460 / 2-y;
+        let x = source.y0;
+        let y = source.x0;
+        x = 720 / 2 - x;
+        y = 460 / 2 - y;
         d3.select("g").transition()
             .duration(this.duration)
             .attr("transform", "translate(" + x + "," + y + ")");
@@ -85,11 +85,11 @@ export class OrgTree implements OnInit {
 
         let i: number = 0;
         this.nodes = this.tree.nodes(this.root).reverse();
-     
+
         this.nodes.forEach(element => {
-            element.Show=this.isAncestorOrRelated(element);
+            this.isAncestorOrRelated(element);
         });
-           this.nodes= this.nodes.filter(function(d){return d.Show});
+        this.nodes = this.nodes.filter(function (d) { return d.Show });
         this.links = this.tree.links(this.nodes);
         console.log(this.nodes);
         console.log(this.links);
@@ -97,7 +97,7 @@ export class OrgTree implements OnInit {
         source.y0 = source.y;
         console.log(source);
         // Normalize for fixed-depth.
-        this.nodes.forEach(function (d) { d.y = d.depth * 180; });
+        this.nodes.forEach(function (d) { d.y = d.depth * 120; });
 
         // Update the nodes…
         let node = this.svg.selectAll("g.node")
@@ -106,7 +106,7 @@ export class OrgTree implements OnInit {
 
         // Enter any new nodes at the parent"s previous position.
         let nodeEnter = node.enter().append("g")
-               .attr("class", "node")
+            .attr("class", "node")
             .attr("transform", function (d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
             .on("click", (ev) => this.click(ev));
 
@@ -142,14 +142,18 @@ export class OrgTree implements OnInit {
         });
         node.select("text").text(function (d) { return d.IsSelected ? "" : d.NodeFirstName; });
         node.select("circle").style("fill", function (d) { console.log(d.IsSelected); return d.IsSelected ? "green" : "#fff"; });
-      
+
         // Transition nodes to their new position.
         let nodeUpdate = node.transition()
             .duration(this.duration)
-            .attr("transform", function (d) {  return "translate(" + d.y + "," + d.x + ")"; });
+            .attr("transform", function (d) { return "translate(" + d.y + "," + d.x + ")"; });
 
         nodeUpdate.select("circle")
-            .attr("r", 12.5)
+            .attr("r", function (d) {
+                if (d.IsSelected===true || d.IsSibling===true) { return 14.5; }
+                else if (d.IsParent === true || d.IsChild === true) { return 10.5; }
+                else if (d.IsGrandParent === true) { return 6.5; }
+                else { return 4.5; }})
             .style("fill", function (d) { console.log(d.NodeFirstName + d.IsSelected); return d.IsSelected ? "green" : "#fff"; });
 
         nodeUpdate.select("text")
@@ -372,10 +376,10 @@ export class OrgTree implements OnInit {
 
     highlightAndCenterNode(d) {
         this.highlightSelectedNode(d);
-      
+
         this.render(d);
-          this.centerNode(d);
-       
+        this.centerNode(d);
+
     }
     click(d) {
         event.stopPropagation();
@@ -483,13 +487,42 @@ export class OrgTree implements OnInit {
     }
 
     private isAncestorOrRelated(node: OrgNodeModel) {
+        node.IsChild = false;
+        node.IsParent = false;
+        node.IsGrandParent = false;
+        node.IsSibling = false;
+        node.Show = false;
         if (this.selectedOrgNode != null) {
             //if this is the selected node, or sibling or selected node's parent or selected nodes child
-            if ((this.selectedOrgNode.NodeID == node.NodeID) || (this.selectedOrgNode.ParentNodeID == node.ParentNodeID) || (this.selectedOrgNode.ParentNodeID == node.NodeID)||(this.selectedOrgNode.NodeID == node.ParentNodeID)) {
-               console.log("showing"+node.NodeFirstName);
-                return true;
+            if (this.selectedOrgNode.NodeID == node.NodeID) {
+                console.log("showing" + node.NodeFirstName);
+                node.Show = true;
             }
-            else { return false; }
+            else if (this.selectedOrgNode.ParentNodeID === node.ParentNodeID) {
+                node.IsSibling = true;
+                node.Show = true
+            }
+            else if (this.selectedOrgNode.ParentNodeID === node.NodeID) {
+                node.IsParent = true;
+                node.Show = true;
+            }
+            else if (this.selectedOrgNode.NodeID === node.ParentNodeID) {
+                node.IsChild = true;
+                node.Show = true;
+            }
+            else {
+                let selectedTreeNode = this.selectedOrgNode as d3.layout.tree.Node;
+                if (selectedTreeNode.parent != null) {
+                    if (selectedTreeNode.parent.parent != null) {
+                        let nodeID = (selectedTreeNode.parent as OrgNodeModel).ParentNodeID;
+                        if (nodeID === node.NodeID) {
+                            node.IsGrandParent = true;
+                            node.Show = true;
+                        }
+                    }
+                }
+            }
+
         }
         return false;
     }
