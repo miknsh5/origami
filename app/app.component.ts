@@ -7,7 +7,7 @@ import { LoginComponent } from "./login/login.component";
 import { OrgComponent } from "./org/index";
 
 @Component({
-    selector: "origami",
+    selector: "sg-origami",
     directives: [CORE_DIRECTIVES, ROUTER_DIRECTIVES],
     template: "<router-outlet></router-outlet>",
     providers: [ROUTER_PROVIDERS]
