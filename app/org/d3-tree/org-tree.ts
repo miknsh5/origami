@@ -9,7 +9,7 @@ import { OrgNodeModel, OrgService} from "../shared/index";
     selector: "tree-graph"
 })
 
-export class OrgTree implements OnInit {
+export class OrgTree implements OnInit, OnChanges {
     tree: any;
     diagonal: any;
     svg: any;
@@ -57,6 +57,7 @@ export class OrgTree implements OnInit {
         this.render(this.root);
         this.centerNode(this.root);
     }
+
     collapseTree(d) {
         if (d.children) {
             d._children = d.children;
@@ -76,10 +77,34 @@ export class OrgTree implements OnInit {
         d3.select("g").transition()
             .duration(this.duration)
             .attr("transform", "translate(" + x + "," + y + ")");
-
+        if (this.root.NodeID !== source.NodeID) {
+            let parentNode = source.parent;
+            this.moveParentNodesToCenter(parentNode, source);
+            let grandParent = this.getGrandParentID(parentNode);
+            if (grandParent != null) {
+                this.moveParentNodesToCenter(grandParent, source);
+            }
+        }
     }
 
+    getGrandParentID(node: d3.layout.tree.Node) {
+        if (node.parent != null) {
+            let orgNode = node.parent as OrgNodeModel;
+            return orgNode;
+        }
+        return null;
+    }
 
+    moveParentNodesToCenter(parentNode, source) {
+        if (parentNode) {
+            d3.selectAll("g.node")
+                .filter(function (d) {
+                    return d.NodeID === parentNode.NodeID;
+                }).transition()
+                .duration(this.duration)
+                .attr("transform", "translate(" + parentNode.y + " , " + source.x + ")");
+        }
+    }
 
     render(source) {
 
@@ -87,9 +112,12 @@ export class OrgTree implements OnInit {
         this.nodes = this.tree.nodes(this.root).reverse();
 
         this.nodes.forEach(element => {
+
             this.isAncestorOrRelated(element);
         });
-        this.nodes = this.nodes.filter(function (d) { return d.Show });
+
+        this.nodes = this.nodes.filter(function (d) { return d.Show; });
+
         this.links = this.tree.links(this.nodes);
         console.log(this.nodes);
         console.log(this.links);
@@ -111,7 +139,6 @@ export class OrgTree implements OnInit {
             .on("click", (ev) => this.click(ev));
 
         nodeEnter.append("circle")
-
             .attr("r", 1e-6);
 
 
@@ -119,7 +146,6 @@ export class OrgTree implements OnInit {
             .attr("x", function (d) { return 15; })
             .attr("dy", ".35em")
             .attr("text-anchor", function (d) { return "start"; })
-
             .style("fill-opacity", 1e-6);
 
 
@@ -130,8 +156,7 @@ export class OrgTree implements OnInit {
 
             .style("fill-opacity", 1);
         node.select("#abbr").text(function (d) {
-            if(d.IsGrandParent)
-            {
+            if (d.IsGrandParent) {
                 return "";
             }
             let fn = "";
@@ -144,7 +169,7 @@ export class OrgTree implements OnInit {
             }
             return fn + ln;
         });
-        node.select("text").text(function (d) { return d.IsSelected||d.IsGrandParent ? "" : d.NodeFirstName; });
+        node.select("text").text(function (d) { return d.IsSelected || d.IsGrandParent ? "" : d.NodeFirstName; });
         node.select("circle").style("fill", function (d) { console.log(d.IsSelected); return d.IsSelected ? "green" : "#fff"; });
 
         // Transition nodes to their new position.
@@ -154,10 +179,11 @@ export class OrgTree implements OnInit {
 
         nodeUpdate.select("circle")
             .attr("r", function (d) {
-                if (d.IsSelected===true || d.IsSibling===true) { return 14.5; }
+                if (d.IsSelected === true || d.IsSibling === true) { return 14.5; }
                 else if (d.IsParent === true || d.IsChild === true) { return 10.5; }
                 else if (d.IsGrandParent === true) { return 6.5; }
-                else { return 4.5; }})
+                else { return 4.5; }
+            })
             .style("fill", function (d) { console.log(d.NodeFirstName + d.IsSelected); return d.IsSelected ? "green" : "#fff"; });
 
         nodeUpdate.select("text")
@@ -209,15 +235,14 @@ export class OrgTree implements OnInit {
             .attr("id", function (d) { console.log("link" + d.source.NodeID + "-" + d.target.NodeID); return ("link" + d.source.NodeID + "-" + d.target.NodeID); })
 
             .attr("d", function (d) {
-
                 return diagCoords2;
             });
 
         // Transition links to their new position.
         link.transition()
             .duration(this.duration)
-            .attr("d", this.diagonal)
-            ;
+            .attr("d", this.diagonal);
+
         link.style("stroke", function (d) { return (d.source.IsSelected ? "#ccc" : "none"); });
         // Transition exiting nodes to the parent"s new position.
         link.exit().transition()
@@ -478,7 +503,7 @@ export class OrgTree implements OnInit {
     }
     emitaddNodeNotification(data: OrgNodeModel) {
         if (data) {
-            console.log(data);
+            // console.log(data);
             this.highlightSelectedNode(data);
             this.addNode.emit(data);
 
@@ -497,15 +522,18 @@ export class OrgTree implements OnInit {
         node.IsSibling = false;
         node.Show = false;
         if (this.selectedOrgNode != null) {
+
             //if this is the selected node, or sibling or selected node's parent or selected nodes child
-            if (this.selectedOrgNode.NodeID == node.NodeID) {
+            if (this.selectedOrgNode.NodeID === node.NodeID) {
                 console.log("showing" + node.NodeFirstName);
                 node.Show = true;
             }
             else if (this.selectedOrgNode.ParentNodeID === node.ParentNodeID) {
                 node.IsSibling = true;
-                node.Show = true
+                node.Show = true;
             }
+            // if this is the selected node, or sibling or selected node's parent or selected nodes child
+
             else if (this.selectedOrgNode.ParentNodeID === node.NodeID) {
                 node.IsParent = true;
                 node.Show = true;
@@ -529,5 +557,6 @@ export class OrgTree implements OnInit {
 
         }
         return false;
+
     }
 }
