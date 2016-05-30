@@ -85,19 +85,25 @@ export class OrgTree implements OnInit {
         let i: number = 0;
         this.nodes = this.tree.nodes(this.root).reverse();
         this.links = this.tree.links(this.nodes);
+        this.nodes.forEach(element => {
+            element.Show=this.isAncestorOrRelated(element);
+        });
+        console.log(this.nodes);
+        console.log(this.links);
         source.x0 = source.x;
         source.y0 = source.y;
+        console.log(source);
         // Normalize for fixed-depth.
         this.nodes.forEach(function (d) { d.y = d.depth * 180; });
 
         // Update the nodes…
         let node = this.svg.selectAll("g.node")
-            .data(this.nodes, function (d) { return d.NodeID || (++i); });
+            .data(this.nodes.filter(function(d){ return d.Show; }), function (d) { return d.NodeID || (++i); });
 
 
         // Enter any new nodes at the parent"s previous position.
         let nodeEnter = node.enter().append("g")
-            .attr("class", "node")
+               .attr("class", "node")
             .attr("transform", function (d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
             .on("click", (ev) => this.click(ev));
 
@@ -133,6 +139,7 @@ export class OrgTree implements OnInit {
         });
         node.select("text").text(function (d) { return d.IsSelected ? "" : d.NodeFirstName; });
         node.select("circle").style("fill", function (d) { console.log(d.IsSelected); return d.IsSelected ? "green" : "#fff"; });
+      
         // Transition nodes to their new position.
         let nodeUpdate = node.transition()
             .duration(this.duration)
@@ -183,7 +190,7 @@ export class OrgTree implements OnInit {
 
         // Update the links…
         let link = this.svg.selectAll("path.link")
-            .data(this.links, function (d) { return d.target.NodeID; });
+            .data(this.links, function (d) { return d.target.NodeID; }).filter(function(d){return d.target.Show});
 
         // Enter any new links at the parent"s previous position.
         link.enter().insert("path", "g")
@@ -470,4 +477,15 @@ export class OrgTree implements OnInit {
         console.log(err);
     }
 
+    private isAncestorOrRelated(node: OrgNodeModel) {
+        if (this.selectedOrgNode != null) {
+            //if this is the selected node, or sibling or selected node's parent or selected nodes child
+            if ((this.selectedOrgNode.NodeID == node.NodeID) || (this.selectedOrgNode.ParentNodeID == node.ParentNodeID) || (this.selectedOrgNode.ParentNodeID == node.NodeID)||(this.selectedOrgNode.NodeID == node.ParentNodeID)) {
+               console.log("showing"+node.NodeFirstName);
+                return true;
+            }
+            else { return false; }
+        }
+        return false;
+    }
 }

@@ -6,5 +6,6 @@ export class OrgNodeModel {
     OrgID: number;
     ParentNodeID: number;
     IsSelected:boolean;
+    Show:boolean;
     children: OrgNodeModel[];
 }
