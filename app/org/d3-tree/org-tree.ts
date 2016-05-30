@@ -15,7 +15,7 @@ export class OrgTree implements OnInit {
     svg: any;
     graph: any;
     root: any;
-    duration: number = 1555;
+    duration: number = 1;
     nodes: any;
     links: any;
     nodeID: number = 300;
@@ -67,7 +67,7 @@ export class OrgTree implements OnInit {
             d.children = null;
         }
     }
-    centerNode(source) {
+     centerNode(source) {
 
         let x = -source.y0;
         let y = -source.x0;
@@ -80,14 +80,17 @@ export class OrgTree implements OnInit {
     }
 
 
+
     render(source) {
 
         let i: number = 0;
         this.nodes = this.tree.nodes(this.root).reverse();
-        this.links = this.tree.links(this.nodes);
+     
         this.nodes.forEach(element => {
             element.Show=this.isAncestorOrRelated(element);
         });
+           this.nodes= this.nodes.filter(function(d){return d.Show});
+        this.links = this.tree.links(this.nodes);
         console.log(this.nodes);
         console.log(this.links);
         source.x0 = source.x;
@@ -98,7 +101,7 @@ export class OrgTree implements OnInit {
 
         // Update the nodes…
         let node = this.svg.selectAll("g.node")
-            .data(this.nodes.filter(function(d){ return d.Show; }), function (d) { return d.NodeID || (++i); });
+            .data(this.nodes, function (d) { return d.NodeID || (++i); });
 
 
         // Enter any new nodes at the parent"s previous position.
@@ -143,7 +146,7 @@ export class OrgTree implements OnInit {
         // Transition nodes to their new position.
         let nodeUpdate = node.transition()
             .duration(this.duration)
-            .attr("transform", function (d) { return "translate(" + d.y + "," + d.x + ")"; });
+            .attr("transform", function (d) {  return "translate(" + d.y + "," + d.x + ")"; });
 
         nodeUpdate.select("circle")
             .attr("r", 12.5)
@@ -190,7 +193,7 @@ export class OrgTree implements OnInit {
 
         // Update the links…
         let link = this.svg.selectAll("path.link")
-            .data(this.links, function (d) { return d.target.NodeID; }).filter(function(d){return d.target.Show});
+            .data(this.links, function (d) { return d.target.NodeID; });
 
         // Enter any new links at the parent"s previous position.
         link.enter().insert("path", "g")
@@ -369,8 +372,10 @@ export class OrgTree implements OnInit {
 
     highlightAndCenterNode(d) {
         this.highlightSelectedNode(d);
+      
         this.render(d);
-        this.centerNode(d);
+          this.centerNode(d);
+       
     }
     click(d) {
         event.stopPropagation();
