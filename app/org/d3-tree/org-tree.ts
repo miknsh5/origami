@@ -5,11 +5,12 @@ import {Inject} from "@angular/core";
 import * as d3 from "d3";
 import { OrgNodeModel, OrgService} from "../shared/index";
 
-@Directive({
-    selector: "[sgtreegraph]"
+@Component({
+    selector: "sg-org-tree",
+    template: ``
 })
 
-export class OrgTreeDirective implements OnInit, OnChanges {
+export class OrgTreeComponent implements OnInit, OnChanges {
     tree: any;
     diagonal: any;
     svg: any;
@@ -22,6 +23,8 @@ export class OrgTreeDirective implements OnInit, OnChanges {
     selectedNode: any;
     selectedOrgNode: any;
 
+    @Input() width: number;
+    @Input() height: number;
     @Input() treeData: any;
     @Output() selectNode = new EventEmitter<OrgNodeModel>();
     @Output() addNode = new EventEmitter<OrgNodeModel>();
@@ -60,8 +63,7 @@ export class OrgTreeDirective implements OnInit, OnChanges {
     }
 
     constructor(private orgService: OrgService,
-        @Inject(ElementRef) elementRef: ElementRef,
-        @Input() width: number, @Input() height: number) {
+        @Inject(ElementRef) elementRef: ElementRef) {
         let el: any = elementRef.nativeElement;
         this.graph = d3.select(el);
     }

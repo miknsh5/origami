@@ -5,7 +5,7 @@
 </div>
 <div class="main-canvas" *ngIf="orgChart">
     <h1>Welcome to {{orgChart.OrganizationName}}</h1>
-    <sgtreegraph [treeData]=treeJson width="960" height="500" (selectNode)="onNodeSelected($event)" (addNode)="onNodeAdded($event)"></sgtreegraph>
+    <sg-org-tree [treeData]="treeJson" width="960" height="500" (selectNode)="onNodeSelected($event)" (addNode)="onNodeAdded($event)"></sg-org-tree>
 </div>
 <sg-org-node-detail #nodeDetail [selectedOrgNode]="selectedNode" (deleteNode)="onNodeDeleted($event)" (updateNode)="onNodeUpdated($event)"></sg-org-node-detail>
 <div>
