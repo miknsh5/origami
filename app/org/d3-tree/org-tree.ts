@@ -7,7 +7,7 @@ import { OrgNodeModel, OrgService} from "../shared/index";
 
 @Directive({
     selector: "tree-graph"
-  })
+})
 
 export class OrgTree implements OnInit {
     tree: any;
@@ -221,10 +221,10 @@ export class OrgTree implements OnInit {
 
 
     bodyClicked(d) {
-        if(event.srcElement.nodeName=="svg")
-        {
-        this.deselectNode();
-    }}
+        if (event.srcElement.nodeName === "svg") {
+            this.deselectNode();
+        }
+    }
 
     deselectNode() {
         if (this.selectedOrgNode != null) {
