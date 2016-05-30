@@ -523,7 +523,7 @@ export class OrgTree implements OnInit, OnChanges {
         node.Show = false;
         if (this.selectedOrgNode != null) {
 
-            //if this is the selected node, or sibling or selected node's parent or selected nodes child
+            // if this is the selected node, or sibling or selected node's parent or selected nodes child
             if (this.selectedOrgNode.NodeID === node.NodeID) {
                 console.log("showing" + node.NodeFirstName);
                 node.Show = true;
