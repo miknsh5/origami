@@ -69,10 +69,10 @@ export class OrgTree implements OnInit {
     }
      centerNode(source) {
 
-        let x = -source.y0;
-        let y = -source.x0;
-        x = x * 1 + 720 / 2;
-        y = y * 1 + 460 / 2;
+        let x =source.y0;
+        let y =source.x0;
+        x =  720 / 2-x;
+        y =  460 / 2-y;
         d3.select("g").transition()
             .duration(this.duration)
             .attr("transform", "translate(" + x + "," + y + ")");
