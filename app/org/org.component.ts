@@ -6,7 +6,7 @@ import { tokenNotExpired } from "angular2-jwt";
 import {AddNodeComponent} from "./add-node/add-node.component";
 import { OrgNodeDetailComponent } from "./org-node-detail/index";
 import { OrgChartModel, OrgNodeModel, OrgService } from "./shared/index";
-import {OrgTreeComponent} from "./d3-tree/org-tree";
+import {OrgTreeComponent} from "./d3-tree/org-tree.component";
 
 @Component({
     selector: "sg-origami-org",
