@@ -130,6 +130,10 @@ export class OrgTree implements OnInit {
 
             .style("fill-opacity", 1);
         node.select("#abbr").text(function (d) {
+            if(d.IsGrandParent)
+            {
+                return "";
+            }
             let fn = "";
             let ln = "";
             if (d.NodeFirstName) {
@@ -140,7 +144,7 @@ export class OrgTree implements OnInit {
             }
             return fn + ln;
         });
-        node.select("text").text(function (d) { return d.IsSelected ? "" : d.NodeFirstName; });
+        node.select("text").text(function (d) { return d.IsSelected||d.IsGrandParent ? "" : d.NodeFirstName; });
         node.select("circle").style("fill", function (d) { console.log(d.IsSelected); return d.IsSelected ? "green" : "#fff"; });
 
         // Transition nodes to their new position.
