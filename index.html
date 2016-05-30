@@ -1,7 +1,10 @@
+<!Doctype html>
 <html>
 
 <head>
-    <script>document.write('<base href="' + document.location + '" />');</script>
+    <script>
+        document.write('<base href="' + document.location + '" />');
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Auth0 - Angular 2 With SystemJS</title>
@@ -9,17 +12,12 @@
     <!-- Auth0 Lock script and AngularJS module -->
     <script src="//cdn.auth0.com/js/lock-8.2.min.js"></script>
 
-    <link href='https://fonts.googleapis.com/css?family=Roboto:400,700,300' rel='stylesheet' type='text/css'>
- <link rel="stylesheet" href="org-tree.css">
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:400,700,300">
+    <link rel="stylesheet" href="org-tree.css">
     <!-- Polyfill(s) for older browsers -->
     <script src="node_modules/es6-shim/es6-shim.min.js"></script>
-    <script src="node_modules/reflect-metadata/Reflect.js"></script>    
-    <script src="node_modules/zone.js/dist/zone.js"></script>   
-    
-    
-    
-    
-
+    <script src="node_modules/reflect-metadata/Reflect.js"></script>
+    <script src="node_modules/zone.js/dist/zone.js"></script>
     <script src="node_modules/systemjs/dist/system.src.js"></script>
 
     <!-- Configure(s) SystemJS -->
@@ -30,7 +28,7 @@
 </head>
 
 <body>
-    <origami> Loading... </origami>
+    <sg-origami> Loading... </sg-origami>
 </body>
 
 </html>

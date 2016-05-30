@@ -6,10 +6,11 @@ import { tokenNotExpired } from "angular2-jwt";
 import {AddNodeComponent} from "./add-node/add-node.component";
 import { OrgNodeDetailComponent } from "./org-node-detail/index";
 import { OrgChartModel, OrgNodeModel, OrgService } from "./shared/index";
-import {OrgTree} from "./d3-tree/org-tree";
+import {OrgTreeComponent} from "./d3-tree/org-tree";
+
 @Component({
-    selector: "origami-org",
-    directives: [OrgTree, OrgNodeDetailComponent, AddNodeComponent],
+    selector: "sg-origami-org",
+    directives: [OrgTreeComponent, OrgNodeDetailComponent, AddNodeComponent],
     templateUrl: "app/org/org.component.html",
     styleUrls: ["app/org/org.component.css"],
     providers: [OrgService, HTTP_PROVIDERS]
@@ -18,7 +19,7 @@ import {OrgTree} from "./d3-tree/org-tree";
 export class OrgComponent {
     orgChart: OrgChartModel;
     orgNodes: OrgNodeModel[];
-    treeJson: any;
+    @Output() treeJson: any;
     @Output() selectedNode: OrgNodeModel;
 
     constructor(private orgService: OrgService, private router: Router) {
@@ -31,7 +32,6 @@ export class OrgComponent {
             err => this.orgService.logError(err),
             () => console.log("Random Quote Complete"));
     }
-
 
     onNodeSelected(node) {
         this.selectedNode = node;
@@ -47,11 +47,8 @@ export class OrgComponent {
             node.IsSelected = true;
             if (!node.children) {
                 node.children = new Array<OrgNodeModel>();
-
             }
-
             node.children.push(newNode);
-
             return;
         } else {
             node.IsSelected = false;
@@ -60,6 +57,7 @@ export class OrgComponent {
             }
         }
     }
+
     updateJSON() {
         this.treeJson = JSON.parse(JSON.stringify(this.orgNodes));
         // alert(JSON.stringify(this.orgNodes));
@@ -71,13 +69,11 @@ export class OrgComponent {
             nodes.forEach(element => {
                 if (this.compareNodeID(element, this.selectedNode)) {
                     index = nodes.indexOf(element);
-
                 }
             });
             if (index > -1) {
                 nodes.splice(index, 1);
                 this.selectedNode = null;
-
             }
             else {
                 for (let i = 0; i < nodes.length; i++) {
@@ -85,24 +81,19 @@ export class OrgComponent {
                     if (element.children) {
                         this.deleteNodeFromArray(element.children);
                     }
-
                 }
             }
-
         }
     }
 
-
     onNodeDeleted(deleted) {
-
         this.deleteNodeFromArray(this.orgNodes);
-
         this.updateJSON();
     }
+
     onNodeUpdated(selected) {
         this.selectedNode = selected;
         this.updateOrgNode(this.orgNodes[0]);
-
         this.updateJSON();
     }
 
@@ -120,6 +111,13 @@ export class OrgComponent {
             }
         }
     }
+
+    logout() {
+        localStorage.removeItem("profile");
+        localStorage.removeItem("id_token");
+        this.router.navigate(["/Login"]);
+    }
+
     private compareNodeID(updatedNode: OrgNodeModel, currentNode: OrgNodeModel): boolean {
         if (updatedNode != null && currentNode != null) {
             return updatedNode.NodeID === currentNode.NodeID;
@@ -133,12 +131,6 @@ export class OrgComponent {
         this.orgNodes = this.orgChart.OrgNodes;
         this.treeJson = JSON.parse(JSON.stringify(this.orgNodes));
         // console.log(this.orgChart);
-    }
-
-    logout() {
-        localStorage.removeItem("profile");
-        localStorage.removeItem("id_token");
-        this.router.navigate(["/Login"]);
     }
 
 }   

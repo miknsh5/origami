@@ -5,7 +5,7 @@ import { OrgNodeModel, OrgService } from "../shared/index";
 
 
 @Component({
-    selector: "origami-org-node-detail",
+    selector: "sg-org-node-detail",
     templateUrl: "app/org/org-node-detail/org-node-detail.component.html",
     styleUrls: ["app/org/org-node-detail/org-node-detail.component.css"],
     directives: [FORM_DIRECTIVES, COMMON_DIRECTIVES]
@@ -19,15 +19,15 @@ export class OrgNodeDetailComponent {
     private isEditMode: boolean;
     private editNodeDetails: OrgNodeModel;
 
+    constructor(private orgService: OrgService) { }
+
     killKeydownEvent() {
         event.stopPropagation();
     }
-    private doesChildNodeExist(node: OrgNodeModel): boolean {
 
+    private doesChildNodeExist(node: OrgNodeModel): boolean {
         // console.log(node.children!=null);
         return (node.children != null);
-    }
-    constructor(private orgService: OrgService) {
     }
 
     private onSubmit(form: NgForm) {
@@ -45,10 +45,10 @@ export class OrgNodeDetailComponent {
 
     private editNode(node: OrgNodeModel) {
         if (!node) { return; }
-
         /*this.isEditMode = false;
            this.updateNode.emit(node);
            this.editNodeDetails = null;*/
+
         // we don"t really need to send any child info to the server at this point
         node.children = null;
         this.orgService.updateNode(node)
@@ -56,12 +56,12 @@ export class OrgNodeDetailComponent {
             error => this.handleError(error),
             () => console.log("Node Updated Complete"));
     }
+
     private onEditNodeClicked() {
         this.isEditMode = true;
     }
 
     private onDeleteNodeClicked() {
-
         if (this.selectedOrgNode.children == null) {
             this.orgService.deleteNode(this.selectedOrgNode.NodeID)
                 .subscribe(data => this.emitDeleteNodeNotification(data),
@@ -72,6 +72,7 @@ export class OrgNodeDetailComponent {
             alert("Delete Child Node First!");
         }
     }
+
     private emitDeleteNodeNotification(data) {
         if (data === true) {
             this.deleteNode.emit(this.selectedOrgNode);
