@@ -2,14 +2,18 @@
   cursor: pointer;
 }
 
-.node circle {
-  fill: #fff;
-  stroke: steelblue;
-  stroke-width: 1.5px;
+node circle {
+  -webkit-box-shadow: 0 0 40px rgba(0, 0, 0, 0.8);
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.8);
+}
+
+.node circle text {
+  text-transform: uppercase;
 }
 
 .node text {
   font: 10px sans-serif;
+  fill: #FFF;
 }
 
 .link {

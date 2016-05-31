@@ -45,9 +45,21 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             .projection(function (d) { return [d.y, d.x]; });
 
         this.svg = this.graph.append("svg")
-            .attr("width", this.width)
-            .attr("height", this.height)
-            .append("g")
+            .attr("width", this.width + margin.right + margin.left)
+            .attr("height", this.height + margin.top + margin.bottom)
+            .append("g");
+
+        let verticalLine: [number, number][] = [[(this.width / 2), this.height], [(this.width / 2), 0]];
+        let horizontalLine: [number, number][] = [[0, (this.height / 2)], [this.width, (this.height / 2)]];
+
+        // Creates and vertical line
+        this.createLines(verticalLine);
+
+        // Creates and horizontal line 
+        this.createLines(horizontalLine);
+
+        this.svg = this.svg.append("g")
+            .attr("class", "nodes")
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
         this.root = this.treeData[0];
@@ -75,6 +87,18 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         this.graph = d3.select(el);
     }
 
+    createLines(lineData) {
+        let line = d3.svg.line()
+            .x(function (d) { return d[0]; })
+            .y(function (d) { return d[1]; });
+
+        this.svg.append("path")
+            .attr("d", line(lineData))
+            .attr("stroke", "#B6B6B6")
+            .attr("stroke-width", 0.4)
+            .attr("fill", "none");
+    }
+
     collapseTree(d) {
         if (d.children) {
             d._children = d.children;
@@ -87,12 +111,11 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     }
 
     centerNode(source) {
-
         let x = source.y0;
         let y = source.x0;
         x = this.treeWidth / 2 - x;
         y = this.treeHeight / 2 - y;
-        d3.select("g").transition()
+        d3.select("g.nodes").transition()
             .duration(this.duration)
             .attr("transform", "translate(" + x + "," + y + ")");
         if (this.root.NodeID !== source.NodeID) {
@@ -204,10 +227,10 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 else if (d.IsGrandParent === true) { return this.grandParentRadius; }
                 else { return this.defaultRadius; }
             })
-            .style("fill", function (d) { console.log(d.NodeFirstName + d.IsSelected); return d.IsSelected ? "green" : "#fff"; });
+            .style("fill", function (d) { console.log(d.NodeFirstName + d.IsSelected); return d.IsSelected ? "#0097FF" : "#CFD8DC"; });
 
         nodeUpdate.select("text")
-            .style("fill-opacity", 1);
+            .style({ "fill-opacity": 1, "fill": "#727272" });
 
         let nodeExit = node.exit().transition().delay(100).
             duration(this.duration)

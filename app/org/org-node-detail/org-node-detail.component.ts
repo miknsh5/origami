@@ -19,7 +19,6 @@ export class OrgNodeDetailComponent {
     private isEditMode: boolean;
     private editNodeDetails: OrgNodeModel;
 
-
     constructor(private orgService: OrgService) { }
 
     killKeydownEvent() {
@@ -29,7 +28,6 @@ export class OrgNodeDetailComponent {
     private doesChildNodeExist(node: OrgNodeModel): boolean {
         // console.log(node.children!=null);
         return (node.children != null);
-
     }
 
     private onSubmit(form: NgForm) {
@@ -44,7 +42,6 @@ export class OrgNodeDetailComponent {
         this.editNodeDetails.ParentNodeID = this.selectedOrgNode.ParentNodeID;
         this.editNode(this.editNodeDetails);
     }
-
 
     private editNode(node: OrgNodeModel) {
         if (!node) { return; }
@@ -65,16 +62,16 @@ export class OrgNodeDetailComponent {
     }
 
     private onDeleteNodeClicked() {
-        if (this.selectedOrgNode.children == null) {
-            this.orgService.deleteNode(this.selectedOrgNode.NodeID)
-                .subscribe(data => this.emitDeleteNodeNotification(data),
-
-                error => this.handleError(error),
-                () => console.log("Node Deleted Complete"));
-
-        }
-        else {
-            alert("Delete Child Node First!");
+        if (this.selectedOrgNode) {
+            if (this.selectedOrgNode.children == null) {
+                this.orgService.deleteNode(this.selectedOrgNode.NodeID)
+                    .subscribe(data => this.emitDeleteNodeNotification(data),
+                    error => this.handleError(error),
+                    () => console.log("Node Deleted Complete"));
+            }
+            else {
+                alert("Delete Child Node First!");
+            }
         }
     }
 
