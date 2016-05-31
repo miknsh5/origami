@@ -19,10 +19,16 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     duration: number = 10;
     nodes: any;
     links: any;
-    nodeID: number = 300;
     selectedNode: any;
     selectedOrgNode: any;
-
+    topBottomMargin: number = 20;
+    rightLeftMargin: number = 120;
+    siblingRadius: number = 14.5;
+    parentChildRadius: number = 10.5;
+    grandParentRadius: number = 6.5;
+    defaultRadius: number = 4.5;
+    treeWidth: number;
+    treeHeight: number;
     @Input() width: number;
     @Input() height: number;
     @Input() treeData: any;
@@ -30,16 +36,17 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     @Output() addNode = new EventEmitter<OrgNodeModel>();
 
     ngOnInit() {
-        let margin = { top: 20, right: 120, bottom: 20, left: 120 },
-            width = 960 - margin.right - margin.left,
-            height = 500 - margin.top - margin.bottom;
-        this.tree = d3.layout.tree().size([height, width]);
+        //  Todo:- We need to use the values coming from the host instead of our own
+        let margin = { top: this.topBottomMargin, right: this.rightLeftMargin, bottom: this.topBottomMargin, left: this.rightLeftMargin };
+        this.treeWidth = this.width - margin.right - margin.left,
+            this.treeHeight = this.height - margin.top - margin.bottom;
+        this.tree = d3.layout.tree().size([this.treeHeight, this.treeWidth]);
         this.diagonal = d3.svg.diagonal()
             .projection(function (d) { return [d.y, d.x]; });
 
         this.svg = this.graph.append("svg")
-            .attr("width", width + margin.right + margin.left)
-            .attr("height", height + margin.top + margin.bottom)
+            .attr("width", this.width)
+            .attr("height", this.height)
             .append("g")
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
@@ -83,8 +90,8 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
         let x = source.y0;
         let y = source.x0;
-        x = 720 / 2 - x;
-        y = 460 / 2 - y;
+        x = this.treeWidth / 2 - x;
+        y = this.treeHeight / 2 - y;
         d3.select("g").transition()
             .duration(this.duration)
             .attr("transform", "translate(" + x + "," + y + ")");
@@ -192,10 +199,10 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
         nodeUpdate.select("circle")
             .attr("r", function (d) {
-                if (d.IsSelected === true || d.IsSibling === true) { return 14.5; }
-                else if (d.IsParent === true || d.IsChild === true) { return 10.5; }
-                else if (d.IsGrandParent === true) { return 6.5; }
-                else { return 4.5; }
+                if (d.IsSelected === true || d.IsSibling === true) { return this.siblingRadius; }
+                else if (d.IsParent === true || d.IsChild === true) { return this.parentChildRadius; }
+                else if (d.IsGrandParent === true) { return this.grandParentRadius; }
+                else { return this.defaultRadius; }
             })
             .style("fill", function (d) { console.log(d.NodeFirstName + d.IsSelected); return d.IsSelected ? "green" : "#fff"; });
 

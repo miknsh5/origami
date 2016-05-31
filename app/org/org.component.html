@@ -12,8 +12,8 @@
     <h1>Welcome to {{orgChart.OrganizationName}}</h1>
     <sg-org-tree 
         [treeData]="treeJson" 
-        width="960"
-        height="500" 
+        [width]="960"
+        [height]="500" 
         (selectNode)="onNodeSelected($event)" 
         (addNode)="onNodeAdded($event)">
     </sg-org-tree>
