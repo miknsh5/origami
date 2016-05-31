@@ -8,7 +8,7 @@ import { OrgNodeModel, OrgService} from "../shared/index";
 const DURATION = 10;
 const TOPBOTTOM_MARGIN = 20;
 const RIGHTLEFT_MARGIN = 120;
-const SIBBLING_RADIUS = 14.5;
+const SIBLING_RADIUS = 16.5;
 const PARENTCHILD_RADIUS = 10.5;
 const GRANDPARENT_RADIUS = 6.5;
 const DEFAULT_RADIUS = 4.5;
@@ -224,7 +224,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         let nodeEnter = node.enter().append("g")
             .attr("class", "node")
             .attr("transform", function (d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
-            .on("click", (ev) => this.click(ev));
+            .on("click", (ev) => this.nodeClicked(ev));
 
         nodeEnter.append("circle")
             .attr("r", 1e-6);
@@ -266,7 +266,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
         nodeUpdate.select("circle")
             .attr("r", function (d) {
-                if (d.IsSelected === true || d.IsSibling === true) { return SIBBLING_RADIUS; }
+                if (d.IsSelected === true || d.IsSibling === true) { return SIBLING_RADIUS; }
                 else if (d.IsParent === true || d.IsChild === true) { return PARENTCHILD_RADIUS; }
                 else if (d.IsGrandParent === true) { return GRANDPARENT_RADIUS; }
                 else { return DEFAULT_RADIUS; }
@@ -463,7 +463,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         this.centerNode(d);
     }
 
-    click(d) {
+    nodeClicked(d) {
         event.stopPropagation();
         this.expandCollapse(d);
         this.highlightAndCenterNode(d);
