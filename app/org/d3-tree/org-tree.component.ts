@@ -5,6 +5,14 @@ import {Inject} from "@angular/core";
 import * as d3 from "d3";
 import { OrgNodeModel, OrgService} from "../shared/index";
 
+const DURATION = 10;
+const TOPBOTTOM_MARGIN = 20;
+const RIGHTLEFT_MARGIN = 120;
+const SIBBLING_RADIUS = 14.5;
+const PARENTCHILD_RADIUS = 10.5;
+const GRANDPARENT_RADIUS = 6.5;
+const DEFAULT_RADIUS = 4.5;
+
 @Component({
     selector: "sg-org-tree",
     template: ``
@@ -16,19 +24,13 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     svg: any;
     graph: any;
     root: any;
-    duration: number = 10;
     nodes: any;
     links: any;
     selectedNode: any;
     selectedOrgNode: any;
-    topBottomMargin: number = 20;
-    rightLeftMargin: number = 120;
-    siblingRadius: number = 14.5;
-    parentChildRadius: number = 10.5;
-    grandParentRadius: number = 6.5;
-    defaultRadius: number = 4.5;
     treeWidth: number;
     treeHeight: number;
+
     @Input() width: number;
     @Input() height: number;
     @Input() treeData: any;
@@ -37,20 +39,22 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
     ngOnInit() {
         //  Todo:- We need to use the values coming from the host instead of our own
-        let margin = { top: this.topBottomMargin, right: this.rightLeftMargin, bottom: this.topBottomMargin, left: this.rightLeftMargin };
-        this.treeWidth = this.width - margin.right - margin.left,
-            this.treeHeight = this.height - margin.top - margin.bottom;
+        let margin = { top: TOPBOTTOM_MARGIN, right: RIGHTLEFT_MARGIN, bottom: TOPBOTTOM_MARGIN, left: RIGHTLEFT_MARGIN };
+
+        this.treeWidth = this.width + margin.right + margin.left;
+        this.treeHeight = this.height + margin.top + margin.bottom;
+
         this.tree = d3.layout.tree().size([this.treeHeight, this.treeWidth]);
         this.diagonal = d3.svg.diagonal()
             .projection(function (d) { return [d.y, d.x]; });
 
         this.svg = this.graph.append("svg")
-            .attr("width", this.width + margin.right + margin.left)
-            .attr("height", this.height + margin.top + margin.bottom)
+            .attr("width", this.treeWidth)
+            .attr("height", this.treeHeight)
             .append("g");
 
-        let verticalLine: [number, number][] = [[(this.width / 2), this.height], [(this.width / 2), 0]];
-        let horizontalLine: [number, number][] = [[0, (this.height / 2)], [this.width, (this.height / 2)]];
+        let verticalLine: [number, number][] = [[(this.treeWidth / 2), this.treeHeight], [(this.treeWidth / 2), 0]];
+        let horizontalLine: [number, number][] = [[0, (this.treeHeight / 2)], [this.treeWidth, (this.treeHeight / 2)]];
 
         // Creates and vertical line
         this.createLines(verticalLine);
@@ -116,7 +120,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         x = this.treeWidth / 2 - x;
         y = this.treeHeight / 2 - y;
         d3.select("g.nodes").transition()
-            .duration(this.duration)
+            .duration(DURATION)
             .attr("transform", "translate(" + x + "," + y + ")");
         if (this.root.NodeID !== source.NodeID) {
             let parentNode = source.parent;
@@ -142,7 +146,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 .filter(function (d) {
                     return d.NodeID === parentNode.NodeID;
                 }).transition()
-                .duration(this.duration)
+                .duration(DURATION)
                 .attr("transform", "translate(" + parentNode.y + " , " + source.x + ")");
         }
     }
@@ -213,19 +217,19 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         });
 
         node.select("text").text(function (d) { return d.IsSelected || d.IsGrandParent ? "" : d.NodeFirstName; });
-        node.select("circle").style("fill", function (d) { console.log(d.IsSelected); return d.IsSelected ? "green" : "#fff"; });
+        node.select("circle").style("fill", function (d) { console.log(d.IsSelected); return d.IsSelected ? "#0097FF" : "#CFD8DC"; });
 
         // Transition nodes to their new position.
         let nodeUpdate = node.transition()
-            .duration(this.duration)
+            .duration(DURATION)
             .attr("transform", function (d) { return "translate(" + d.y + "," + d.x + ")"; });
 
         nodeUpdate.select("circle")
             .attr("r", function (d) {
-                if (d.IsSelected === true || d.IsSibling === true) { return this.siblingRadius; }
-                else if (d.IsParent === true || d.IsChild === true) { return this.parentChildRadius; }
-                else if (d.IsGrandParent === true) { return this.grandParentRadius; }
-                else { return this.defaultRadius; }
+                if (d.IsSelected === true || d.IsSibling === true) { return SIBBLING_RADIUS; }
+                else if (d.IsParent === true || d.IsChild === true) { return PARENTCHILD_RADIUS; }
+                else if (d.IsGrandParent === true) { return GRANDPARENT_RADIUS; }
+                else { return DEFAULT_RADIUS; }
             })
             .style("fill", function (d) { console.log(d.NodeFirstName + d.IsSelected); return d.IsSelected ? "#0097FF" : "#CFD8DC"; });
 
@@ -233,7 +237,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             .style({ "fill-opacity": 1, "fill": "#727272" });
 
         let nodeExit = node.exit().transition().delay(100).
-            duration(this.duration)
+            duration(DURATION)
             .attr("transform", function (d) { return "translate(" + source.y + "," + source.x + ")"; })
             .remove();
 
@@ -266,14 +270,14 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
         // Transition links to their new position.
         link.transition()
-            .duration(this.duration)
+            .duration(DURATION)
             .attr("d", this.diagonal);
 
         link.style("stroke", function (d) { return (d.source.IsSelected ? "#ccc" : "none"); });
 
         // Transition exiting nodes to the parent"s new position.
         link.exit().transition()
-            .duration(this.duration)
+            .duration(DURATION)
             .attr("d", function (d) {
 
                 return diagCoords2;
@@ -307,6 +311,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     }
 
     keyDown(d) {
+        event.stopPropagation();
         if (this.selectedOrgNode == null) {
             return;
         }
