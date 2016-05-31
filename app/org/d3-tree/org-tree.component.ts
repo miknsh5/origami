@@ -8,7 +8,7 @@ import { OrgNodeModel, OrgService} from "../shared/index";
 const DURATION = 10;
 const TOPBOTTOM_MARGIN = 20;
 const RIGHTLEFT_MARGIN = 120;
-const SIBLING_RADIUS = 14.5;
+const SIBLING_RADIUS = 16.5;
 const PARENTCHILD_RADIUS = 10.5;
 const GRANDPARENT_RADIUS = 6.5;
 const DEFAULT_RADIUS = 4.5;
