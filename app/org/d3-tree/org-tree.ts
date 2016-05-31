@@ -276,8 +276,11 @@ export class OrgTree implements OnInit, OnChanges {
 
     deselectNode() {
         if (this.selectedOrgNode != null) {
+            //  Save the last selection temp so that the graph maintains its position
+            let lastSelectedNode = this.selectedOrgNode;
             this.highlightSelectedNode(null);
             this.render(this.root);
+            this.centerNode(lastSelectedNode);
         }
 
     }
