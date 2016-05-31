@@ -1,12 +1,12 @@
-import { Component, Output, EventEmitter} from '@angular/core';
-import { HTTP_PROVIDERS } from '@angular/http';
-import { CanActivate, Router } from '@angular/router-deprecated';
-import { tokenNotExpired } from 'angular2-jwt';
+import { Component, Output, EventEmitter} from "@angular/core";
+import { HTTP_PROVIDERS } from "@angular/http";
+import { CanActivate, Router } from "@angular/router-deprecated";
+import { tokenNotExpired } from "angular2-jwt";
 
-import { AddNodeComponent } from './add-node/add-node.component';
-import { OrgNodeDetailComponent } from './org-node-detail/index';
-import { OrgChartModel, OrgNodeModel, OrgService } from './shared/index';
-import { OrgTreeComponent } from './d3-tree/org-tree.component';
+import { AddNodeComponent } from "./add-node/add-node.component";
+import { OrgNodeDetailComponent } from "./org-node-detail/index";
+import { OrgChartModel, OrgNodeModel, OrgService } from "./shared/index";
+import { OrgTreeComponent } from "./d3-tree/org-tree.component";
 
 
 @Component({
@@ -80,8 +80,8 @@ export class OrgComponent {
             nodes.splice(index, 1);
             this.selectedNode = null;
         } else {
-            for (var i = 0; i < nodes.length; i++) {
-                var element = nodes[i];
+            for (let i = 0; i < nodes.length; i++) {
+                let element = nodes[i];
                 if (element.children) {
                     this.deleteNodeFromArray(element.children);
                 }

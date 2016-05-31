@@ -16,8 +16,8 @@ export class OrgNodeDetailComponent {
     @Output() deleteNode = new EventEmitter<OrgNodeModel>();
     @Output() updateNode = new EventEmitter<OrgNodeModel>();
 
-    private isEditMode:boolean;
-    private editNodeDetails:OrgNodeModel;
+    private isEditMode: boolean;
+    private editNodeDetails: OrgNodeModel;
 
 
     constructor(private orgService: OrgService) { }
@@ -32,7 +32,7 @@ export class OrgNodeDetailComponent {
 
     }
 
-    private onSubmit(form:NgForm) {
+    private onSubmit(form: NgForm) {
         let data = JSON.stringify(form.value, null, 2);
         this.editNodeDetails = new OrgNodeModel();
         this.editNodeDetails.NodeFirstName = form.value.firstName;
@@ -69,8 +69,8 @@ export class OrgNodeDetailComponent {
             this.orgService.deleteNode(this.selectedOrgNode.NodeID)
                 .subscribe(data => this.emitDeleteNodeNotification(data),
 
-                    error => this.handleError(error),
-                    () => console.log('Node Deleted Complete'));
+                error => this.handleError(error),
+                () => console.log("Node Deleted Complete"));
 
         }
         else {
