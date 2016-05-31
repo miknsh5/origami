@@ -1,42 +1,29 @@
 <div class="auth-panel">
-<<<<<<< HEAD
-    <h2>My Organization</h2>
-    <button (click)="logout()"> Logout </button>
-=======
+
     <h2>Organization Chart</h2>
     <button (click)="logout()">Logout</button>
->>>>>>> development
+
     <button (click)="getAllNodes()">Load Data</button>
 </div>
 
 <div class="main-canvas" *ngIf="orgChart">
-<<<<<<< HEAD
+
     <h1>Welcome to {{orgChart.OrganizationName}}</h1>
     <sg-org-tree [treeData]="treeJson" width="960" height="500" (selectNode)="onNodeSelected($event)" (addNode)="onNodeAdded($event)"></sg-org-tree>
 </div>
 <sg-org-node-detail #nodeDetail [selectedOrgNode]="selectedNode" (deleteNode)="onNodeDeleted($event)" (updateNode)="onNodeUpdated($event)"></sg-org-node-detail>
 <div>
     <sg-origami-add-node [selectedNode]="selectedNode"></sg-origami-add-node>
-=======
-    <tree-graph
-            [treeData]=treeJson
-            width="1000"
-            height="130"
-            (selectNode)="onNodeSelected($event)">
+
+    <tree-graph [treeData]=treeJson width="1000" height="130" (selectNode)="onNodeSelected($event)">
     </tree-graph>
 </div>
 
-<origami-org-node-detail
-        #nodeDetail
-        [selectedOrgNode]="selectedNode"
-        (deleteNode)="onNodeDeleted($event)"
-        (updateNode)="onNodeUpdated($event)">
+<origami-org-node-detail #nodeDetail [selectedOrgNode]="selectedNode" (deleteNode)="onNodeDeleted($event)" (updateNode)="onNodeUpdated($event)">
 </origami-org-node-detail>
 
 <div>
-    <origami-add-node
-            (addNode)="onNodeAdded($event)"
-            [selectedNode]="selectedNode" >
+    <origami-add-node (addNode)="onNodeAdded($event)" [selectedNode]="selectedNode">
     </origami-add-node>
->>>>>>> development
+
 </div>
