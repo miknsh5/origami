@@ -5,13 +5,22 @@ import { Observable } from "rxjs/Observable";
 
 @Injectable()
 export class OrgService {
+<<<<<<< HEAD
     private origamiUrl = "//origamiapi-staging.azurewebsites.net";
     private getUrl = "/api/Org/GetOrgChart?orgID=1";
     private updateUrl = "/api/Org/EditNode";
     private deleteUrl = "/api/Org/DeleteNode?nodeID=";
     private addUrl = "/api/Org/AddNode";
+=======
+    private origamiUrl = 'http://origamiapi-staging.azurewebsites.net';
+    private getUrl = '/api/Org/GetOrgChart?orgID=1';
+    private updateUrl = '/api/Org/EditNode';
+    private deleteUrl = '/api/Org/DeleteNode?nodeID=';
+    private addUrl = '/api/Org/AddNode';
+>>>>>>> development
 
-    constructor(private http: Http) { }
+    constructor(private http:Http) {
+    }
 
     getNodes() {
         return this.http.get(this.origamiUrl + this.getUrl)
@@ -20,31 +29,48 @@ export class OrgService {
 
     updateNode(orgNode) {
         let node = JSON.stringify(orgNode);
+<<<<<<< HEAD
         let headers = new Headers({ "Content-Type": "application/json" });
         let options = new RequestOptions({ headers: headers });
+=======
+        let headers = new Headers({'Content-Type': 'application/json'});
+        let options = new RequestOptions({headers: headers});
+>>>>>>> development
         let url = this.origamiUrl + this.updateUrl;
         return this.http.post(url, node, options)
             .map(res => res.json());
     }
 
     deleteNode(orgNodeID) {
+<<<<<<< HEAD
         let headers = new Headers({ "Content-Type": "application/json" });
         let options = new RequestOptions({ headers: headers });
         let url = this.origamiUrl + this.deleteUrl + orgNodeID;
+=======
+        let headers = new Headers({'Content-Type': 'application/json'});
+        let options = new RequestOptions({headers: headers});
+        let url = this.origamiUrl + this.deleteUrl + orgNodeID
+>>>>>>> development
         return this.http.delete(url, options)
             .map(res => res.json());
     }
 
     addNode(orgNode) {
         let node = JSON.stringify(orgNode);
+<<<<<<< HEAD
         let headers = new Headers({ "Content-Type": "application/json" });
         let options = new RequestOptions({ headers: headers });
         let url = this.origamiUrl + this.addUrl;
+=======
+        let headers = new Headers({'Content-Type': 'application/json'});
+        let options = new RequestOptions({headers: headers});
+        let url = this.origamiUrl + this.addUrl
+>>>>>>> development
         return this.http.post(url, node, options)
             .map(res => res.json());
     }
 
-    logError(err: any) {
+    logError(err:any) {
         console.error(err);
     }
 }
