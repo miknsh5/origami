@@ -1,19 +1,23 @@
 <div class="detail-wrap">
-    <form #orgform="ngForm" *ngIf="selectedOrgNode" (ngSubmit)="onSubmit(orgform)">
+    <form #orgform="ngForm" *ngIf="selectedOrgNode" 
+    (ngSubmit)="onSubmit(orgform)">
 
         <div class="orgFormcontrols" *ngIf="selectedOrgNode">
             <div class="close-icon" *ngIf="!doesChildNodeExist(selectedOrgNode)" 
                 (click)="onDeleteNodeClicked(selectedOrgNode)">
             </div>
-            <div *ngIf="!isEditMode" class="edit-icon" 
+            <div *ngIf="!isEditMode"
+                 class="edit-icon" 
                 (click)="onEditNodeClicked()">
             </div>
-            <button type="submit" *ngIf="isEditMode" class="save-icon"
+            <button type="submit" *ngIf="isEditMode" 
+                 class="save-icon"
                  [disabled]="!orgform.form.valid">
              </button>
         </div>
 
-        <div *ngIf="selectedOrgNode && !isEditMode" class="text-wrap">
+        <div *ngIf="selectedOrgNode && !isEditMode" 
+            class="text-wrap">
             <div class="title-name">
                 {{selectedOrgNode.NodeFirstName}} {{selectedOrgNode.NodeLastName}}
             </div>
@@ -21,19 +25,23 @@
                 {{selectedOrgNode.Description}}
             </div>
         </div>
-        <div *ngIf="selectedOrgNode && isEditMode" class="form-group text-wrap">
-            <input type="text"   class="title-name-edit form-control" 
+        <div *ngIf="selectedOrgNode && isEditMode" 
+            class="form-group text-wrap">
+            <input type="text"   
+                class="title-name-edit form-control" 
                 (onclick)="killKeydownEvent()"
                 required ngControl="firstName" 
                 #firstName="ngForm"
                 [ngModel]="selectedOrgNode.NodeFirstName"
             />
-            <input type="text" class="title-name-edit form-control" 
+            <input type="text" 
+                class="title-name-edit form-control" 
                 required ngControl="lastName" 
                 #lastName="ngForm" 
                 [ngModel]="selectedOrgNode.NodeLastName"
             />
-            <input type="text" class="title-position-edit form-control" 
+            <input type="text" 
+                class="title-position-edit form-control" 
                 required ngControl="description"
                 #description="ngForm" 
                 [ngModel]="selectedOrgNode.Description"
