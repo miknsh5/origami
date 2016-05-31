@@ -58,7 +58,7 @@ export class OrgNodeDetailComponent {
             .subscribe(data => this.emitUpdateNodeNotification(data),
             error => this.handleError(error),
             () => console.log("Node Updated Complete"));
-
+    }
 
     private onEditNodeClicked() {
         this.isEditMode = true;

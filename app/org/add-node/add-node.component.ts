@@ -1,39 +1,3 @@
-<<<<<<< HEAD
-import {Component, EventEmitter, Output, Input} from "@angular/core";
-
-import {OrgNodeModel, OrgService } from "../shared/index";
-
-@Component({
-    selector: "sg-origami-add-node",
-    templateUrl: "app/org/add-node/add-node.component.html",
-    styleUrls: ["app/org/add-node/add-node.component.css"]
-})
-
-export class AddNodeComponent {
-    @Input() selectedNode: OrgNodeModel;
-    @Output() addNode = new EventEmitter<OrgNodeModel>();
-    node: OrgNodeModel = new OrgNodeModel();
-
-    constructor(private orgService: OrgService) { }
-
-    addChildNode(data: string) {
-        let dataParts: string[] = data.split(",");
-        this.node.children = null;
-        this.node.NodeFirstName = dataParts[0];
-        this.node.NodeLastName = dataParts[1];
-        this.node.Description = dataParts[2];
-        this.node.ParentNodeID = this.selectedNode.NodeID;
-        this.node.OrgID = this.selectedNode.OrgID;
-        console.log(this.node);
-        this.addNewNode(this.node);
-    }
-
-    emitaddNodeNotification(data: OrgNodeModel) {
-        if (data) {
-            console.log(data);
-            this.addNode.emit(data);
-        }
-=======
 import { Component, EventEmitter, Output, Input } from '@angular/core';
 import { OrgNodeModel, OrgService } from '../shared/index';
 
@@ -64,17 +28,13 @@ export class AddNodeComponent {
 
         console.log(this.node);
         this.addNewNode( this.node);
->>>>>>> development
+
     }
 
     private addNewNode(node) {
         if (!node) { return; }
         this.orgService.addNode(node)
             .subscribe(data => this.emitaddNodeNotification(data),
-<<<<<<< HEAD
-            error => this.handleError(error),
-            () => console.log("Node Added Complete"));
-=======
                 error => this.handleError(error),
                 () => console.log('Node Added Complete'));
     }
@@ -84,7 +44,7 @@ export class AddNodeComponent {
             console.log(data);
             this.addNode.emit(data);
         }
->>>>>>> development
+
     }
 
     private handleError(err) {
