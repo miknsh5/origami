@@ -109,14 +109,19 @@ export class OrgTree implements OnInit, OnChanges {
     render(source) {
 
         let i: number = 0;
-        this.nodes = this.tree.nodes(this.root).reverse();
 
-        this.nodes.forEach(element => {
+        //  We need to change nodes only when nodes are null or selectedOrgNode is not null( and might have changed)
+        if (this.nodes == null || this.selectedOrgNode != null) {
 
-            this.isAncestorOrRelated(element);
-        });
+            this.nodes = this.tree.nodes(this.root).reverse();
 
-        this.nodes = this.nodes.filter(function (d) { return d.Show; });
+            this.nodes.forEach(element => {
+
+                this.isAncestorOrRelated(element);
+            });
+
+            this.nodes = this.nodes.filter(function (d) { return d.Show; });
+        }
 
         this.links = this.tree.links(this.nodes);
         console.log(this.nodes);
@@ -526,6 +531,8 @@ export class OrgTree implements OnInit, OnChanges {
             // if this is the selected node, or sibling or selected node's parent or selected nodes child
             if (this.selectedOrgNode.NodeID === node.NodeID) {
                 console.log("showing" + node.NodeFirstName);
+                // mark as sibling so that it maintains style even after deselection by clicking outside
+                node.IsSibling = true;
                 node.Show = true;
             }
             else if (this.selectedOrgNode.ParentNodeID === node.ParentNodeID) {
