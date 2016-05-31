@@ -30,6 +30,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     selectedOrgNode: any;
     treeWidth: number;
     treeHeight: number;
+    reporteeNode: any;
 
     @Input() width: number;
     @Input() height: number;
@@ -292,8 +293,29 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
         d3.select("body").on("keydown", (ev) => this.keyDown(ev));
         d3.select("body").on("click", (ev) => this.bodyClicked(ev));
+        this.showUpdateReporteeNode(source);
+
     }
 
+    showUpdateReporteeNode(source) {
+        if (this.selectedOrgNode != null && this.selectedOrgNode.children == null) {
+            let y = source.y + 70;
+            if (this.reporteeNode == null) {
+                this.reporteeNode = this.svg.append("circle")
+                    .attr("transform", function (d) { return "translate(" + y + "," + source.x + ")"; })
+                    .attr("r", 4.5);
+            }
+            else {
+                this.reporteeNode.attr("transform", function (d) { return "translate(" + y + "," + source.x + ")"; });
+            }
+        }
+        else {
+            if (this.reporteeNode != null) {
+                this.reporteeNode.remove();
+                this.reporteeNode = null;
+            }
+        }
+    }
     bodyClicked(d) {
         if (event.srcElement.nodeName === "svg") {
             this.deselectNode();
