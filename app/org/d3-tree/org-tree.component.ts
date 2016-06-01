@@ -37,6 +37,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     @Input() treeData: any;
     @Output() selectNode = new EventEmitter<OrgNodeModel>();
     @Output() addNode = new EventEmitter<OrgNodeModel>();
+    @Output() switchToAdd = new EventEmitter<OrgNodeModel>()
 
     ngOnInit() {
         //  Todo:- We need to use the values coming from the host instead of our own
@@ -44,7 +45,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
         this.treeWidth = this.width + margin.right + margin.left;
         this.treeHeight = this.height + margin.top + margin.bottom;
-
         this.tree = d3.layout.tree().size([this.treeHeight, this.treeWidth]);
         this.diagonal = d3.svg.diagonal()
             .projection(function (d) { return [d.y, d.x]; });
@@ -79,10 +79,22 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
         if (this.tree != null) {
             this.root = this.treeData[0];
+            console.log(this.selectedOrgNode)
             if (this.selectedOrgNode != null) {
-                this.updateSelectedOrgNode(this.root);
+                if (this.selectedOrgNode.NodeID === -1) {
+                    let node = this.getNode(this.selectedOrgNode.ParentNodeID, this.root);
+                    if (node.children != null) {
+                        this.selectedOrgNode = node.children[node.children.length - 1];
+                    } else {
+                        this.selectedOrgNode = node;
+                    }
+                    this.highlightAndCenterNode(this.selectedOrgNode);
+                } else {
+                    this.updateSelectedOrgNode(this.root);
+                }
+            } else {
+                this.render(this.treeData[0]);
             }
-            this.render(this.treeData[0]);
         }
     }
 
@@ -157,11 +169,9 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
         //  We need to change nodes only when nodes are null or selectedOrgNode is not null( and might have changed)
         if (this.nodes == null || this.selectedOrgNode != null) {
-
             this.nodes = this.tree.nodes(this.root).reverse();
 
             this.nodes.forEach(element => {
-
                 this.isAncestorOrRelated(element);
             });
 
@@ -169,8 +179,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         }
 
         this.links = this.tree.links(this.nodes);
-        // console.log(this.nodes);
-        // console.log(this.links);
         source.x0 = source.x;
         source.y0 = source.y;
 
@@ -191,7 +199,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             .attr("r", 1e-6);
 
         nodeEnter.append("text")
-            .attr("x", function (d) { return 15; })
+            .attr("x", function (d) { return 18; })
             .attr("dy", ".35em")
             .attr("text-anchor", function (d) { return "start"; })
             .style("fill-opacity", 1e-6);
@@ -206,6 +214,9 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             if (d.IsGrandParent) {
                 return "";
             }
+            if (d.IsStaging) {
+                return "+";
+            }
             let fn = "";
             let ln = "";
             if (d.NodeFirstName) {
@@ -215,10 +226,15 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 ln = d.NodeLastName.slice(0, 1);
             }
             return fn + ln;
+        }).style("fill", function (d) {
+            return d.IsStaging ? "#0097FF" : "#FFFFFF";
         });
 
         node.select("text").text(function (d) { return d.IsSelected || d.IsGrandParent ? "" : d.NodeFirstName; });
-        node.select("circle").style("fill", function (d) { console.log(d.IsSelected); return d.IsSelected ? "#0097FF" : "#CFD8DC"; });
+        node.select("circle").style("fill", function (d) {
+            // console.log(d.IsSelected);
+            return d.IsSelected ? "#0097FF" : "#CFD8DC";
+        });
 
         // Transition nodes to their new position.
         let nodeUpdate = node.transition()
@@ -232,7 +248,12 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 else if (d.IsGrandParent === true) { return GRANDPARENT_RADIUS; }
                 else { return DEFAULT_RADIUS; }
             })
-            .style("fill", function (d) { console.log(d.NodeFirstName + d.IsSelected); return d.IsSelected ? "#0097FF" : "#CFD8DC"; });
+            .style("fill", function (d) {
+                // console.log(d.NodeFirstName + d.IsSelected);
+                return d.IsSelected ? d.IsStaging ? "#FFFFFF" : "#0097FF" : "#CFD8DC";
+            }).style("stroke", function (d) {
+                return d.IsStaging ? "#0097FF" : "none";
+            });
 
         nodeUpdate.select("text")
             .style({ "fill-opacity": 1, "fill": "#727272" });
@@ -294,19 +315,20 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         d3.select("body").on("keydown", (ev) => this.keyDown(ev));
         d3.select("body").on("click", (ev) => this.bodyClicked(ev));
         this.showUpdateReporteeNode(source);
-
     }
 
     showUpdateReporteeNode(source) {
         if (this.selectedOrgNode != null && this.selectedOrgNode.children == null) {
-            let y = source.y + 70;
-            if (this.reporteeNode == null) {
-                this.reporteeNode = this.svg.append("circle")
-                    .attr("transform", function (d) { return "translate(" + y + "," + source.x + ")"; })
-                    .attr("r", 4.5);
-            }
-            else {
-                this.reporteeNode.attr("transform", function (d) { return "translate(" + y + "," + source.x + ")"; });
+            if (!this.selectedOrgNode.IsStaging) {
+                let y = source.y + 70;
+                if (this.reporteeNode == null) {
+                    this.reporteeNode = this.svg.append("circle")
+                        .attr("transform", function (d) { return "translate(" + y + "," + source.x + ")"; })
+                        .attr("r", 4.5);
+                }
+                else {
+                    this.reporteeNode.attr("transform", function (d) { return "translate(" + y + "," + source.x + ")"; });
+                }
             }
         }
         else {
@@ -317,6 +339,9 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         }
     }
     bodyClicked(d) {
+        if (this.selectedOrgNode.NodeID === -1) {
+            return;
+        }
         if (event.srcElement.nodeName === "svg") {
             this.deselectNode();
         }
@@ -338,13 +363,17 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             return;
         }
 
+        if (this.selectedOrgNode.NodeID === -1) {
+            return;
+        }
+
         // esc
         if ((event as KeyboardEvent).keyCode === 27) {
             this.deselectNode();
         }
 
         // enter
-        if ((event as KeyboardEvent).keyCode === 13) {
+        /*if ((event as KeyboardEvent).keyCode === 13) {
             let parentID = this.selectedOrgNode.ParentNodeID;
             let newNode = this.addEmptyChildToSelectedOrgNode(parentID, this.root);
             this.addNewNode(newNode);
@@ -353,9 +382,9 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         else if ((event as KeyboardEvent).keyCode === 9) {
             let newNode = this.addEmptyChildToParent(this.selectedOrgNode);
             this.addNewNode(newNode);
-        }
+        }*/
         // left arrow
-        else if ((event as KeyboardEvent).keyCode === 37) {
+        if ((event as KeyboardEvent).keyCode === 37) {
             let node = this.selectedOrgNode as d3.layout.tree.Node;
             if (node.parent != null) {
                 let parentNode = node.parent;
@@ -390,17 +419,30 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 if (index < siblings.length - 1) {
                     let youngerSibling = siblings[index + 1];
                     this.highlightAndCenterNode(youngerSibling);
+                } else {
+                    let newNode = this.addEmptyChildToParent(node.parent as OrgNodeModel);
+                    this.switchToAdd.emit(newNode);
+                    this.highlightAndCenterNode(newNode);
                 }
             }
         }
     }
 
-    getNode(nodeID: number, node: OrgNodeModel) {
-        if (node.NodeID === nodeID) {
-            return node;
+    getNode(nodeID: number, rootNode: OrgNodeModel) {
+        if (rootNode.NodeID === nodeID) {
+            return rootNode;
         } else {
-            if (node.children) {
-                node.children.forEach(element => this.getNode(nodeID, element));
+            if (rootNode.children) {
+                let node;
+                rootNode.children.forEach(element => {
+
+                    if (!node) {
+                        node = this.getNode(nodeID, element);
+                    } else {
+                        return;
+                    }
+                });
+                return node;
             }
         }
     }
@@ -431,10 +473,11 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         }
         let newNode = new OrgNodeModel();
         newNode.ParentNodeID = node.NodeID;
-        newNode.NodeFirstName = "FN";
-        newNode.NodeLastName = "LN";
+        newNode.NodeFirstName = "";
+        newNode.NodeLastName = "";
         newNode.OrgID = node.OrgID;
-
+        newNode.NodeID = -1;
+        newNode.IsStaging = true;
         node.children.push(newNode);
         return newNode;
     }
@@ -446,6 +489,9 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     }
 
     nodeClicked(d) {
+        if (this.selectedOrgNode.NodeID === -1) {
+            return;
+        }
         event.stopPropagation();
         this.expandCollapse(d);
         this.highlightAndCenterNode(d);
@@ -503,7 +549,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
     emitaddNodeNotification(data: OrgNodeModel) {
         if (data) {
-            console.log(data);
             this.highlightSelectedNode(data);
             this.addNode.emit(data);
         }
@@ -536,7 +581,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
             // if this is the selected node, or sibling or selected node's parent or selected nodes child
             if (this.selectedOrgNode.NodeID === node.NodeID) {
-                // console.log("showing" + node.NodeFirstName);
                 // mark as sibling so that it maintains style even after deselection by clicking outside
                 node.IsSibling = true;
                 node.Show = true;

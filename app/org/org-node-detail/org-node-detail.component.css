@@ -21,7 +21,7 @@
 .text-wrap {
     position: relative;
     padding-left: 45px;
-    margin: 5px 0;
+    margin: 4px 0;
     color: #FFFFFF;
     font-family: 'Roboto', sans-serif;
     width: 260px;
@@ -37,9 +37,10 @@
     font-weight: bolder;
     width: 46%;
     height: 18px;
-    margin-bottom: 4px;
+    margin-bottom: 2px;
     border: none;
     float: left;
+    margin-right: 2%;
 }
 
 .title-position {
@@ -48,7 +49,7 @@
 
 .title-position-edit {
     font-size: 0.8em;
-    width: 92%;
+    width: 94%;
     height: 18px;
     border: none;
 }
