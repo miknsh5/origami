@@ -294,7 +294,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         d3.select("body").on("keydown", (ev) => this.keyDown(ev));
         d3.select("body").on("click", (ev) => this.bodyClicked(ev));
         this.showUpdateReporteeNode(source);
-
     }
 
     showUpdateReporteeNode(source) {
@@ -306,27 +305,17 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
                 this.reporteeNode.append("circle")
                     .attr("r", DEFAULT_RADIUS)
-                    .attr("fill", " #FAFAFA")
-                    .attr("stroke", "#B6B6B6")
-                    .attr("stroke-width", "1")
-                    .attr("stroke-dasharray", "2,2")
+                    .attr("class", "new-peer-circle");
 
                 this.reporteeNode.append("text")
                     .attr("dy", ".35em")
-                    .attr("font-size",".75em")
-                    .attr("fill","#B6B6B6")
                     .text("+")
-                    .attr("text-anchor", "middle")
-                    .style("fill-opacity", 1)
+                    .attr("class", "new-peer-innerText");
 
                 this.reporteeNode.append("text")
                     .attr("dy", "2em")
-                    .attr("font-size","0.62em")
-                    .attr("fill","#B6B6B6")
                     .text("Direct Report")
-                    .attr("text-anchor", "middle")
-                    .style("fill-opacity", 1);
-
+                    .attr("class", "new-peer-outerText");
             }
             else {
                 this.reporteeNode.attr("transform", function (d) { return "translate(" + y + "," + source.x + ")"; });
