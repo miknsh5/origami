@@ -184,7 +184,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         let nodeEnter = node.enter().append("g")
             .attr("class", "node")
             .attr("transform", function (d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
-            .on("click", (ev) => this.click(ev));
+            .on("click", (ev) => this.nodeClicked(ev));
 
         nodeEnter.append("circle")
             .attr("r", 1e-6);
@@ -423,7 +423,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         this.centerNode(d);
     }
 
-    click(d) {
+    nodeClicked(d) {
         event.stopPropagation();
         this.expandCollapse(d);
         this.highlightAndCenterNode(d);
