@@ -71,7 +71,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
         this.arrows = this.svg.append("g")
             .attr("id", "arrows")
-            .attr("transform", "translate(" + ((this.treeWidth / 2) - SIBBLING_RADIUS * 2) + "," + ((this.treeHeight / 2) - SIBBLING_RADIUS * 2) + ")");
+            .attr("transform", "translate(" + ((this.treeWidth / 2) - SIBLING_RADIUS * 1.75) + "," + ((this.treeHeight / 2) - SIBLING_RADIUS * 1.75) + ")");
 
         this.svg = d3.select("g.nodes");
 
