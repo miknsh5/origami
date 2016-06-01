@@ -47,3 +47,24 @@ node circle {
 .title {
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.new-peer-circle{
+    fill: #FAFAFA;
+    stroke :#B6B6B6;
+    stroke-width:1;
+    stroke-dasharray:2,2
+}
+
+.new-peer-innerText{
+      font-size:.75em;
+      fill:#B6B6B6;
+      text-anchor:middle;
+      fill-opacity: 1;
+}
+
+.new-peer-outerText{
+     font-size:0.62em;
+     fill:#B6B6B6;
+     text-anchor:middle;
+     fill-opacity: 1;
+}

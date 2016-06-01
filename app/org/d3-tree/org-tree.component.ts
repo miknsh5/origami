@@ -11,7 +11,7 @@ const RIGHTLEFT_MARGIN = 120;
 const SIBLING_RADIUS = 16.5;
 const PARENTCHILD_RADIUS = 10.5;
 const GRANDPARENT_RADIUS = 6.5;
-const DEFAULT_RADIUS = 4.5;
+const DEFAULT_RADIUS = 10.5;
 
 @Component({
     selector: "sg-org-tree",
@@ -37,7 +37,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     @Input() treeData: any;
     @Output() selectNode = new EventEmitter<OrgNodeModel>();
     @Output() addNode = new EventEmitter<OrgNodeModel>();
-    @Output() switchToAdd = new EventEmitter<OrgNodeModel>()
+    @Output() switchToAddMode = new EventEmitter<OrgNodeModel>()
 
     ngOnInit() {
         //  Todo:- We need to use the values coming from the host instead of our own
@@ -322,9 +322,22 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             if (!this.selectedOrgNode.IsStaging) {
                 let y = source.y + 70;
                 if (this.reporteeNode == null) {
-                    this.reporteeNode = this.svg.append("circle")
+                    this.reporteeNode = this.svg.append("g")
                         .attr("transform", function (d) { return "translate(" + y + "," + source.x + ")"; })
-                        .attr("r", 4.5);
+
+                    this.reporteeNode.append("circle")
+                        .attr("r", DEFAULT_RADIUS)
+                        .attr("class", "new-peer-circle");
+
+                    this.reporteeNode.append("text")
+                        .attr("dy", ".35em")
+                        .text("+")
+                        .attr("class", "new-peer-innerText");
+
+                    this.reporteeNode.append("text")
+                        .attr("dy", "2em")
+                        .text("Direct Report")
+                        .attr("class", "new-peer-outerText");
                 }
                 else {
                     this.reporteeNode.attr("transform", function (d) { return "translate(" + y + "," + source.x + ")"; });
@@ -421,7 +434,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                     this.highlightAndCenterNode(youngerSibling);
                 } else {
                     let newNode = this.addEmptyChildToParent(node.parent as OrgNodeModel);
-                    this.switchToAdd.emit(newNode);
+                    this.switchToAddMode.emit(newNode);
                     this.highlightAndCenterNode(newNode);
                 }
             }
@@ -435,7 +448,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             if (rootNode.children) {
                 let node;
                 rootNode.children.forEach(element => {
-
                     if (!node) {
                         node = this.getNode(nodeID, element);
                     } else {
