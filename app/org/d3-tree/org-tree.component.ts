@@ -11,7 +11,7 @@ const RIGHTLEFT_MARGIN = 120;
 const SIBLING_RADIUS = 16.5;
 const PARENTCHILD_RADIUS = 10.5;
 const GRANDPARENT_RADIUS = 6.5;
-const DEFAULT_RADIUS = 4.5;
+const DEFAULT_RADIUS = 10.5;
 
 @Component({
     selector: "sg-org-tree",
@@ -301,9 +301,32 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         if (this.selectedOrgNode != null && this.selectedOrgNode.children == null) {
             let y = source.y + 70;
             if (this.reporteeNode == null) {
-                this.reporteeNode = this.svg.append("circle")
+                this.reporteeNode = this.svg.append("g")
                     .attr("transform", function (d) { return "translate(" + y + "," + source.x + ")"; })
-                    .attr("r", 4.5);
+
+                this.reporteeNode.append("circle")
+                    .attr("r", DEFAULT_RADIUS)
+                    .attr("fill", " #FAFAFA")
+                    .attr("stroke", "#B6B6B6")
+                    .attr("stroke-width", "1")
+                    .attr("stroke-dasharray", "2,2")
+
+                this.reporteeNode.append("text")
+                    .attr("dy", ".35em")
+                    .attr("font-size",".75em")
+                    .attr("fill","#B6B6B6")
+                    .text("+")
+                    .attr("text-anchor", "middle")
+                    .style("fill-opacity", 1)
+
+                this.reporteeNode.append("text")
+                    .attr("dy", "2em")
+                    .attr("font-size","0.62em")
+                    .attr("fill","#B6B6B6")
+                    .text("Direct Report")
+                    .attr("text-anchor", "middle")
+                    .style("fill-opacity", 1);
+
             }
             else {
                 this.reporteeNode.attr("transform", function (d) { return "translate(" + y + "," + source.x + ")"; });
