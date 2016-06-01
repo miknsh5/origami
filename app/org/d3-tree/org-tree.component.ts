@@ -169,6 +169,10 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             d3.selectAll("polygon")
                 .attr("stroke", "#FFFFFF")
                 .attr("fill", ARROW_FILL);
+        } else {
+            d3.selectAll("polygon#right")
+                .attr("stroke", "#FFFFFF")
+                .attr("fill", ARROW_FILL);
         }
     }
 
