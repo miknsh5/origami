@@ -1,1 +1,1 @@
-export * from './org-node-detail.component';
+export * from "./org-node-detail.component";
