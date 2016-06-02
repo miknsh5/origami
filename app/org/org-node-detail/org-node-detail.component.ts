@@ -130,7 +130,6 @@ export class OrgNodeDetailComponent {
     private emitUpdateNodeNotification(data) {
         if (data === true) {
             this.isEditMode = false;
-            this.selectedOrgNode = this.editNodeDetails;
             this.updateNode.emit(this.editNodeDetails);
             this.editNodeDetails = null;
         }

@@ -53,7 +53,7 @@ export class OrgComponent {
 
     addChildToSelectedOrgNode(newNode: OrgNodeModel, node: OrgNodeModel) {
         if (this.comparewithParentNodeID(newNode, node)) {
-            node.IsSelected = true;
+            newNode.IsSelected = true;
             if (!node.children) {
                 node.children = new Array<OrgNodeModel>();
             }
