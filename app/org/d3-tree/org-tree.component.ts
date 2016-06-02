@@ -30,7 +30,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     selectedOrgNode: any;
     treeWidth: number;
     treeHeight: number;
-    reporteeNode: any;
 
     @Input() width: number;
     @Input() height: number;
@@ -293,41 +292,57 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
         d3.select("body").on("keydown", (ev) => this.keyDown(ev));
         d3.select("body").on("click", (ev) => this.bodyClicked(ev));
-        this.showUpdateReporteeNode(source);
+
+        this.showUpdatePeerReporteeNode(source);
     }
-
-    showUpdateReporteeNode(source) {
-        if (this.selectedOrgNode != null && this.selectedOrgNode.children == null) {
-            let y = source.y + 70;
-            if (this.reporteeNode == null) {
-                this.reporteeNode = this.svg.append("g")
-                    .attr("transform", function (d) { return "translate(" + y + "," + source.x + ")"; })
-
-                this.reporteeNode.append("circle")
-                    .attr("r", DEFAULT_RADIUS)
-                    .attr("class", "new-peer-circle");
-
-                this.reporteeNode.append("text")
-                    .attr("dy", ".35em")
-                    .text("+")
-                    .attr("class", "new-peer-innerText");
-
-                this.reporteeNode.append("text")
-                    .attr("dy", "2em")
-                    .text("Direct Report")
-                    .attr("class", "new-peer-outerText");
-            }
-            else {
-                this.reporteeNode.attr("transform", function (d) { return "translate(" + y + "," + source.x + ")"; });
-            }
+    setPeerReporteeNode(nodeName, x, y, className) {
+        let node = d3.select("g." + className);
+        let element = node[0][0]; // assigns the selected element
+        if (element === null) {
+            node = this.svg.append("g")
+                .attr("class", className)
+                .attr("transform", function (d) { return "translate(" + y + "," + x + ")"; })
+            node.append("circle")
+                .attr("r", DEFAULT_RADIUS)
+                .attr("class", "new-peer-circle");
+            node.append("text")
+                .attr("dy", ".35em")
+                .text("+")
+                .attr("class", "new-peer-innerText");
+            node.append("text")
+                .attr("dy", "2em")
+                .text(nodeName)
+                .attr("class", "new-peer-outerText");
         }
         else {
-            if (this.reporteeNode != null) {
-                this.reporteeNode.remove();
-                this.reporteeNode = null;
-            }
+            node.attr("transform", function (d) { return "translate(" + y + "," + x + ")"; });
         }
     }
+
+    showUpdatePeerReporteeNode(source) {
+        if (this.selectedOrgNode != null && source.parent != null) {
+            let node: OrgNodeModel;
+            node = source.parent.children;
+            let childrenCount = source.parent.children.length - 1;
+            if (node[childrenCount] !== null) {
+                let x = node[childrenCount].x + 132;
+                console.log("true");
+                this.setPeerReporteeNode("Peer", x, source.y, "peerNode");
+            }
+
+        }
+        else {
+            d3.select("g.peerNode").remove();
+        }
+        if (this.selectedOrgNode != null && this.selectedOrgNode.children == null) {
+            let y = source.y + 112;
+            this.setPeerReporteeNode("Direct Report", source.x, y, "directReporteeNode");
+        }
+        else {
+            d3.select("g.directReporteeNode").remove();
+        }
+    }
+
     bodyClicked(d) {
         if (event.srcElement.nodeName === "svg") {
             this.deselectNode();
