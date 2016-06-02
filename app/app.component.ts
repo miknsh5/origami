@@ -14,7 +14,7 @@ import { OrgComponent } from "./org/index";
 })
 
 @RouteConfig([
-    { path: "/", redirectTo: ["Login"] },
+    { path: "/", redirectTo: ["Home"] }, // changed from login to home for deployment
     { path: "/login", name: "Login", component: LoginComponent, useAsDefault: true },
     { path: "/home", name: "Home", component: OrgComponent },
     { path: "/**", name: "Other", redirectTo: ["Login"] }
