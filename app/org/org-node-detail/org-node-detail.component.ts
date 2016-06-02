@@ -40,8 +40,6 @@ export class OrgNodeDetailComponent {
     }
 
     private onSubmit(form: NgForm) {
-        let data = JSON.stringify(form.value, null, 2);
-
         if (!this.isNullOREmpty(form.value.firstName)) {
             this.editNodeDetails = new OrgNodeModel();
             this.editNodeDetails.NodeFirstName = form.value.firstName;
@@ -52,20 +50,29 @@ export class OrgNodeDetailComponent {
             this.editNodeDetails.OrgID = this.selectedOrgNode.OrgID;
             this.editNodeDetails.ParentNodeID = this.selectedOrgNode.ParentNodeID;
 
-            if (this.isAddMode) {
-                this.editNodeDetails.NodeID = 310;
-                this.emitaddNodeNotification(this.editNodeDetails);
-                // this.addNewNode(this.editNodeDetails);
-            } else {
-                this.editNode(this.editNodeDetails);
+            this.editNode(this.editNodeDetails);
+        }
+    }
+
+    private onFirstNameBlured(fname: string) {
+        if (this.isAddMode) {
+            if (!this.isNullOREmpty(fname)) {
+                let node = new OrgNodeModel();
+                node.NodeFirstName = fname;
+                node.children = this.selectedOrgNode.children;
+                node.OrgID = this.selectedOrgNode.OrgID;
+                node.ParentNodeID = this.selectedOrgNode.ParentNodeID;
+
+                this.addNewNode(node);
             }
         }
     }
 
     private emitaddNodeNotification(data: OrgNodeModel) {
         if (data) {
-            // console.log(data);
             this.addNode.emit(data);
+            this.isEditMode = true;
+            this.editNodeDetails = null;
         }
     }
 
@@ -73,10 +80,10 @@ export class OrgNodeDetailComponent {
         if (!node) { return; }
         // we don"t really need to send any child info to the server at this point
         node.children = null;
-        this.orgService.updateNode(node)
-            .subscribe(data => this.emitUpdateNodeNotification(data),
+        this.orgService.addNode(node)
+            .subscribe(data => this.emitaddNodeNotification(data),
             error => this.handleError(error),
-            () => console.log("Node Updated Complete"));
+            () => console.log("Node Added Complete"));
     }
 
     private editNode(node: OrgNodeModel) {
@@ -123,13 +130,19 @@ export class OrgNodeDetailComponent {
     private emitUpdateNodeNotification(data) {
         if (data === true) {
             this.isEditMode = false;
+            this.selectedOrgNode = this.editNodeDetails;
             this.updateNode.emit(this.editNodeDetails);
             this.editNodeDetails = null;
         }
     }
 
     private handleError(err) {
-        alert("OOPs!! Something went wrong!! ");
+        try {
+            let errorMessage = JSON.parse(err._body);
+            alert(errorMessage.Message);
+        } catch (ex) {
+            alert("OOPs!! Something went wrong!! ");
+        }
         console.log(err);
         this.isEditMode = false;
         this.editNodeDetails = null;

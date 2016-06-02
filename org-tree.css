@@ -7,7 +7,7 @@ node circle {
   box-shadow: 0 0 40px rgba(0, 0, 0, 0.8);
 }
 
-.node circle text {
+.node text#abbr {
   text-transform: uppercase;
 }
 
@@ -48,23 +48,27 @@ node circle {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-.new-peer-circle{
-    fill: #FAFAFA;
-    stroke :#B6B6B6;
-    stroke-width:1;
-    stroke-dasharray:2,2
+.reporteeNode {
+  cursor: pointer;
 }
 
-.new-peer-innerText{
-      font-size:.75em;
-      fill:#B6B6B6;
-      text-anchor:middle;
-      fill-opacity: 1;
+.new-peer_reportee-circle {
+  fill: #FAFAFA;
+  stroke: #B6B6B6;
+  stroke-width: 1;
+  stroke-dasharray: 2, 2
 }
 
-.new-peer-outerText{
-     font-size:0.62em;
-     fill:#B6B6B6;
-     text-anchor:middle;
-     fill-opacity: 1;
+.new-peer_reportee-innerText {
+  font-size: .75em;
+  fill: #B6B6B6;
+  text-anchor: middle;
+  fill-opacity: 1;
+}
+
+.new-peer_reportee-outerText {
+  font-size: 0.62em;
+  fill: #B6B6B6;
+  text-anchor: middle;
+  fill-opacity: 1;
 }

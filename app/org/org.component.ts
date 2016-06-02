@@ -52,7 +52,7 @@ export class OrgComponent {
     }
 
     addChildToSelectedOrgNode(newNode: OrgNodeModel, node: OrgNodeModel) {
-        if (this.compareNodeID(node, this.selectedNode)) {
+        if (this.comparewithParentNodeID(newNode, node)) {
             node.IsSelected = true;
             if (!node.children) {
                 node.children = new Array<OrgNodeModel>();
@@ -107,6 +107,8 @@ export class OrgComponent {
     updateOrgNode(node: OrgNodeModel) {
         if (this.compareNodeID(node, this.selectedNode)) {
             node.NodeFirstName = this.selectedNode.NodeFirstName;
+            node.NodeLastName = this.selectedNode.NodeLastName;
+            node.Description = this.selectedNode.Description;
             node.IsSelected = true;
             return;
         } else {
@@ -121,6 +123,14 @@ export class OrgComponent {
         localStorage.removeItem("profile");
         localStorage.removeItem("id_token");
         this.router.navigate(["/Login"]);
+    }
+
+    private comparewithParentNodeID(updatedNode: OrgNodeModel, currentNode: OrgNodeModel): boolean {
+        if (updatedNode != null && currentNode != null) {
+            return updatedNode.ParentNodeID === currentNode.NodeID;
+        } else {
+            return false;
+        }
     }
 
     private compareNodeID(updatedNode: OrgNodeModel, currentNode: OrgNodeModel): boolean {
