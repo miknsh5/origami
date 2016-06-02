@@ -12,6 +12,9 @@ const SIBLING_RADIUS = 16.5;
 const PARENTCHILD_RADIUS = 10.5;
 const GRANDPARENT_RADIUS = 6.5;
 const DEFAULT_RADIUS = 10.5;
+const PEER_TEXT = "Peer";
+const REPORTEE_TEXT = "Direct Report";
+const NODE_DEFAULT_DISTANCE = 112;
 
 @Component({
     selector: "sg-org-tree",
@@ -29,7 +32,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     selectedOrgNode: any;
     treeWidth: number;
     treeHeight: number;
-    reporteeNode: any;
     isAddMode: boolean;
 
     @Input() width: number;
@@ -79,7 +81,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
         if (this.tree != null) {
             this.root = this.treeData[0];
-            console.log(this.selectedOrgNode)
             if (this.selectedOrgNode != null) {
                 this.isAddMode = false;
                 if (this.selectedOrgNode.NodeID === -1) {
@@ -87,7 +88,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                     this.highlightAndCenterNode(this.selectedOrgNode);
                 } else {
                     let node = this.getNode(this.selectedOrgNode.NodeID, this.root);
-
                     // if the selected node is deleted it highlights previous sibbling or parent node
                     if (!node) {
                         this.selectedOrgNode = this.getPreviousSiblingNode(this.selectedOrgNode);
@@ -109,7 +109,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
     getPreviousSiblingNode(node: OrgNodeModel) {
         let previousNode = this.getNode(node.ParentNodeID, this.root);
-        console.log("previousNode : ", previousNode);
         if (previousNode.children && previousNode.children.length > 0) {
             previousNode = previousNode.children[previousNode.children.length - 1];
         }
@@ -295,7 +294,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 return ("link" + d.source.NodeID + "-" + d.target.NodeID);
             })
             .attr("d", function (d) {
-                return diagCoords2;
+                return diagCoords;
             });
 
         // Transition links to their new position.
@@ -309,7 +308,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         link.exit().transition()
             .duration(DURATION)
             .attr("d", function (d) {
-
                 return diagCoords2;
             })
             .remove();
@@ -322,52 +320,80 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
         d3.select("body").on("keydown", (ev) => this.keyDown(ev));
         d3.select("body").on("click", (ev) => this.bodyClicked(ev));
-        this.showUpdateReporteeNode(source);
+
+        this.showUpdatePeerReporteeNode(source);
     }
 
-    showUpdateReporteeNode(source) {
-        if (this.selectedOrgNode != null && this.selectedOrgNode.children == null) {
-            if (!this.selectedOrgNode.IsStaging) {
-                let y = source.y + 70;
-                if (this.reporteeNode == null) {
-                    this.reporteeNode = this.svg.append("g")
-                        .attr("transform", function (d) { return "translate(" + y + "," + source.x + ")"; })
-                        .attr("class", "reporteeNode")
-                        .attr("data-id", this.selectedOrgNode.NodeID)
-                        .on("click", (ev) => this.reporteeNodeClicked(ev));
+    setPeerReporteeNode(nodeName, x, y, className) {
+        let node = d3.select("g." + className);
+        let element = node[0][0]; // assigns the selected element
+        if (element === null) {
+            node = this.svg.append("g")
+                .attr("class", className)
+                .attr("transform", function (d) { return "translate(" + y + "," + x + ")"; })
+                .on("click", (ev) => this.peerReporteeNodeClicked(nodeName));
 
-                    this.reporteeNode.append("circle")
-                        .attr("r", DEFAULT_RADIUS)
-                        .attr("class", "new-peer_reportee-circle");
+            node.append("circle")
+                .attr("r", DEFAULT_RADIUS)
+                .attr("class", "new-peer_reportee-circle");
 
-                    this.reporteeNode.append("text")
-                        .attr("dy", ".35em")
-                        .text("+")
-                        .attr("class", "new-peer_reportee-innerText");
+            node.append("text")
+                .attr("dy", ".35em")
+                .text("+")
+                .attr("class", "new-peer_reportee-innerText");
 
-                    this.reporteeNode.append("text")
-                        .attr("dy", "2em")
-                        .text("Direct Report")
-                        .attr("class", "new-peer_reportee-outerText");
-                }
-                else {
-                    this.reporteeNode.attr("transform", function (d) { return "translate(" + y + "," + source.x + ")"; });
-                }
-            } else {
-                this.svg.selectAll("g.reporteeNode").remove();
-                this.reporteeNode = null;
-            }
+            node.append("text")
+                .attr("dy", "2em")
+                .text(nodeName)
+                .attr("class", "new-peer_reportee-outerText");
         }
         else {
-            if (this.reporteeNode != null) {
-                this.reporteeNode.remove();
-                this.reporteeNode = null;
-            }
+            node.attr("transform", function (d) { return "translate(" + y + "," + x + ")"; });
         }
     }
 
-    reporteeNodeClicked(d) {
-        this.addNewNode(this.selectedOrgNode);
+    showUpdatePeerReporteeNode(source) {
+        if (this.selectedOrgNode !== null) {
+            if (this.selectedOrgNode.NodeID !== -1) {
+                if (source.parent) {
+                    let node: OrgNodeModel;
+                    node = source.parent.children;
+                    let childrenCount = source.parent.children.length - 1;
+                    if (node[childrenCount] !== null) {
+                        let x = node[childrenCount].x + (childrenCount === 0 ? NODE_DEFAULT_DISTANCE : (node[childrenCount].x - node[childrenCount - 1].x));
+                        this.setPeerReporteeNode(PEER_TEXT, x, source.y, "peerNode");
+                    }
+                }
+                else {
+                    d3.select("g.peerNode").remove();
+                }
+
+                if (!this.selectedOrgNode.children) {
+                    let y = source.y + NODE_DEFAULT_DISTANCE;
+                    this.setPeerReporteeNode(REPORTEE_TEXT, source.x, y, "directReporteeNode");
+                }
+                else {
+                    d3.select("g.directReporteeNode").remove();
+                }
+            } else {
+                this.removePeerAndReporteeNodes();
+            }
+        } else {
+            this.removePeerAndReporteeNodes();
+        }
+    }
+
+    removePeerAndReporteeNodes() {
+        d3.select("g.peerNode").remove();
+        d3.select("g.directReporteeNode").remove();
+    }
+
+    peerReporteeNodeClicked(nodeName) {
+        if (nodeName === REPORTEE_TEXT) {
+            this.addNewNode(this.selectedOrgNode);
+        } else {
+            this.addNewNode(this.selectedOrgNode.parent);
+        }
     }
 
     bodyClicked(d) {
@@ -492,6 +518,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         newNode.ParentNodeID = node.NodeID;
         newNode.NodeFirstName = "";
         newNode.NodeLastName = "";
+        newNode.Description = "";
         newNode.OrgID = node.OrgID;
         newNode.NodeID = -1;
         newNode.IsStaging = true;
