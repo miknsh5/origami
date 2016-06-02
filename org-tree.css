@@ -12,7 +12,7 @@ node circle {
 }
 
 .node text {
-  font: 10px sans-serif;
+  font: 0.78em sans-serif;
   fill: #FFF;
 }
 
@@ -50,6 +50,22 @@ node circle {
 
 .reporteeNode {
   cursor: pointer;
+}
+
+.selectedCircle {
+  fill: #0097FF;
+  stroke: none;
+}
+
+.stagedCircle {
+  fill: #FFFFFF;
+  stroke: #0097FF;
+  stroke-width: 2;
+}
+
+.normalCircle {
+  fill: #CFD8DC;
+  stroke: none;
 }
 
 .new-peer_reportee-circle {

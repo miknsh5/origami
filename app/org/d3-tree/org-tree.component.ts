@@ -243,9 +243,8 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         });
 
         node.select("text").text(function (d) { return d.IsSelected || d.IsGrandParent ? "" : d.NodeFirstName; });
-        node.select("circle").style("fill", function (d) {
-            // console.log(d.IsSelected);
-            return d.IsSelected ? "#0097FF" : "#CFD8DC";
+        node.select("circle").attr("class", function (d) {
+            return d.IsSelected ? "selectedCircle" : "normalCircle";
         });
 
         // Transition nodes to their new position.
@@ -260,11 +259,8 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 else if (d.IsGrandParent === true) { return GRANDPARENT_RADIUS; }
                 else { return DEFAULT_RADIUS; }
             })
-            .style("fill", function (d) {
-                // console.log(d.NodeFirstName + d.IsSelected);
-                return d.IsSelected ? d.IsStaging ? "#FFFFFF" : "#0097FF" : "#CFD8DC";
-            }).style("stroke", function (d) {
-                return d.IsStaging ? "#0097FF" : "none";
+            .attr("class", function (d) {
+                return d.IsSelected ? d.IsStaging ? "stagedCircle" : "selectedCircle" : "normalCircle";
             });
 
         nodeUpdate.select("text")
@@ -359,6 +355,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 }
             } else {
                 this.svg.selectAll("g.reporteeNode").remove();
+                this.reporteeNode = null;
             }
         }
         else {
