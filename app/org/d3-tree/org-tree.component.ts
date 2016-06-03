@@ -12,6 +12,8 @@ const SIBLING_RADIUS = 16.5;
 const PARENTCHILD_RADIUS = 10.5;
 const GRANDPARENT_RADIUS = 6.5;
 const DEFAULT_RADIUS = 4.5;
+const ARROW_POINTS = "48 35 48 24 53 29";
+const ARROW_FILL = "#D8D8D8";
 
 @Component({
     selector: "sg-org-tree",
@@ -30,6 +32,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     selectedOrgNode: any;
     treeWidth: number;
     treeHeight: number;
+    arrows: any;
 
     @Input() width: number;
     @Input() height: number;
@@ -62,9 +65,18 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         // Creates and horizontal line 
         this.createLines(horizontalLine);
 
-        this.svg = this.svg.append("g")
+        this.svg.append("g")
             .attr("class", "nodes")
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+        this.arrows = this.svg.append("g")
+            .attr("id", "arrows")
+            .attr("transform", "translate(" + ((this.treeWidth / 2) - SIBLING_RADIUS * 1.75) + "," + ((this.treeHeight / 2) - SIBLING_RADIUS * 1.75) + ")");
+
+        this.svg = d3.select("g.nodes");
+
+        // creates arrows directions 
+        this.createArrows();
 
         this.root = this.treeData[0];
         this.root.children.forEach(element => {
@@ -103,6 +115,28 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             .attr("fill", "none");
     }
 
+    createArrows() {
+        let arrowsData = [{ "points": ARROW_POINTS, "transform": "", "id": "right" },
+            { "points": ARROW_POINTS, "transform": "translate(-42, 0) rotate(-180) translate(-100, -58)", "id": "left" },
+            { "points": ARROW_POINTS, "transform": "translate(5,58) rotate(-90) translate(0, -5)", "id": "top" },
+            { "points": ARROW_POINTS, "transform": "translate(58, 0) rotate(90)", "id": "bottom" }];
+
+        let arrows = this.arrows;
+        arrowsData.forEach(function (data) {
+            arrows.append("polygon")
+                .attr("id", data.id)
+                .attr("points", data.points)
+                .attr("transform", data.transform);
+        });
+    }
+
+    hideAllArrows() {
+        // hides all arrows by making transparent
+        d3.selectAll("polygon")
+            .attr("stroke", "transparent")
+            .attr("fill", "transparent");
+    }
+
     collapseTree(d) {
         if (d.children) {
             d._children = d.children;
@@ -122,6 +156,9 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         d3.select("g.nodes").transition()
             .duration(DURATION)
             .attr("transform", "translate(" + x + "," + y + ")");
+
+        this.hideAllArrows();
+
         if (this.root.NodeID !== source.NodeID) {
             let parentNode = source.parent;
             this.moveParentNodesToCenter(parentNode, source);
@@ -129,6 +166,13 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             if (grandParent != null) {
                 this.moveParentNodesToCenter(grandParent, source);
             }
+            d3.selectAll("polygon")
+                .attr("stroke", "#FFFFFF")
+                .attr("fill", ARROW_FILL);
+        } else {
+            d3.selectAll("polygon#right")
+                .attr("stroke", "#FFFFFF")
+                .attr("fill", ARROW_FILL);
         }
     }
 
