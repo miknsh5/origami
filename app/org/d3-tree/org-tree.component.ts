@@ -5,7 +5,7 @@ import {Inject} from "@angular/core";
 import * as d3 from "d3";
 import { OrgNodeModel, OrgService} from "../shared/index";
 
-const DURATION = 10;
+const DURATION = 250;
 const TOPBOTTOM_MARGIN = 20;
 const RIGHTLEFT_MARGIN = 120;
 const SIBLING_RADIUS = 16.5;
