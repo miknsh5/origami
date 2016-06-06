@@ -4,7 +4,7 @@ import { OrgNodeModel, OrgService } from "../shared/index";
 @Component({
     selector: "sg-origami-add-node",
     templateUrl: "app/org/add-node/add-node.component.html",
-    styleUrls: ["app/org/add-node/add-node.component.css"]
+    styleUrls: ["app/org/add-node/add-node.component.css", "app/style.css"]
 })
 
 export class AddNodeComponent {

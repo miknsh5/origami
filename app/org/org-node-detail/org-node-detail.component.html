@@ -1,6 +1,6 @@
 <div class="detail-wrap">
     <form #orgform="ngForm" *ngIf="selectedOrgNode" (ngSubmit)="onSubmit(orgform)">
-        
+
         <div class="orgFormcontrols" *ngIf="selectedOrgNode">
             <div class="close-icon" (click)="onDeleteNodeClicked(selectedOrgNode)"> </div>
             <div *ngIf="!isEditMode" class="edit-icon" (click)="onEditNodeClicked()"> </div>
@@ -8,20 +8,19 @@
         </div>
 
         <div *ngIf="selectedOrgNode && !isEditMode" class="text-wrap">
-            <div class="title-name">
+            <div class="h-1">
                 {{selectedOrgNode.NodeFirstName}} {{selectedOrgNode.NodeLastName}}
             </div>
-            <div class="title-position">
+            <div class="h-3">
                 {{selectedOrgNode.Description}}
             </div>
         </div>
-        
+
         <div *ngIf="selectedOrgNode && isEditMode" class="form-group text-wrap">
             <input type="text" class="title-name-edit form-control" (onclick)="killKeydownEvent()" required ngControl="firstName" #firstName="ngForm"
                 [ngModel]="selectedOrgNode.NodeFirstName" />
             <input type="text" class="title-name-edit form-control" required ngControl="lastName" #lastName="ngForm" [ngModel]="selectedOrgNode.NodeLastName"/>
             <input type="text" class="title-position-edit form-control" required ngControl="description" #description="ngForm" [ngModel]="selectedOrgNode.Description"/>
         </div>
-        
     </form>
 </div>
