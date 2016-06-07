@@ -14,7 +14,8 @@ const GRANDPARENT_RADIUS = 6.5;
 const DEFAULT_RADIUS = 4.5;
 const ARROW_POINTS = "48 35 48 24 53 29";
 const ARROW_FILL = "#D8D8D8";
-
+const NODE_HEIGHT = 70;
+const NODE_WIDTH = 40;
 @Component({
     selector: "sg-org-tree",
     template: ``
@@ -47,7 +48,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         this.treeWidth = this.width + margin.right + margin.left;
         this.treeHeight = this.height + margin.top + margin.bottom;
 
-        this.tree = d3.layout.tree().size([this.treeHeight, this.treeWidth]);
+        this.tree = d3.layout.tree().nodeSize([NODE_HEIGHT, NODE_WIDTH]);
         this.diagonal = d3.svg.diagonal()
             .projection(function (d) { return [d.y, d.x]; });
 
@@ -92,8 +93,12 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             this.root = this.treeData[0];
             if (this.selectedOrgNode != null) {
                 this.updateSelectedOrgNode(this.root);
+                this.highlightSelectedNode(this.selectedOrgNode);
             }
-            this.render(this.treeData[0]);
+            this.render(this.root);
+            if (this.selectedOrgNode != null) {
+                this.centerNode(this.selectedOrgNode);
+            }
         }
     }
 
@@ -137,9 +142,22 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             .attr("fill", "transparent");
     }
 
+    collapseExceptSelectedNode(d) {
+        this.isAncestorOrRelated(d);
+        if (d.Show === false || (d.IsSibling && !d.IsSelected) || d.IsChild) {
+            this.collapseTree(d);
+
+        }
+        if (d.children) {
+            d.children.forEach(element => {
+                this.collapseExceptSelectedNode(element);
+            });
+        }
+    }
+
     collapseTree(d) {
         if (d.children) {
-            d._children = d.children;
+
             d._children = d.children;
             d._children.forEach(element => {
                 this.collapseTree(element);
@@ -197,17 +215,16 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
     render(source) {
         let i: number = 0;
-
-        //  We need to change nodes only when nodes are null or selectedOrgNode is not null( and might have changed)
         if (this.nodes == null || this.selectedOrgNode != null) {
-
+            //  The tree defines the position of the nodes based on the number of nodes it needs to draw.
+            // collapse out the child nodes which will not be shown
+            this.root.children.forEach(element => {
+                this.collapseExceptSelectedNode(element);
+            });
             this.nodes = this.tree.nodes(this.root).reverse();
-
             this.nodes.forEach(element => {
-
                 this.isAncestorOrRelated(element);
             });
-
             this.nodes = this.nodes.filter(function (d) { return d.Show; });
         }
 
@@ -365,17 +382,17 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             this.deselectNode();
         }
 
-        // enter
-        if ((event as KeyboardEvent).keyCode === 13) {
-            let parentID = this.selectedOrgNode.ParentNodeID;
-            let newNode = this.addEmptyChildToSelectedOrgNode(parentID, this.root);
-            this.addNewNode(newNode);
-        }
-        // tab
-        else if ((event as KeyboardEvent).keyCode === 9) {
-            let newNode = this.addEmptyChildToParent(this.selectedOrgNode);
-            this.addNewNode(newNode);
-        }
+        /*  // enter
+          if ((event as KeyboardEvent).keyCode === 13) {
+              let parentID = this.selectedOrgNode.ParentNodeID;
+              let newNode = this.addEmptyChildToSelectedOrgNode(parentID, this.root);
+              this.addNewNode(newNode);
+          }
+          // tab
+          else if ((event as KeyboardEvent).keyCode === 9) {
+              let newNode = this.addEmptyChildToParent(this.selectedOrgNode);
+              this.addNewNode(newNode);
+          }*/
         // left arrow
         else if ((event as KeyboardEvent).keyCode === 37) {
             let node = this.selectedOrgNode as d3.layout.tree.Node;
