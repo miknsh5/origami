@@ -47,7 +47,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         this.treeWidth = this.width + margin.right + margin.left;
         this.treeHeight = this.height + margin.top + margin.bottom;
 
-        this.tree = d3.layout.tree().size([this.treeHeight, this.treeWidth]);
+        this.tree = d3.layout.tree().nodeSize([70, 40]);
         this.diagonal = d3.svg.diagonal()
             .projection(function (d) { return [d.y, d.x]; });
 
@@ -92,8 +92,12 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             this.root = this.treeData[0];
             if (this.selectedOrgNode != null) {
                 this.updateSelectedOrgNode(this.root);
+                this.highlightSelectedNode(this.selectedOrgNode);
             }
-            this.render(this.treeData[0]);
+            this.render(this.root);
+            if (this.selectedOrgNode != null) {
+                this.centerNode(this.selectedOrgNode);
+            }
         }
     }
 
@@ -137,6 +141,24 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             .attr("fill", "transparent");
     }
 
+    collapseExceptSelectedNode(d) {
+        if (!d.IsSelected) {
+            if (d.IsParent || d.IsGrandParent) {
+                d._children = d.children;
+
+                d._children.forEach(element => {
+                    if (element.Show === false) {
+                        this.collapseTree(element);
+                        d.children.remove(element);
+                    }
+                });
+
+            }
+            else{
+                this.collapseTree(d);
+            }
+        }
+    }
     collapseTree(d) {
         if (d.children) {
             d._children = d.children;
@@ -201,6 +223,12 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         //  We need to change nodes only when nodes are null or selectedOrgNode is not null( and might have changed)
         if (this.nodes == null || this.selectedOrgNode != null) {
 
+            this.root.children.forEach(element => {
+                this.isAncestorOrRelated(element);
+                if (!(element.IsSelected || element.IsParent || element.IsGrandParent)) {
+                    this.collapseTree(element);
+                }
+            });
             this.nodes = this.tree.nodes(this.root).reverse();
 
             this.nodes.forEach(element => {
@@ -209,6 +237,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             });
 
             this.nodes = this.nodes.filter(function (d) { return d.Show; });
+
         }
 
         this.links = this.tree.links(this.nodes);
@@ -365,17 +394,17 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             this.deselectNode();
         }
 
-        // enter
-        if ((event as KeyboardEvent).keyCode === 13) {
-            let parentID = this.selectedOrgNode.ParentNodeID;
-            let newNode = this.addEmptyChildToSelectedOrgNode(parentID, this.root);
-            this.addNewNode(newNode);
-        }
-        // tab
-        else if ((event as KeyboardEvent).keyCode === 9) {
-            let newNode = this.addEmptyChildToParent(this.selectedOrgNode);
-            this.addNewNode(newNode);
-        }
+        /*  // enter
+          if ((event as KeyboardEvent).keyCode === 13) {
+              let parentID = this.selectedOrgNode.ParentNodeID;
+              let newNode = this.addEmptyChildToSelectedOrgNode(parentID, this.root);
+              this.addNewNode(newNode);
+          }
+          // tab
+          else if ((event as KeyboardEvent).keyCode === 9) {
+              let newNode = this.addEmptyChildToParent(this.selectedOrgNode);
+              this.addNewNode(newNode);
+          }*/
         // left arrow
         else if ((event as KeyboardEvent).keyCode === 37) {
             let node = this.selectedOrgNode as d3.layout.tree.Node;
