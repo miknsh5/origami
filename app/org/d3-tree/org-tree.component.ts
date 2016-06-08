@@ -23,6 +23,9 @@ const ARROW_FILL = "#D8D8D8";
 const NODE_HEIGHT = 70;
 const NODE_WIDTH = 40;
 
+const PARENT_CHILD_LABEL_POSITION = 18;
+const SIBLING_LABEL_POSITION = 24;
+
 @Component({
     selector: "sg-org-tree",
     template: ``
@@ -300,7 +303,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             .attr("r", 1e-6);
 
         nodeEnter.append("text")
-            .attr("x", function (d) { return 18; })
             .attr("dy", ".35em")
             .attr("text-anchor", function (d) { return "start"; })
             .style("fill-opacity", 1e-6);
@@ -331,7 +333,12 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             return d.IsStaging ? "#0097FF" : "#FFFFFF";
         });
 
-        node.select("text").text(function (d) { return d.IsSelected || d.IsGrandParent ? "" : d.NodeFirstName; });
+        node.select("text").text(function (d) { return d.IsSelected || d.IsGrandParent ? "" : d.NodeFirstName; })
+            .attr("x", function (d) {
+                if (d.IsParent === true || d.IsChild === true) { return PARENT_CHILD_LABEL_POSITION; }
+                else { return SIBLING_LABEL_POSITION; }
+            });
+
         node.select("circle").attr("class", function (d) {
             return d.IsSelected ? "selectedCircle" : "normalCircle";
         });
@@ -634,7 +641,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     }
 
     nodeClicked(d) {
-        if (this.selectedOrgNode.NodeID === -1) {
+        if (this.selectedOrgNode !== null && this.selectedOrgNode.NodeID === -1) {
             return;
         }
         event.stopPropagation();
