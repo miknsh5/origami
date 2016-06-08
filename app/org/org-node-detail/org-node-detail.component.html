@@ -3,14 +3,13 @@
 
         <div class="orgFormcontrols" *ngIf="selectedOrgNode">
             <div class="close-icon" (click)="onDeleteNodeClicked(selectedOrgNode)"> </div>
-            <div *ngIf="!isEditMode && !isAddMode" class="edit-icon" (click)="onEditNodeClicked()"> </div>
-            <button type="submit" *ngIf="isEditMode || isAddMode" class="save-icon" [disabled]="!orgform.form.valid">             </button>
+            <div *ngIf="!isAddOrEditModeEnabled" class="edit-icon" (click)="onEditClicked()"> </div>
+            <button type="submit" *ngIf="isAddOrEditModeEnabled" class="save-icon" [disabled]="!orgform.form.valid"></button>
         </div>
 
 
-        <div *ngIf="selectedOrgNode && !isEditMode && !isAddMode" class="text-wrap">
+        <div *ngIf="selectedOrgNode && !isAddOrEditModeEnabled" class="text-wrap">
             <div class="h-1">
-
                 {{selectedOrgNode.NodeFirstName}} {{selectedOrgNode.NodeLastName}}
             </div>
             <div class="h-3">
@@ -19,10 +18,10 @@
         </div>
 
 
-        <div *ngIf="(selectedOrgNode && isEditMode) || (selectedOrgNode && isAddMode)" class="form-group text-wrap">
-            <input type="text" class="title-name-edit form-control" (blur)="onFirstNameBlured(firstName.value)" ngControl="firstName"
+        <div *ngIf="selectedOrgNode && isAddOrEditModeEnabled" class="form-group text-wrap">
+            <input type="text" class="title-name-edit form-control fName" (blur)="onFirstNameBlurred(firstName.value)" ngControl="firstName"
                 #firstName="ngForm" [ngModel]="selectedOrgNode.NodeFirstName" />
-            <input type="text" class="title-name-edit form-control" ngControl="lastName" #lastName="ngForm" [ngModel]="selectedOrgNode.NodeLastName"/>
+            <input type="text" class="title-name-edit form-control lName" ngControl="lastName" #lastName="ngForm" [ngModel]="selectedOrgNode.NodeLastName"/>
             <input type="text" class="title-position-edit form-control" ngControl="description" #description="ngForm" [ngModel]="selectedOrgNode.Description"/>
         </div>
 

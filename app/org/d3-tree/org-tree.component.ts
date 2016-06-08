@@ -39,12 +39,9 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     selectedOrgNode: any;
     treeWidth: number;
     treeHeight: number;
-
-    isAddMode: boolean;
-
     arrows: any;
 
-
+    @Input() isAddOrEditModeEnabled: boolean;
     @Input() width: number;
     @Input() height: number;
     @Input() treeData: any;
@@ -106,7 +103,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             this.root = this.treeData[0];
             if (this.selectedOrgNode != null) {
                 this.selectedOrgNode.IsSelected = false;
-                this.isAddMode = false;
                 if (this.selectedOrgNode.NodeID === -1) {
                     this.selectedOrgNode = this.getPreviousSiblingNode(this.selectedOrgNode);
                     this.highlightSelectedNode(this.selectedOrgNode);
@@ -124,7 +120,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             if (this.selectedOrgNode != null) {
                 this.showUpdatePeerReporteeNode(this.selectedOrgNode);
                 this.centerNode(this.selectedOrgNode);
-
             }
         }
     }
@@ -181,7 +176,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         this.isAncestorOrRelated(d);
         if (d.Show === false || (d.IsSibling && !d.IsSelected) || d.IsChild || d.IsAncestor) {
             this.collapseTree(d);
-
         }
         if (d.children) {
             d.children.forEach(element => {
@@ -192,7 +186,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
     collapseTree(d) {
         if (d.children) {
-
             d._children = d.children;
             d._children.forEach(element => {
                 this.collapseTree(element);
@@ -257,9 +250,9 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
             //  The tree defines the position of the nodes based on the number of nodes it needs to draw.
             // collapse out the child nodes which will not be shown
-            this.root.children.forEach(element => {
+            /*this.root.children.forEach(element => {
                 this.collapseExceptSelectedNode(element);
-            });
+            });*/
 
             this.nodes = this.tree.nodes(this.root).reverse();
             this.nodes.forEach(element => {
@@ -432,7 +425,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     }
 
     showUpdatePeerReporteeNode(source) {
-        if (source !== null) {
+        if (source !== null && this.selectedOrgNode !== null && !this.isAddOrEditModeEnabled) {
             if (source.NodeID !== -1) {
                 if (source.parent) {
 
@@ -499,7 +492,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             return;
         }
 
-        if (this.selectedOrgNode.NodeID === -1) {
+        if (this.isAddOrEditModeEnabled) {
             return;
         }
 
@@ -507,7 +500,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         if ((event as KeyboardEvent).keyCode === 27) {
             this.deselectNode();
         }
-
 
         // left arrow
         if ((event as KeyboardEvent).keyCode === 37) {
@@ -575,7 +567,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                     }
                 });
                 return node;
-
             }
         }
     }
@@ -584,6 +575,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         if (this.selectedOrgNode == null) {
             return;
         }
+
         if (node.NodeID === parentID) {
             let newNode = this.addEmptyChildToParent(node);
             return newNode;
@@ -624,7 +616,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     }
 
     nodeClicked(d) {
-        if (this.isAddMode) {
+        if (this.isAddOrEditModeEnabled) {
             return;
         }
         event.stopPropagation();
@@ -682,21 +674,14 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         }
     }
 
-    emitaddNodeNotification(data: OrgNodeModel) {
-        if (data) {
-            this.highlightSelectedNode(data);
-            this.addNode.emit(data);
-        }
-    }
-
     private compareNodeID(updatedNode: OrgNodeModel, currentNode: OrgNodeModel): boolean {
         return updatedNode.NodeID === currentNode.NodeID;
     }
+
     private addNewNode(node) {
         let newNode = this.addEmptyChildToParent(node as OrgNodeModel);
         this.switchToAddMode.emit(newNode);
         this.highlightAndCenterNode(newNode);
-        this.isAddMode = true;
     }
 
     private isAncestor(child: OrgNodeModel, parent: any) {
@@ -711,8 +696,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 });
                 return isParent;
             }
-            else if(parent._children)
-            {
+            else if (parent._children) {
                 let isParent: boolean;
                 parent._children.forEach(element => {
                     isParent = this.isAncestor(child, element);
@@ -752,9 +736,8 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 node.IsChild = true;
                 node.Show = true;
             }
-
             else if (this.isAncestor(this.selectedOrgNode, node)) {
-            node.IsAncestor = true;
+                node.IsAncestor = true;
                 if (selectedTreeNode.parent != null) {
                     if (selectedTreeNode.parent.parent != null) {
                         let nodeID = (selectedTreeNode.parent as OrgNodeModel).ParentNodeID;
@@ -776,13 +759,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                     }
                 }
             }
-
-
         }
-
-
-
         return false;
     }
-}
 }
