@@ -179,7 +179,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
     collapseExceptSelectedNode(d) {
         this.isAncestorOrRelated(d);
-        if (d.Show === false || (d.IsSibling && !d.IsSelected) || d.IsChild) {
+        if (d.Show === false || (d.IsSibling && !d.IsSelected) || d.IsChild || d.IsAncestor) {
             this.collapseTree(d);
 
         }
@@ -213,7 +213,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         this.hideAllArrows();
 
         if (this.root.NodeID !== source.NodeID) {
-                let parentNode = source.parent;
+            let parentNode = source.parent;
             if (parentNode == null) {
                 parentNode = this.getNode(source.ParentNodeID, this.root);
             }
@@ -257,7 +257,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
             //  The tree defines the position of the nodes based on the number of nodes it needs to draw.
             // collapse out the child nodes which will not be shown
-           this.root.children.forEach(element => {
+            this.root.children.forEach(element => {
                 this.collapseExceptSelectedNode(element);
             });
 
@@ -432,12 +432,12 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     }
 
     showUpdatePeerReporteeNode(source) {
-        if (this.selectedOrgNode !== null) {
-            if (this.selectedOrgNode.NodeID !== -1) {
+        if (source !== null) {
+            if (source.NodeID !== -1) {
                 if (source.parent) {
-                    let node: OrgNodeModel;
-                    node = source.parent.children;
-                    let childrenCount = source.parent.children.length - 1;
+
+                    let node = source.parent.children ? source.parent.children : source.parent._children;
+                    let childrenCount = node.length - 1;
                     if (node[childrenCount] !== null) {
                         let x = node[childrenCount].x + (childrenCount === 0 ? NODE_DEFAULT_DISTANCE : (node[childrenCount].x - node[childrenCount - 1].x));
                         this.setPeerReporteeNode(PEER_TEXT, x, source.y, "peerNode");
@@ -699,6 +699,29 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         this.isAddMode = true;
     }
 
+    private isAncestor(child: OrgNodeModel, parent: any) {
+        if (child.ParentNodeID === parent.NodeID) {
+            return true;
+        }
+        else {
+            if (parent.children) {
+                let isParent: boolean;
+                parent.children.forEach(element => {
+                    isParent = this.isAncestor(child, element);
+                });
+                return isParent;
+            }
+            else if(parent._children)
+            {
+                let isParent: boolean;
+                parent._children.forEach(element => {
+                    isParent = this.isAncestor(child, element);
+                });
+                return isParent;
+            }
+        }
+    }
+
     private isAncestorOrRelated(node: OrgNodeModel) {
         node.IsChild = false;
         node.IsParent = false;
@@ -707,7 +730,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         node.IsSelected = false;
         node.Show = false;
         if (this.selectedOrgNode != null) {
-
+            let selectedTreeNode = this.selectedOrgNode as d3.layout.tree.Node;
             // if this is the selected node, or sibling or selected node's parent or selected nodes child
             if (this.selectedOrgNode.NodeID === node.NodeID) {
                 // mark as sibling so that it maintains style even after deselection by clicking outside
@@ -729,9 +752,9 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 node.IsChild = true;
                 node.Show = true;
             }
-            else {
-                let selectedTreeNode = this.selectedOrgNode as d3.layout.tree.Node;
 
+            else if (this.isAncestor(this.selectedOrgNode, node)) {
+            node.IsAncestor = true;
                 if (selectedTreeNode.parent != null) {
                     if (selectedTreeNode.parent.parent != null) {
                         let nodeID = (selectedTreeNode.parent as OrgNodeModel).ParentNodeID;
@@ -752,8 +775,14 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                         }
                     }
                 }
-
             }
-            return false;
+
+
         }
-    }}
+
+
+
+        return false;
+    }
+}
+}

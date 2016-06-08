@@ -9,6 +9,7 @@ export class OrgNodeModel {
     Show: boolean;
     IsSibling: boolean;
     IsGrandParent: boolean;
+    IsAncestor:boolean;
     IsParent: boolean;
     IsChild: boolean;
     IsStaging: boolean;
