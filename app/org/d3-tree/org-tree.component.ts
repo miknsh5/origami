@@ -214,6 +214,9 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
         if (this.root.NodeID !== source.NodeID) {
             let parentNode = source.parent;
+            if (parentNode == null) {
+                parentNode = this.getNode(source.ParentNodeID, this.root);
+            }
             this.moveParentNodesToCenter(parentNode, source);
             let grandParent = this.getGrandParentID(parentNode);
             if (grandParent != null) {
@@ -551,7 +554,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         }
     }
 
-    getNode(nodeID: number, rootNode: OrgNodeModel) {
+    getNode(nodeID: number, rootNode: any) {
         if (rootNode.NodeID === nodeID) {
             return rootNode;
         } else {
@@ -563,6 +566,16 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                     }
                 });
                 return node;
+            }
+            else if (rootNode._children) {
+                let node;
+                rootNode._children.forEach(element => {
+                    if (!node) {
+                        node = this.getNode(nodeID, element);
+                    }
+                });
+                return node;
+
             }
         }
     }
