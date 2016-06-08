@@ -213,7 +213,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         this.hideAllArrows();
 
         if (this.root.NodeID !== source.NodeID) {
-            let parentNode = source.parent;
+                let parentNode = source.parent;
             if (parentNode == null) {
                 parentNode = this.getNode(source.ParentNodeID, this.root);
             }
@@ -257,7 +257,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
             //  The tree defines the position of the nodes based on the number of nodes it needs to draw.
             // collapse out the child nodes which will not be shown
-            this.root.children.forEach(element => {
+           this.root.children.forEach(element => {
                 this.collapseExceptSelectedNode(element);
             });
 
@@ -613,6 +613,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         newNode.NodeID = -1;
         newNode.IsStaging = true;
         node.children.push(newNode);
+
         return newNode;
     }
 
@@ -730,6 +731,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             }
             else {
                 let selectedTreeNode = this.selectedOrgNode as d3.layout.tree.Node;
+
                 if (selectedTreeNode.parent != null) {
                     if (selectedTreeNode.parent.parent != null) {
                         let nodeID = (selectedTreeNode.parent as OrgNodeModel).ParentNodeID;
@@ -738,10 +740,20 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                             node.Show = true;
                         }
                     }
+                } else {
+                    if (this.selectedOrgNode.NodeID === -1) {
+                        selectedTreeNode.parent = this.getNode(this.selectedOrgNode.ParentNodeID, this.root);
+                        if (selectedTreeNode.parent.parent != null) {
+                            let nodeID = (selectedTreeNode.parent as OrgNodeModel).ParentNodeID;
+                            if (nodeID === node.NodeID) {
+                                node.IsGrandParent = true;
+                                node.Show = true;
+                            }
+                        }
+                    }
                 }
-            }
 
+            }
+            return false;
         }
-        return false;
-    }
-}
+    }}
