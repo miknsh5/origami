@@ -510,7 +510,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             return;
         }
 
-        if (this.isAddOrEditModeEnabled) {
+        if (this.selectedOrgNode.NodeID === -1) {
             return;
         }
 
@@ -634,7 +634,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     }
 
     nodeClicked(d) {
-        if (this.isAddOrEditModeEnabled) {
+        if (this.selectedOrgNode.NodeID === -1) {
             return;
         }
         event.stopPropagation();

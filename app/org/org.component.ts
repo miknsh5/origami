@@ -37,9 +37,13 @@ export class OrgComponent {
     }
 
     onNodeSelected(node) {
+        let nodeID = this.selectedNode ? this.selectedNode.NodeID : 0;
         this.selectedNode = node;
         if (node.NodeID === -1) {
             this.isAddOrEditMode = true;
+        }
+        if (this.isAddOrEditMode && nodeID !== node.NodeID) {
+            this.isAddOrEditMode = false;
         }
     }
 
