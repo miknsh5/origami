@@ -17,14 +17,12 @@
             </div>
         </div>
 
-
         <div *ngIf="selectedOrgNode && isAddOrEditModeEnabled" class="form-group text-wrap">
             <input type="text" class="title-name-edit form-control fName" (blur)="onFirstNameBlurred(firstName.value)" ngControl="firstName"
                 #firstName="ngForm" [ngModel]="selectedOrgNode.NodeFirstName" />
-            <input type="text" class="title-name-edit form-control lName" ngControl="lastName" #lastName="ngForm" [ngModel]="selectedOrgNode.NodeLastName"/>
+            <input type="text" class="title-name-edit form-control" ngControl="lastName" #lastName="ngForm" [ngModel]="selectedOrgNode.NodeLastName"/>
             <input type="text" class="title-position-edit form-control" ngControl="description" #description="ngForm" [ngModel]="selectedOrgNode.Description"/>
         </div>
-
 
     </form>
 </div>

@@ -54,7 +54,7 @@ export class OrgComponent {
         this.isAddOrEditMode = true;
     }
 
-    onEditNodeClicked(value: boolean) {
+    onAddOrEditModeValueSet(value: boolean) {
         this.isAddOrEditMode = value;
     }
 

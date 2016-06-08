@@ -17,7 +17,7 @@ export class OrgNodeDetailComponent implements OnChanges {
     @Output() deleteNode = new EventEmitter<OrgNodeModel>();
     @Output() updateNode = new EventEmitter<OrgNodeModel>();
     @Output() addNode = new EventEmitter<OrgNodeModel>();
-    @Output() editNodeClicked = new EventEmitter<boolean>();
+    @Output() setAddOrEditModeValue = new EventEmitter<boolean>();
 
     private editNodeDetails: OrgNodeModel;
 
@@ -110,7 +110,7 @@ export class OrgNodeDetailComponent implements OnChanges {
     }
 
     private onEditClicked() {
-        this.editNodeClicked.emit(true);
+        this.setAddOrEditModeValue.emit(true);
     }
 
     private onDeleteNodeClicked() {
@@ -150,6 +150,7 @@ export class OrgNodeDetailComponent implements OnChanges {
         } catch (ex) {
             alert("OOPs!! Something went wrong!! ");
         }
+        this.setAddOrEditModeValue.emit(false);
         console.log(err);
         this.editNodeDetails = null;
     }
