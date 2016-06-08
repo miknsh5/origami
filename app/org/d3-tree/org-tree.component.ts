@@ -105,7 +105,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         if (this.tree != null) {
             this.root = this.treeData[0];
             if (this.selectedOrgNode != null) {
-
+                this.selectedOrgNode.IsSelected = false;
                 this.isAddMode = false;
                 if (this.selectedOrgNode.NodeID === -1) {
                     this.selectedOrgNode = this.getPreviousSiblingNode(this.selectedOrgNode);
@@ -230,7 +230,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     }
 
     getGrandParentID(node: d3.layout.tree.Node) {
-        if (node.parent != null) {
+        if (node !== null && node.parent != null) {
             let orgNode = node.parent as OrgNodeModel;
             return orgNode;
         }
@@ -690,6 +690,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         node.IsParent = false;
         node.IsGrandParent = false;
         node.IsSibling = false;
+        node.IsSelected = false;
         node.Show = false;
         if (this.selectedOrgNode != null) {
 
@@ -698,6 +699,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 // mark as sibling so that it maintains style even after deselection by clicking outside
                 node.IsSibling = true;
                 node.Show = true;
+                node.IsSelected = true;
             }
             else if (this.selectedOrgNode.ParentNodeID === node.ParentNodeID) {
                 node.IsSibling = true;
