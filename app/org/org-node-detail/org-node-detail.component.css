@@ -10,7 +10,7 @@
     /*box-shadow: 0 2px 4px 0 var(--black-50);*/
 }
 
-.orgFormcontrols {
+.orgFormControls {
     left: 20px;
     top: 0;
     height: 100%;
@@ -81,6 +81,17 @@
 
 .close-icon {
     background-image: url("app/images/btn-delete-node.png");
+    background-repeat: no-repeat;
+    border:none;
+    position: absolute;
+    top: 0;
+    height: 28px;
+    width: 28px;
+    cursor: pointer;
+}
+
+.delete-icon {
+    background-image: url("app/images/btn-delete.png");
     background-repeat: no-repeat;
     border:none;
     position: absolute;
