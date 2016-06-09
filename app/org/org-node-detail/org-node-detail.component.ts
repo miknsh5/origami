@@ -32,7 +32,7 @@ export class OrgNodeDetailComponent {
         return (node.children != null);
     }
 
-    private isNullOREmpty(value: string) {
+    private isNullOrEmpty(value: string) {
         if (value && value.trim().length > 0) {
             return false;
         }
@@ -40,7 +40,7 @@ export class OrgNodeDetailComponent {
     }
 
     private onSubmit(form: NgForm) {
-        if (!this.isNullOREmpty(form.value.firstName)) {
+        if (!this.isNullOrEmpty(form.value.firstName)) {
             this.editNodeDetails = new OrgNodeModel();
             this.editNodeDetails.NodeFirstName = form.value.firstName;
             this.editNodeDetails.NodeLastName = form.value.lastName;
@@ -54,9 +54,9 @@ export class OrgNodeDetailComponent {
         }
     }
 
-    private onFirstNameBlured(fname: string) {
+    private onFirstNameBlurred(fname: string) {
         if (this.isAddMode) {
-            if (!this.isNullOREmpty(fname)) {
+            if (!this.isNullOrEmpty(fname)) {
                 let node = new OrgNodeModel();
                 node.NodeFirstName = fname;
                 node.children = this.selectedOrgNode.children;

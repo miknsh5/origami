@@ -198,7 +198,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
         if ((d.Show === false && !d.IsAncestor) || (d.IsSibling && !d.IsSelected) || d.IsChild) {
             this.collapseTree(d);
-
         }
         if (d.children) {
             d.children.forEach(element => {
