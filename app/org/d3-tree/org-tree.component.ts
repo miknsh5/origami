@@ -748,7 +748,10 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             }
             else {
                 let selectedTreeNode = this.selectedOrgNode as d3.layout.tree.Node;
-                if (selectedTreeNode.parent != null) {
+                if ((selectedTreeNode.parent != null) || (this.selectedOrgNode.NodeID === -1)) {
+                    if (selectedTreeNode.parent == null) {
+                        selectedTreeNode.parent = this.getNode(this.selectedOrgNode.ParentNodeID, this.root);
+                    }
                     if (selectedTreeNode.parent.parent != null) {
                         let nodeID = (selectedTreeNode.parent as OrgNodeModel).ParentNodeID;
                         if (nodeID === node.NodeID) {
@@ -757,18 +760,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                         }
                     }
                 }
-                else {
-                    if (this.selectedOrgNode.NodeID === -1) {
-                        selectedTreeNode.parent = this.getNode(this.selectedOrgNode.ParentNodeID, this.root);
-                        if (selectedTreeNode.parent.parent != null) {
-                            let nodeID = (selectedTreeNode.parent as OrgNodeModel).ParentNodeID;
-                            if (nodeID === node.NodeID) {
-                                node.IsGrandParent = true;
-                                node.Show = true;
-                            }
-                        }
-                    }
-                }
+
             }
 
         }
