@@ -177,9 +177,26 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             .attr("fill", "transparent");
     }
 
+    markAncestors(d: OrgNodeModel) {
+        if (d.ParentNodeID !== null) {
+            let node = this.getNode(d.ParentNodeID, this.root);
+            if (node != null) {
+                node.IsAncestor = true;
+                if (node.ParentNodeID !== null) {
+                    this.markAncestors(node);
+                }
+            }
+            else {
+                node.IsAncestor = false;
+            }
+        }
+
+    }
+
     collapseExceptSelectedNode(d) {
         this.isAncestorOrRelated(d);
-        if (d.Show === false || (d.IsSibling && !d.IsSelected) || d.IsChild) {
+
+        if ((d.Show === false && !d.IsAncestor) || (d.IsSibling && !d.IsSelected) || d.IsChild) {
             this.collapseTree(d);
 
         }
@@ -257,6 +274,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
             //  The tree defines the position of the nodes based on the number of nodes it needs to draw.
             // collapse out the child nodes which will not be shown
+            this.markAncestors(this.selectedOrgNode);
             this.root.children.forEach(element => {
                 this.collapseExceptSelectedNode(element);
             });
@@ -435,9 +453,9 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         if (this.selectedOrgNode !== null) {
             if (this.selectedOrgNode.NodeID !== -1) {
                 if (source.parent) {
-                    let node: OrgNodeModel;
-                    node = source.parent.children;
-                    let childrenCount = source.parent.children.length - 1;
+                    let node: any;
+                    node = source.parent.children ? source.parent.children : source.parent._children;
+                    let childrenCount = node.length - 1;
                     if (node[childrenCount] !== null) {
                         let x = node[childrenCount].x + (childrenCount === 0 ? NODE_DEFAULT_DISTANCE : (node[childrenCount].x - node[childrenCount - 1].x));
                         this.setPeerReporteeNode(PEER_TEXT, x, source.y, "peerNode");
@@ -739,9 +757,22 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                         }
                     }
                 }
+                else {
+                    if (this.selectedOrgNode.NodeID === -1) {
+                        selectedTreeNode.parent = this.getNode(this.selectedOrgNode.ParentNodeID, this.root);
+                        if (selectedTreeNode.parent.parent != null) {
+                            let nodeID = (selectedTreeNode.parent as OrgNodeModel).ParentNodeID;
+                            if (nodeID === node.NodeID) {
+                                node.IsGrandParent = true;
+                                node.Show = true;
+                            }
+                        }
+                    }
+                }
             }
 
         }
+
         return false;
     }
 }
