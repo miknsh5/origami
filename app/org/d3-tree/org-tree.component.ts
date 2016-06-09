@@ -754,6 +754,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         let newNode = this.addEmptyChildToParent(node as OrgNodeModel);
         this.switchToAddMode.emit(newNode);
         this.highlightAndCenterNode(newNode);
+        this.hideAllArrows();
         this.isAddMode = true;
     }
 
