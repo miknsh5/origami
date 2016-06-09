@@ -15,16 +15,17 @@
     top: 0;
     height: 100%;
     display: inline-block;
-    float: left;
-    float: left;
+  
     position: absolute;
     z-index: 11;
 }
 
 .text-wrap {
     position: relative;
+
     padding-left: 60px;
     margin: 11px 0;
+
     color: #FFFFFF;
     width: 260px;
 }
@@ -39,9 +40,10 @@
     font-weight: bolder;
     width: 46%;
     height: 18px;
-    margin-bottom: 4px;
+    margin-bottom: 2px;
     border: none;
     float: left;
+    margin-right: 2%;
 }
 
 .title-position {
@@ -50,7 +52,7 @@
 
 .title-position-edit {
     font-size: 0.8em;
-    width: 92%;
+    width: 94%;
     height: 18px;
     border: none;
 }

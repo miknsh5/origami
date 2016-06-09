@@ -11,7 +11,7 @@ import { OrgTreeComponent } from "./d3-tree/org-tree.component";
 
 @Component({
     selector: "sg-origami-org",
-    directives: [OrgTreeComponent, OrgNodeDetailComponent, AddNodeComponent],
+    directives: [OrgTreeComponent, OrgNodeDetailComponent],
     templateUrl: "app/org/org.component.html",
     styleUrls: ["app/org/org.component.css"],
     providers: [OrgService, HTTP_PROVIDERS]
@@ -23,6 +23,8 @@ export class OrgComponent {
 
     @Output() treeJson: any;
     @Output() selectedNode: OrgNodeModel;
+    @Output() addMode: boolean;
+
     constructor(private orgService: OrgService, private router: Router) {
         this.getAllNodes();
     }
@@ -38,27 +40,29 @@ export class OrgComponent {
         this.selectedNode = node;
     }
 
-
     onNodeAdded(added: OrgNodeModel) {
+        this.addMode = false;
         this.addChildToSelectedOrgNode(added, this.orgNodes[0]);
         this.updateJSON();
     }
 
+    onSwitchedToAddMode(node: OrgNodeModel) {
+        this.selectedNode = node;
+        this.addMode = true;
+    }
+
     addChildToSelectedOrgNode(newNode: OrgNodeModel, node: OrgNodeModel) {
-        if (this.compareNodeID(node, this.selectedNode)) {
-            node.IsSelected = true;
+        if (this.comparewithParentNodeID(newNode, node)) {
+            newNode.IsSelected = true;
             if (!node.children) {
                 node.children = new Array<OrgNodeModel>();
-
             }
             node.children.push(newNode);
             return;
         } else {
-
             node.IsSelected = false;
             if (node.children) {
                 node.children.forEach(element => this.addChildToSelectedOrgNode(newNode, element));
-
             }
         }
     }
@@ -67,7 +71,6 @@ export class OrgComponent {
         this.treeJson = JSON.parse(JSON.stringify(this.orgNodes));
         // alert(JSON.stringify(this.orgNodes));
     }
-
 
     deleteNodeFromArray(nodes: OrgNodeModel[]) {
         let index = - 1;
@@ -89,8 +92,8 @@ export class OrgComponent {
         }
     }
 
-
     onNodeDeleted(deleted) {
+        this.addMode = false;
         this.deleteNodeFromArray(this.orgNodes);
         this.updateJSON();
     }
@@ -104,6 +107,8 @@ export class OrgComponent {
     updateOrgNode(node: OrgNodeModel) {
         if (this.compareNodeID(node, this.selectedNode)) {
             node.NodeFirstName = this.selectedNode.NodeFirstName;
+            node.NodeLastName = this.selectedNode.NodeLastName;
+            node.Description = this.selectedNode.Description;
             node.IsSelected = true;
             return;
         } else {
@@ -120,6 +125,14 @@ export class OrgComponent {
         this.router.navigate(["/Login"]);
     }
 
+    private comparewithParentNodeID(updatedNode: OrgNodeModel, currentNode: OrgNodeModel): boolean {
+        if (updatedNode != null && currentNode != null) {
+            return updatedNode.ParentNodeID === currentNode.NodeID;
+        } else {
+            return false;
+        }
+    }
+
     private compareNodeID(updatedNode: OrgNodeModel, currentNode: OrgNodeModel): boolean {
         if (updatedNode != null && currentNode != null) {
             return updatedNode.NodeID === currentNode.NodeID;
@@ -132,7 +145,6 @@ export class OrgComponent {
         this.orgChart = data;
         this.orgNodes = this.orgChart.OrgNodes;
         this.treeJson = JSON.parse(JSON.stringify(this.orgNodes));
-        // console.log(this.orgChart);
     }
 
 }   

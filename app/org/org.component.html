@@ -14,42 +14,20 @@
         [treeData]="treeJson" 
         [width]="960"
         [height]="500" 
-        (selectNode)="onNodeSelected($event)" 
-        (addNode)="onNodeAdded($event)">
+        (selectNode)="onNodeSelected($event)"
+        (switchToAddMode)="onSwitchedToAddMode($event)">
     </sg-org-tree>
 </div>
 
 <sg-org-node-detail 
     #nodeDetail
     [selectedOrgNode]="selectedNode"
+    [isAddMode]= "addMode"
     (deleteNode)="onNodeDeleted($event)" 
-    (updateNode)="onNodeUpdated($event)">
+    (updateNode)="onNodeUpdated($event)"
+    (addNode)="onNodeAdded($event)">
   </sg-org-node-detail>
   
 <div>
-    <sg-origami-add-node 
-         [selectedNode]="selectedNode">
-    </sg-origami-add-node>
-    
-    <tree-graph 
-        [treeData]=treeJson 
-        width="1000" 
-        height="130"
-        (selectNode)="onNodeSelected($event)">
-    </tree-graph>
-</div>
-
-<origami-org-node-detail 
-    #nodeDetail 
-    [selectedOrgNode]="selectedNode" 
-    (deleteNode)="onNodeDeleted($event)"
-    (updateNode)="onNodeUpdated($event)">
-</origami-org-node-detail>
-
-<div>
-    <sg-origami-add-node 
-        (addNode)="onNodeAdded($event)" 
-        [selectedNode]="selectedNode">
-    </sg-origami-add-node>
-
+   
 </div>

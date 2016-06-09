@@ -11,5 +11,7 @@ export class OrgNodeModel {
     IsGrandParent: boolean;
     IsParent: boolean;
     IsChild: boolean;
+    IsStaging: boolean;
+    IsAncestor: boolean;
     children: OrgNodeModel[];
 }

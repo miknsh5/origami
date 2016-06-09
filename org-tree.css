@@ -7,12 +7,12 @@ node circle {
   box-shadow: 0 0 40px rgba(0, 0, 0, 0.8);
 }
 
-.node circle text {
+.node text#abbr {
   text-transform: uppercase;
 }
 
 .node text {
-  font: 10px sans-serif;
+  font: 0.78em sans-serif;
   fill: #FFF;
 }
 
@@ -21,7 +21,6 @@ node circle {
   stroke: #ccc;
   stroke-width: 1.5px;
 }
-
 
 .chart {
   background: #eee;
@@ -36,7 +35,7 @@ node circle {
 }
 
 .chart div {
-  font: 10px sans-serif;
+  font: 0.75em sans-serif;
   background-color: steelblue;
   text-align: right;
   padding: 3px;
@@ -44,6 +43,50 @@ node circle {
   color: white;
   box-shadow: 2px 2px 2px #666;
 }
+
 .title {
   font-family: Arial, Helvetica, sans-serif;
+}
+
+.reporteeNode {
+  cursor: pointer;
+}
+
+.selectedCircle {
+  fill: #0097FF;
+  stroke: none;
+}
+
+.stagedCircle {
+  fill: #FFFFFF;
+  stroke: #0097FF;
+  stroke-width: 2;
+}
+
+.normalCircle {
+  fill: #CFD8DC;
+  stroke: none;
+}
+
+.new-peer_reportee-circle {
+  fill: #FAFAFA;
+  stroke: #B6B6B6;
+  stroke-width: 1;
+  stroke-dasharray: 2, 2;
+  cursor: pointer;
+}
+
+.new-peer_reportee-innerText {
+  font-size: .75em;
+  fill: #B6B6B6;
+  text-anchor: middle;
+  fill-opacity: 1;
+  cursor: pointer;
+}
+
+.new-peer_reportee-outerText {
+  font-size: 0.62em;
+  fill: #B6B6B6;
+  text-anchor: middle;
+  fill-opacity: 1;
 }
