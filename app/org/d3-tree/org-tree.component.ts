@@ -39,11 +39,9 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     selectedOrgNode: any;
     treeWidth: number;
     treeHeight: number;
-
+    previousRoot: any;
     isAddMode: boolean;
-
     arrows: any;
-
 
     @Input() width: number;
     @Input() height: number;
@@ -103,6 +101,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
         if (this.tree != null) {
+            this.previousRoot = this.root;
             this.root = this.treeData[0];
             if (this.selectedOrgNode != null) {
                 this.selectedOrgNode.IsSelected = false;
@@ -124,7 +123,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             if (this.selectedOrgNode != null) {
                 this.showUpdatePeerReporteeNode(this.selectedOrgNode);
                 this.centerNode(this.selectedOrgNode);
-
+                this.hideTopArrow(this.selectedOrgNode);
             }
         }
     }
@@ -135,10 +134,31 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         this.graph = d3.select(el);
     }
 
+    getNodeIndex(parentNode: OrgNodeModel, currentNode: OrgNodeModel) {
+        let index;
+        let node = this.getNode(parentNode.NodeID, this.previousRoot);
+        console.log(node);
+        if (node.children && node.children.length > 0) {
+            node.children.forEach(function (d) {
+                console.log(d);
+                if (d.NodeID === currentNode.NodeID) {
+                    index = node.children.indexOf(currentNode, 0);
+                }
+            });
+        }
+        return index;
+    }
+
     getPreviousSiblingNode(node: OrgNodeModel) {
         let previousNode = this.getNode(node.ParentNodeID, this.root);
+        let index = this.getNodeIndex(previousNode, node);
         if (previousNode.children && previousNode.children.length > 0) {
-            previousNode = previousNode.children[previousNode.children.length - 1];
+            if (index > 0) {
+                previousNode = previousNode.children[index - 1];
+            }
+            else if (index === 0 && previousNode.children.length > 0) {
+                previousNode = previousNode.children[index];
+            }
         }
         return previousNode;
     }
@@ -637,6 +657,28 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         this.highlightSelectedNode(d);
         this.render(d);
         this.centerNode(d);
+        this.hideTopArrow(d);
+    }
+
+    hideTopArrow(d) {
+        if (d.ParentNodeID) {
+            let index;
+            let currentNode = d;
+            let parentNode = this.getNode(d.ParentNodeID, this.root);
+            if (parentNode.children && parentNode.children.length > 0) {
+                parentNode.children.forEach(function (d) {
+                    if (d.NodeID === currentNode.NodeID) {
+                        index = parentNode.children.indexOf(currentNode, 0);
+                        if (index === 0) {
+                            d3.select("polygon#top")
+                                .attr("stroke", "transparent")
+                                .attr("fill", "transparent");
+                            console.log("First Child");
+                        }
+                    }
+                });
+            }
+        }
     }
 
     nodeClicked(d) {
