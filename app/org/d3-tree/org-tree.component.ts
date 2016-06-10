@@ -23,6 +23,9 @@ const ARROW_FILL = "#D8D8D8";
 const NODE_HEIGHT = 70;
 const NODE_WIDTH = 40;
 
+const PARENT_CHILD_LABEL_POSITION = 18;
+const SIBLING_LABEL_POSITION = 24;
+
 @Component({
     selector: "sg-org-tree",
     template: ``
@@ -39,12 +42,9 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     selectedOrgNode: any;
     treeWidth: number;
     treeHeight: number;
-
-    isAddMode: boolean;
-
     arrows: any;
 
-
+    @Input() isAddOrEditModeEnabled: boolean;
     @Input() width: number;
     @Input() height: number;
     @Input() treeData: any;
@@ -106,7 +106,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             this.root = this.treeData[0];
             if (this.selectedOrgNode != null) {
                 this.selectedOrgNode.IsSelected = false;
-                this.isAddMode = false;
                 if (this.selectedOrgNode.NodeID === -1) {
                     this.selectedOrgNode = this.getPreviousSiblingNode(this.selectedOrgNode);
                     this.highlightSelectedNode(this.selectedOrgNode);
@@ -124,7 +123,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             if (this.selectedOrgNode != null) {
                 this.showUpdatePeerReporteeNode(this.selectedOrgNode);
                 this.centerNode(this.selectedOrgNode);
-
             }
         }
     }
@@ -208,7 +206,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
     collapseTree(d) {
         if (d.children) {
-
             d._children = d.children;
             d._children.forEach(element => {
                 this.collapseTree(element);
@@ -306,7 +303,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             .attr("r", 1e-6);
 
         nodeEnter.append("text")
-            .attr("x", function (d) { return 18; })
             .attr("dy", ".35em")
             .attr("text-anchor", function (d) { return "start"; })
             .style("fill-opacity", 1e-6);
@@ -337,7 +333,12 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             return d.IsStaging ? "#0097FF" : "#FFFFFF";
         });
 
-        node.select("text").text(function (d) { return d.IsSelected || d.IsGrandParent ? "" : d.NodeFirstName; });
+        node.select("text").text(function (d) { return d.IsSelected || d.IsGrandParent ? "" : d.NodeFirstName; })
+            .attr("x", function (d) {
+                if (d.IsParent === true || d.IsChild === true) { return PARENT_CHILD_LABEL_POSITION; }
+                else { return SIBLING_LABEL_POSITION; }
+            });
+
         node.select("circle").attr("class", function (d) {
             return d.IsSelected ? "selectedCircle" : "normalCircle";
         });
@@ -449,8 +450,8 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     }
 
     showUpdatePeerReporteeNode(source) {
-        if (this.selectedOrgNode !== null) {
-            if (this.selectedOrgNode.NodeID !== -1) {
+        if (source !== null && this.selectedOrgNode !== null && !this.isAddOrEditModeEnabled) {
+            if (source.NodeID !== -1) {
                 if (source.parent) {
                     let node: any;
                     node = source.parent.children ? source.parent.children : source.parent._children;
@@ -495,6 +496,8 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     bodyClicked(d) {
         if (event.srcElement.nodeName === "svg") {
             this.deselectNode();
+            this.selectedOrgNode = null;
+            this.selectNode.emit(this.selectedOrgNode);
         }
     }
 
@@ -524,7 +527,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         if ((event as KeyboardEvent).keyCode === 27) {
             this.deselectNode();
         }
-
 
         // left arrow
         if ((event as KeyboardEvent).keyCode === 37) {
@@ -592,7 +594,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                     }
                 });
                 return node;
-
             }
         }
     }
@@ -601,6 +602,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         if (this.selectedOrgNode == null) {
             return;
         }
+
         if (node.NodeID === parentID) {
             let newNode = this.addEmptyChildToParent(node);
             return newNode;
@@ -630,6 +632,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         newNode.NodeID = -1;
         newNode.IsStaging = true;
         node.children.push(newNode);
+
         return newNode;
     }
 
@@ -640,7 +643,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     }
 
     nodeClicked(d) {
-        if (this.isAddMode) {
+        if (this.selectedOrgNode !== null && this.selectedOrgNode.NodeID === -1) {
             return;
         }
         event.stopPropagation();
@@ -698,21 +701,36 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         }
     }
 
-    emitaddNodeNotification(data: OrgNodeModel) {
-        if (data) {
-            this.highlightSelectedNode(data);
-            this.addNode.emit(data);
-        }
-    }
-
     private compareNodeID(updatedNode: OrgNodeModel, currentNode: OrgNodeModel): boolean {
         return updatedNode.NodeID === currentNode.NodeID;
     }
+
     private addNewNode(node) {
         let newNode = this.addEmptyChildToParent(node as OrgNodeModel);
         this.switchToAddMode.emit(newNode);
         this.highlightAndCenterNode(newNode);
-        this.isAddMode = true;
+    }
+
+    private isAncestor(child: OrgNodeModel, parent: any) {
+        if (child.ParentNodeID === parent.NodeID) {
+            return true;
+        }
+        else {
+            if (parent.children) {
+                let isParent: boolean;
+                parent.children.forEach(element => {
+                    isParent = this.isAncestor(child, element);
+                });
+                return isParent;
+            }
+            else if (parent._children) {
+                let isParent: boolean;
+                parent._children.forEach(element => {
+                    isParent = this.isAncestor(child, element);
+                });
+                return isParent;
+            }
+        }
     }
 
     private isAncestorOrRelated(node: OrgNodeModel) {

@@ -14,6 +14,7 @@
         [treeData]="treeJson" 
         [width]="960"
         [height]="500" 
+        [isAddOrEditModeEnabled]="isAddOrEditMode"
         (selectNode)="onNodeSelected($event)"
         (switchToAddMode)="onSwitchedToAddMode($event)">
     </sg-org-tree>
@@ -22,10 +23,11 @@
 <sg-org-node-detail 
     #nodeDetail
     [selectedOrgNode]="selectedNode"
-    [isAddMode]= "addMode"
+    [isAddOrEditModeEnabled]= "isAddOrEditMode"
     (deleteNode)="onNodeDeleted($event)" 
     (updateNode)="onNodeUpdated($event)"
-    (addNode)="onNodeAdded($event)">
+    (addNode)="onNodeAdded($event)"
+    (setAddOrEditModeValue)="onAddOrEditModeValueSet($event)">
   </sg-org-node-detail>
   
 <div>
