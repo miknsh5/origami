@@ -62,7 +62,13 @@ export class OrgComponent {
         } else {
             node.IsSelected = false;
             if (node.children) {
-                node.children.some(element => this.addChildToSelectedOrgNode(newNode, element));
+                for (let i = 0; i < node.children.length; i++) {
+                    let result = this.addChildToSelectedOrgNode(newNode, node.children[i]);
+                    if (result) {
+                        break;
+                    }
+                }
+
             }
         }
     }
@@ -74,12 +80,12 @@ export class OrgComponent {
 
     deleteNodeFromArray(nodes: OrgNodeModel[]) {
         let index = - 1;
-        nodes.some(element => {
-            if (this.compareNodeID(element, this.selectedNode)) {
-                index = nodes.indexOf(element);
-                return true;
+        for (let i = 0; i < nodes.length; i++) {
+            if (this.compareNodeID(nodes[i], this.selectedNode)) {
+                index = nodes.indexOf(nodes[i]);
+                break;
             }
-        });
+        };
         if (index > -1) {
             nodes.splice(index, 1);
             this.selectedNode = null;
@@ -115,7 +121,12 @@ export class OrgComponent {
         } else {
             node.IsSelected = false;
             if (node.children) {
-                node.children.some(element => this.updateOrgNode(element));
+                for (let i = 0; i < node.children.length; i++) {
+                    let result = this.updateOrgNode(node.children[i]);
+                    if (result) {
+                        break;
+                    }
+                }
             }
         }
     }

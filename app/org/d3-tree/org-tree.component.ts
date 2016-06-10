@@ -93,9 +93,9 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         this.createArrows();
 
         this.root = this.treeData[0];
-        this.root.children.forEach(element => {
-            this.collapseTree(element);
-        });
+        for (let i = 0; i < this.root.children.length; i++) {
+            this.collapseTree(this.root.children[i]);
+        };
         this.highlightSelectedNode(this.root);
         this.render(this.root);
         this.centerNode(this.root);
@@ -200,9 +200,10 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             this.collapseTree(d);
         }
         if (d.children) {
-            d.children.forEach(element => {
-                this.collapseExceptSelectedNode(element);
-            });
+            for (let i = 0; i < d.children.length; i++) {
+
+                this.collapseExceptSelectedNode(d.children[i]);
+            };
         }
     }
 
@@ -210,9 +211,9 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         if (d.children) {
 
             d._children = d.children;
-            d._children.forEach(element => {
-                this.collapseTree(element);
-            });
+            for (let i = 0; i < d._children.length; i++) {
+                this.collapseTree(d._children[i]);
+            };
             d.children = null;
         }
     }
@@ -274,14 +275,14 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             //  The tree defines the position of the nodes based on the number of nodes it needs to draw.
             // collapse out the child nodes which will not be shown
             this.markAncestors(this.selectedOrgNode);
-            this.root.children.forEach(element => {
-                this.collapseExceptSelectedNode(element);
-            });
+            for (let k = 0; k < this.root.children.length; k++) {
+                this.collapseExceptSelectedNode(this.root.children[k]);
+            };
 
             this.nodes = this.tree.nodes(this.root).reverse();
-            this.nodes.forEach(element => {
-                this.isAncestorOrRelated(element);
-            });
+            for (let j = 0; j < this.nodes.length; j++) {
+                this.isAncestorOrRelated(this.nodes[j]);
+            };
             this.nodes = this.nodes.filter(function (d) { return d.Show; });
         }
 
@@ -575,24 +576,15 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         if (rootNode.NodeID === nodeID) {
             return rootNode;
         } else {
-            if (rootNode.children) {
+            let nodes = rootNode.children ? rootNode.children : rootNode._children;
+            if (nodes) {
                 let node;
-                rootNode.children.forEach(element => {
+                for (let i = 0; i < nodes.length; i++) {
                     if (!node) {
-                        node = this.getNode(nodeID, element);
+                        node = this.getNode(nodeID, nodes[i]);
                     }
-                });
+                };
                 return node;
-            }
-            else if (rootNode._children) {
-                let node;
-                rootNode._children.forEach(element => {
-                    if (!node) {
-                        node = this.getNode(nodeID, element);
-                    }
-                });
-                return node;
-
             }
         }
     }
@@ -695,7 +687,9 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             let nodeSelected;
             if (!nodeSelected) {
                 if (node.children) {
-                    nodeSelected = node.children.forEach(element => this.updateSelectedOrgNode(element));
+                    for (let j = 0; j < node.children.length; j++) {
+                        this.updateSelectedOrgNode(node.children[j]);
+                    }
                 }
             }
         }
