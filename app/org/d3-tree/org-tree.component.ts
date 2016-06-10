@@ -690,10 +690,13 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     updateSelectedOrgNode(node: OrgNodeModel) {
         if (this.compareNodeID(node, this.selectedOrgNode)) {
             this.selectedOrgNode = node;
-            return;
+            return true;
         } else {
-            if (node.children) {
-                node.children.forEach(element => this.updateSelectedOrgNode(element));
+            let nodeSelected;
+            if (!nodeSelected) {
+                if (node.children) {
+                    nodeSelected = node.children.forEach(element => this.updateSelectedOrgNode(element));
+                }
             }
         }
     }
