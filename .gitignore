@@ -5,4 +5,4 @@ app/**/*.js
 app/**/*.map
 dist/**/**/*.js
 dist/**/**/*.map
-.idea/
+.idea/workspace.xml
