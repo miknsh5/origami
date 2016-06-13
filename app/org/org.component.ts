@@ -58,11 +58,17 @@ export class OrgComponent {
                 node.children = new Array<OrgNodeModel>();
             }
             node.children.push(newNode);
-            return;
+            return true;
         } else {
             node.IsSelected = false;
             if (node.children) {
-                node.children.forEach(element => this.addChildToSelectedOrgNode(newNode, element));
+                for (let i = 0; i < node.children.length; i++) {
+                    let result = this.addChildToSelectedOrgNode(newNode, node.children[i]);
+                    if (result) {
+                        break;
+                    }
+                }
+
             }
         }
     }
@@ -74,11 +80,12 @@ export class OrgComponent {
 
     deleteNodeFromArray(nodes: OrgNodeModel[]) {
         let index = - 1;
-        nodes.forEach(element => {
-            if (this.compareNodeID(element, this.selectedNode)) {
-                index = nodes.indexOf(element);
+        for (let i = 0; i < nodes.length; i++) {
+            if (this.compareNodeID(nodes[i], this.selectedNode)) {
+                index = nodes.indexOf(nodes[i]);
+                break;
             }
-        });
+        };
         if (index > -1) {
             nodes.splice(index, 1);
             this.selectedNode = null;
@@ -110,11 +117,16 @@ export class OrgComponent {
             node.NodeLastName = this.selectedNode.NodeLastName;
             node.Description = this.selectedNode.Description;
             node.IsSelected = true;
-            return;
+            return true;
         } else {
             node.IsSelected = false;
             if (node.children) {
-                node.children.forEach(element => this.updateOrgNode(element));
+                for (let i = 0; i < node.children.length; i++) {
+                    let result = this.updateOrgNode(node.children[i]);
+                    if (result) {
+                        break;
+                    }
+                }
             }
         }
     }
