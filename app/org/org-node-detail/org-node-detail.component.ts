@@ -86,6 +86,10 @@ export class OrgNodeDetailComponent {
             () => console.log("Node Added Complete"));
     }
 
+    private onCancelEditClicked() {
+        this.isEditMode = false;
+    }
+
     private editNode(node: OrgNodeModel) {
         if (!node) { return; }
         /*this.isEditMode = false;
