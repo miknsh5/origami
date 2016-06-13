@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnChanges, SimpleChange } from "@angular/core";
+import { Component, Input, Output, EventEmitter, OnChanges, SimpleChange, AfterContentChecked, ElementRef, Renderer, ViewChild } from "@angular/core";
 import { COMMON_DIRECTIVES, NgForm, FORM_DIRECTIVES } from "@angular/common";
 
 import { OrgNodeModel, OrgService } from "../shared/index";
@@ -11,7 +11,7 @@ import { OrgNodeModel, OrgService } from "../shared/index";
     directives: [FORM_DIRECTIVES, COMMON_DIRECTIVES]
 })
 
-export class OrgNodeDetailComponent implements OnChanges {
+export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
     @Input() selectedOrgNode: OrgNodeModel;
     @Input() isAddOrEditModeEnabled: boolean;
 
@@ -19,20 +19,26 @@ export class OrgNodeDetailComponent implements OnChanges {
     @Output() updateNode = new EventEmitter<OrgNodeModel>();
     @Output() addNode = new EventEmitter<OrgNodeModel>();
     @Output() setAddOrEditModeValue = new EventEmitter<boolean>();
-
+    isInputFocused: boolean;
     private editNodeDetails: OrgNodeModel;
 
-    constructor(private orgService: OrgService) { }
+    constructor(private orgService: OrgService, private renderer: Renderer) { }
 
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
+        // dectects isAddOrEditModeEnabled property has changed
         if (changes["isAddOrEditModeEnabled"]) {
             if (changes["isAddOrEditModeEnabled"].currentValue) {
-                setTimeout(function () {
-                    let element: any = document.getElementsByClassName("fName");
-                    if (element.length > 0) {
-                        element[0].focus();
-                    }
-                }, 200);
+                this.isInputFocused = true;
+            }
+        }
+    }
+
+    ngAfterContentChecked() {
+        if (this.isAddOrEditModeEnabled && this.isInputFocused) {
+            let elements: any = document.getElementsByTagName("input");
+            if (elements.length > 0) {
+                this.renderer.invokeElementMethod(elements[0], "focus", []);
+                this.isInputFocused = false;
             }
         }
     }
