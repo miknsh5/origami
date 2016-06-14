@@ -104,13 +104,20 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
         if (this.tree != null) {
+            let raiseSelectedEvent: boolean = true;
+            if (changes["isAddOrEditModeEnabled"]) {
+                if (changes["isAddOrEditModeEnabled"].currentValue === false && changes["isAddOrEditModeEnabled"].previousValue === true) {
+                    raiseSelectedEvent = false;
+                }
+            }
+
             this.previousRoot = this.root;
             this.root = this.treeData[0];
             if (this.selectedOrgNode != null) {
                 this.selectedOrgNode.IsSelected = false;
                 if (this.selectedOrgNode.NodeID === -1) {
                     this.selectedOrgNode = this.getPreviousNodeIfAddedOrDeleted();
-                    this.highlightSelectedNode(this.selectedOrgNode);
+                    this.selecthighlightSelectedNode(this.selectedOrgNode, raiseSelectedEvent);
                 } else {
                     let node = this.getNode(this.selectedOrgNode.NodeID, this.root);
                     // if the selected node is deleted it highlights previous sibbling or parent node
@@ -118,7 +125,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                         this.selectedOrgNode = this.getPreviousSiblingNode(this.selectedOrgNode, this.previousRoot);
                     }
                     this.updateSelectedOrgNode(this.root);
-                    this.highlightSelectedNode(this.selectedOrgNode);
+                    this.selecthighlightSelectedNode(this.selectedOrgNode, raiseSelectedEvent);
                 }
             }
             this.render(this.root);
@@ -756,6 +763,24 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         }
         this.selectedOrgNode = d;
     }
+
+    selecthighlightSelectedNode(d, raise: boolean) {
+        if (this.selectedOrgNode) {
+            this.selectedOrgNode.IsSelected = false;
+        }
+        if (d != null) {
+            if (this.selectedOrgNode && this.selectedOrgNode.NodeID !== d.ParentNodeID) {
+                this.hideChildren(this.selectedOrgNode);
+            }
+            d.IsSelected = true;
+            if (raise === true) {
+                this.selectNode.emit(d);
+
+            } this.showChildren(d);
+        }
+        this.selectedOrgNode = d;
+    }
+
 
     updateSelectedOrgNode(node: OrgNodeModel) {
         if (this.compareNodeID(node, this.selectedOrgNode)) {

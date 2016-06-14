@@ -21,7 +21,7 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
     @Output() setAddOrEditModeValue = new EventEmitter<boolean>();
     isInputFocused: boolean;
     private editNodeDetails: OrgNodeModel;
-
+    orgNode: OrgNodeModel;
     constructor(private orgService: OrgService, private renderer: Renderer) { }
 
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
@@ -30,6 +30,9 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
             if (changes["isAddOrEditModeEnabled"].currentValue) {
                 this.isInputFocused = true;
             }
+        }
+        if (changes["selectedOrgNode"]) {
+            this.orgNode = this.selectedOrgNode;
         }
     }
 
@@ -60,23 +63,25 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
             this.editNodeDetails.NodeFirstName = form.value.firstName;
             this.editNodeDetails.NodeLastName = form.value.lastName;
             this.editNodeDetails.Description = form.value.description;
-            this.editNodeDetails.children = this.selectedOrgNode.children;
-            this.editNodeDetails.NodeID = this.selectedOrgNode.NodeID;
-            this.editNodeDetails.OrgID = this.selectedOrgNode.OrgID;
-            this.editNodeDetails.ParentNodeID = this.selectedOrgNode.ParentNodeID;
-
+            this.editNodeDetails.children = this.orgNode.children;
+            this.editNodeDetails.NodeID = this.orgNode.NodeID;
+            this.editNodeDetails.OrgID = this.orgNode.OrgID;
+            this.editNodeDetails.ParentNodeID = this.orgNode.ParentNodeID;
+            this.orgNode.NodeFirstName = form.value.firstName;
+            this.orgNode.NodeLastName = form.value.lastName;
+            this.orgNode.Description = form.value.description;
             this.editNode(this.editNodeDetails);
         }
     }
 
     private onFirstNameBlurred(fname: string) {
-        if (this.selectedOrgNode.NodeID === -1) {
+        if (this.orgNode.NodeID === -1) {
             if (!this.isNullOrEmpty(fname)) {
                 let node = new OrgNodeModel();
                 node.NodeFirstName = fname;
-                node.children = this.selectedOrgNode.children;
-                node.OrgID = this.selectedOrgNode.OrgID;
-                node.ParentNodeID = this.selectedOrgNode.ParentNodeID;
+                node.children = this.orgNode.children;
+                node.OrgID = this.orgNode.OrgID;
+                node.ParentNodeID = this.orgNode.ParentNodeID;
 
                 this.addNewNode(node);
             }
@@ -86,7 +91,8 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
     private emitAddNodeNotification(data: OrgNodeModel) {
         if (data) {
             this.addNode.emit(data);
-            this.editNodeDetails = null;
+            this.orgNode.NodeID = data.NodeID;
+            this.orgNode.NodeFirstName = data.NodeFirstName;
         }
     }
 
@@ -102,8 +108,8 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
 
     private onCancelEditClicked() {
         this.setAddOrEditModeValue.emit(false);
-        if (this.selectedOrgNode.NodeID === -1) {
-            this.deleteNode.emit(this.selectedOrgNode);
+        if (this.orgNode.NodeID === -1) {
+            this.deleteNode.emit(this.orgNode);
         }
     }
 
@@ -122,12 +128,12 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
     }
 
     private onDeleteNodeClicked() {
-        if (this.selectedOrgNode.NodeID === -1) {
-            this.deleteNode.emit(this.selectedOrgNode);
+        if (this.orgNode.NodeID === -1) {
+            this.deleteNode.emit(this.orgNode);
         }
         else {
-            if (!this.selectedOrgNode.children) {
-                this.orgService.deleteNode(this.selectedOrgNode.NodeID)
+            if (!this.orgNode.children) {
+                this.orgService.deleteNode(this.orgNode.NodeID)
                     .subscribe(data => this.emitDeleteNodeNotification(data),
                     error => this.handleError(error),
                     () => console.log("Node Deleted Complete"));
@@ -140,7 +146,7 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
 
     private emitDeleteNodeNotification(data) {
         if (data === true) {
-            this.deleteNode.emit(this.selectedOrgNode);
+            this.deleteNode.emit(this.orgNode);
         }
     }
 
