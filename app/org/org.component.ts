@@ -9,6 +9,10 @@ import { OrgChartModel, OrgNodeModel, OrgService } from "./shared/index";
 import { OrgTreeComponent } from "./d3-tree/org-tree.component";
 
 const MIN_Height: number = 540;
+const MAX_Height: number = 768;
+
+const MIN_Width: number = 320;
+const MAX_Width: number = 1366;
 
 @Component({
     selector: "sg-origami-org",
@@ -30,13 +34,13 @@ export class OrgComponent {
 
     constructor(private orgService: OrgService, private router: Router) {
         this.getAllNodes();
-        this.svgHeight = this.getWindowHeight();
-        this.svgWidth = window.innerWidth;
+        this.svgHeight = this.getSvgHeight();
+        this.svgWidth = this.getSvgWidth();
     }
 
     onResize(event) {
-        this.svgHeight = this.getWindowHeight();
-        this.svgWidth = window.innerWidth;
+        this.svgHeight = this.getSvgHeight();
+        this.svgWidth = this.getSvgWidth();
     }
 
     getAllNodes() {
@@ -147,12 +151,26 @@ export class OrgComponent {
         this.router.navigate(["/Login"]);
     }
 
-    private getWindowHeight() {
+    private getSvgHeight() {
         let height = window.innerHeight;
-        if (height < MIN_Height) {
-            height = MIN_Height;
-        }
+
+        // applies min height 
+        height = height < MIN_Height ? MIN_Height : height;
+        // applies max height
+        height = height > MAX_Height ? MAX_Height : height;
+
         return height;
+    }
+
+    private getSvgWidth() {
+        let width = window.innerWidth;
+
+        // applies min width 
+        width = width < MIN_Width ? MIN_Width : width;
+        // applies max width 
+        width = width > MAX_Width ? MAX_Width : width;
+
+        return width;
     }
 
     private comparewithParentNodeID(updatedNode: OrgNodeModel, currentNode: OrgNodeModel): boolean {
