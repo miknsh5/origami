@@ -23,6 +23,9 @@ const ARROW_FILL = "#D8D8D8";
 const NODE_HEIGHT = 70;
 const NODE_WIDTH = 40;
 
+const PARENT_CHILD_LABEL_POSITION = 22;
+const SIBLING_LABEL_POSITION = 30;
+
 @Component({
     selector: "sg-org-tree",
     template: ``
@@ -41,6 +44,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     treeHeight: number;
     previousRoot: any;
     isAddMode: boolean;
+    lastSelectedNode: any;
     arrows: any;
 
     @Input() width: number;
@@ -99,6 +103,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
         if (this.tree != null) {
+
             this.resizeLinesArrowsAndSvg();
 
             this.previousRoot = this.root;
@@ -119,11 +124,18 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                     this.highlightSelectedNode(this.selectedOrgNode);
                 }
             }
-            this.render(this.root);
+
             if (this.selectedOrgNode != null) {
+                this.render(this.root);
                 this.showUpdatePeerReporteeNode(this.selectedOrgNode);
                 this.centerNode(this.selectedOrgNode);
                 this.hideTopArrow(this.selectedOrgNode);
+            } else {
+                // check whether the width property has changed or not
+                if (changes["width"]) {
+                    // centers the last selected node
+                    this.centerNode(this.lastSelectedNode);
+                }
             }
         }
     }
@@ -200,9 +212,9 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
     createArrows() {
         let arrowsData = [{ "points": ARROW_POINTS, "transform": "", "id": "right" },
-            { "points": ARROW_POINTS, "transform": "translate(-42, 0) rotate(-180) translate(-100, -58)", "id": "left" },
-            { "points": ARROW_POINTS, "transform": "translate(5,58) rotate(-90) translate(0, -5)", "id": "top" },
-            { "points": ARROW_POINTS, "transform": "translate(58, 0) rotate(90)", "id": "bottom" }];
+            { "points": ARROW_POINTS, "transform": "translate(-42, 0) rotate(-180) translate(-100, -59)", "id": "left" },
+            { "points": ARROW_POINTS, "transform": "translate(5,59) rotate(-90) translate(0, -5)", "id": "top" },
+            { "points": ARROW_POINTS, "transform": "translate(59, 0) rotate(90)", "id": "bottom" }];
 
         let arrows = this.arrows;
         arrowsData.forEach(function (data) {
@@ -211,6 +223,8 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 .attr("points", data.points)
                 .attr("transform", data.transform);
         });
+
+        this.arrows.attr("transform", "translate(" + ((this.treeWidth / 2) - SIBLING_RADIUS * 1.75) + "," + ((this.treeHeight / 2) - SIBLING_RADIUS * 1.75) + ")");
     }
 
     hideAllArrows() {
@@ -312,9 +326,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     }
 
     render(source) {
-        let i: number = 0;
         if (this.nodes == null || this.selectedOrgNode != null) {
-
             //  The tree defines the position of the nodes based on the number of nodes it needs to draw.
             // collapse out the child nodes which will not be shown
             this.markAncestors(this.selectedOrgNode);
@@ -335,6 +347,26 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
         // Normalize for fixed-depth.
         this.nodes.forEach(function (d) { d.y = d.depth * 120; });
+
+        this.renderOrUpdateNodes(source);
+
+        this.renderOrUpdateLinks(source);
+
+        // Stash the old positions for transition.
+        this.nodes.forEach(function (d) {
+            d.x0 = d.x;
+            d.y0 = d.y;
+        });
+
+        d3.select("body").on("keydown", (ev) => this.keyDown(ev));
+        d3.select("body").on("click", (ev) => this.bodyClicked(ev));
+
+        this.showUpdatePeerReporteeNode(source);
+        this.resizeLinesArrowsAndSvg();
+    }
+
+    renderOrUpdateNodes(source) {
+        let i: number = 0;
 
         // Update the nodes…
         let node = this.svg.selectAll("g.node")
@@ -362,26 +394,23 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             .style("fill-opacity", 1);
 
         node.select("#abbr").text(function (d) {
-            if (d.IsGrandParent) {
-                return "";
-            }
-            if (d.IsStaging) {
-                return "+";
-            }
-            let fn = "";
-            let ln = "";
-            if (d.NodeFirstName) {
-                fn = d.NodeFirstName.slice(0, 1);
-            }
-            if (d.NodeLastName) {
-                ln = d.NodeLastName.slice(0, 1);
-            }
+            if (d.IsGrandParent) { return ""; }
+            if (d.IsStaging) { return "+"; }
+
+            let fn = "", ln = "";
+            if (d.NodeFirstName) { fn = d.NodeFirstName.slice(0, 1); }
+            if (d.NodeLastName) { ln = d.NodeLastName.slice(0, 1); }
             return fn + ln;
         }).style("fill", function (d) {
             return d.IsStaging ? "#0097FF" : "#FFFFFF";
         });
 
-        node.select("text").text(function (d) { return d.IsSelected || d.IsGrandParent ? "" : d.NodeFirstName; });
+        node.select("text").text(function (d) { return d.IsSelected || d.IsGrandParent ? "" : d.NodeFirstName; })
+            .attr("x", function (d) {
+                if (d.IsParent === true || d.IsChild === true) { return PARENT_CHILD_LABEL_POSITION; }
+                else { return SIBLING_LABEL_POSITION; }
+            });
+
         node.select("circle").attr("class", function (d) {
             return d.IsSelected ? "selectedCircle" : "normalCircle";
         });
@@ -399,7 +428,10 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 else { return DEFAULT_RADIUS; }
             })
             .attr("class", function (d) {
-                return d.IsSelected ? d.IsStaging ? "stagedCircle" : "selectedCircle" : "normalCircle";
+                if (d.IsSelected && d.IsStaging) { return "stagedCircle"; }
+                if (d.IsSelected) { return "selectedCircle"; }
+                else if (d.IsSibling) { return "normalCircle sibbling"; }
+                else { return "normalCircle"; }
             });
 
         nodeUpdate.select("text")
@@ -415,7 +447,9 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
         nodeExit.select("text")
             .style("fill-opacity", 1e-6);
+    }
 
+    renderOrUpdateLinks(source) {
         let sourceCoords = { x: source.x0, y: source.y0 };
         let diagCoords = this.diagonal({ source: sourceCoords, target: sourceCoords });
 
@@ -451,17 +485,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 return diagCoords2;
             })
             .remove();
-
-        // Stash the old positions for transition.
-        this.nodes.forEach(function (d) {
-            d.x0 = d.x;
-            d.y0 = d.y;
-        });
-
-        d3.select("body").on("keydown", (ev) => this.keyDown(ev));
-        d3.select("body").on("click", (ev) => this.bodyClicked(ev));
-
-        this.showUpdatePeerReporteeNode(source);
     }
 
     setPeerReporteeNode(nodeName, x, y, className) {
@@ -546,10 +569,10 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         if (this.selectedOrgNode != null) {
             if (this.selectedOrgNode.NodeID !== -1) {
                 //  Save the last selection temp so that the graph maintains its position
-                let lastSelectedNode = this.selectedOrgNode;
+                this.lastSelectedNode = this.selectedOrgNode;
                 this.highlightSelectedNode(null);
                 this.render(this.root);
-                this.centerNode(lastSelectedNode);
+                this.centerNode(this.lastSelectedNode);
             }
         }
     }
