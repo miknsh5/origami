@@ -91,11 +91,11 @@ node circle {
   fill-opacity: 1;
 }
 
-.parent-polygon{
+.show-childIndicator{
     stroke:#FFFFFF;
-   fill: #D8D8D8;
+   fill: #979797;
 }
-.child-polygon{
+.hide-childIndicator{
    stroke:transparent;
    fill: transparent;
 }

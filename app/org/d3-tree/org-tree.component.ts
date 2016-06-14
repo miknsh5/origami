@@ -37,6 +37,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     nodes: any;
     links: any;
     selectedOrgNode: any;
+    textWidth: any;
     treeWidth: number;
     treeHeight: number;
     previousRoot: any;
@@ -358,23 +359,28 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             return d.IsStaging ? "#0097FF" : "#FFFFFF";
         });
 
-         node.select("text").text(function (d) { return d.IsSelected || d.IsGrandParent ? "" : d.NodeFirstName; });   
+        node.select("text").text(function (d) { return d.IsSelected || d.IsGrandParent ? "" : d.NodeFirstName; });
+        this.textWidth = node.select("text").each(function (d) {
+
+            return d3.select(this.getComputedTextLength());
+        });
+        console.log(this.textWidth[0]);
+        var self = this;
 
         nodeEnter.append("polygon")
-            .attr("points", "72 6 72 -4 77 2")
-            .attr("id", "parentNodes");
+            .attr("points", "18 6 18 -4 22 2")
+            .attr("data-id", "childIndicator");
 
-        node.select("polygon#parentNodes").attr("class", function (d) {
-            if (d.IsGrandParent || d.IsParent || d.IsSelected) {
-                return "child-polygon";
+        node.select("polygon[data-id='childIndicator']").attr("class", function (d) {
+            console.log(d);
+            if (d._children && d._children.length > 0 && !d.IsSelceted) {
+                return "show-childIndicator";
+            } else {
+                return "hide-childIndicator";
             }
-            if ((d.children && d.children.length > 0) || (d._children && d._children.length > 0)) {
-                return "parent-polygon"
-            }
-            else {
-                return "child-polygon";
-            }
-
+        }).attr("transform", function (d, index) {
+            let x = self.textWidth[0][index].clientWidth + 8;
+            return "translate(" + x + ",0)";
         });
 
         node.select("circle").attr("class", function (d) {
