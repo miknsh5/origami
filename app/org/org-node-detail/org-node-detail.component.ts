@@ -33,6 +33,9 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
         }
         if (changes["selectedOrgNode"]) {
             this.orgNode = this.selectedOrgNode;
+            if (this.orgNode != null && this.orgNode.NodeID !== -1) {
+                this.setAddOrEditModeValue.emit(false);
+            }
         }
     }
 
