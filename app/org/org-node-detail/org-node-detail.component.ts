@@ -25,7 +25,7 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
     constructor(private orgService: OrgService, private renderer: Renderer) { }
 
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
-        // dectects isAddOrEditModeEnabled property has changed
+        // detects isAddOrEditModeEnabled property has changed
         if (changes["isAddOrEditModeEnabled"]) {
             if (changes["isAddOrEditModeEnabled"].currentValue) {
                 this.isInputFocused = true;
