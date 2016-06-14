@@ -54,9 +54,8 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         //  Todo:- We need to use the values coming from the host instead of our own
         let margin = { top: TOPBOTTOM_MARGIN, right: RIGHTLEFT_MARGIN, bottom: TOPBOTTOM_MARGIN, left: RIGHTLEFT_MARGIN };
 
-        this.treeWidth = this.width + margin.right + margin.left;
-        this.treeHeight = this.height + margin.top + margin.bottom;
-
+        this.treeWidth = this.width;
+        this.treeHeight = this.height;
 
         this.tree = d3.layout.tree().nodeSize([NODE_HEIGHT, NODE_WIDTH]);
 
@@ -64,26 +63,25 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             .projection(function (d) { return [d.y, d.x]; });
 
         this.svg = this.graph.append("svg")
-            .attr("width", this.treeWidth)
-            .attr("height", this.treeHeight)
+            .attr("preserveAspectRatio", "xMinYMin meet")
+            .attr("viewBox", "0 0 " + this.treeWidth + " " + this.treeHeight)
             .append("g");
 
         let verticalLine: [number, number][] = [[(this.treeWidth / 2), this.treeHeight], [(this.treeWidth / 2), 0]];
         let horizontalLine: [number, number][] = [[0, (this.treeHeight / 2)], [this.treeWidth, (this.treeHeight / 2)]];
 
         // Creates and vertical line
-        this.createLines(verticalLine);
+        this.createLines(verticalLine, "vertical");
 
         // Creates and horizontal line 
-        this.createLines(horizontalLine);
+        this.createLines(horizontalLine, "horizontal");
 
         this.svg.append("g")
             .attr("class", "nodes")
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
         this.arrows = this.svg.append("g")
-            .attr("id", "arrows")
-            .attr("transform", "translate(" + ((this.treeWidth / 2) - SIBLING_RADIUS * 1.75) + "," + ((this.treeHeight / 2) - SIBLING_RADIUS * 1.75) + ")");
+            .attr("id", "arrows");
 
         this.svg = d3.select("g.nodes");
 
@@ -101,6 +99,8 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
         if (this.tree != null) {
+            this.resizeLinesArrowsAndSvg();
+
             this.previousRoot = this.root;
             this.root = this.treeData[0];
             if (this.selectedOrgNode != null) {
@@ -134,6 +134,28 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         this.graph = d3.select(el);
     }
 
+    resizeLinesArrowsAndSvg() {
+        this.treeWidth = this.width;
+        this.treeHeight = this.height;
+
+        let verticalLine: [number, number][] = [[(this.treeWidth / 2), this.treeHeight], [(this.treeWidth / 2), 0]];
+        let horizontalLine: [number, number][] = [[0, (this.treeHeight / 2)], [this.treeWidth, (this.treeHeight / 2)]];
+
+        let line = d3.svg.line()
+            .x(function (d) { return d[0]; })
+            .y(function (d) { return d[1]; });
+
+        d3.select("path.vertical")
+            .attr("d", line(verticalLine));
+
+        d3.select("path.horizontal")
+            .attr("d", line(horizontalLine));
+
+        this.arrows.attr("transform", "translate(" + ((this.treeWidth / 2) - SIBLING_RADIUS * 1.75) + "," + ((this.treeHeight / 2) - SIBLING_RADIUS * 1.75) + ")");
+
+        d3.select("svg").attr("viewBox", "0 0 " + this.treeWidth + " " + this.treeHeight);
+    }
+
     getNodeIndex(parentNode: OrgNodeModel, currentNode: OrgNodeModel) {
         let index;
         let node = this.getNode(parentNode.NodeID, this.previousRoot);
@@ -163,7 +185,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         return previousNode;
     }
 
-    createLines(lineData) {
+    createLines(lineData, className) {
         let line = d3.svg.line()
             .x(function (d) { return d[0]; })
             .y(function (d) { return d[1]; });
@@ -172,7 +194,8 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             .attr("d", line(lineData))
             .attr("stroke", "#B6B6B6")
             .attr("stroke-width", 0.4)
-            .attr("fill", "none");
+            .attr("fill", "none")
+            .attr("class", className);
     }
 
     createArrows() {

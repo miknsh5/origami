@@ -20,6 +20,8 @@ import { OrgTreeComponent } from "./d3-tree/org-tree.component";
 export class OrgComponent {
     orgChart: OrgChartModel;
     orgNodes: OrgNodeModel[];
+    svgWidth: number;
+    svgHeight: number;
 
     @Output() treeJson: any;
     @Output() selectedNode: OrgNodeModel;
@@ -27,6 +29,16 @@ export class OrgComponent {
 
     constructor(private orgService: OrgService, private router: Router) {
         this.getAllNodes();
+        // temporary set to fixed height 
+        this.svgHeight = 540;
+
+        this.svgWidth = window.innerWidth;
+    }
+
+    onResize(event) {
+        setTimeout(() => {
+            this.svgWidth = window.innerWidth;
+        }, 100);
     }
 
     getAllNodes() {
