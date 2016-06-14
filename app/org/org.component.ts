@@ -8,6 +8,7 @@ import { OrgNodeDetailComponent } from "./org-node-detail/index";
 import { OrgChartModel, OrgNodeModel, OrgService } from "./shared/index";
 import { OrgTreeComponent } from "./d3-tree/org-tree.component";
 
+const MIN_Height: number = 540;
 
 @Component({
     selector: "sg-origami-org",
@@ -29,16 +30,13 @@ export class OrgComponent {
 
     constructor(private orgService: OrgService, private router: Router) {
         this.getAllNodes();
-        // temporary set to fixed height 
-        this.svgHeight = 540;
-
+        this.svgHeight = this.getWindowHeight();
         this.svgWidth = window.innerWidth;
     }
 
     onResize(event) {
-        setTimeout(() => {
-            this.svgWidth = window.innerWidth;
-        }, 100);
+        this.svgHeight = this.getWindowHeight();
+        this.svgWidth = window.innerWidth;
     }
 
     getAllNodes() {
@@ -147,6 +145,14 @@ export class OrgComponent {
         localStorage.removeItem("profile");
         localStorage.removeItem("id_token");
         this.router.navigate(["/Login"]);
+    }
+
+    private getWindowHeight() {
+        let height = window.innerHeight;
+        if (height < MIN_Height) {
+            height = MIN_Height;
+        }
+        return height;
     }
 
     private comparewithParentNodeID(updatedNode: OrgNodeModel, currentNode: OrgNodeModel): boolean {
