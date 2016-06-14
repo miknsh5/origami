@@ -358,7 +358,25 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             return d.IsStaging ? "#0097FF" : "#FFFFFF";
         });
 
-        node.select("text").text(function (d) { return d.IsSelected || d.IsGrandParent ? "" : d.NodeFirstName; });
+         node.select("text").text(function (d) { return d.IsSelected || d.IsGrandParent ? "" : d.NodeFirstName; });   
+
+        nodeEnter.append("polygon")
+            .attr("points", "72 6 72 -4 77 2")
+            .attr("id", "parentNodes");
+
+        node.select("polygon#parentNodes").attr("class", function (d) {
+            if (d.IsGrandParent || d.IsParent || d.IsSelected) {
+                return "child-polygon";
+            }
+            if ((d.children && d.children.length > 0) || (d._children && d._children.length > 0)) {
+                return "parent-polygon"
+            }
+            else {
+                return "child-polygon";
+            }
+
+        });
+
         node.select("circle").attr("class", function (d) {
             return d.IsSelected ? "selectedCircle" : "normalCircle";
         });

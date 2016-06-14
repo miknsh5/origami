@@ -90,3 +90,12 @@ node circle {
   text-anchor: middle;
   fill-opacity: 1;
 }
+
+.parent-polygon{
+    stroke:#FFFFFF;
+   fill: #D8D8D8;
+}
+.child-polygon{
+   stroke:transparent;
+   fill: transparent;
+}
