@@ -47,11 +47,6 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
         event.stopPropagation();
     }
 
-    private doesChildNodeExist(node: OrgNodeModel): boolean {
-        // console.log(node.children!=null);
-        return (node.children != null);
-    }
-
     private isNullOrEmpty(value: string) {
         if (value && value.trim().length > 0) {
             return false;
@@ -131,7 +126,7 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
             this.deleteNode.emit(this.selectedOrgNode);
         }
         else {
-            if (this.selectedOrgNode.children == null) {
+            if (!this.selectedOrgNode.children) {
                 this.orgService.deleteNode(this.selectedOrgNode.NodeID)
                     .subscribe(data => this.emitDeleteNodeNotification(data),
                     error => this.handleError(error),

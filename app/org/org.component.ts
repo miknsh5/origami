@@ -38,16 +38,16 @@ export class OrgComponent {
 
     onNodeSelected(node) {
         let nodeID = this.selectedNode ? this.selectedNode.NodeID : 0;
-          this.selectedNode = node;
-         if (this.selectedNode) {
-             if (node.NodeID === -1) {
-                 this.isAddOrEditMode = true;
-             } else if (!this.isAddOrEditMode && nodeID !== node.NodeID && nodeID === -1) {
-                 this.isAddOrEditMode = true;
-             } else if (this.isAddOrEditMode && nodeID !== node.NodeID ) {
-                 this.isAddOrEditMode = false;
-             }
-         }
+        this.selectedNode = node;
+        if (this.selectedNode) {
+            if (node.NodeID === -1) {
+                this.isAddOrEditMode = true;
+            } else if (!this.isAddOrEditMode && nodeID !== node.NodeID && nodeID === -1) {
+                this.isAddOrEditMode = true;
+            } else if (this.isAddOrEditMode && nodeID !== node.NodeID) {
+                this.isAddOrEditMode = false;
+            }
+        }
     }
 
     onNodeAdded(added: OrgNodeModel) {
@@ -58,12 +58,12 @@ export class OrgComponent {
 
     onSwitchedToAddMode(node: OrgNodeModel) {
         this.isAddOrEditMode = true;
-        this.selectedNode = node;        
+        this.selectedNode = node;
     }
 
     onAddOrEditModeValueSet(value: boolean) {
-         this.isAddOrEditMode = value;
-      }
+        this.isAddOrEditMode = value;
+    }
 
     addChildToSelectedOrgNode(newNode: OrgNodeModel, node: OrgNodeModel) {
         if (this.comparewithParentNodeID(newNode, node)) {
