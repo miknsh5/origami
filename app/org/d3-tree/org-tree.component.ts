@@ -551,9 +551,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     bodyClicked(d) {
         if (event.srcElement.nodeName === "svg") {
             this.deselectNode();
-            if (!this.selectedOrgNode) {
-                this.selectNode.emit(this.selectedOrgNode);
-            }
+            this.selectNode.emit(this.selectedOrgNode);
         }
     }
 
@@ -579,10 +577,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             return;
         }
 
-        // esc
-        if ((event as KeyboardEvent).keyCode === 27) {
-            this.deselectNode();
-        }
 
         // left arrow
         if ((event as KeyboardEvent).keyCode === 37) {
