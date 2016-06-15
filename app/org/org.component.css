@@ -56,9 +56,19 @@
 }
 
 .auth-panel {
-  position: absolute;
+  /*position: absolute;
   top: 20px;
-  right: 20px;
+  right: 20px;*/
+  float: right;
+}
+
+.auth-panel h2 {
+  margin: 0.4em 0;
+}
+
+.auth-panel button {
+  float: right;
+  margin-left: 0.7em;
 }
 
 .person:hover {

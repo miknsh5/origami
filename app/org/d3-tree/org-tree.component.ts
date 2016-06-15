@@ -20,7 +20,7 @@ const NODE_DEFAULT_DISTANCE = 112;
 const ARROW_POINTS = "48 35 48 24 53 29";
 const ARROW_FILL = "#D8D8D8";
 
-const NODE_HEIGHT = 70;
+const NODE_HEIGHT = 60;
 const NODE_WIDTH = 40;
 
 const PARENT_CHILD_LABEL_POSITION = 22;
@@ -212,9 +212,9 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
     createArrows() {
         let arrowsData = [{ "points": ARROW_POINTS, "transform": "", "id": "right" },
-            { "points": ARROW_POINTS, "transform": "translate(-42, 0) rotate(-180) translate(-100, -59)", "id": "left" },
+            { "points": ARROW_POINTS, "transform": "translate(-42, 0) rotate(-180) translate(-100, -58)", "id": "left" },
             { "points": ARROW_POINTS, "transform": "translate(5,59) rotate(-90) translate(0, -5)", "id": "top" },
-            { "points": ARROW_POINTS, "transform": "translate(59, 0) rotate(90)", "id": "bottom" }];
+            { "points": ARROW_POINTS, "transform": "translate(58, 0) rotate(90)", "id": "bottom" }];
 
         let arrows = this.arrows;
         arrowsData.forEach(function (data) {
