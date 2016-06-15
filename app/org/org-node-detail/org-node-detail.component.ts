@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from "@angular/core";
+import { Component, Input, Output, EventEmitter, OnChanges, SimpleChange, AfterContentChecked, ElementRef, Renderer, ViewChild } from "@angular/core";
 import { COMMON_DIRECTIVES, NgForm, FORM_DIRECTIVES } from "@angular/common";
 
 import { OrgNodeModel, OrgService } from "../shared/index";
@@ -11,25 +11,49 @@ import { OrgNodeModel, OrgService } from "../shared/index";
     directives: [FORM_DIRECTIVES, COMMON_DIRECTIVES]
 })
 
-export class OrgNodeDetailComponent {
+export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
     @Input() selectedOrgNode: OrgNodeModel;
-    @Input() isAddMode: boolean;
+    @Input() isAddOrEditModeEnabled: boolean;
+
     @Output() deleteNode = new EventEmitter<OrgNodeModel>();
     @Output() updateNode = new EventEmitter<OrgNodeModel>();
     @Output() addNode = new EventEmitter<OrgNodeModel>();
-
-    private isEditMode: boolean;
+    @Output() setAddOrEditModeValue = new EventEmitter<boolean>();
+    isInputFocused: boolean;
     private editNodeDetails: OrgNodeModel;
+   private orgNode: OrgNodeModel;
+    constructor(private orgService: OrgService, private renderer: Renderer) { }
 
-    constructor(private orgService: OrgService) { }
+    ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
+        // detects isAddOrEditModeEnabled property has changed
+        if (changes["isAddOrEditModeEnabled"]) {
+            if (changes["isAddOrEditModeEnabled"].currentValue) {
+                this.isInputFocused = true;
+            }
+        }
+        if (changes["selectedOrgNode"]) {
+            this.orgNode = this.selectedOrgNode;
+            if (this.orgNode != null && this.orgNode.NodeID !== -1) {
+                //  If selected node has changed and we are in add Mode by anychance then come out of it.
+                if (this.isAddOrEditModeEnabled) {
+                    this.setAddOrEditModeValue.emit(false);
+                }
+            }
+        }
+    }
+
+    ngAfterContentChecked() {
+        if (this.isAddOrEditModeEnabled && this.isInputFocused) {
+            let elements: any = document.getElementsByTagName("input");
+            if (elements.length > 0) {
+                this.renderer.invokeElementMethod(elements[0], "focus", []);
+                this.isInputFocused = false;
+            }
+        }
+    }
 
     killKeydownEvent() {
         event.stopPropagation();
-    }
-
-    private doesChildNodeExist(node: OrgNodeModel): boolean {
-        // console.log(node.children!=null);
-        return (node.children != null);
     }
 
     private isNullOrEmpty(value: string) {
@@ -45,34 +69,36 @@ export class OrgNodeDetailComponent {
             this.editNodeDetails.NodeFirstName = form.value.firstName;
             this.editNodeDetails.NodeLastName = form.value.lastName;
             this.editNodeDetails.Description = form.value.description;
-            this.editNodeDetails.children = this.selectedOrgNode.children;
-            this.editNodeDetails.NodeID = this.selectedOrgNode.NodeID;
-            this.editNodeDetails.OrgID = this.selectedOrgNode.OrgID;
-            this.editNodeDetails.ParentNodeID = this.selectedOrgNode.ParentNodeID;
-
+            this.editNodeDetails.children = this.orgNode.children;
+            this.editNodeDetails.NodeID = this.orgNode.NodeID;
+            this.editNodeDetails.OrgID = this.orgNode.OrgID;
+            this.editNodeDetails.ParentNodeID = this.orgNode.ParentNodeID;
+            this.orgNode.NodeFirstName = form.value.firstName;
+            this.orgNode.NodeLastName = form.value.lastName;
+            this.orgNode.Description = form.value.description;
             this.editNode(this.editNodeDetails);
         }
     }
 
     private onFirstNameBlurred(fname: string) {
-        if (this.isAddMode) {
+        if (this.orgNode.NodeID === -1) {
             if (!this.isNullOrEmpty(fname)) {
                 let node = new OrgNodeModel();
                 node.NodeFirstName = fname;
-                node.children = this.selectedOrgNode.children;
-                node.OrgID = this.selectedOrgNode.OrgID;
-                node.ParentNodeID = this.selectedOrgNode.ParentNodeID;
+                node.children = this.orgNode.children;
+                node.OrgID = this.orgNode.OrgID;
+                node.ParentNodeID = this.orgNode.ParentNodeID;
 
                 this.addNewNode(node);
             }
         }
     }
 
-    private emitaddNodeNotification(data: OrgNodeModel) {
+    private emitAddNodeNotification(data: OrgNodeModel) {
         if (data) {
             this.addNode.emit(data);
-            this.isEditMode = true;
-            this.editNodeDetails = null;
+            this.orgNode.NodeID = data.NodeID;
+            this.orgNode.NodeFirstName = data.NodeFirstName;
         }
     }
 
@@ -81,21 +107,20 @@ export class OrgNodeDetailComponent {
         // we don"t really need to send any child info to the server at this point
         node.children = null;
         this.orgService.addNode(node)
-            .subscribe(data => this.emitaddNodeNotification(data),
+            .subscribe(data => this.emitAddNodeNotification(data),
             error => this.handleError(error),
             () => console.log("Node Added Complete"));
     }
 
     private onCancelEditClicked() {
-        this.isEditMode = false;
+        this.setAddOrEditModeValue.emit(false);
+        if (this.orgNode.NodeID === -1) {
+            this.deleteNode.emit(this.orgNode);
+        }
     }
 
     private editNode(node: OrgNodeModel) {
         if (!node) { return; }
-        /*this.isEditMode = false;
-           this.updateNode.emit(node);
-           this.editNodeDetails = null;*/
-
         // we don"t really need to send any child info to the server at this point
         node.children = null;
         this.orgService.updateNode(node)
@@ -105,16 +130,16 @@ export class OrgNodeDetailComponent {
     }
 
     private onEditNodeClicked() {
-        this.isEditMode = true;
+        this.setAddOrEditModeValue.emit(true);
     }
 
     private onDeleteNodeClicked() {
-        if (this.isAddMode) {
-            this.deleteNode.emit(this.selectedOrgNode);
+        if (this.orgNode.NodeID === -1) {
+            this.deleteNode.emit(this.orgNode);
         }
         else {
-            if (this.selectedOrgNode.children == null && !this.isAddMode) {
-                this.orgService.deleteNode(this.selectedOrgNode.NodeID)
+            if (!this.orgNode.children) {
+                this.orgService.deleteNode(this.orgNode.NodeID)
                     .subscribe(data => this.emitDeleteNodeNotification(data),
                     error => this.handleError(error),
                     () => console.log("Node Deleted Complete"));
@@ -127,13 +152,12 @@ export class OrgNodeDetailComponent {
 
     private emitDeleteNodeNotification(data) {
         if (data === true) {
-            this.deleteNode.emit(this.selectedOrgNode);
+            this.deleteNode.emit(this.orgNode);
         }
     }
 
     private emitUpdateNodeNotification(data) {
         if (data === true) {
-            this.isEditMode = false;
             this.updateNode.emit(this.editNodeDetails);
             this.editNodeDetails = null;
         }
@@ -147,7 +171,7 @@ export class OrgNodeDetailComponent {
             alert("OOPs!! Something went wrong!! ");
         }
         console.log(err);
-        this.isEditMode = false;
+        this.setAddOrEditModeValue.emit(false);
         this.editNodeDetails = null;
     }
 }   
