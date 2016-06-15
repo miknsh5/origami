@@ -21,7 +21,7 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
     @Output() setAddOrEditModeValue = new EventEmitter<boolean>();
     isInputFocused: boolean;
     private editNodeDetails: OrgNodeModel;
-    orgNode: OrgNodeModel;
+   private orgNode: OrgNodeModel;
     constructor(private orgService: OrgService, private renderer: Renderer) { }
 
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
@@ -34,7 +34,10 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
         if (changes["selectedOrgNode"]) {
             this.orgNode = this.selectedOrgNode;
             if (this.orgNode != null && this.orgNode.NodeID !== -1) {
-                this.setAddOrEditModeValue.emit(false);
+                //  If selected node has changed and we are in add Mode by anychance then come out of it.
+                if (this.isAddOrEditModeEnabled) {
+                    this.setAddOrEditModeValue.emit(false);
+                }
             }
         }
     }
