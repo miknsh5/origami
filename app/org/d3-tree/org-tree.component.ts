@@ -131,8 +131,8 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 this.centerNode(this.selectedOrgNode);
                 this.hideTopArrow(this.selectedOrgNode);
             } else {
-                // check whether the width property has changed or not
-                if (changes["width"]) {
+                // check whether the width or height property has changed or not
+                if (changes["width"] || changes["height"]) {
                     // centers the last selected node
                     this.centerNode(this.lastSelectedNode);
                 }
