@@ -12,7 +12,7 @@ const SIBLING_RADIUS = 16.5;
 const PARENTCHILD_RADIUS = 10.5;
 const GRANDPARENT_RADIUS = 6.5;
 
-const PARENTNAVIGATOR_MARGIN = 8;
+const DEFAULT_MARGIN = 8;
 const DEFAULT_RADIUS = 10.5;
 const PEER_TEXT = "Peer";
 const REPORTEE_TEXT = "Direct Report";
@@ -39,7 +39,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     nodes: any;
     links: any;
     selectedOrgNode: any;
-    labelWidth: any;
+    labelWidths: any;
     treeWidth: number;
     treeHeight: number;
     previousRoot: any;
@@ -361,13 +361,14 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             return d.IsStaging ? "#0097FF" : "#FFFFFF";
         });
 
-        node.select("text").text(function (d) { return d.IsSelected || d.IsGrandParent ? "" : d.NodeFirstName; });
+        node.select("text").text(function (d) { return d.IsSelected || d.IsGrandParent ? "" : d.NodeFirstName; })
+        .attr("class", "label");
         // used to get the label width of each node
-        this.labelWidth = node.select("text").each(function (d) {
+        this.labelWidths = node.select("text.label").each(function (d) {
 
             return d3.select(this.getComputedTextLength());
         });
-        // creates a polygon to indicate a Parent Navigator
+         // creates a polygon to indicate it has child(s)
         nodeEnter.append("polygon")
             .attr("points", LABEL_POINTS)
             .attr("data-id", "childIndicator");
@@ -381,7 +382,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 return "hide-childIndicator";
             }
         }).attr("transform", (d, index) => {
-            let x = this.labelWidth[0][index].clientWidth + PARENTNAVIGATOR_MARGIN;
+            let x = this.labelWidths[0][index].clientWidth + DEFAULT_MARGIN;
             return "translate(" + x + ",0)";
         });
 
