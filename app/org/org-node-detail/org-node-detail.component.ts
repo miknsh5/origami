@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter, OnChanges, SimpleChange, AfterContentChecked, ElementRef, Renderer, ViewChild } from "@angular/core";
-import { COMMON_DIRECTIVES, NgForm, FORM_DIRECTIVES } from "@angular/common";
+import { COMMON_DIRECTIVES, NgForm, NgControlName, FORM_DIRECTIVES } from "@angular/common";
 
 import { OrgNodeModel, OrgService } from "../shared/index";
 
@@ -21,7 +21,7 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
     @Output() setAddOrEditModeValue = new EventEmitter<boolean>();
     isInputFocused: boolean;
     private editNodeDetails: OrgNodeModel;
-   private orgNode: OrgNodeModel;
+    private orgNode: OrgNodeModel;
     constructor(private orgService: OrgService, private renderer: Renderer) { }
 
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
@@ -45,7 +45,7 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
     ngAfterContentChecked() {
         if (this.isAddOrEditModeEnabled && this.isInputFocused) {
             let elements: any = document.getElementsByTagName("input");
-            if (elements.length > 0) {
+            if (elements.length > 0 && this.orgNode.IsStaging) {
                 this.renderer.invokeElementMethod(elements[0], "focus", []);
                 this.isInputFocused = false;
             }
@@ -76,20 +76,38 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
             this.orgNode.NodeFirstName = form.value.firstName;
             this.orgNode.NodeLastName = form.value.lastName;
             this.orgNode.Description = form.value.description;
-            this.editNode(this.editNodeDetails);
+
+            if (this.orgNode.NodeID === -1) {
+                this.addNewNode(this.editNodeDetails);
+            } else {
+                this.editNode(this.editNodeDetails);
+            }
         }
     }
 
-    private onFirstNameBlurred(fname: string) {
+    private onNameBlurred(control: NgControlName) {
         if (this.orgNode.NodeID === -1) {
-            if (!this.isNullOrEmpty(fname)) {
+            if (!this.isNullOrEmpty(control.value)) {
                 let node = new OrgNodeModel();
-                node.NodeFirstName = fname;
-                node.children = this.orgNode.children;
                 node.OrgID = this.orgNode.OrgID;
                 node.ParentNodeID = this.orgNode.ParentNodeID;
+                node.NodeID = this.orgNode.NodeID;
+                node.IsStaging = this.orgNode.IsStaging;
 
-                this.addNewNode(node);
+                if (control.name === "firstName") {
+                    this.orgNode.NodeFirstName = node.NodeFirstName = control.value;
+                    node.NodeLastName = this.orgNode.NodeLastName;
+                } else {
+                    node.NodeFirstName = this.orgNode.NodeFirstName;
+                    this.orgNode.NodeLastName = node.NodeLastName = control.value;
+                }
+
+                if (node.IsStaging) {
+                    this.orgNode.IsStaging = node.IsStaging = false;
+                    this.addNode.emit(node);
+                } else {
+                    this.updateNode.emit(node);
+                }
             }
         }
     }
@@ -136,16 +154,14 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
     private onDeleteNodeClicked() {
         if (this.orgNode.NodeID === -1) {
             this.deleteNode.emit(this.orgNode);
-        }
-        else {
-            if (!this.orgNode.children) {
+        } else {
+            if (this.orgNode.children && this.orgNode.children.length > 0) {
+                alert("Delete Child Node First!");
+            } else {
                 this.orgService.deleteNode(this.orgNode.NodeID)
                     .subscribe(data => this.emitDeleteNodeNotification(data),
                     error => this.handleError(error),
                     () => console.log("Node Deleted Complete"));
-            }
-            else {
-                alert("Delete Child Node First!");
             }
         }
     }
