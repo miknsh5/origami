@@ -102,15 +102,24 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         this.centerNode(this.root);
     }
 
+    // TODO:- we should refactor this method to work depending on the kind of change that has taken place. 
+    // It re-renders on all kinds of changes
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
         if (this.tree != null) {
+            let raiseSelectedEvent: boolean = true;
+
+            // We don't need to raise a selectednode change event if the only change happening is entering/leaving edit node
+            if (changes["isAddOrEditModeEnabled"]) {
+                raiseSelectedEvent = false;
+            }
+
             this.previousRoot = this.root;
             this.root = this.treeData[0];
             if (this.selectedOrgNode != null) {
                 this.selectedOrgNode.IsSelected = false;
                 if (this.selectedOrgNode.NodeID === -1) {
                     this.selectedOrgNode = this.getPreviousNodeIfAddedOrDeleted();
-                    this.highlightSelectedNode(this.selectedOrgNode);
+                    this.highlightSelectedNode(this.selectedOrgNode, raiseSelectedEvent);
                 } else {
                     let node = this.getNode(this.selectedOrgNode.NodeID, this.root);
                     // if the selected node is deleted it highlights previous sibbling or parent node
@@ -118,7 +127,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                         this.selectedOrgNode = this.getPreviousSiblingNode(this.selectedOrgNode, this.previousRoot);
                     }
                     this.updateSelectedOrgNode(this.root);
-                    this.highlightSelectedNode(this.selectedOrgNode);
+                    this.highlightSelectedNode(this.selectedOrgNode, raiseSelectedEvent);
                 }
             }
             this.render(this.root);
@@ -577,6 +586,11 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             return;
         }
 
+        // esc
+        if ((event as KeyboardEvent).keyCode === 27) {
+            this.deselectNode();
+            this.selectNode.emit(this.selectedOrgNode);
+        }
 
         // left arrow
         if ((event as KeyboardEvent).keyCode === 37) {
@@ -737,7 +751,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         }
     }
 
-    highlightSelectedNode(d) {
+    highlightSelectedNode(d, raiseEvent: boolean = true) {
         if (this.selectedOrgNode) {
             this.selectedOrgNode.IsSelected = false;
         }
@@ -746,11 +760,14 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 this.hideChildren(this.selectedOrgNode);
             }
             d.IsSelected = true;
-            this.selectNode.emit(d);
+            if (raiseEvent === true) {
+                this.selectNode.emit(d);
+            }
             this.showChildren(d);
         }
         this.selectedOrgNode = d;
     }
+
 
     updateSelectedOrgNode(node: OrgNodeModel) {
         if (this.compareNodeID(node, this.selectedOrgNode)) {

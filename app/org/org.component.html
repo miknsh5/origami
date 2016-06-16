@@ -23,7 +23,7 @@
 <sg-org-node-detail 
     #nodeDetail
     [selectedOrgNode]="selectedNode"
-    [isAddOrEditModeEnabled]= "isAddOrEditMode"
+    [isAddOrEditModeEnabled]= "detailAddOrEditMode"
     (deleteNode)="onNodeDeleted($event)" 
     (updateNode)="onNodeUpdated($event)"
     (addNode)="onNodeAdded($event)"

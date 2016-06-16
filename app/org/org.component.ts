@@ -24,6 +24,7 @@ export class OrgComponent {
     @Output() treeJson: any;
     @Output() selectedNode: OrgNodeModel;
     @Output() isAddOrEditMode: boolean;
+    @Output() detailAddOrEditMode: boolean;
 
     constructor(private orgService: OrgService, private router: Router) {
         this.getAllNodes();
@@ -42,8 +43,10 @@ export class OrgComponent {
         if (this.selectedNode) {
             if (node.NodeID === -1) {
                 this.isAddOrEditMode = true;
+                this.detailAddOrEditMode = true;
             } else if (!this.isAddOrEditMode && nodeID !== node.NodeID && nodeID === -1) {
                 this.isAddOrEditMode = true;
+                this.detailAddOrEditMode = true;
             } else if (this.isAddOrEditMode && nodeID !== node.NodeID) {
                 this.isAddOrEditMode = false;
             }
@@ -58,11 +61,13 @@ export class OrgComponent {
 
     onSwitchedToAddMode(node: OrgNodeModel) {
         this.isAddOrEditMode = true;
+        this.detailAddOrEditMode = true;
         this.selectedNode = node;
     }
 
     onAddOrEditModeValueSet(value: boolean) {
         this.isAddOrEditMode = value;
+        this.detailAddOrEditMode = value;
     }
 
     addChildToSelectedOrgNode(newNode: OrgNodeModel, node: OrgNodeModel) {
@@ -115,12 +120,14 @@ export class OrgComponent {
 
     onNodeDeleted(deleted) {
         this.isAddOrEditMode = false;
+        this.detailAddOrEditMode = false;
         this.deleteNodeFromArray(this.orgNodes);
         this.updateJSON();
     }
 
     onNodeUpdated(selected) {
         this.isAddOrEditMode = false;
+        this.detailAddOrEditMode = false;
         this.selectedNode = selected;
         this.updateOrgNode(this.orgNodes[0]);
         this.updateJSON();

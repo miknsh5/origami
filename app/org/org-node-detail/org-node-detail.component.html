@@ -21,19 +21,19 @@
         <!-- Expect to see code comments before blocks of logic like this to explain intended behavior -->
         <div *ngIf="selectedOrgNode && !isAddOrEditModeEnabled" class="text-wrap">
             <div class="h-1">
-                {{selectedOrgNode.NodeFirstName}} {{selectedOrgNode.NodeLastName}}
+                {{orgNode.NodeFirstName}} {{orgNode.NodeLastName}}
             </div>
             <div class="h-3">
-                {{selectedOrgNode.Description}}
+                {{orgNode.Description}}
             </div>
         </div>
 
         <!-- Expect to see code comments before blocks of logic like this to explain the intended behavior -->
         <div *ngIf="selectedOrgNode && isAddOrEditModeEnabled" class="form-group text-wrap">
             <input type="text" class="title-name-edit form-control firstName" (blur)="onFirstNameBlurred(firstName.value)" ngControl="firstName"
-                #firstName="ngForm" [ngModel]="selectedOrgNode.NodeFirstName" />
-            <input type="text" class="title-name-edit form-control" ngControl="lastName" #lastName="ngForm" [ngModel]="selectedOrgNode.NodeLastName"/>
-            <input type="text" class="title-position-edit form-control" ngControl="description" #description="ngForm" [ngModel]="selectedOrgNode.Description"/>
+                #firstName="ngForm" [ngModel]="orgNode.NodeFirstName" />
+            <input type="text" class="title-name-edit form-control" ngControl="lastName" #lastName="ngForm" [ngModel]="orgNode.NodeLastName"/>
+            <input type="text" class="title-position-edit form-control" ngControl="description" #description="ngForm" [ngModel]="orgNode.Description"/>
         </div>
 
 
