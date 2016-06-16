@@ -577,7 +577,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     }
 
     keyDown(d) {
-        event.stopPropagation();
+        //event.stopPropagation();
         if (!this.selectedOrgNode) {
             return;
         }
@@ -588,8 +588,10 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
         // esc
         if ((event as KeyboardEvent).keyCode === 27) {
-            this.deselectNode();
-            this.selectNode.emit(this.selectedOrgNode);
+            if (!this.isAddOrEditModeEnabled) {
+                this.deselectNode();
+                this.selectNode.emit(this.selectedOrgNode);
+            }
         }
 
         // left arrow
