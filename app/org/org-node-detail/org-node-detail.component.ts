@@ -20,7 +20,7 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
     @Output() addNode = new EventEmitter<OrgNodeModel>();
     @Output() setAddOrEditModeValue = new EventEmitter<boolean>();
 
-    @HostListener('window:keydown', ['$event'])
+    @HostListener("window:keydown", ["$event"])
     keyPressed(event: any) {
         event.stopPropagation();
         if ((event as KeyboardEvent).keyCode === 27) {
@@ -32,7 +32,6 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
             }
         }
     }
-
     isInputFocused: boolean;
     private editNodeDetails: OrgNodeModel;
     private orgNode: OrgNodeModel;

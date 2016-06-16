@@ -577,7 +577,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     }
 
     keyDown(d) {
-        //event.stopPropagation();
         if (!this.selectedOrgNode) {
             return;
         }
