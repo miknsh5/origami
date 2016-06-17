@@ -1,8 +1,7 @@
-import { Component, Input, Output, EventEmitter, OnChanges, SimpleChange, AfterContentChecked, ElementRef, Renderer, ViewChild } from "@angular/core";
+import { Component, HostListener, Input, Output, EventEmitter, OnChanges, SimpleChange, AfterContentChecked, ElementRef, Renderer, ViewChild } from "@angular/core";
 import { COMMON_DIRECTIVES, NgForm, NgControlName, FORM_DIRECTIVES } from "@angular/common";
 
 import { OrgNodeModel, OrgService } from "../shared/index";
-
 
 @Component({
     selector: "sg-org-node-detail",
@@ -19,9 +18,24 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
     @Output() updateNode = new EventEmitter<OrgNodeModel>();
     @Output() addNode = new EventEmitter<OrgNodeModel>();
     @Output() setAddOrEditModeValue = new EventEmitter<boolean>();
+
+    @HostListener("window:keydown", ["$event"])
+    onKeyDown(event: any) {
+        event.stopPropagation();
+        if ((event as KeyboardEvent).keyCode === 27) {
+            if (this.isAddOrEditModeEnabled) {
+                this.setAddOrEditModeValue.emit(false);
+                if (this.orgNode.NodeID === -1) {
+                    this.deleteNode.emit(this.orgNode);
+                }
+            }
+        }
+    }
+
     isInputFocused: boolean;
     private editNodeDetails: OrgNodeModel;
     private orgNode: OrgNodeModel;
+
     constructor(private orgService: OrgService, private renderer: Renderer) { }
 
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
@@ -86,7 +100,7 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
     }
 
     private onNameBlurred(control: NgControlName) {
-        if (this.orgNode.NodeID === -1) {
+        if (this.orgNode && this.orgNode.NodeID === -1) {
             if (!this.isNullOrEmpty(control.value)) {
                 let node = new OrgNodeModel();
                 node.OrgID = this.orgNode.OrgID;

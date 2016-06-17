@@ -15,25 +15,26 @@
     --white-text: #ffffff;
 }
 
+
 /* Text styles */
 
 @import url(https://fonts.googleapis.com/css?family=Roboto:400,500,700,300);
+
 /*@import url(https://fonts.googleapis.com/css?family=Roboto+Slab:400,700);*/
 
 .h-1 {
     font-family: Roboto, sans-serif;
-    font-size: 18px;
+    font-size: 1.1em;
     line-height: 1.2;
     font-weight: 700;
     color: #ffffff;
     color: var(--white-text);
 }
 
-
 .h-3 {
     font-family: Roboto, sans-serif;
-    font-size: 14px;
-    line-height: 1.1;
+    font-size: 0.8em;
+    line-height: 1.5;
     font-weight: 400;
     color: #ffffff;
     color: var(--white-text);
