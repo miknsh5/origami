@@ -26,6 +26,14 @@ const NODE_WIDTH = 40;
 const PARENT_CHILD_LABEL_POSITION = 18;
 const SIBLING_LABEL_POSITION = 24;
 
+const DEFAULT_CIRCLE = "defaultCircle";
+const STAGED_CIRCLE = "stagedCircle";
+const SELECTED_CIRCLE = "selectedCircle";
+
+const POLYGON = "polygon";
+const CIRCLE = "circle";
+const TEXT = "text";
+
 @Component({
     selector: "sg-org-tree",
     template: ``
@@ -124,7 +132,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                     this.highlightSelectedNode(this.selectedOrgNode, raiseSelectedEvent);
                 } else {
                     let node = this.getNode(this.selectedOrgNode.NodeID, this.root);
-                    // if the selected node is deleted it highlights previous sibbling or parent node
+                    // if the selected node is deleted it highlights previous sibling or parent node
                     if (!node) {
                         this.selectedOrgNode = this.getPreviousSiblingNode(this.selectedOrgNode, this.previousRoot);
                     }
@@ -255,7 +263,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
         let arrows = this.arrows;
         arrowsData.forEach(function (data) {
-            arrows.append("polygon")
+            arrows.append(POLYGON)
                 .attr("id", data.id)
                 .attr("points", data.points)
                 .attr("transform", data.transform);
@@ -264,7 +272,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
     hideAllArrows() {
         // hides all arrows by making transparent
-        d3.selectAll("polygon")
+        d3.selectAll(POLYGON)
             .attr("stroke", "transparent")
             .attr("fill", "transparent");
     }
@@ -330,11 +338,11 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             if (grandParent) {
                 this.moveParentNodesToCenter(grandParent, source);
             }
-            d3.selectAll("polygon")
+            d3.selectAll(POLYGON)
                 .attr("stroke", "#FFFFFF")
                 .attr("fill", ARROW_FILL);
         } else {
-            d3.selectAll("polygon#right")
+            d3.selectAll(POLYGON + "#right")
                 .attr("stroke", "#FFFFFF")
                 .attr("fill", ARROW_FILL);
         }
@@ -412,15 +420,15 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             .attr("transform", function (d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
             .on("click", (ev) => this.nodeClicked(ev));
 
-        nodeEnter.append("circle")
+        nodeEnter.append(CIRCLE)
             .attr("r", 1e-6);
 
-        nodeEnter.append("text")
+        nodeEnter.append(TEXT)
             .attr("dy", ".35em")
             .attr("text-anchor", function (d) { return "start"; })
             .style("fill-opacity", 1e-6);
 
-        nodeEnter.append("text")
+        nodeEnter.append(TEXT)
             .attr("id", "abbr")
             .attr("dy", ".35em")
             .attr("text-anchor", "middle")
@@ -438,14 +446,14 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             return d.IsStaging ? "#0097FF" : "#FFFFFF";
         });
 
-        node.select("text").text(function (d) { return d.IsSelected || d.IsGrandParent ? "" : d.NodeFirstName; })
+        node.select(TEXT).text(function (d) { return d.IsSelected || d.IsGrandParent ? "" : d.NodeFirstName; })
             .attr("x", function (d) {
                 if (d.IsParent === true || d.IsChild === true) { return PARENT_CHILD_LABEL_POSITION; }
                 else { return SIBLING_LABEL_POSITION; }
             });
 
-        node.select("circle").attr("class", function (d) {
-            return d.IsSelected ? "selectedCircle" : "normalCircle";
+        node.select(CIRCLE).attr("class", function (d) {
+            return d.IsSelected ? SELECTED_CIRCLE : DEFAULT_CIRCLE;
         });
 
         // Transition nodes to their new position.
@@ -453,7 +461,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             .duration(DURATION)
             .attr("transform", function (d) { return "translate(" + d.y + "," + d.x + ")"; });
 
-        nodeUpdate.select("circle")
+        nodeUpdate.select(CIRCLE)
             .attr("r", function (d) {
                 if (d.IsSelected === true || d.IsSibling === true) { return SIBLING_RADIUS; }
                 else if (d.IsParent === true || d.IsChild === true) { return PARENTCHILD_RADIUS; }
@@ -461,13 +469,13 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 else { return DEFAULT_RADIUS; }
             })
             .attr("class", function (d) {
-                if (d.IsSelected && d.IsStaging) { return "stagedCircle"; }
-                if (d.IsSelected) { return "selectedCircle"; }
-                else if (d.IsSibling) { return "normalCircle sibbling"; }
-                else { return "normalCircle"; }
+                if (d.IsSelected && d.IsStaging) { return STAGED_CIRCLE; }
+                if (d.IsSelected) { return SELECTED_CIRCLE; }
+                else if (d.IsSibling) { return DEFAULT_CIRCLE + " sibling"; }
+                else { return DEFAULT_CIRCLE; }
             });
 
-        nodeUpdate.select("text")
+        nodeUpdate.select(TEXT)
             .style({ "fill-opacity": 1, "fill": "#727272" });
 
         let nodeExit = node.exit().transition().delay(100).
@@ -475,10 +483,10 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             .attr("transform", function (d) { return "translate(" + source.y + "," + source.x + ")"; })
             .remove();
 
-        nodeExit.select("circle")
+        nodeExit.select(CIRCLE)
             .attr("r", 1e-6);
 
-        nodeExit.select("text")
+        nodeExit.select(TEXT)
             .style("fill-opacity", 1e-6);
     }
 
@@ -529,16 +537,16 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 .attr("transform", function (d) { return "translate(" + y + "," + x + ")"; })
                 .on("click", (ev) => this.peerReporteeNodeClicked(nodeName));
 
-            node.append("circle")
+            node.append(CIRCLE)
                 .attr("r", DEFAULT_RADIUS)
                 .attr("class", "new-peer_reportee-circle");
 
-            node.append("text")
+            node.append(TEXT)
                 .attr("dy", ".35em")
                 .text("+")
                 .attr("class", "new-peer_reportee-innerText");
 
-            node.append("text")
+            node.append(TEXT)
                 .attr("dy", "2em")
                 .text(nodeName)
                 .attr("class", "new-peer_reportee-outerText");
@@ -740,7 +748,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                     if (d.NodeID === currentNode.NodeID) {
                         index = parentNode.children.indexOf(currentNode, 0);
                         if (index === 0) {
-                            d3.select("polygon#top")
+                            d3.select(POLYGON + "#top")
                                 .attr("stroke", "transparent")
                                 .attr("fill", "transparent");
                             console.log("First Child");
