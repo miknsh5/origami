@@ -8,6 +8,14 @@ import { OrgNodeDetailComponent } from "./org-node-detail/index";
 import { OrgChartModel, OrgNodeModel, OrgService } from "./shared/index";
 import { OrgTreeComponent } from "./d3-tree/org-tree.component";
 
+const MIN_HEIGHT: number = 480;
+const MAX_HEIGHT: number = 768;
+
+const MIN_WIDTH: number = 320;
+const MAX_WIDTH: number = 1366;
+
+const DEFAULT_OFFSET: number = 5;
+const AUTHPANEL_OFFSET: number = 75;
 
 @Component({
     selector: "sg-origami-org",
@@ -20,6 +28,8 @@ import { OrgTreeComponent } from "./d3-tree/org-tree.component";
 export class OrgComponent {
     orgChart: OrgChartModel;
     orgNodes: OrgNodeModel[];
+    svgWidth: number;
+    svgHeight: number;
 
     @Output() treeJson: any;
     @Output() selectedNode: OrgNodeModel;
@@ -28,6 +38,13 @@ export class OrgComponent {
 
     constructor(private orgService: OrgService, private router: Router) {
         this.getAllNodes();
+        this.svgWidth = this.getSvgWidth();
+        this.svgHeight = this.getSvgHeight();
+    }
+
+    onResize(event) {
+        this.svgWidth = this.getSvgWidth();
+        this.svgHeight = this.getSvgHeight();
     }
 
     getAllNodes() {
@@ -157,6 +174,35 @@ export class OrgComponent {
         localStorage.removeItem("profile");
         localStorage.removeItem("id_token");
         this.router.navigate(["/Login"]);
+    }
+
+    private getSvgHeight() {
+        let height = window.innerHeight;
+
+        // applies min height 
+        height = height < MIN_HEIGHT ? MIN_HEIGHT : height;
+        // applies max height
+        height = height > MAX_HEIGHT ? MAX_HEIGHT : height;
+
+        // temporarily applied wiil be removed after standard and organization mode added
+        if (this.svgWidth < 993 && height > MIN_HEIGHT) {
+            height = height - AUTHPANEL_OFFSET;
+        } else {
+            height = height - DEFAULT_OFFSET;
+        }
+
+        return height;
+    }
+
+    private getSvgWidth() {
+        let width = window.innerWidth;
+
+        // applies min width 
+        width = width < MIN_WIDTH ? MIN_WIDTH : width;
+        // applies max width 
+        width = width > MAX_WIDTH ? MAX_WIDTH : width;
+
+        return width;
     }
 
     private comparewithParentNodeID(updatedNode: OrgNodeModel, currentNode: OrgNodeModel): boolean {

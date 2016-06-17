@@ -5,15 +5,22 @@
 node circle {
   -webkit-box-shadow: 0 0 40px rgba(0, 0, 0, 0.8);
   box-shadow: 0 0 40px rgba(0, 0, 0, 0.8);
-}
-
-.node text#abbr {
-  text-transform: uppercase;
+  stroke: none;
 }
 
 .node text {
-  font: 0.78em sans-serif;
+  font-family: Roboto, sans-serif;
+  font-size: 0.8em;
+  text-transform: capitalize;
+}
+
+.node text#abbr {
   fill: #FFF;
+  text-transform: uppercase;
+}
+
+.node .sibbling ~ text#abbr, .node .selectedCircle ~ text#abbr {
+  font-size: 1.1em;
 }
 
 .link {
@@ -54,7 +61,6 @@ node circle {
 
 .selectedCircle {
   fill: #0097FF;
-  stroke: none;
 }
 
 .stagedCircle {
@@ -63,9 +69,8 @@ node circle {
   stroke-width: 2;
 }
 
-.normalCircle {
+.defaultCircle {
   fill: #CFD8DC;
-  stroke: none;
 }
 
 .new-peer_reportee-circle {
