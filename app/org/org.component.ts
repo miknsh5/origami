@@ -8,11 +8,14 @@ import { OrgNodeDetailComponent } from "./org-node-detail/index";
 import { OrgChartModel, OrgNodeModel, OrgService } from "./shared/index";
 import { OrgTreeComponent } from "./d3-tree/org-tree.component";
 
-const MIN_Height: number = 540;
-const MAX_Height: number = 768;
+const MIN_HEIGHT: number = 480;
+const MAX_HEIGHT: number = 768;
 
-const MIN_Width: number = 320;
-const MAX_Width: number = 1366;
+const MIN_WIDTH: number = 320;
+const MAX_WIDTH: number = 1366;
+
+const DEFAULT_OFFSET: number = 5;
+const AUTHPANEL_OFFSET: number = 75;
 
 @Component({
     selector: "sg-origami-org",
@@ -35,13 +38,13 @@ export class OrgComponent {
 
     constructor(private orgService: OrgService, private router: Router) {
         this.getAllNodes();
-        this.svgHeight = this.getSvgHeight();
         this.svgWidth = this.getSvgWidth();
+        this.svgHeight = this.getSvgHeight();
     }
 
     onResize(event) {
-        this.svgHeight = this.getSvgHeight();
         this.svgWidth = this.getSvgWidth();
+        this.svgHeight = this.getSvgHeight();
     }
 
     getAllNodes() {
@@ -177,9 +180,16 @@ export class OrgComponent {
         let height = window.innerHeight;
 
         // applies min height 
-        height = height < MIN_Height ? MIN_Height : height;
+        height = height < MIN_HEIGHT ? MIN_HEIGHT : height;
         // applies max height
-        height = height > MAX_Height ? MAX_Height : height;
+        height = height > MAX_HEIGHT ? MAX_HEIGHT : height;
+
+        // temporarily applied wiil be removed after standard and organization mode added
+        if (this.svgWidth < 993 && height > MIN_HEIGHT) {
+            height = height - AUTHPANEL_OFFSET;
+        } else {
+            height = height - DEFAULT_OFFSET;
+        }
 
         return height;
     }
@@ -188,9 +198,9 @@ export class OrgComponent {
         let width = window.innerWidth;
 
         // applies min width 
-        width = width < MIN_Width ? MIN_Width : width;
+        width = width < MIN_WIDTH ? MIN_WIDTH : width;
         // applies max width 
-        width = width > MAX_Width ? MAX_Width : width;
+        width = width > MAX_WIDTH ? MAX_WIDTH : width;
 
         return width;
     }

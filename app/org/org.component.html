@@ -9,7 +9,7 @@
 </div>
 
 <div class="main-canvas" *ngIf="orgChart" (window:resize)="onResize($event)">
-    <h1>Welcome to {{orgChart.OrganizationName}}</h1>
+    <!--<h1>Welcome to {{orgChart.OrganizationName}}</h1>-->
     <sg-org-tree 
         [treeData]="treeJson" 
         [width]="svgWidth"
