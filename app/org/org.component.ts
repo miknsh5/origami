@@ -74,7 +74,7 @@ export class OrgComponent {
         this.isAddOrEditMode = false;
         if (addedNode.NodeID !== -1) {
             // gets the stagged node and deleting it
-            let node = this.getNode(-1, this.orgNodes[0])
+            let node = this.getNode(-1, this.orgNodes[0]);
             this.deleteNodeFromArray(node, this.orgNodes);
             this.selectedNode = addedNode;
             this.detailAddOrEditMode = false;
