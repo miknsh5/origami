@@ -21,7 +21,7 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
     @Output() setAddOrEditModeValue = new EventEmitter<boolean>();
 
     @HostListener("window:keydown", ["$event"])
-    keyPressed(event: any) {
+    onKeyDown(event: any) {
         event.stopPropagation();
         if ((event as KeyboardEvent).keyCode === 27) {
             if (this.isAddOrEditModeEnabled) {
