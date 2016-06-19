@@ -8,6 +8,14 @@ import { OrgNodeDetailComponent } from "./org-node-detail/index";
 import { OrgChartModel, OrgNodeModel, OrgService } from "./shared/index";
 import { OrgTreeComponent } from "./d3-tree/org-tree.component";
 
+const MIN_HEIGHT: number = 480;
+const MAX_HEIGHT: number = 768;
+
+const MIN_WIDTH: number = 320;
+const MAX_WIDTH: number = 1366;
+
+const DEFAULT_OFFSET: number = 5;
+const AUTHPANEL_OFFSET: number = 75;
 
 @Component({
     selector: "sg-origami-org",
@@ -20,6 +28,8 @@ import { OrgTreeComponent } from "./d3-tree/org-tree.component";
 export class OrgComponent {
     orgChart: OrgChartModel;
     orgNodes: OrgNodeModel[];
+    svgWidth: number;
+    svgHeight: number;
 
     @Output() treeJson: any;
     @Output() selectedNode: OrgNodeModel;
@@ -28,6 +38,13 @@ export class OrgComponent {
 
     constructor(private orgService: OrgService, private router: Router) {
         this.getAllNodes();
+        this.svgWidth = this.getSvgWidth();
+        this.svgHeight = this.getSvgHeight();
+    }
+
+    onResize(event) {
+        this.svgWidth = this.getSvgWidth();
+        this.svgHeight = this.getSvgHeight();
     }
 
     getAllNodes() {
@@ -53,9 +70,16 @@ export class OrgComponent {
         }
     }
 
-    onNodeAdded(added: OrgNodeModel) {
+    onNodeAdded(addedNode: OrgNodeModel) {
         this.isAddOrEditMode = false;
-        this.addChildToSelectedOrgNode(added, this.orgNodes[0]);
+        if (addedNode.NodeID !== -1) {
+            // gets the stagged node and deleting it
+            let node = this.getNode(-1, this.orgNodes[0]);
+            this.deleteNodeFromArray(node, this.orgNodes);
+            this.selectedNode = addedNode;
+            this.detailAddOrEditMode = false;
+        }
+        this.addChildToSelectedOrgNode(addedNode, this.orgNodes[0]);
         this.updateJSON();
     }
 
@@ -87,7 +111,6 @@ export class OrgComponent {
                         break;
                     }
                 }
-
             }
         }
     }
@@ -97,10 +120,10 @@ export class OrgComponent {
         // alert(JSON.stringify(this.orgNodes));
     }
 
-    deleteNodeFromArray(nodes: OrgNodeModel[]) {
+    deleteNodeFromArray(selectedNode: OrgNodeModel, nodes: OrgNodeModel[]) {
         let index = - 1;
         for (let i = 0; i < nodes.length; i++) {
-            if (this.compareNodeID(nodes[i], this.selectedNode)) {
+            if (this.compareNodeID(nodes[i], selectedNode)) {
                 index = nodes.indexOf(nodes[i]);
                 break;
             }
@@ -112,7 +135,7 @@ export class OrgComponent {
             for (let i = 0; i < nodes.length; i++) {
                 let element = nodes[i];
                 if (element.children) {
-                    this.deleteNodeFromArray(element.children);
+                    this.deleteNodeFromArray(selectedNode, element.children);
                 }
             }
         }
@@ -121,30 +144,33 @@ export class OrgComponent {
     onNodeDeleted(deleted) {
         this.isAddOrEditMode = false;
         this.detailAddOrEditMode = false;
-        this.deleteNodeFromArray(this.orgNodes);
+        this.deleteNodeFromArray(this.selectedNode, this.orgNodes);
         this.updateJSON();
     }
 
     onNodeUpdated(selected) {
-        this.isAddOrEditMode = false;
-        this.detailAddOrEditMode = false;
-        this.selectedNode = selected;
-        this.updateOrgNode(this.orgNodes[0]);
+        if (selected.NodeID !== -1) {
+            alert(selected.NodeID);
+            this.selectedNode = selected;
+            this.isAddOrEditMode = false;
+            this.detailAddOrEditMode = false;
+        }
+        this.updateOrgNode(this.orgNodes[0], selected);
         this.updateJSON();
     }
 
-    updateOrgNode(node: OrgNodeModel) {
-        if (this.compareNodeID(node, this.selectedNode)) {
-            node.NodeFirstName = this.selectedNode.NodeFirstName;
-            node.NodeLastName = this.selectedNode.NodeLastName;
-            node.Description = this.selectedNode.Description;
+    updateOrgNode(node: OrgNodeModel, selectedNode) {
+        if (this.compareNodeID(node, selectedNode)) {
+            node.NodeFirstName = selectedNode.NodeFirstName;
+            node.NodeLastName = selectedNode.NodeLastName;
+            node.Description = selectedNode.Description;
             node.IsSelected = true;
             return true;
         } else {
             node.IsSelected = false;
             if (node.children) {
                 for (let i = 0; i < node.children.length; i++) {
-                    let result = this.updateOrgNode(node.children[i]);
+                    let result = this.updateOrgNode(node.children[i], selectedNode);
                     if (result) {
                         break;
                     }
@@ -157,6 +183,52 @@ export class OrgComponent {
         localStorage.removeItem("profile");
         localStorage.removeItem("id_token");
         this.router.navigate(["/Login"]);
+    }
+
+    private getSvgHeight() {
+        let height = window.innerHeight;
+
+        // applies min height 
+        height = height < MIN_HEIGHT ? MIN_HEIGHT : height;
+        // applies max height
+        height = height > MAX_HEIGHT ? MAX_HEIGHT : height;
+
+        // temporarily applied wiil be removed after standard and organization mode added
+        if (this.svgWidth < 993 && height > MIN_HEIGHT) {
+            height = height - AUTHPANEL_OFFSET;
+        } else {
+            height = height - DEFAULT_OFFSET;
+        }
+
+        return height;
+    }
+
+    private getSvgWidth() {
+        let width = window.innerWidth;
+
+        // applies min width 
+        width = width < MIN_WIDTH ? MIN_WIDTH : width;
+        // applies max width 
+        width = width > MAX_WIDTH ? MAX_WIDTH : width;
+
+        return width;
+    }
+
+    private getNode(nodeID: number, rootNode: any) {
+        if (rootNode.NodeID === nodeID) {
+            return rootNode;
+        } else {
+            let nodes = rootNode.children ? rootNode.children : rootNode._children;
+            if (nodes) {
+                let node;
+                for (let i = 0; i < nodes.length; i++) {
+                    if (!node) {
+                        node = this.getNode(nodeID, nodes[i]);
+                    }
+                };
+                return node;
+            }
+        }
     }
 
     private comparewithParentNodeID(updatedNode: OrgNodeModel, currentNode: OrgNodeModel): boolean {

@@ -61,16 +61,35 @@
   right: 20px;
 }
 
+.auth-panel h2 {
+  margin: 0.4em 0;
+}
+
+.auth-panel button {
+  float: right;
+  margin-left: 0.7em;
+}
+
 .person:hover {
   color: #029BFF;
 }
 
 .main-canvas {
-  padding: 50px 50px 0;
+  /*padding: 50px 50px 0;
   position: absolute;
-  top: 0;
+  top: 0;*/
+  width: 100%;
 }
 
 .main-canvas h1 {
   margin-top: 0;
+}
+
+@media only screen and (max-width:993px) {
+  .auth-panel {
+    position: relative;
+    top: 0;
+    right: 20px;
+    float: right;
+  }
 }
