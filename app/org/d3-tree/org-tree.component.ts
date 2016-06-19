@@ -18,7 +18,7 @@ const PEER_TEXT = "Peer";
 const REPORTEE_TEXT = "Direct Report";
 const NODE_DEFAULT_DISTANCE = 112;
 
-const LABEL_POINTS = "18 6 18 -4 22 2";
+const LABEL_POINTS = "18 6 18 -6 22 0";
 const ARROW_POINTS = "48 35 48 24 53 29";
 const ARROW_FILL = "#D8D8D8";
 
@@ -194,10 +194,8 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     getIndexOfNode(parentNode: OrgNodeModel, currentNode: OrgNodeModel, rootNode) {
         let index;
         let node = this.getNode(parentNode.NodeID, rootNode);
-        console.log(node);
         if (node.children && node.children.length > 0) {
             node.children.forEach(function (d) {
-                console.log(d);
                 if (d.NodeID === currentNode.NodeID) {
                     index = node.children.indexOf(currentNode, 0);
                 }
@@ -454,11 +452,12 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 if (d.IsParent === true || d.IsChild === true) { return PARENT_CHILD_LABEL_POSITION; }
                 else { return SIBLING_LABEL_POSITION; }
             });
+
         // used to get the label width of each node
         this.labelWidths = node.select("text.label").each(function (d) {
-
-            return d3.select(this.getComputedTextLength());
+            return d3.select(this).node();
         });
+
         // creates a polygon to indicate it has child(s)
         nodeEnter.append("polygon")
             .attr("points", LABEL_POINTS)
@@ -466,14 +465,15 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
         // css class is applied on polygon if a node have child(s) and the polygon is transformed to the position given  
         node.select("polygon[data-id='childIndicator']").attr("class", function (d) {
-            console.log(d);
             if (d._children && d._children.length > 0 && !d.IsSelceted) {
                 return "show-childIndicator";
             } else {
                 return "hide-childIndicator";
             }
         }).attr("transform", (d, index) => {
-            let x = this.labelWidths[0][index].clientWidth + DEFAULT_MARGIN;
+            let x = this.labelWidths[0][index].clientWidth;
+            x = x === 0 ? Math.round(this.labelWidths[0][index].getBoundingClientRect()["width"]) : x;
+            x += DEFAULT_MARGIN;
             return "translate(" + x + ",0)";
         });
 
