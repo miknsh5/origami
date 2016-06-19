@@ -191,10 +191,8 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     getIndexOfNode(parentNode: OrgNodeModel, currentNode: OrgNodeModel, rootNode) {
         let index;
         let node = this.getNode(parentNode.NodeID, rootNode);
-        console.log(node);
         if (node.children && node.children.length > 0) {
             node.children.forEach(function (d) {
-                console.log(d);
                 if (d.NodeID === currentNode.NodeID) {
                     index = node.children.indexOf(currentNode, 0);
                 }
@@ -752,7 +750,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                             d3.select(POLYGON + "#top")
                                 .attr("stroke", "transparent")
                                 .attr("fill", "transparent");
-                            console.log("First Child");
                         }
                     }
                 });
