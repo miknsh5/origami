@@ -99,21 +99,22 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
         }
     }
 
-    private onNameBlurred(control: NgControlName) {
+    private onInputKeyDownOrUp(event: KeyboardEvent, ngControl: NgControlName) {
         if (this.orgNode && this.orgNode.NodeID === -1) {
-            if (!this.isNullOrEmpty(control.value)) {
+            let target = (<HTMLInputElement>event.target);
+            if (this.isFirstAndLastNameInitialChanged(target, ngControl)) {
                 let node = new OrgNodeModel();
                 node.OrgID = this.orgNode.OrgID;
                 node.ParentNodeID = this.orgNode.ParentNodeID;
                 node.NodeID = this.orgNode.NodeID;
                 node.IsStaging = this.orgNode.IsStaging;
 
-                if (control.name === "firstName") {
-                    this.orgNode.NodeFirstName = node.NodeFirstName = control.value;
+                if (ngControl.name === "firstName") {
+                    this.orgNode.NodeFirstName = node.NodeFirstName = ngControl.value;
                     node.NodeLastName = this.orgNode.NodeLastName;
                 } else {
                     node.NodeFirstName = this.orgNode.NodeFirstName;
-                    this.orgNode.NodeLastName = node.NodeLastName = control.value;
+                    this.orgNode.NodeLastName = node.NodeLastName = ngControl.value;
                 }
 
                 if (node.IsStaging) {
@@ -124,6 +125,16 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
                 }
             }
         }
+    }
+
+    private isFirstAndLastNameInitialChanged(target: HTMLInputElement, ngControl: NgControlName) {
+        if (ngControl.name === "firstName" && target.value.slice(0, 1) !== this.orgNode.NodeFirstName.slice(0, 1)) {
+            return true;
+        }
+        if (ngControl.name === "lastName" && target.value.slice(0, 1) !== this.orgNode.NodeLastName.slice(0, 1)) {
+            return true;
+        }
+        return false;
     }
 
     private emitAddNodeNotification(data: OrgNodeModel) {
