@@ -126,16 +126,15 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
             node.ParentNodeID = this.orgNode.ParentNodeID;
             node.NodeID = this.orgNode.NodeID;
             node.IsStaging = this.orgNode.IsStaging;
-
-            if (ngControl.name === "firstName") {
-                this.orgNode.NodeFirstName = node.NodeFirstName = ngControl.value;
-                node.NodeLastName = this.orgNode.NodeLastName;
-            } else {
-                node.NodeFirstName = this.orgNode.NodeFirstName;
-                this.orgNode.NodeLastName = node.NodeLastName = ngControl.value;
-            }
-
             if (this.isFirstAndLastNameInitialChanged(target.value, ngControl)) {
+                if (ngControl.name === "firstName") {
+                    this.orgNode.NodeFirstName = node.NodeFirstName = ngControl.value;
+                    node.NodeLastName = this.orgNode.NodeLastName;
+                } else {
+                    node.NodeFirstName = this.orgNode.NodeFirstName;
+                    this.orgNode.NodeLastName = node.NodeLastName = ngControl.value;
+                }
+
                 if (node.IsStaging) {
                     this.orgNode.IsStaging = node.IsStaging = false;
                     this.addNode.emit(node);
