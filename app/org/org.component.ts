@@ -150,7 +150,6 @@ export class OrgComponent {
 
     onNodeUpdated(selected) {
         if (selected.NodeID !== -1) {
-            alert(selected.NodeID);
             this.selectedNode = selected;
             this.isAddOrEditMode = false;
             this.detailAddOrEditMode = false;
