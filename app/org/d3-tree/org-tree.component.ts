@@ -473,7 +473,11 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         }).attr("transform", (d, index) => {
             let x = this.labelWidths[0][index].clientWidth;
             x = x === 0 ? Math.round(this.labelWidths[0][index].getBoundingClientRect()["width"]) : x;
-            x += DEFAULT_MARGIN;
+            if (d.IsSibling) {
+                x += DEFAULT_MARGIN + (SIBLING_LABEL_POSITION - PARENT_CHILD_LABEL_POSITION);
+            } else {
+                x += DEFAULT_MARGIN;
+            }
             return "translate(" + x + ",0)";
         });
 
