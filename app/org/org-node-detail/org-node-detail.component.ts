@@ -18,6 +18,9 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
     @Output() updateNode = new EventEmitter<OrgNodeModel>();
     @Output() addNode = new EventEmitter<OrgNodeModel>();
     @Output() setAddOrEditModeValue = new EventEmitter<boolean>();
+    @ViewChild("firstName") firstName;
+    @ViewChild("lastName") lastName;
+    @ViewChild("description") description;
 
     @HostListener("window:keydown", ["$event"])
     onKeyDown(event: any) {
@@ -32,9 +35,24 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
         }
     }
 
+    @HostListener("window:click", ["$event"])
+    onClick(event: any) {
+        event.stopPropagation();
+        if (event.srcElement.nodeName === "svg") {
+            if (this.firstName && this.lastName && this.description) {
+                if (this.firstName.value !== this.orgNode.NodeFirstName || this.lastName.value !== this.orgNode.NodeLastName || this.description.value !== this.orgNode.Description) {
+                    this.onSubmit();
+                } else {
+                    this.onCancelEditClicked();
+                }
+            }
+        }
+    }
+
     isInputFocused: boolean;
     private editNodeDetails: OrgNodeModel;
     private orgNode: OrgNodeModel;
+    private isFormSubmitted: boolean;
 
     constructor(private orgService: OrgService, private renderer: Renderer) { }
 
@@ -77,19 +95,20 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
         return true;
     }
 
-    private onSubmit(form: NgForm) {
-        if (!this.isNullOrEmpty(form.value.firstName)) {
+    private onSubmit() {
+        if (!this.isNullOrEmpty(this.firstName.value) && !this.isFormSubmitted) {
+            this.isFormSubmitted = true;
             this.editNodeDetails = new OrgNodeModel();
-            this.editNodeDetails.NodeFirstName = form.value.firstName;
-            this.editNodeDetails.NodeLastName = form.value.lastName;
-            this.editNodeDetails.Description = form.value.description;
+            this.editNodeDetails.NodeFirstName = this.firstName.value;
+            this.editNodeDetails.NodeLastName = this.lastName.value;
+            this.editNodeDetails.Description = this.description.value;
             this.editNodeDetails.children = this.orgNode.children;
             this.editNodeDetails.NodeID = this.orgNode.NodeID;
             this.editNodeDetails.OrgID = this.orgNode.OrgID;
             this.editNodeDetails.ParentNodeID = this.orgNode.ParentNodeID;
-            this.orgNode.NodeFirstName = form.value.firstName;
-            this.orgNode.NodeLastName = form.value.lastName;
-            this.orgNode.Description = form.value.description;
+            this.orgNode.NodeFirstName = this.firstName.value;
+            this.orgNode.NodeLastName = this.lastName.value;
+            this.orgNode.Description = this.description.value;
 
             if (this.orgNode.NodeID === -1) {
                 this.addNewNode(this.editNodeDetails);
@@ -102,21 +121,21 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
     private onInputKeyDownOrUp(event: KeyboardEvent, ngControl: NgControlName) {
         if (this.orgNode && this.orgNode.NodeID === -1) {
             let target = (<HTMLInputElement>event.target);
-            if (this.isFirstAndLastNameInitialChanged(target, ngControl)) {
-                let node = new OrgNodeModel();
-                node.OrgID = this.orgNode.OrgID;
-                node.ParentNodeID = this.orgNode.ParentNodeID;
-                node.NodeID = this.orgNode.NodeID;
-                node.IsStaging = this.orgNode.IsStaging;
+            let node = new OrgNodeModel();
+            node.OrgID = this.orgNode.OrgID;
+            node.ParentNodeID = this.orgNode.ParentNodeID;
+            node.NodeID = this.orgNode.NodeID;
+            node.IsStaging = this.orgNode.IsStaging;
 
-                if (ngControl.name === "firstName") {
-                    this.orgNode.NodeFirstName = node.NodeFirstName = ngControl.value;
-                    node.NodeLastName = this.orgNode.NodeLastName;
-                } else {
-                    node.NodeFirstName = this.orgNode.NodeFirstName;
-                    this.orgNode.NodeLastName = node.NodeLastName = ngControl.value;
-                }
+            if (ngControl.name === "firstName") {
+                this.orgNode.NodeFirstName = node.NodeFirstName = ngControl.value;
+                node.NodeLastName = this.orgNode.NodeLastName;
+            } else {
+                node.NodeFirstName = this.orgNode.NodeFirstName;
+                this.orgNode.NodeLastName = node.NodeLastName = ngControl.value;
+            }
 
+            if (this.isFirstAndLastNameInitialChanged(target.value, ngControl)) {
                 if (node.IsStaging) {
                     this.orgNode.IsStaging = node.IsStaging = false;
                     this.addNode.emit(node);
@@ -127,11 +146,11 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
         }
     }
 
-    private isFirstAndLastNameInitialChanged(target: HTMLInputElement, ngControl: NgControlName) {
-        if (ngControl.name === "firstName" && target.value.slice(0, 1) !== this.orgNode.NodeFirstName.slice(0, 1)) {
+    private isFirstAndLastNameInitialChanged(value: string, ngControl: NgControlName) {
+        if (ngControl.name === "firstName" && value.slice(0, 1) !== this.orgNode.NodeFirstName.slice(0, 1)) {
             return true;
         }
-        if (ngControl.name === "lastName" && target.value.slice(0, 1) !== this.orgNode.NodeLastName.slice(0, 1)) {
+        if (ngControl.name === "lastName" && value.slice(0, 1) !== this.orgNode.NodeLastName.slice(0, 1)) {
             return true;
         }
         return false;
@@ -142,6 +161,7 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
             this.addNode.emit(data);
             this.orgNode.NodeID = data.NodeID;
             this.orgNode.NodeFirstName = data.NodeFirstName;
+            this.isFormSubmitted = false;
         }
     }
 
@@ -201,6 +221,7 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
         if (data === true) {
             this.updateNode.emit(this.editNodeDetails);
             this.editNodeDetails = null;
+            this.isFormSubmitted = false;
         }
     }
 
@@ -214,5 +235,6 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
         console.log(err);
         this.setAddOrEditModeValue.emit(false);
         this.editNodeDetails = null;
+        this.isFormSubmitted = false;
     }
 }   

@@ -597,8 +597,10 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
     bodyClicked(d) {
         if (event.srcElement.nodeName === "svg") {
-            this.deselectNode();
-            this.selectNode.emit(this.selectedOrgNode);
+            if (!this.isAddOrEditModeEnabled) {
+                this.deselectNode();
+                this.selectNode.emit(this.selectedOrgNode);
+            }
         }
     }
 
