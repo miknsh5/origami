@@ -181,12 +181,13 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         this.root = new OrgNodeModel();
         this.root.children = new Array<OrgNodeModel>();
         this.root.NodeID = -1;
+        // currently hardcoded need to change
         this.root.OrgID = 10;
         this.root.IsStaging = true;
         this.root.NodeFirstName = "";
         this.root.NodeLastName = "";
         this.root.Description = "";
-        // this.selectedOrgNode = this.root;
+        console.log("No nodes in system");
     }
 
     resizeLinesArrowsAndSvg() {
