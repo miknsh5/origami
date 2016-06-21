@@ -12,11 +12,13 @@ const SIBLING_RADIUS = 16.5;
 const PARENTCHILD_RADIUS = 10.5;
 const GRANDPARENT_RADIUS = 6.5;
 
+const DEFAULT_MARGIN = 8;
 const DEFAULT_RADIUS = 10.5;
 const PEER_TEXT = "Peer";
 const REPORTEE_TEXT = "Direct Report";
 const NODE_DEFAULT_DISTANCE = 112;
 
+const LABEL_POINTS = "18 6 18 -6 22 0";
 const ARROW_POINTS = "48 35 48 24 53 29";
 const ARROW_FILL = "#D8D8D8";
 
@@ -48,6 +50,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     nodes: any;
     links: any;
     selectedOrgNode: any;
+    labelWidths: any;
     treeWidth: number;
     treeHeight: number;
     previousRoot: any;
@@ -445,10 +448,38 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         });
 
         node.select(TEXT).text(function (d) { return d.IsSelected || d.IsGrandParent ? "" : d.NodeFirstName; })
-            .attr("x", function (d) {
+            .attr("class", "label").attr("x", function (d) {
                 if (d.IsParent === true || d.IsChild === true) { return PARENT_CHILD_LABEL_POSITION; }
                 else { return SIBLING_LABEL_POSITION; }
             });
+
+        // used to get the label width of each node
+        this.labelWidths = node.select("text.label").each(function (d) {
+            return d3.select(this).node();
+        });
+
+        // creates a polygon to indicate it has child(s)
+        nodeEnter.append("polygon")
+            .attr("points", LABEL_POINTS)
+            .attr("data-id", "childIndicator");
+
+        // css class is applied on polygon if a node have child(s) and the polygon is transformed to the position given  
+        node.select("polygon[data-id='childIndicator']").attr("class", function (d) {
+            if (d._children && d._children.length > 0 && !d.IsSelceted) {
+                return "show-childIndicator";
+            } else {
+                return "hide-childIndicator";
+            }
+        }).attr("transform", (d, index) => {
+            let x = this.labelWidths[0][index].clientWidth;
+            x = x === 0 ? Math.round(this.labelWidths[0][index].getBoundingClientRect()["width"]) : x;
+            if (d.IsSibling) {
+                x += DEFAULT_MARGIN + (SIBLING_LABEL_POSITION - PARENT_CHILD_LABEL_POSITION);
+            } else {
+                x += DEFAULT_MARGIN;
+            }
+            return "translate(" + x + ",0)";
+        });
 
         node.select(CIRCLE).attr("class", function (d) {
             return d.IsSelected ? SELECTED_CIRCLE : DEFAULT_CIRCLE;

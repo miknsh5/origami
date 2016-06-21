@@ -95,3 +95,12 @@ node circle {
   text-anchor: middle;
   fill-opacity: 1;
 }
+
+.show-childIndicator{
+    stroke:#FFFFFF;
+   fill: #979797;
+}
+.hide-childIndicator{
+   stroke:transparent;
+   fill: transparent;
+}
