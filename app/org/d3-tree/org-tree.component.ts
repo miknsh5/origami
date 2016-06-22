@@ -146,6 +146,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                     // if the selected node is deleted it highlights previous sibling or parent node
                     if (!node) {
                         this.selectedOrgNode = this.getPreviousSiblingNode(this.selectedOrgNode, this.previousRoot);
+                        if (this.selectedOrgNode.NodeID === -1) { raiseSelectedEvent = true; }
                     }
                     this.updateSelectedOrgNode(this.root);
                     this.highlightSelectedNode(this.selectedOrgNode, raiseSelectedEvent);
@@ -182,7 +183,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         this.root.children = new Array<OrgNodeModel>();
         this.root.NodeID = -1;
         // currently hardcoded need to change
-        this.root.OrgID = 10;
+        this.root.OrgID = 1;
         this.root.IsStaging = true;
         this.root.NodeFirstName = "";
         this.root.NodeLastName = "";
