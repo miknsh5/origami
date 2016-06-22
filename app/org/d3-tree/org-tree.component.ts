@@ -250,7 +250,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
         this.svg.append("path")
             .attr("d", line(lineData))
-            .attr("stroke", "#B6B6B6")
+            .attr("stroke", "#979797")
             .attr("stroke-width", 0.4)
             .attr("fill", "none")
             .attr("class", className);
