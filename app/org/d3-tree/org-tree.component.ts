@@ -497,8 +497,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 return "hide-childIndicator";
             }
         }).attr("transform", (d, index) => {
-            let x = this.labelWidths[0][index].clientWidth;
-            x = x === 0 ? Math.round(this.labelWidths[0][index].getBoundingClientRect()["width"]) : x;
+            let x = Math.round(this.labelWidths[0][index].getBoundingClientRect()["width"]);
             if (d.IsSibling) {
                 x += DEFAULT_MARGIN + (SIBLING_LABEL_POSITION - PARENT_CHILD_LABEL_POSITION);
             } else {
