@@ -95,23 +95,31 @@ export class OrgComponent {
     }
 
     addChildToSelectedOrgNode(newNode: OrgNodeModel, node: OrgNodeModel) {
-        if (this.comparewithParentNodeID(newNode, node)) {
-            newNode.IsSelected = true;
-            if (!node.children) {
-                node.children = new Array<OrgNodeModel>();
-            }
-            node.children.push(newNode);
-            return true;
-        } else {
-            node.IsSelected = false;
-            if (node.children) {
-                for (let i = 0; i < node.children.length; i++) {
-                    let result = this.addChildToSelectedOrgNode(newNode, node.children[i]);
-                    if (result) {
-                        break;
+        if (node) {
+            if (this.comparewithParentNodeID(newNode, node)) {
+                newNode.IsSelected = true;
+                if (!node.children) {
+                    node.children = new Array<OrgNodeModel>();
+                }
+                node.children.push(newNode);
+                return true;
+            } else {
+                node.IsSelected = false;
+                if (node.children) {
+                    for (let i = 0; i < node.children.length; i++) {
+                        let result = this.addChildToSelectedOrgNode(newNode, node.children[i]);
+                        if (result) {
+                            break;
+                        }
                     }
                 }
             }
+        } else {
+            newNode.IsSelected = true;
+            newNode.IsStaging = false;
+            newNode.children = new Array<OrgNodeModel>();
+            this.orgNodes.push(newNode);
+            return true;
         }
     }
 

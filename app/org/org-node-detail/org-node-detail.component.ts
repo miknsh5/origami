@@ -27,9 +27,13 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
         event.stopPropagation();
         if ((event as KeyboardEvent).keyCode === 27) {
             if (this.isAddOrEditModeEnabled) {
-                this.setAddOrEditModeValue.emit(false);
-                if (this.orgNode.NodeID === -1) {
-                    this.deleteNode.emit(this.orgNode);
+                if (!this.orgNode.ParentNodeID && this.orgNode.NodeID === -1) {
+                    this.clearRootNodeDetails();
+                } else {
+                    this.setAddOrEditModeValue.emit(false);
+                    if (this.orgNode.NodeID === -1) {
+                        this.deleteNode.emit(this.orgNode);
+                    }
                 }
             }
         }
@@ -77,15 +81,11 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
     ngAfterContentChecked() {
         if (this.isAddOrEditModeEnabled && this.isInputFocused) {
             let elements: any = document.getElementsByTagName("input");
-            if (elements.length > 0 && this.orgNode.IsStaging) {
-                this.renderer.invokeElementMethod(elements[0], "focus", []);
+            if (elements.length > 0 && (this.orgNode.IsStaging || this.orgNode.NodeID !== -1)) {
                 this.isInputFocused = false;
+                this.renderer.invokeElementMethod(elements[0], "focus", []);
             }
         }
-    }
-
-    killKeydownEvent() {
-        event.stopPropagation();
     }
 
     private isNullOrEmpty(value: string) {
@@ -93,6 +93,17 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
             return false;
         }
         return true;
+    }
+
+    private clearRootNodeDetails() {
+        this.orgNode.NodeFirstName = "";
+        this.orgNode.NodeLastName = "";
+        this.orgNode.Description = "";
+        if (!this.orgNode.IsStaging) {
+            document.getElementsByTagName("input")[2].value = "";
+            document.getElementsByTagName("input")[0].focus();
+            this.updateNode.emit(this.orgNode);
+        }
     }
 
     private onSubmit() {
@@ -160,6 +171,8 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
             this.addNode.emit(data);
             this.orgNode.NodeID = data.NodeID;
             this.orgNode.NodeFirstName = data.NodeFirstName;
+            this.orgNode.NodeLastName = data.NodeLastName;
+            this.orgNode.Description = data.Description;
             this.isFormSubmitted = false;
         }
     }
@@ -175,9 +188,13 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
     }
 
     private onCancelEditClicked() {
-        this.setAddOrEditModeValue.emit(false);
-        if (this.orgNode.NodeID === -1) {
-            this.deleteNode.emit(this.orgNode);
+        if (!this.orgNode.ParentNodeID && this.orgNode.NodeID === -1) {
+            this.clearRootNodeDetails();
+        } else {
+            this.setAddOrEditModeValue.emit(false);
+            if (this.orgNode.NodeID === -1) {
+                this.deleteNode.emit(this.orgNode);
+            }
         }
     }
 

@@ -10,7 +10,10 @@ node circle {
 
 .node text {
   font-family: Roboto, sans-serif;
-  font-size: 0.8em;
+  font-size: 10.5px;
+  font-weight: bold;
+  text-align: center;
+  color: #ffffff;
   text-transform: capitalize;
 }
 
@@ -19,8 +22,14 @@ node circle {
   text-transform: uppercase;
 }
 
-.node .sibbling ~ text#abbr, .node .selectedCircle ~ text#abbr {
-  font-size: 1.1em;
+.node .sibling ~ text#abbr, .node .selectedCircle ~ text#abbr {
+  font-size: 17.3px;
+}
+
+.node text.label {
+  font-size: 15px;
+  font-weight: normal;
+  fill: #979797;
 }
 
 .link {
@@ -75,7 +84,7 @@ node circle {
 
 .new-peer_reportee-circle {
   fill: #FAFAFA;
-  stroke: #B6B6B6;
+  stroke: #CFD8dC;
   stroke-width: 1;
   stroke-dasharray: 2, 2;
   cursor: pointer;
@@ -91,16 +100,17 @@ node circle {
 
 .new-peer_reportee-outerText {
   font-size: 0.62em;
-  fill: #B6B6B6;
+  fill: #CFD8dC;
   text-anchor: middle;
   fill-opacity: 1;
 }
 
-.show-childIndicator{
-    stroke:#FFFFFF;
-   fill: #979797;
+.show-childIndicator {
+  stroke: #FFFFFF;
+  fill: #929292;
 }
-.hide-childIndicator{
-   stroke:transparent;
-   fill: transparent;
+
+.hide-childIndicator {
+  stroke: transparent;
+  fill: transparent;
 }
