@@ -250,7 +250,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
         this.svg.append("path")
             .attr("d", line(lineData))
-            .attr("stroke", "#B6B6B6")
+            .attr("stroke", "#979797")
             .attr("stroke-width", 0.4)
             .attr("fill", "none")
             .attr("class", className);
@@ -258,8 +258,8 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
     createArrows() {
         let arrowsData = [{ "points": ARROW_POINTS, "transform": "", "id": "right" },
-            { "points": ARROW_POINTS, "transform": "translate(-42, 0) rotate(-180) translate(-100, -58)", "id": "left" },
-            { "points": ARROW_POINTS, "transform": "translate(5,59) rotate(-90) translate(0, -5)", "id": "top" },
+            { "points": ARROW_POINTS, "transform": "translate(58, 58) rotate(-180)", "id": "left" },
+            { "points": ARROW_POINTS, "transform": "translate(0,58) rotate(-90)", "id": "top" },
             { "points": ARROW_POINTS, "transform": "translate(58, 0) rotate(90)", "id": "bottom" }];
 
         let arrows = this.arrows;
@@ -505,7 +505,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             });
 
         nodeUpdate.select(TEXT)
-            .style({ "fill-opacity": 1, "fill": "#727272" });
+            .style({ "fill-opacity": 1, "fill": "#979797" });
 
         let nodeExit = node.exit().transition().delay(100).
             duration(DURATION)
@@ -576,7 +576,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 .attr("class", "new-peer_reportee-innerText");
 
             node.append(TEXT)
-                .attr("dy", "2em")
+                .attr("dy", "2.25em")
                 .text(nodeName)
                 .attr("class", "new-peer_reportee-outerText");
         } else {
