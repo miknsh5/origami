@@ -27,9 +27,13 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
         event.stopPropagation();
         if ((event as KeyboardEvent).keyCode === 27) {
             if (this.isAddOrEditModeEnabled) {
-                this.setAddOrEditModeValue.emit(false);
-                if (this.orgNode.NodeID === -1) {
-                    this.deleteNode.emit(this.orgNode);
+                if (!this.orgNode.ParentNodeID && this.orgNode.NodeID === -1) {
+                    this.clearRootNodeDetails();
+                } else {
+                    this.setAddOrEditModeValue.emit(false);
+                    if (this.orgNode.NodeID === -1) {
+                        this.deleteNode.emit(this.orgNode);
+                    }
                 }
             }
         }
@@ -84,15 +88,22 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
         }
     }
 
-    killKeydownEvent() {
-        event.stopPropagation();
-    }
-
     private isNullOrEmpty(value: string) {
         if (value && value.trim().length > 0) {
             return false;
         }
         return true;
+    }
+
+    private clearRootNodeDetails() {
+        this.orgNode.NodeFirstName = "";
+        this.orgNode.NodeLastName = "";
+        this.orgNode.Description = "";
+        if (!this.orgNode.IsStaging) {
+            document.getElementsByTagName("input")[2].value = "";
+            document.getElementsByTagName("input")[0].focus();
+            this.updateNode.emit(this.orgNode);
+        }
     }
 
     private onSubmit() {
@@ -160,6 +171,8 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
             this.addNode.emit(data);
             this.orgNode.NodeID = data.NodeID;
             this.orgNode.NodeFirstName = data.NodeFirstName;
+            this.orgNode.NodeLastName = data.NodeLastName;
+            this.orgNode.Description = data.Description;
             this.isFormSubmitted = false;
         }
     }
@@ -175,9 +188,13 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
     }
 
     private onCancelEditClicked() {
-        this.setAddOrEditModeValue.emit(false);
-        if (this.orgNode.NodeID === -1) {
-            this.deleteNode.emit(this.orgNode);
+        if (!this.orgNode.ParentNodeID && this.orgNode.NodeID === -1) {
+            this.clearRootNodeDetails();
+        } else {
+            this.setAddOrEditModeValue.emit(false);
+            if (this.orgNode.NodeID === -1) {
+                this.deleteNode.emit(this.orgNode);
+            }
         }
     }
 
