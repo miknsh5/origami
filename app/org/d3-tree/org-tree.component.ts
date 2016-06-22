@@ -213,7 +213,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             .attr("slope", 0.5);
         let feMerge = filter.append("feMerge");
         feMerge.append("feMergeNode")
-            .attr("in", "offsetBlur")
+            .attr("in", "offsetBlur");
         feMerge.append("feMergeNode")
             .attr("in", "SourceGraphic");
     }
@@ -450,7 +450,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
         nodeEnter.append(CIRCLE)
             .attr("r", 1e-6).style("filter", function (d) {
-                return d.IsStaging ? " " : "url(#drop-shadow)"
+                return d.IsStaging ? " " : "url(#drop-shadow)";
             });
 
         nodeEnter.append(TEXT)
@@ -532,7 +532,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 else if (d.IsSibling) { return DEFAULT_CIRCLE + " sibling"; }
                 else { return DEFAULT_CIRCLE; }
             }).style("filter", function (d) {
-                return d.IsStaging ? " " : "url(#drop-shadow)"
+                return d.IsStaging ? " " : "url(#drop-shadow)";
             });
         nodeUpdate.select(TEXT)
             .style({ "fill-opacity": 1, "fill": "#727272" });
