@@ -505,7 +505,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             });
 
         nodeUpdate.select(TEXT)
-            .style({ "fill-opacity": 1, "fill": "#727272" });
+            .style({ "fill-opacity": 1, "fill": "#979797" });
 
         let nodeExit = node.exit().transition().delay(100).
             duration(DURATION)
@@ -576,7 +576,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 .attr("class", "new-peer_reportee-innerText");
 
             node.append(TEXT)
-                .attr("dy", "2em")
+                .attr("dy", "2.25em")
                 .text(nodeName)
                 .attr("class", "new-peer_reportee-outerText");
         } else {
