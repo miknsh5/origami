@@ -258,8 +258,8 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
     createArrows() {
         let arrowsData = [{ "points": ARROW_POINTS, "transform": "", "id": "right" },
-            { "points": ARROW_POINTS, "transform": "translate(-42, 0) rotate(-180) translate(-100, -58)", "id": "left" },
-            { "points": ARROW_POINTS, "transform": "translate(5,59) rotate(-90) translate(0, -5)", "id": "top" },
+            { "points": ARROW_POINTS, "transform": "translate(58, 58) rotate(-180)", "id": "left" },
+            { "points": ARROW_POINTS, "transform": "translate(0,58) rotate(-90)", "id": "top" },
             { "points": ARROW_POINTS, "transform": "translate(58, 0) rotate(90)", "id": "bottom" }];
 
         let arrows = this.arrows;
