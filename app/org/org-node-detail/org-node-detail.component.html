@@ -30,11 +30,11 @@
 
         <!-- Expect to see code comments before blocks of logic like this to explain the intended behavior -->
         <div *ngIf="selectedOrgNode && isAddOrEditModeEnabled" class="form-group text-wrap">
-            <input type="text" class="title-name-edit form-control firstName" (keyup)="onInputKeyDownOrUp($event,firstName)" ngControl="firstName"
+            <input type="text" class="h-1 title-name-edit form-control firstName" (keyup)="onInputKeyDownOrUp($event,firstName)" ngControl="firstName"
                 #firstName="ngForm" [ngModel]="orgNode.NodeFirstName" />
-            <input type="text" class="title-name-edit form-control" (keyup)="onInputKeyDownOrUp($event,lastName)" ngControl="lastName"
+            <input type="text" class="h-1 title-name-edit form-control" (keyup)="onInputKeyDownOrUp($event,lastName)" ngControl="lastName"
                 #lastName="ngForm" [ngModel]="orgNode.NodeLastName" />
-            <input type="text" class="title-position-edit form-control" ngControl="description" #description="ngForm" [ngModel]="orgNode.Description"/>
+            <input type="text" class="h-3 title-position-edit form-control" ngControl="description" #description="ngForm" [ngModel]="orgNode.Description"/>
         </div>
 
 

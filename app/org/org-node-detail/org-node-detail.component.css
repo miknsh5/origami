@@ -15,19 +15,17 @@
     top: 0;
     height: 100%;
     display: inline-block;
-  
     position: absolute;
     z-index: 11;
 }
 
 .text-wrap {
     position: relative;
-
     padding-left: 60px;
     margin: 11px 0;
-
     color: #FFFFFF;
-    width: 260px;
+    width: 339px;
+    max-width: 100%;
 }
 
 .title-name {
@@ -36,14 +34,11 @@
 }
 
 .title-name-edit {
-    font-size: 0.9em;
-    font-weight: bolder;
-    width: 46%;
-    height: 18px;
-    margin-bottom: 2px;
+    max-width: 100px;
     border: none;
-    float: left;
-    margin-right: 2%;
+    margin-right: 15px;
+    display: inline-block;
+    padding: 0;
 }
 
 .title-position {
@@ -51,16 +46,16 @@
 }
 
 .title-position-edit {
-    font-size: 0.8em;
-    width: 94%;
-    height: 18px;
+    width: 113px;
     border: none;
+    padding: 0;
+    display: block;
 }
 
 .edit-icon {
     background-image: url("app/images/btn-edit-details.png");
     background-repeat: no-repeat;
-    border:none;
+    border: none;
     position: absolute;
     bottom: 0;
     height: 28px;
@@ -71,7 +66,7 @@
 .save-icon {
     background-image: url("app/images/btn-save-details.png");
     background-repeat: no-repeat;
-    border:none;
+    border: none;
     position: absolute;
     bottom: 0;
     height: 28px;
@@ -82,7 +77,7 @@
 .close-icon {
     background-image: url("app/images/btn-delete-node.png");
     background-repeat: no-repeat;
-    border:none;
+    border: none;
     position: absolute;
     top: 0;
     height: 28px;
@@ -93,7 +88,7 @@
 .delete-icon {
     background-image: url("app/images/btn-delete.png");
     background-repeat: no-repeat;
-    border:none;
+    border: none;
     position: absolute;
     top: 0;
     height: 28px;

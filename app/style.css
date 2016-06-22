@@ -24,18 +24,20 @@
 
 .h-1 {
     font-family: Roboto, sans-serif;
-    font-size: 1.1em;
-    line-height: 1.2;
-    font-weight: 700;
+    font-size: 18px;
+    height: 21px;
+    font-weight: bold;
     color: #ffffff;
     color: var(--white-text);
+    background-color: transparent;
 }
 
 .h-3 {
     font-family: Roboto, sans-serif;
-    font-size: 0.8em;
-    line-height: 1.5;
-    font-weight: 400;
+    font-size: 14px;
+    height: 16px;
+    font-weight: normal;
     color: #ffffff;
     color: var(--white-text);
+    background-color: transparent;    
 }

@@ -81,9 +81,9 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
     ngAfterContentChecked() {
         if (this.isAddOrEditModeEnabled && this.isInputFocused) {
             let elements: any = document.getElementsByTagName("input");
-            if (elements.length > 0 && this.orgNode.IsStaging) {
-                this.renderer.invokeElementMethod(elements[0], "focus", []);
+            if (elements.length > 0 && (this.orgNode.IsStaging || this.orgNode.NodeID !== -1)) {
                 this.isInputFocused = false;
+                this.renderer.invokeElementMethod(elements[0], "focus", []);
             }
         }
     }
