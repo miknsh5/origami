@@ -314,9 +314,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                     this.markAncestors(node);
                 }
             }
-            else {
-                // node.IsAncestor = false;
-            }
         }
     }
 
