@@ -219,25 +219,17 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
     createDropShadow() {
         let defs = this.svg.append("defs");
-        let filter = defs.append("filter")
-            .attr("id", "drop-shadow");
-        filter.append("feGaussianBlur")
-            .attr("in", "SourceAlpha")
-            .attr("stdDeviation", DEFAULT_STD_DEVIATION)
-            .attr("result", "blur");
-        filter.append("feOffset")
-            .attr("in", "blur")
-            .attr("dy", 1)
-            .attr("result", "offsetBlur");
-        let feComponentTransfer = filter.append("feComponentTransfer")
+        let filter = defs.append("filter").attr("id", "drop-shadow");
+        filter.append("feGaussianBlur").attr("in", "SourceAlpha").attr("stdDeviation", 1);
+        filter.append("feOffset").attr("dy", "1.65");
+        filter.append("feComponentTransfer")
             .append("feFuncA")
             .attr("type", "linear")
-            .attr("slope", 0.5);
+            .attr("slope", "0.35");
         let feMerge = filter.append("feMerge");
-        feMerge.append("feMergeNode")
-            .attr("in", "offsetBlur");
-        feMerge.append("feMergeNode")
-            .attr("in", "SourceGraphic");
+        feMerge.append("feMergeNode");
+        feMerge.append("feMergeNode").attr("in", "SourceGraphic");
+
     }
 
     getIndexOfNode(parentNode: OrgNodeModel, currentNode: OrgNodeModel, rootNode) {
