@@ -14,7 +14,7 @@ const GRANDPARENT_RADIUS = 9;
 
 const DEFAULT_MARGIN = 8;
 const DEFAULT_RADIUS = 11.8;
-const DEFAULT_STD_DEVIATION = 0.5;
+const DEFAULT_STD_DEVIATION = 1;
 
 const PEER_TEXT = "Peer";
 const REPORTEE_TEXT = "Direct Report";
@@ -221,7 +221,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     createDropShadow() {
         let defs = this.svg.append("defs");
         let filter = defs.append("filter").attr("id", "drop-shadow");
-        filter.append("feGaussianBlur").attr("in", "SourceAlpha").attr("stdDeviation", 1);
+        filter.append("feGaussianBlur").attr("in", "SourceAlpha").attr("stdDeviation", DEFAULT_STD_DEVIATION );
         filter.append("feOffset").attr("dy", "1.65");
         filter.append("feComponentTransfer")
             .append("feFuncA")
