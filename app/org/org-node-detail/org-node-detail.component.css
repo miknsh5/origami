@@ -34,11 +34,12 @@
 }
 
 .title-name-edit {
-    max-width: 100px;
+    width: 140px;
     border: none;
-    margin-right: 15px;
     display: inline-block;
-    padding: 0;
+    padding: 1px 2px;
+    margin-top: -2px;
+    background-color: rgba(0, 0, 0, 0.2);
 }
 
 .title-position {
@@ -46,10 +47,12 @@
 }
 
 .title-position-edit {
-    width: 113px;
+    width: 140px;
     border: none;
-    padding: 0;
+    padding: 1px 2px;
     display: block;
+    margin-top: 2px;
+    background-color: rgba(0, 0, 0, 0.2);
 }
 
 .edit-icon {

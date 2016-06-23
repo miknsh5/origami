@@ -22,8 +22,8 @@ node circle {
   text-transform: uppercase;
 }
 
-.node .sibling ~ text#abbr, .node .selectedCircle ~ text#abbr {
-  font-size: 17.3px;
+.node .stagedCircle ~ text#abbr {
+  font-weight: normal;
 }
 
 .node text.label {
@@ -34,8 +34,8 @@ node circle {
 
 .link {
   fill: none;
-  stroke: #ccc;
-  stroke-width: 1.5px;
+  stroke: #979797;
+  stroke-width: 1px;
 }
 
 .chart {
@@ -113,4 +113,8 @@ node circle {
 .hide-childIndicator {
   stroke: transparent;
   fill: transparent;
+}
+
+path.vertical, path.horizontal {
+  opacity: 0.3;
 }

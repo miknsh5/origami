@@ -8,26 +8,24 @@ import { OrgNodeModel, OrgService} from "../shared/index";
 const DURATION = 250;
 const TOPBOTTOM_MARGIN = 20;
 const RIGHTLEFT_MARGIN = 120;
-const SIBLING_RADIUS = 16.5;
-const PARENTCHILD_RADIUS = 10.5;
-const GRANDPARENT_RADIUS = 6.5;
+const SIBLING_RADIUS = 21.5;
+const PARENTCHILD_RADIUS = 13.5;
+const GRANDPARENT_RADIUS = 9;
 
 const DEFAULT_MARGIN = 8;
+const DEFAULT_RADIUS = 11.8;
 const DEFAULT_STD_DEVIATION = 0.5;
-const DEFAULT_RADIUS = 10.5;
+
 const PEER_TEXT = "Peer";
 const REPORTEE_TEXT = "Direct Report";
 const NODE_DEFAULT_DISTANCE = 112;
 
 const LABEL_POINTS = "18 6 18 -6 22 0";
-const ARROW_POINTS = "48 35 48 24 53 29";
+const ARROW_POINTS = "55 33 55 21 59 27";
 const ARROW_FILL = "#D8D8D8";
 
 const NODE_HEIGHT = 60;
-const NODE_WIDTH = 40;
-
-const PARENT_CHILD_LABEL_POSITION = 18;
-const SIBLING_LABEL_POSITION = 24;
+const NODE_WIDTH = 95;
 
 const DEFAULT_CIRCLE = "defaultCircle";
 const STAGED_CIRCLE = "stagedCircle";
@@ -36,6 +34,9 @@ const SELECTED_CIRCLE = "selectedCircle";
 const POLYGON = "polygon";
 const CIRCLE = "circle";
 const TEXT = "text";
+
+const DEFAULT_FONTSIZE = 11;
+const SIBLING_FONTSIZE = 17.3;
 
 @Component({
     selector: "sg-org-tree",
@@ -98,7 +99,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
         this.arrows = this.svg.append("g")
             .attr("id", "arrows")
-            .attr("transform", "translate(" + ((this.treeWidth / 2) - SIBLING_RADIUS * 1.75) + "," + ((this.treeHeight / 2) - SIBLING_RADIUS * 1.75) + ")");
+            .attr("transform", "translate(" + ((this.treeWidth / 2) - SIBLING_RADIUS * 1.35) + "," + ((this.treeHeight / 2) - SIBLING_RADIUS * 1.275) + ")");
 
         this.svg = d3.select("g.nodes");
 
@@ -212,7 +213,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         d3.select("path.horizontal")
             .attr("d", line(horizontalLine));
 
-        this.arrows.attr("transform", "translate(" + ((this.treeWidth / 2) - SIBLING_RADIUS * 1.75) + "," + ((this.treeHeight / 2) - SIBLING_RADIUS * 1.75) + ")");
+        this.arrows.attr("transform", "translate(" + ((this.treeWidth / 2) - SIBLING_RADIUS * 1.35) + "," + ((this.treeHeight / 2) - SIBLING_RADIUS * 1.275) + ")");
 
         d3.select("svg").attr("viewBox", "0 0 " + this.treeWidth + " " + this.treeHeight);
     }
@@ -304,9 +305,9 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
     createArrows() {
         let arrowsData = [{ "points": ARROW_POINTS, "transform": "", "id": "right" },
-            { "points": ARROW_POINTS, "transform": "translate(58, 58) rotate(-180)", "id": "left" },
-            { "points": ARROW_POINTS, "transform": "translate(0,58) rotate(-90)", "id": "top" },
-            { "points": ARROW_POINTS, "transform": "translate(58, 0) rotate(90)", "id": "bottom" }];
+            { "points": ARROW_POINTS, "transform": "translate(58, 55) rotate(-180)", "id": "left" },
+            { "points": ARROW_POINTS, "transform": "translate(2,58) rotate(-90)", "id": "top" },
+            { "points": ARROW_POINTS, "transform": "translate(56, -2) rotate(90)", "id": "bottom" }];
 
         let arrows = this.arrows;
         arrowsData.forEach(function (data) {
@@ -492,12 +493,15 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             return fn + ln;
         }).style("fill", function (d) {
             return d.IsStaging ? "#0097FF" : "#FFFFFF";
+        }).style("font-size", function (d) {
+            if (d.IsSelected || d.IsSibling) { return SIBLING_FONTSIZE + "px"; }
+            else { return DEFAULT_FONTSIZE + "px"; }
         });
 
         node.select(TEXT).text(function (d) { return d.IsSelected || d.IsGrandParent ? "" : d.NodeFirstName; })
             .attr("class", "label").attr("x", function (d) {
-                if (d.IsParent === true || d.IsChild === true) { return PARENT_CHILD_LABEL_POSITION; }
-                else { return SIBLING_LABEL_POSITION; }
+                if (d.IsParent === true || d.IsChild === true) { return PARENTCHILD_RADIUS + DEFAULT_MARGIN; }
+                else { return SIBLING_RADIUS + DEFAULT_MARGIN; }
             });
 
         // used to get the label width of each node
@@ -520,9 +524,9 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         }).attr("transform", (d, index) => {
             let x = Math.round(this.labelWidths[0][index].getBoundingClientRect()["width"]);
             if (d.IsSibling) {
-                x += DEFAULT_MARGIN + (SIBLING_LABEL_POSITION - PARENT_CHILD_LABEL_POSITION);
+                x += (DEFAULT_MARGIN * 2) + (SIBLING_RADIUS - PARENTCHILD_RADIUS);
             } else {
-                x += DEFAULT_MARGIN;
+                x += (DEFAULT_MARGIN * 2);
             }
             return "translate(" + x + ",0)";
         });
