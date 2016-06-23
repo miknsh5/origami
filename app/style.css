@@ -29,7 +29,6 @@
     font-weight: bold;
     color: #ffffff;
     color: var(--white-text);
-    background-color: transparent;
 }
 
 .h-3 {
@@ -39,5 +38,9 @@
     font-weight: normal;
     color: #ffffff;
     color: var(--white-text);
-    background-color: transparent;    
+}
+
+input:placeholder-shown {
+    font-weight: normal;
+    font-size: 10.5px;
 }
