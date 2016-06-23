@@ -14,6 +14,8 @@ const GRANDPARENT_RADIUS = 9;
 
 const DEFAULT_MARGIN = 8;
 const DEFAULT_RADIUS = 11.8;
+const DEFAULT_STD_DEVIATION = 1;
+
 const PEER_TEXT = "Peer";
 const REPORTEE_TEXT = "Direct Report";
 const NODE_DEFAULT_DISTANCE = 112;
@@ -103,6 +105,9 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
         // creates arrows directions 
         this.createArrows();
+
+        // creates drop shadow 
+        this.createDropShadow();
 
         this.root = this.treeData[0];
         if (!this.root) {
@@ -211,6 +216,29 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         this.arrows.attr("transform", "translate(" + ((this.treeWidth / 2) - SIBLING_RADIUS * 1.35) + "," + ((this.treeHeight / 2) - SIBLING_RADIUS * 1.275) + ")");
 
         d3.select("svg").attr("viewBox", "0 0 " + this.treeWidth + " " + this.treeHeight);
+    }
+
+    createDropShadow() {
+        let defs = this.svg.append("defs");
+
+        let filter = defs.append("filter")
+            .attr("id", "drop-shadow")
+            .attr("height", "140%");
+
+        filter.append("feGaussianBlur")
+            .attr("in", "SourceAlpha")
+            .attr("stdDeviation", DEFAULT_STD_DEVIATION);
+
+        filter.append("feOffset").attr("dy", "3");
+
+        filter.append("feComponentTransfer")
+            .append("feFuncA")
+            .attr("type", "linear")
+            .attr("slope", "0.35");
+
+        let feMerge = filter.append("feMerge");
+        feMerge.append("feMergeNode");
+        feMerge.append("feMergeNode").attr("in", "SourceGraphic");
     }
 
     getIndexOfNode(parentNode: OrgNodeModel, currentNode: OrgNodeModel, rootNode) {
@@ -448,7 +476,9 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             .on("click", (ev) => this.nodeClicked(ev));
 
         nodeEnter.append(CIRCLE)
-            .attr("r", 1e-6);
+            .attr("r", 1e-6).style("filter", function (d) {
+                return d.IsStaging ? " " : "url(#drop-shadow)";
+            });
 
         nodeEnter.append(TEXT)
             .attr("dy", ".35em")
@@ -530,8 +560,9 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 if (d.IsSelected) { return SELECTED_CIRCLE; }
                 else if (d.IsSibling) { return DEFAULT_CIRCLE + " sibling"; }
                 else { return DEFAULT_CIRCLE; }
+            }).style("filter", function (d) {
+                return d.IsStaging ? " " : "url(#drop-shadow)";
             });
-
         nodeUpdate.select(TEXT)
             .style({ "fill-opacity": 1, "fill": "#979797" });
 
