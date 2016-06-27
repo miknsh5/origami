@@ -44,7 +44,7 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
         event.stopPropagation();
         if (event.srcElement.nodeName === "svg") {
             if (this.firstName && this.lastName && this.description) {
-                if (this.firstName.value !== this.orgNode.NodeFirstName || this.lastName.value !== this.orgNode.NodeLastName || this.description.value !== this.orgNode.Description) {
+                if (this.firstName.value!== "" && (this.lastName.value || this.description.value)) {
                     this.onSubmit();
                 } else {
                     this.onCancelEditClicked();
@@ -60,7 +60,7 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
 
     constructor(private orgService: OrgService, private renderer: Renderer) { }
 
-    ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
+    ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {      
         // detects isAddOrEditModeEnabled property has changed
         if (changes["isAddOrEditModeEnabled"]) {
             if (changes["isAddOrEditModeEnabled"].currentValue) {
@@ -70,9 +70,9 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
         if (changes["selectedOrgNode"]) {
             this.orgNode = this.selectedOrgNode;
             if (this.orgNode != null && this.orgNode.NodeID !== -1) {
-                //  If selected node has changed and we are in add Mode by anychance then come out of it.
+                //  If selected node Initial value has changed and we are in edit Mode then set the edit mode .
                 if (this.isAddOrEditModeEnabled) {
-                    this.setAddOrEditModeValue.emit(false);
+                    this.setAddOrEditModeValue.emit(true);
                 }
             }
         }
@@ -123,20 +123,23 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
 
             if (this.orgNode.NodeID === -1) {
                 this.addNewNode(this.editNodeDetails);
+                this.setAddOrEditModeValue.emit(false);
             } else {
                 this.editNode(this.editNodeDetails);
+                this.setAddOrEditModeValue.emit(false);
             }
         }
     }
 
     private onInputKeyDownOrUp(event: KeyboardEvent, ngControl: NgControlName) {
-        if (this.orgNode && this.orgNode.NodeID === -1) {
+        if (this.orgNode) {
             let target = (<HTMLInputElement>event.target);
             let node = new OrgNodeModel();
             node.OrgID = this.orgNode.OrgID;
             node.ParentNodeID = this.orgNode.ParentNodeID;
             node.NodeID = this.orgNode.NodeID;
             node.IsStaging = this.orgNode.IsStaging;
+            node.Description = this.orgNode.Description;
             if (this.isFirstAndLastNameInitialChanged(target.value, ngControl)) {
                 if (ngControl.name === "firstName") {
                     this.orgNode.NodeFirstName = node.NodeFirstName = ngControl.value;

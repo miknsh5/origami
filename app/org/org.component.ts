@@ -159,8 +159,6 @@ export class OrgComponent {
     onNodeUpdated(selected) {
         if (selected.NodeID !== -1) {
             this.selectedNode = selected;
-            this.isAddOrEditMode = false;
-            this.detailAddOrEditMode = false;
         }
         this.updateOrgNode(this.orgNodes[0], selected);
         this.updateJSON();
