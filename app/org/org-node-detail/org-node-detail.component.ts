@@ -117,9 +117,6 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
             this.editNodeDetails.NodeID = this.orgNode.NodeID;
             this.editNodeDetails.OrgID = this.orgNode.OrgID;
             this.editNodeDetails.ParentNodeID = this.orgNode.ParentNodeID;
-            this.orgNode.NodeFirstName = this.firstName.value;
-            this.orgNode.NodeLastName = this.lastName.value;
-            this.orgNode.Description = this.description.value;
 
             if (this.orgNode.NodeID === -1) {
                 this.addNewNode(this.editNodeDetails);
@@ -249,7 +246,11 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
             alert("OOPs!! Something went wrong!! ");
         }
         console.log(err);
-        this.setAddOrEditModeValue.emit(false);
+        /*if (this.orgNode.ParentNodeID) {
+             if (this.orgNode.NodeID !== -1) {
+                 this.setAddOrEditModeValue.emit(false);
+             }
+         }*/
         this.editNodeDetails = null;
         this.isFormSubmitted = false;
     }

@@ -144,6 +144,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 if (this.selectedOrgNode.NodeID === -1) {
                     if (this.root.NodeID !== -1) {
                         this.selectedOrgNode = this.getPreviousNodeIfAddedOrDeleted();
+                        raiseSelectedEvent = true;
                     }
                     this.highlightSelectedNode(this.selectedOrgNode, raiseSelectedEvent);
                 } else {
@@ -707,7 +708,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     }
 
     keyDown(d) {
-        if (!this.selectedOrgNode) {
+        if (!this.selectedOrgNode || this.isAddOrEditModeEnabled) {
             return;
         }
 
@@ -717,7 +718,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
         // esc
         if ((event as KeyboardEvent).keyCode === 27) {
-            if (!this.isAddOrEditModeEnabled) {
+         if (!this.isAddOrEditModeEnabled) {
                 this.deselectNode();
                 this.selectNode.emit(this.selectedOrgNode);
             }
