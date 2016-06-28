@@ -32,10 +32,11 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
                 } else {
                     if (this.orgNode.NodeID === -1) {
                         this.deleteNode.emit(this.orgNode);
+                        this.setAddOrEditModeValue.emit(false);
                     } else {
+                        this.setAddOrEditModeValue.emit(false);
                         this.deleteNode.emit(null);
                     }
-                    this.setAddOrEditModeValue.emit(false);
                 }
             }
         }
