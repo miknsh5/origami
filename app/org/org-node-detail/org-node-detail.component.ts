@@ -44,7 +44,7 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
         event.stopPropagation();
         if (event.srcElement.nodeName === "svg") {
             if (this.firstName && this.lastName && this.description) {
-                if (this.firstName.value!== "" && (this.lastName.value || this.description.value)) {
+                if (this.firstName.value!== "" && (this.lastName.value !== null || this.description.value !== null)) {
                     this.onSubmit();
                 } else {
                     this.onCancelEditClicked();
@@ -60,7 +60,7 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
 
     constructor(private orgService: OrgService, private renderer: Renderer) { }
 
-    ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {      
+    ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
         // detects isAddOrEditModeEnabled property has changed
         if (changes["isAddOrEditModeEnabled"]) {
             if (changes["isAddOrEditModeEnabled"].currentValue) {
@@ -69,10 +69,10 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
         }
         if (changes["selectedOrgNode"]) {
             this.orgNode = this.selectedOrgNode;
-            if (this.orgNode != null && this.orgNode.NodeID !== -1) {
+             if (this.orgNode != null && this.orgNode.NodeID !== -1) {
                 //  If selected node Initial value has changed and we are in edit Mode then set the edit mode .
                 if (this.isAddOrEditModeEnabled) {
-                    this.setAddOrEditModeValue.emit(true);
+                    this.setAddOrEditModeValue.emit(false);
                 }
             }
         }
@@ -123,10 +123,8 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
 
             if (this.orgNode.NodeID === -1) {
                 this.addNewNode(this.editNodeDetails);
-                this.setAddOrEditModeValue.emit(false);
             } else {
                 this.editNode(this.editNodeDetails);
-                this.setAddOrEditModeValue.emit(false);
             }
         }
     }
@@ -177,6 +175,7 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
             this.orgNode.NodeLastName = data.NodeLastName;
             this.orgNode.Description = data.Description;
             this.isFormSubmitted = false;
+            this.setAddOrEditModeValue.emit(false);
         }
     }
 
@@ -241,6 +240,7 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
             this.updateNode.emit(this.editNodeDetails);
             this.editNodeDetails = null;
             this.isFormSubmitted = false;
+            this.setAddOrEditModeValue.emit(false);
         }
     }
 
