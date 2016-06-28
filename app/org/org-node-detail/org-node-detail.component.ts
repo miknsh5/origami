@@ -30,12 +30,12 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
                 if (!this.orgNode.ParentNodeID && this.orgNode.NodeID === -1) {
                     this.clearRootNodeDetails();
                 } else {
-                    this.setAddOrEditModeValue.emit(false);
                     if (this.orgNode.NodeID === -1) {
                         this.deleteNode.emit(this.orgNode);
                     } else {
                         this.deleteNode.emit(null);
                     }
+                    this.setAddOrEditModeValue.emit(false);
                 }
             }
         }
@@ -109,21 +109,25 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
     }
 
     private onSubmit() {
-        if (!this.isNullOrEmpty(this.firstName.value) && !this.isFormSubmitted) {
-            this.isFormSubmitted = true;
-            this.editNodeDetails = new OrgNodeModel();
-            this.editNodeDetails.NodeFirstName = this.firstName.value;
-            this.editNodeDetails.NodeLastName = this.lastName.value;
-            this.editNodeDetails.Description = this.description.value;
-            this.editNodeDetails.children = this.orgNode.children;
-            this.editNodeDetails.NodeID = this.orgNode.NodeID;
-            this.editNodeDetails.OrgID = this.orgNode.OrgID;
-            this.editNodeDetails.ParentNodeID = this.orgNode.ParentNodeID;
+        if (!this.isFormSubmitted) {
+            if (!this.isNullOrEmpty(this.firstName.value)) {
+                this.isFormSubmitted = true;
+                this.editNodeDetails = new OrgNodeModel();
+                this.editNodeDetails.NodeFirstName = this.firstName.value;
+                this.editNodeDetails.NodeLastName = this.lastName.value;
+                this.editNodeDetails.Description = this.description.value;
+                this.editNodeDetails.children = this.orgNode.children;
+                this.editNodeDetails.NodeID = this.orgNode.NodeID;
+                this.editNodeDetails.OrgID = this.orgNode.OrgID;
+                this.editNodeDetails.ParentNodeID = this.orgNode.ParentNodeID;
 
-            if (this.orgNode.NodeID === -1) {
-                this.addNewNode(this.editNodeDetails);
+                if (this.orgNode.NodeID === -1) {
+                    this.addNewNode(this.editNodeDetails);
+                } else {
+                    this.editNode(this.editNodeDetails);
+                }
             } else {
-                this.editNode(this.editNodeDetails);
+                alert("Please enter FirstName.");
             }
         }
     }
@@ -163,8 +167,13 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
         if (ngControl.name === "firstName" && value.slice(0, 1) !== this.orgNode.NodeFirstName.slice(0, 1)) {
             return true;
         }
-        if (ngControl.name === "lastName" && value.slice(0, 1) !== this.orgNode.NodeLastName.slice(0, 1)) {
-            return true;
+        if (ngControl.name === "lastName") {
+            if (value && !this.orgNode.NodeLastName) {
+                return true;
+            }
+            else if (value.slice(0, 1) !== this.orgNode.NodeLastName.slice(0, 1)) {
+                return true;
+            }
         }
         return false;
     }
