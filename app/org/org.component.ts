@@ -150,9 +150,11 @@ export class OrgComponent {
     }
 
     onNodeDeleted(deleted) {
-        this.isAddOrEditMode = false;
-        this.detailAddOrEditMode = false;
-        this.deleteNodeFromArray(this.selectedNode, this.orgNodes);
+        if (deleted) {
+            this.isAddOrEditMode = false;
+            this.detailAddOrEditMode = false;
+            this.deleteNodeFromArray(this.selectedNode, this.orgNodes);
+        }
         this.updateJSON();
     }
 
@@ -160,8 +162,17 @@ export class OrgComponent {
         if (selected.NodeID !== -1) {
             this.selectedNode = selected;
         }
-        this.updateOrgNode(this.orgNodes[0], selected);
-        this.updateJSON();
+        if (selected.NodeID !== -1 && selected.IsStaging) {
+            // updating local changes
+            let nodes = JSON.parse(JSON.stringify(this.orgNodes));
+            this.updateOrgNode(nodes[0], selected);
+            this.treeJson = nodes;
+            console.log(nodes);
+        } else {
+            // updating submitted / saved changes
+            this.updateOrgNode(this.orgNodes[0], selected);
+            this.updateJSON();
+        }
     }
 
     updateOrgNode(node: OrgNodeModel, selectedNode) {
@@ -254,7 +265,7 @@ export class OrgComponent {
 
     private setOrgChartData(data: any) {
         this.orgChart = data;
-        this.orgNodes = this.orgChart.OrgNodes;
+        this.orgNodes = JSON.parse(JSON.stringify(this.orgChart.OrgNodes));
         this.treeJson = JSON.parse(JSON.stringify(this.orgNodes));
     }
 

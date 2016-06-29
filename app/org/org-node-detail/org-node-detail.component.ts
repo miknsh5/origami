@@ -33,6 +33,8 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
                     this.setAddOrEditModeValue.emit(false);
                     if (this.orgNode.NodeID === -1) {
                         this.deleteNode.emit(this.orgNode);
+                    } else {
+                        this.deleteNode.emit(null);
                     }
                 }
             }
@@ -44,7 +46,7 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
         event.stopPropagation();
         if (event.srcElement.nodeName === "svg") {
             if (this.firstName && this.lastName && this.description) {
-                if (this.firstName.value!== "" && (this.lastName.value !== null || this.description.value !== null)) {
+                if (this.firstName.value) {
                     this.onSubmit();
                 } else {
                     this.onCancelEditClicked();
@@ -68,13 +70,13 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
             }
         }
         if (changes["selectedOrgNode"]) {
-            this.orgNode = this.selectedOrgNode;
-             if (this.orgNode != null && this.orgNode.NodeID !== -1) {
+            if (this.orgNode != null && this.orgNode.NodeID === -1) {
                 //  If selected node Initial value has changed and we are in edit Mode then set the edit mode .
-                if (this.isAddOrEditModeEnabled) {
+                if (this.isAddOrEditModeEnabled && this.isInputFocused) {
                     this.setAddOrEditModeValue.emit(false);
                 }
             }
+            this.orgNode = this.selectedOrgNode;
         }
     }
 
@@ -144,10 +146,13 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
                     this.orgNode.NodeLastName = node.NodeLastName = ngControl.value;
                 }
 
-                if (node.IsStaging) {
+                if (node.IsStaging && node.NodeID === -1) {
                     this.orgNode.IsStaging = node.IsStaging = false;
                     this.addNode.emit(node);
                 } else {
+                    if (node.NodeID !== -1) {
+                        node.IsStaging = true;
+                    }
                     this.updateNode.emit(node);
                 }
             }
