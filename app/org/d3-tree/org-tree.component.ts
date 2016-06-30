@@ -457,12 +457,12 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         this.nodes.forEach(function (d) {
             d.x0 = d.x;
             d.y0 = d.y;
-        });           
+        });
 
         this.showUpdatePeerReporteeNode(source);
-        this.resizeLinesArrowsAndSvg();      
+        this.resizeLinesArrowsAndSvg();
     }
-   
+
     renderOrUpdateNodes(source) {
         let i: number = 0;
 
@@ -694,7 +694,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 this.selectNode.emit(this.selectedOrgNode);
             }
         }
-      }
+    }
 
     deselectNode() {
         if (this.selectedOrgNode) {
