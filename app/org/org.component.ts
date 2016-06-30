@@ -150,9 +150,9 @@ export class OrgComponent {
     }
 
     onNodeDeleted(deleted) {
+        this.isAddOrEditMode = false;
+        this.detailAddOrEditMode = false;
         if (deleted) {
-            this.isAddOrEditMode = false;
-            this.detailAddOrEditMode = false;
             this.deleteNodeFromArray(this.selectedNode, this.orgNodes);
         }
         this.updateJSON();
@@ -167,7 +167,6 @@ export class OrgComponent {
             let nodes = JSON.parse(JSON.stringify(this.orgNodes));
             this.updateOrgNode(nodes[0], selected);
             this.treeJson = nodes;
-            console.log(nodes);
         } else {
             // updating submitted / saved changes
             this.updateOrgNode(this.orgNodes[0], selected);
