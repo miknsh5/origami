@@ -42,7 +42,7 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
     @HostListener("window:click", ["$event"])
     onClick(event: any) {
         event.stopPropagation();
-        if (event.srcElement.nodeName === "svg") {
+        if (event.target.nodeName === "svg") {
             if (this.firstName && this.lastName && this.description) {
                 if (this.firstName.value !== this.orgNode.NodeFirstName || this.lastName.value !== this.orgNode.NodeLastName || this.description.value !== this.orgNode.Description) {
                     this.onSubmit();
