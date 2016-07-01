@@ -20,9 +20,11 @@ const PEER_TEXT = "Peer";
 const REPORTEE_TEXT = "Direct Report";
 const NODE_DEFAULT_DISTANCE = 112;
 
-const LABEL_POINTS = "18 6 18 -6 22 0";
+const LABEL_POINTS = "18 5 18 -5 21 0";
 const ARROW_POINTS = "55 33 55 21 59 27";
-const ARROW_FILL = "#D8D8D8";
+const NAVIGATION_ARROW_FILL = "#D8D8D8";
+const CHILD_ARROW_FILL = "#929292";
+const TRANSPARENT_COLOR = "transparent";
 
 const NODE_HEIGHT = 60;
 const NODE_WIDTH = 95;
@@ -332,9 +334,9 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
     hideAllArrows() {
         // hides all arrows by making transparent
-        d3.selectAll(POLYGON)
-            .attr("stroke", "transparent")
-            .attr("fill", "transparent");
+        d3.selectAll("#arrows " + POLYGON)
+            .attr("stroke", TRANSPARENT_COLOR)
+            .attr("fill", TRANSPARENT_COLOR);
     }
 
     markAncestors(d: OrgNodeModel) {
@@ -395,13 +397,13 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             if (grandParent) {
                 this.moveParentNodesToCenter(grandParent, source);
             }
-            d3.selectAll(POLYGON)
+            d3.selectAll("#arrows " + POLYGON)
                 .attr("stroke", "#FFFFFF")
-                .attr("fill", ARROW_FILL);
+                .attr("fill", NAVIGATION_ARROW_FILL);
         } else {
             d3.selectAll(POLYGON + "#right")
                 .attr("stroke", "#FFFFFF")
-                .attr("fill", ARROW_FILL);
+                .attr("fill", NAVIGATION_ARROW_FILL);
         }
     }
 
@@ -519,16 +521,16 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         });
 
         // creates a polygon to indicate it has child(s)
-        nodeEnter.append("polygon")
+        nodeEnter.append(POLYGON)
             .attr("points", LABEL_POINTS)
             .attr("data-id", "childIndicator");
 
         // css class is applied on polygon if a node have child(s) and the polygon is transformed to the position given  
-        node.select("polygon[data-id='childIndicator']").attr("class", function (d) {
+        node.select("polygon[data-id='childIndicator']").attr("fill", function (d) {
             if (d._children && d._children.length > 0 && !d.IsSelceted) {
-                return "show-childIndicator";
+                return CHILD_ARROW_FILL;
             } else {
-                return "hide-childIndicator";
+                return TRANSPARENT_COLOR;
             }
         }).attr("transform", (d, index) => {
             let x = Math.round(this.labelWidths[0][index].getBoundingClientRect()["width"]);
@@ -843,8 +845,8 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                         index = parentNode.children.indexOf(currentNode, 0);
                         if (index === 0) {
                             d3.select(POLYGON + "#top")
-                                .attr("stroke", "transparent")
-                                .attr("fill", "transparent");
+                                .attr("stroke", TRANSPARENT_COLOR)
+                                .attr("fill", TRANSPARENT_COLOR);
                         }
                     }
                 });
