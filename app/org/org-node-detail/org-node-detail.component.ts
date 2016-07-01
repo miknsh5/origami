@@ -1,5 +1,6 @@
 import { Component, HostListener, Input, Output, EventEmitter, OnChanges, SimpleChange, AfterContentChecked, ElementRef, Renderer, ViewChild } from "@angular/core";
-import { COMMON_DIRECTIVES, NgForm, NgControlName, FORM_DIRECTIVES } from "@angular/common";
+import { COMMON_DIRECTIVES } from "@angular/common";
+import { REACTIVE_FORM_DIRECTIVES, NgForm, NgControl } from "@angular/forms";
 
 import { OrgNodeModel, OrgService } from "../shared/index";
 
@@ -7,7 +8,7 @@ import { OrgNodeModel, OrgService } from "../shared/index";
     selector: "sg-org-node-detail",
     templateUrl: "app/org/org-node-detail/org-node-detail.component.html",
     styleUrls: ["app/org/org-node-detail/org-node-detail.component.css", "app/style.css"],
-    directives: [FORM_DIRECTIVES, COMMON_DIRECTIVES]
+    directives: [ REACTIVE_FORM_DIRECTIVES, COMMON_DIRECTIVES]
 })
 
 export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
@@ -133,7 +134,7 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
         }
     }
 
-    private onInputKeyDownOrUp(event: KeyboardEvent, ngControl: NgControlName) {
+    private onInputKeyDownOrUp(event: KeyboardEvent, ngControl: NgControl) {
         if (this.orgNode) {
             let target = (<HTMLInputElement>event.target);
             let node = new OrgNodeModel();
@@ -164,7 +165,7 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
         }
     }
 
-    private isFirstAndLastNameInitialChanged(value: string, ngControl: NgControlName) {
+    private isFirstAndLastNameInitialChanged(value: string, ngControl: NgControl) {
         if (ngControl.name === "firstName" && value.slice(0, 1) !== this.orgNode.NodeFirstName.slice(0, 1)) {
             return true;
         }

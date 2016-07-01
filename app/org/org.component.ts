@@ -153,7 +153,7 @@ export class OrgComponent {
         this.isAddOrEditMode = false;
         this.detailAddOrEditMode = false;
         if (deleted) {
-            this.deleteNodeFromArray(this.selectedNode, this.orgNodes);
+            this.deleteNodeFromArray(deleted, this.orgNodes);
         }
         this.updateJSON();
     }
@@ -168,7 +168,7 @@ export class OrgComponent {
             this.updateOrgNode(nodes[0], selected);
             this.treeJson = nodes;
         } else {
-            // updating submitted / saved changes
+            // updating submitted or saved changes
             this.updateOrgNode(this.orgNodes[0], selected);
             this.updateJSON();
         }
