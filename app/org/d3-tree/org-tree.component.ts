@@ -478,7 +478,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
         nodeEnter.append(CIRCLE)
             .attr("r", 1e-6).style("filter", function (d) {
-                return d.IsStaging ? " " : "url(#drop-shadow)";
+                return d.IsStaging && d.NodeID === -1 ? " " : "url(#drop-shadow)";
             });
 
         nodeEnter.append(TEXT)
@@ -494,14 +494,14 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
         node.select("#abbr").text(function (d) {
             if (d.IsGrandParent) { return ""; }
-            if (d.IsStaging) { return "+"; }
+            if (d.IsStaging && d.NodeID === -1) { return "+"; }
 
             let fn = "", ln = "";
             if (d.NodeFirstName) { fn = d.NodeFirstName.slice(0, 1); }
             if (d.NodeLastName) { ln = d.NodeLastName.slice(0, 1); }
             return fn + ln;
         }).style("fill", function (d) {
-            return d.IsStaging ? "#0097FF" : "#FFFFFF";
+            return d.IsStaging && d.NodeID === -1 ? "#0097FF" : "#FFFFFF";
         }).style("font-size", function (d) {
             if (d.IsSelected || d.IsSibling) { return SIBLING_FONTSIZE + "px"; }
             else { return DEFAULT_FONTSIZE + "px"; }
@@ -557,12 +557,12 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 else { return DEFAULT_RADIUS; }
             })
             .attr("class", function (d) {
-                if (d.IsSelected && d.IsStaging) { return STAGED_CIRCLE; }
+                if (d.IsSelected && d.IsStaging && d.NodeID === -1) { return STAGED_CIRCLE; }
                 if (d.IsSelected) { return SELECTED_CIRCLE; }
                 else if (d.IsSibling) { return DEFAULT_CIRCLE + " sibling"; }
                 else { return DEFAULT_CIRCLE; }
             }).style("filter", function (d) {
-                return d.IsStaging ? " " : "url(#drop-shadow)";
+                return d.IsStaging && d.NodeID === -1 ? " " : "url(#drop-shadow)";
             });
         nodeUpdate.select(TEXT)
             .style({ "fill-opacity": 1, "fill": "#979797" });

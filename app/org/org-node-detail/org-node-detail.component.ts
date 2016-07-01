@@ -30,9 +30,12 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
                 if (!this.orgNode.ParentNodeID && this.orgNode.NodeID === -1) {
                     this.clearRootNodeDetails();
                 } else {
-                    this.setAddOrEditModeValue.emit(false);
                     if (this.orgNode.NodeID === -1) {
                         this.deleteNode.emit(this.orgNode);
+                        this.setAddOrEditModeValue.emit(false);
+                    } else {
+                        this.setAddOrEditModeValue.emit(false);
+                        this.deleteNode.emit(null);
                     }
                 }
             }
@@ -44,7 +47,7 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
         event.stopPropagation();
         if (event.target.nodeName === "svg") {
             if (this.firstName && this.lastName && this.description) {
-                if (this.firstName.value !== this.orgNode.NodeFirstName || this.lastName.value !== this.orgNode.NodeLastName || this.description.value !== this.orgNode.Description) {
+                if (this.firstName.value) {
                     this.onSubmit();
                 } else {
                     this.onCancelEditClicked();
@@ -68,13 +71,13 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
             }
         }
         if (changes["selectedOrgNode"]) {
-            this.orgNode = this.selectedOrgNode;
-            if (this.orgNode != null && this.orgNode.NodeID !== -1) {
-                //  If selected node has changed and we are in add Mode by anychance then come out of it.
-                if (this.isAddOrEditModeEnabled) {
+            if (this.orgNode != null && this.orgNode.NodeID === -1) {
+                //  If selected node Initial value has changed and we are in edit Mode then set the edit mode .
+                if (this.isAddOrEditModeEnabled && this.isInputFocused) {
                     this.setAddOrEditModeValue.emit(false);
                 }
             }
+            this.orgNode = this.selectedOrgNode;
         }
     }
 
@@ -107,33 +110,38 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
     }
 
     private onSubmit() {
-        if (!this.isNullOrEmpty(this.firstName.value) && !this.isFormSubmitted) {
-            this.isFormSubmitted = true;
-            this.editNodeDetails = new OrgNodeModel();
-            this.editNodeDetails.NodeFirstName = this.firstName.value;
-            this.editNodeDetails.NodeLastName = this.lastName.value;
-            this.editNodeDetails.Description = this.description.value;
-            this.editNodeDetails.children = this.orgNode.children;
-            this.editNodeDetails.NodeID = this.orgNode.NodeID;
-            this.editNodeDetails.OrgID = this.orgNode.OrgID;
-            this.editNodeDetails.ParentNodeID = this.orgNode.ParentNodeID;
+        if (!this.isFormSubmitted) {
+            if (!this.isNullOrEmpty(this.firstName.value)) {
+                this.isFormSubmitted = true;
+                this.editNodeDetails = new OrgNodeModel();
+                this.editNodeDetails.NodeFirstName = this.firstName.value;
+                this.editNodeDetails.NodeLastName = this.lastName.value;
+                this.editNodeDetails.Description = this.description.value;
+                this.editNodeDetails.children = this.orgNode.children;
+                this.editNodeDetails.NodeID = this.orgNode.NodeID;
+                this.editNodeDetails.OrgID = this.orgNode.OrgID;
+                this.editNodeDetails.ParentNodeID = this.orgNode.ParentNodeID;
 
-            if (this.orgNode.NodeID === -1) {
-                this.addNewNode(this.editNodeDetails);
+                if (this.orgNode.NodeID === -1) {
+                    this.addNewNode(this.editNodeDetails);
+                } else {
+                    this.editNode(this.editNodeDetails);
+                }
             } else {
-                this.editNode(this.editNodeDetails);
+                alert("Please enter FirstName.");
             }
         }
     }
 
     private onInputKeyDownOrUp(event: KeyboardEvent, ngControl: NgControlName) {
-        if (this.orgNode && this.orgNode.NodeID === -1) {
+        if (this.orgNode) {
             let target = (<HTMLInputElement>event.target);
             let node = new OrgNodeModel();
             node.OrgID = this.orgNode.OrgID;
             node.ParentNodeID = this.orgNode.ParentNodeID;
             node.NodeID = this.orgNode.NodeID;
             node.IsStaging = this.orgNode.IsStaging;
+            node.Description = this.orgNode.Description;
             if (this.isFirstAndLastNameInitialChanged(target.value, ngControl)) {
                 if (ngControl.name === "firstName") {
                     this.orgNode.NodeFirstName = node.NodeFirstName = ngControl.value;
@@ -143,10 +151,13 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
                     this.orgNode.NodeLastName = node.NodeLastName = ngControl.value;
                 }
 
-                if (node.IsStaging) {
+                if (node.IsStaging && node.NodeID === -1) {
                     this.orgNode.IsStaging = node.IsStaging = false;
                     this.addNode.emit(node);
                 } else {
+                    if (node.NodeID !== -1) {
+                        node.IsStaging = true;
+                    }
                     this.updateNode.emit(node);
                 }
             }
@@ -157,8 +168,13 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
         if (ngControl.name === "firstName" && value.slice(0, 1) !== this.orgNode.NodeFirstName.slice(0, 1)) {
             return true;
         }
-        if (ngControl.name === "lastName" && value.slice(0, 1) !== this.orgNode.NodeLastName.slice(0, 1)) {
-            return true;
+        if (ngControl.name === "lastName") {
+            if (value && !this.orgNode.NodeLastName) {
+                return true;
+            }
+            else if (value.slice(0, 1) !== this.orgNode.NodeLastName.slice(0, 1)) {
+                return true;
+            }
         }
         return false;
     }
@@ -171,6 +187,7 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
             this.orgNode.NodeLastName = data.NodeLastName;
             this.orgNode.Description = data.Description;
             this.isFormSubmitted = false;
+            this.setAddOrEditModeValue.emit(false);
         }
     }
 
@@ -235,6 +252,7 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
             this.updateNode.emit(this.editNodeDetails);
             this.editNodeDetails = null;
             this.isFormSubmitted = false;
+            this.setAddOrEditModeValue.emit(false);
         }
     }
 
