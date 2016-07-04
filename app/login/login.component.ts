@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, NgZone } from "@angular/core";
 import { Router } from "@angular/router-deprecated";
 import { AuthHttp, tokenNotExpired, AUTH_PROVIDERS } from "angular2-jwt";
 
@@ -10,8 +10,8 @@ declare var Auth0Lock;
 })
 
 export class LoginComponent implements OnInit {
-    lock = new Auth0Lock("bRQg0MUBHOozAIXyHONfZRWsT7JeIqT5", "axd-origami.auth0.com");
-    constructor(private router: Router) { }
+    lock = new Auth0Lock("HraDY4gNnmBBSCP7vu7Z6BMO3mdjIAqn", "origami.auth0.com");
+    constructor(private router: Router, private zone: NgZone) { }
 
     ngOnInit() {
         if (this.loggedIn()) {
@@ -22,14 +22,13 @@ export class LoginComponent implements OnInit {
     }
 
     login() {
-        let self = this;
-        this.lock.show(function (err, profile, id_token) {
+        this.lock.show((err, profile, id_token) => {
             if (err) {
                 throw new Error(err);
             }
             localStorage.setItem("profile", JSON.stringify(profile));
             localStorage.setItem("id_token", id_token);
-            self.router.navigate(["/Home"]);
+            this.zone.run(() => this.router.navigate(["/Home"]));
         });
     }
 

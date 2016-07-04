@@ -718,7 +718,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
         // esc
         if ((event as KeyboardEvent).keyCode === 27) {
-         if (!this.isAddOrEditModeEnabled) {
+            if (!this.isAddOrEditModeEnabled) {
                 this.deselectNode();
                 this.selectNode.emit(this.selectedOrgNode);
             }
