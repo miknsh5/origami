@@ -105,14 +105,8 @@ node circle {
   fill-opacity: 1;
 }
 
-.show-childIndicator {
-  stroke: #FFFFFF;
-  fill: #929292;
-}
-
-.hide-childIndicator {
+polygon[data-id='childIndicator'] {
   stroke: transparent;
-  fill: transparent;
 }
 
 path.vertical, path.horizontal {
