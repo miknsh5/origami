@@ -14,13 +14,17 @@ export class OrgService {
     constructor(private http: Http) { }
 
     getNodes() {
-        return this.http.get(this.origamiUrl + this.getUrl)
+        let url = this.origamiUrl + this.getUrl;
+        let headers = new Headers();
+        headers.append("Accept", "application/json");
+        return this.http.get(url, { headers: headers })
             .map(node => node.json());
     }
 
     updateNode(orgNode) {
         let node = JSON.stringify(orgNode);
         let headers = new Headers({ "Content-Type": "application/json" });
+        headers.append("Accept", "application/json");
         let options = new RequestOptions({ headers: headers });
         let url = this.origamiUrl + this.updateUrl;
         return this.http.post(url, node, options)
@@ -29,6 +33,7 @@ export class OrgService {
 
     deleteNode(orgNodeID) {
         let headers = new Headers({ "Content-Type": "application/json" });
+        headers.append("Accept", "application/json");
         let options = new RequestOptions({ headers: headers });
         let url = this.origamiUrl + this.deleteUrl + orgNodeID;
         return this.http.delete(url, options)
@@ -37,6 +42,7 @@ export class OrgService {
     addNode(orgNode) {
         let node = JSON.stringify(orgNode);
         let headers = new Headers({ "Content-Type": "application/json" });
+        headers.append("Accept", "application/json");
         let options = new RequestOptions({ headers: headers });
         let url = this.origamiUrl + this.addUrl;
         return this.http.post(url, node, options)

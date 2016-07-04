@@ -154,6 +154,8 @@ export class OrgComponent {
         this.detailAddOrEditMode = false;
         if (deleted) {
             this.deleteNodeFromArray(deleted, this.orgNodes);
+        } else {
+            this.selectedNode = this.getNode(this.selectedNode.NodeID, this.orgNodes[0]);
         }
         this.updateJSON();
     }
