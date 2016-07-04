@@ -8,10 +8,10 @@ import { OrgNodeDetailComponent } from "./org-node-detail/index";
 import { OrgChartModel, OrgNodeModel, OrgService } from "./shared/index";
 import { OrgTreeComponent } from "./d3-tree/org-tree.component";
 
-const MIN_HEIGHT: number = 480;
+const MIN_HEIGHT: number = 320;
 const MAX_HEIGHT: number = 768;
 
-const MIN_WIDTH: number = 320;
+const MIN_WIDTH: number = 420;
 const MAX_WIDTH: number = 1366;
 
 const DEFAULT_OFFSET: number = 5;
