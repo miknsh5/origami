@@ -5,19 +5,20 @@ import { Headers, RequestOptions } from "@angular/http";
 
 @Injectable()
 export class OrgService {
-    private origamiUrl = "//origamiapi-staging.azurewebsites.net/";
-    private getUrl = "api/Org/GetOrgChart?orgID=1";
+    private origamiUrl = "//localhost:54574/";
+    private getUrl = "api/Org/GetOrgChart";
     private updateUrl = "api/Org/EditNode";
     private deleteUrl = "api/Org/DeleteNode?nodeID=";
     private addUrl = "api/Org/AddNode";
 
     constructor(private http: Http) { }
 
-    getNodes() {
+    getNodes(userProfile) {
         let url = this.origamiUrl + this.getUrl;
-        let headers = new Headers();
+        let headers = new Headers({ "Content-Type": "application/json" });
         headers.append("Accept", "application/json");
-        return this.http.get(url, { headers: headers })
+
+        return this.http.post(url, userProfile, { headers: headers })
             .map(node => node.json());
     }
 

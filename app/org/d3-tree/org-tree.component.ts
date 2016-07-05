@@ -193,8 +193,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         this.root = new OrgNodeModel();
         this.root.children = new Array<OrgNodeModel>();
         this.root.NodeID = -1;
-        // currently hardcoded need to change
-        this.root.OrgID = 1;
+        this.root.OrgID = parseInt(localStorage.getItem("org_id"));
         this.root.IsStaging = true;
         this.root.NodeFirstName = "";
         this.root.NodeLastName = "";
