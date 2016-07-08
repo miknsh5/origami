@@ -5,7 +5,7 @@ import { Headers, RequestOptions } from "@angular/http";
 
 @Injectable()
 export class OrgService {
-    private origamiUrl = "//localhost:54574/";
+    private origamiUrl = "//origamiapi.azurewebsites.net/";
     private getUrl = "api/Org/GetOrgChart";
     private updateUrl = "api/Org/EditNode";
     private deleteUrl = "api/Org/DeleteNode?nodeID=";
