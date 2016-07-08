@@ -48,10 +48,13 @@ export class OrgComponent {
     }
 
     getAllNodes() {
-        this.orgService.getNodes()
-            .subscribe(data => this.setOrgChartData(data),
-            err => this.orgService.logError(err),
-            () => console.log("Random Quote Complete"));
+        let profile = localStorage.getItem("profile");
+        if (profile) {
+            this.orgService.getNodes(profile)
+                .subscribe(data => this.setOrgChartData(data),
+                err => this.orgService.logError(err),
+                () => console.log("Random Quote Complete"));
+        }
     }
 
     onNodeSelected(node) {
@@ -268,6 +271,7 @@ export class OrgComponent {
         this.orgChart = data;
         this.orgNodes = JSON.parse(JSON.stringify(this.orgChart.OrgNodes));
         this.treeJson = JSON.parse(JSON.stringify(this.orgNodes));
+        localStorage.setItem("org_id", this.orgChart.OrgID.toString());
     }
 
 }   
