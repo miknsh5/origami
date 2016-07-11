@@ -109,6 +109,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         this.createArrows();
 
         // creates drop shadow 
+        // TODO re-add this functionality 
         // this.createDropShadow();
 
         this.root = this.treeData[0];
