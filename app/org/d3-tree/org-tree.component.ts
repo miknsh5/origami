@@ -105,12 +105,11 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
         this.svg = d3.select("g.nodes");
 
-        // creates arrows directions 
+        // creates arrows directions
         this.createArrows();
 
-        // creates drop shadow 
-        // TODO re-add this functionality 
-        // this.createDropShadow();
+        // creates drop shadow
+        this.createDropShadow();
 
         this.root = this.treeData[0];
         if (!this.root) {
@@ -478,7 +477,10 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             .attr("transform", function (d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
             .on("click", (ev) => this.nodeClicked(ev));
 
-        nodeEnter.append(CIRCLE).attr("r", 1e-6);
+        nodeEnter.append(CIRCLE).attr("r", 1e-6)
+            .style("filter", function (d) {
+                return d.IsStaging && d.NodeID === -1 ? " " : "url(home#drop-shadow)";
+            });
 
         nodeEnter.append(TEXT)
             .attr("dy", ".35em")
@@ -560,6 +562,9 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 if (d.IsSelected) { return SELECTED_CIRCLE; }
                 else if (d.IsSibling) { return DEFAULT_CIRCLE + " sibling"; }
                 else { return DEFAULT_CIRCLE; }
+            })
+            .style("filter", function (d) {
+                return d.IsStaging && d.NodeID === -1 ? " " : "url(home#drop-shadow)";
             });
 
         nodeUpdate.select(TEXT)
