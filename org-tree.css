@@ -70,8 +70,6 @@ node circle {
 
 .selectedCircle {
   fill: #0097FF;
-  /*-webkit-filter: drop-shadow(0px 3px 0px rgba(0, 0, 0, .4));
-  filter: drop-shadow(0px 3px 0px rgba(0, 0, 0, .4));*/
 }
 
 .stagedCircle {
@@ -82,8 +80,6 @@ node circle {
 
 .defaultCircle {
   fill: #CFD8DC;
-  /*-webkit-filter: drop-shadow(0px 3px 0px rgba(0, 0, 0, .4));
-  filter: drop-shadow(0px 3px 0px rgba(0, 0, 0, .4));*/
 }
 
 .new-peer_reportee-circle {
