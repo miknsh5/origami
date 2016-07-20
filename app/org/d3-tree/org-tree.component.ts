@@ -60,7 +60,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     previousRoot: any;
     lastSelectedNode: any;
     arrows: any;
-    currentMode: ChartMode = ChartMode.report;
+    @Input() currentMode: ChartMode;
     @Input() isAddOrEditModeEnabled: boolean;
     @Input() width: number;
     @Input() height: number;
@@ -75,29 +75,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
         this.treeWidth = this.width;
         this.treeHeight = this.height;
-
-        if (this.currentMode === ChartMode.build) {
-            this.tree = d3.layout.tree().nodeSize([NODE_HEIGHT, NODE_WIDTH]);
-        }
-        else if (this.currentMode === ChartMode.report) {
-            this.tree = d3.layout.tree().nodeSize([NODE_WIDTH, NODE_HEIGHT]);
-
-        }
-        if (this.currentMode === ChartMode.build) {
-            this.diagonal = d3.svg.diagonal()
-                .projection(function (d) {
-                    return [d.y, d.x];
-                });
-
-        }
-        else {
-            this.diagonal = d3.svg.diagonal()
-                .projection(function (d) {
-                    return [d.x, d.y];
-                });
-
-        }
-
+        this.initializeTreeAsPerMode();
         this.svg = this.graph.append("svg")
             .attr("preserveAspectRatio", "xMinYMin meet")
             .attr("viewBox", "0 0 " + this.treeWidth + " " + this.treeHeight)
@@ -143,10 +121,44 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         document.addEventListener("click", (ev: MouseEvent) => this.bodyClicked(this.selectedOrgNode, ev), false);
     }
 
+
+    initializeTreeAsPerMode() {
+        if (this.currentMode === ChartMode.build) {
+            this.tree = d3.layout.tree().nodeSize([NODE_HEIGHT, NODE_WIDTH]);
+        }
+        else if (this.currentMode === ChartMode.report) {
+            this.tree = d3.layout.tree().nodeSize([NODE_WIDTH, NODE_HEIGHT]);
+
+        }
+        if (this.currentMode === ChartMode.build) {
+            this.diagonal = d3.svg.diagonal()
+                .projection(function (d) {
+                    return [d.y, d.x];
+                });
+
+        }
+        else {
+            this.diagonal = d3.svg.diagonal()
+                .projection(function (d) {
+                    return [d.x, d.y];
+                });
+
+        }
+
+
+    }
     // TODO:- we should refactor this method to work depending on the kind of change that has taken place. 
     // It re-renders on all kinds of changes
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
         if (this.tree != null) {
+
+            if (changes["currentMode"]) {
+                this.initializeTreeAsPerMode();
+            }
+
+
+
+
             let raiseSelectedEvent: boolean = true;
 
             // We don't need to raise a selectednode change event if the only change happening is entering/leaving edit node
@@ -446,7 +458,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                     return d.NodeID === parentNode.NodeID;
                 }).transition()
                 .duration(DURATION)
-                .attr("transform", (d) =>{
+                .attr("transform", (d) => {
                     if (this.currentMode === ChartMode.build) {
                         return "translate(" + parentNode.y + " , " + source.x + ")";
                     }
@@ -507,14 +519,13 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         // Enter any new nodes at the parent"s previous position.
         let nodeEnter = node.enter().append("g")
             .attr("class", "node")
-            .attr("transform",  (d)=> {
-                let transformString= "translate(" + source.y0 + "," + source.x0 + ")";
-if(this.currentMode===ChartMode.report)
-{
-    transformString=  "translate(" + source.x0 + "," + source.y0 + ")";
-}
+            .attr("transform", (d) => {
+                let transformString = "translate(" + source.y0 + "," + source.x0 + ")";
+                if (this.currentMode === ChartMode.report) {
+                    transformString = "translate(" + source.x0 + "," + source.y0 + ")";
+                }
 
-             return transformString;
+                return transformString;
             })
             .on("click", (ev) => this.nodeClicked(ev));
 
@@ -525,7 +536,7 @@ if(this.currentMode===ChartMode.report)
 
         nodeEnter.append(TEXT)
             .attr("dy", ".35em")
-            .attr("text-anchor", (d)=> {
+            .attr("text-anchor", (d) => {
                 if (this.currentMode === ChartMode.build) { return "start"; } else {
                     return "bottom"
                 }
@@ -554,18 +565,17 @@ if(this.currentMode===ChartMode.report)
 
         node.select(TEXT).text(function (d) { return d.IsSelected || d.IsGrandParent ? "" : d.NodeFirstName; })
             .attr("class", "label");
-           
-            if(this.currentMode===ChartMode.build)
-            {
-                node.select(TEXT).attr("x", function (d) {
+
+        if (this.currentMode === ChartMode.build) {
+            node.select(TEXT).attr("x", function (d) {
                 if (d.IsParent === true || d.IsChild === true) { return PARENTCHILD_RADIUS + DEFAULT_MARGIN; }
                 else { return SIBLING_RADIUS + DEFAULT_MARGIN; }
             });
-            }
-            else{
-                            nodeEnter.select(TEXT).attr("y", 30);
+        }
+        else {
+            nodeEnter.select(TEXT).attr("y", 30);
 
-            }
+        }
 
         // used to get the label width of each node
         this.labelWidths = node.select("text.label").each(function (d) {
@@ -601,13 +611,15 @@ if(this.currentMode===ChartMode.report)
         // Transition nodes to their new position.
         let nodeUpdate = node.transition()
             .duration(DURATION)
-            .attr("transform",  (d)=> { if(this.currentMode===ChartMode.build)
+            .attr("transform", (d) => {
+                if (this.currentMode === ChartMode.build)
                 { return "translate(" + d.y + "," + d.x + ")"; }
-                else{
-                    return "translate(" + d.x + "," + d.y + ")"; 
-            }});
-            
-           
+                else {
+                    return "translate(" + d.x + "," + d.y + ")";
+                }
+            });
+
+
 
         nodeUpdate.select(CIRCLE)
             .attr("r", function (d) {
@@ -631,11 +643,13 @@ if(this.currentMode===ChartMode.report)
 
         let nodeExit = node.exit().transition().delay(100).
             duration(DURATION)
-            .attr("transform",  (d) =>{if(this.currentMode===ChartMode.build)
-                { return "translate(" + source.y + "," + source.x + ")";}
-                else{
-                return  "translate(" + source.x + "," + source.y + ")";
-            } })
+            .attr("transform", (d) => {
+                if (this.currentMode === ChartMode.build)
+                { return "translate(" + source.y + "," + source.x + ")"; }
+                else {
+                    return "translate(" + source.x + "," + source.y + ")";
+                }
+            })
             .remove();
 
         nodeExit.select(CIRCLE)
@@ -784,114 +798,113 @@ if(this.currentMode===ChartMode.report)
             return;
         }
 
-if(this.currentMode===ChartMode.build)
-{
-        // esc
-        if ((event as KeyboardEvent).keyCode === 27) {
-            if (!this.isAddOrEditModeEnabled) {
-                this.deselectNode();
-                this.selectNode.emit(this.selectedOrgNode);
-            }
-        }
-
-        // left arrow
-        if ((event as KeyboardEvent).keyCode === 37) {
-            let node = this.selectedOrgNode as d3.layout.tree.Node;
-            if (node.parent != null) {
-                let parentNode = node.parent;
-                this.highlightAndCenterNode(parentNode);
-            }
-        }
-        // right arrow
-        else if ((event as KeyboardEvent).keyCode === 39) {
-            if (this.selectedOrgNode.children && this.selectedOrgNode.children.length > 0) {
-                let node = this.selectedOrgNode.children[0];
-                this.highlightAndCenterNode(node);
-            } else {
-                this.addNewNode(this.selectedOrgNode);
-            }
-        }
-        // top arrow
-        else if ((event as KeyboardEvent).keyCode === 38) {
-            let node = this.selectedOrgNode as d3.layout.tree.Node;
-            if (node.parent != null) {
-                let siblings = node.parent.children;
-                let index = siblings.indexOf(node);
-                if (index > 0) {
-                    let elderSibling = siblings[index - 1];
-                    this.highlightAndCenterNode(elderSibling);
+        if (this.currentMode === ChartMode.build) {
+            // esc
+            if ((event as KeyboardEvent).keyCode === 27) {
+                if (!this.isAddOrEditModeEnabled) {
+                    this.deselectNode();
+                    this.selectNode.emit(this.selectedOrgNode);
                 }
             }
-        }
-        // bottom arrow
-        else if ((event as KeyboardEvent).keyCode === 40) {
-            let node = this.selectedOrgNode as d3.layout.tree.Node;
-            if (node.parent != null) {
-                let siblings = node.parent.children;
-                let index = siblings.indexOf(node);
-                if (index < siblings.length - 1) {
-                    let youngerSibling = siblings[index + 1];
-                    this.highlightAndCenterNode(youngerSibling);
+
+            // left arrow
+            if ((event as KeyboardEvent).keyCode === 37) {
+                let node = this.selectedOrgNode as d3.layout.tree.Node;
+                if (node.parent != null) {
+                    let parentNode = node.parent;
+                    this.highlightAndCenterNode(parentNode);
+                }
+            }
+            // right arrow
+            else if ((event as KeyboardEvent).keyCode === 39) {
+                if (this.selectedOrgNode.children && this.selectedOrgNode.children.length > 0) {
+                    let node = this.selectedOrgNode.children[0];
+                    this.highlightAndCenterNode(node);
                 } else {
-                    this.addNewNode(node.parent);
+                    this.addNewNode(this.selectedOrgNode);
+                }
+            }
+            // top arrow
+            else if ((event as KeyboardEvent).keyCode === 38) {
+                let node = this.selectedOrgNode as d3.layout.tree.Node;
+                if (node.parent != null) {
+                    let siblings = node.parent.children;
+                    let index = siblings.indexOf(node);
+                    if (index > 0) {
+                        let elderSibling = siblings[index - 1];
+                        this.highlightAndCenterNode(elderSibling);
+                    }
+                }
+            }
+            // bottom arrow
+            else if ((event as KeyboardEvent).keyCode === 40) {
+                let node = this.selectedOrgNode as d3.layout.tree.Node;
+                if (node.parent != null) {
+                    let siblings = node.parent.children;
+                    let index = siblings.indexOf(node);
+                    if (index < siblings.length - 1) {
+                        let youngerSibling = siblings[index + 1];
+                        this.highlightAndCenterNode(youngerSibling);
+                    } else {
+                        this.addNewNode(node.parent);
+                    }
                 }
             }
         }
-    }
-    else{
-                // esc
-        if ((event as KeyboardEvent).keyCode === 27) {
-            if (!this.isAddOrEditModeEnabled) {
-                this.deselectNode();
-                this.selectNode.emit(this.selectedOrgNode);
+        else {
+            // esc
+            if ((event as KeyboardEvent).keyCode === 27) {
+                if (!this.isAddOrEditModeEnabled) {
+                    this.deselectNode();
+                    this.selectNode.emit(this.selectedOrgNode);
+                }
             }
-        }
 
-        // top arrow
-        if ((event as KeyboardEvent).keyCode === 38) {
-            let node = this.selectedOrgNode as d3.layout.tree.Node;
-            if (node.parent != null) {
-                let parentNode = node.parent;
-                this.highlightAndCenterNode(parentNode);
-            }
-        }
-        // bottom arrow
-        else if ((event as KeyboardEvent).keyCode === 40) {
-            if (this.selectedOrgNode.children && this.selectedOrgNode.children.length > 0) {
-                let node = this.selectedOrgNode.children[0];
-                this.highlightAndCenterNode(node);
-            } else {
-                this.addNewNode(this.selectedOrgNode);
-            }
-        }
-        // left arrow
-        else if ((event as KeyboardEvent).keyCode === 37) {
-            let node = this.selectedOrgNode as d3.layout.tree.Node;
-            if (node.parent != null) {
-                let siblings = node.parent.children;
-                let index = siblings.indexOf(node);
-                if (index > 0) {
-                    let elderSibling = siblings[index - 1];
-                    this.highlightAndCenterNode(elderSibling);
+            // top arrow
+            if ((event as KeyboardEvent).keyCode === 38) {
+                let node = this.selectedOrgNode as d3.layout.tree.Node;
+                if (node.parent != null) {
+                    let parentNode = node.parent;
+                    this.highlightAndCenterNode(parentNode);
                 }
             }
-        }
-        // right arrow
-        else if ((event as KeyboardEvent).keyCode === 39) {
-            let node = this.selectedOrgNode as d3.layout.tree.Node;
-            if (node.parent != null) {
-                let siblings = node.parent.children;
-                let index = siblings.indexOf(node);
-                if (index < siblings.length - 1) {
-                    let youngerSibling = siblings[index + 1];
-                    this.highlightAndCenterNode(youngerSibling);
+            // bottom arrow
+            else if ((event as KeyboardEvent).keyCode === 40) {
+                if (this.selectedOrgNode.children && this.selectedOrgNode.children.length > 0) {
+                    let node = this.selectedOrgNode.children[0];
+                    this.highlightAndCenterNode(node);
                 } else {
-                    this.addNewNode(node.parent);
+                    this.addNewNode(this.selectedOrgNode);
                 }
             }
-        }
+            // left arrow
+            else if ((event as KeyboardEvent).keyCode === 37) {
+                let node = this.selectedOrgNode as d3.layout.tree.Node;
+                if (node.parent != null) {
+                    let siblings = node.parent.children;
+                    let index = siblings.indexOf(node);
+                    if (index > 0) {
+                        let elderSibling = siblings[index - 1];
+                        this.highlightAndCenterNode(elderSibling);
+                    }
+                }
+            }
+            // right arrow
+            else if ((event as KeyboardEvent).keyCode === 39) {
+                let node = this.selectedOrgNode as d3.layout.tree.Node;
+                if (node.parent != null) {
+                    let siblings = node.parent.children;
+                    let index = siblings.indexOf(node);
+                    if (index < siblings.length - 1) {
+                        let youngerSibling = siblings[index + 1];
+                        this.highlightAndCenterNode(youngerSibling);
+                    } else {
+                        this.addNewNode(node.parent);
+                    }
+                }
+            }
 
-    }
+        }
     }
 
     getNode(nodeID: number, rootNode: any) {

@@ -5,7 +5,7 @@ import { tokenNotExpired } from "angular2-jwt";
 
 import { AddNodeComponent } from "./add-node/add-node.component";
 import { OrgNodeDetailComponent } from "./org-node-detail/index";
-import { OrgChartModel, OrgNodeModel, OrgService } from "./shared/index";
+import { OrgChartModel, OrgNodeModel, OrgService ,ChartMode} from "./shared/index";
 import { OrgTreeComponent } from "./d3-tree/org-tree.component";
 
 const MIN_HEIGHT: number = 320;
@@ -30,7 +30,7 @@ export class OrgComponent {
     orgNodes: OrgNodeModel[];
     svgWidth: number;
     svgHeight: number;
-
+@Output() currentChartMode:ChartMode;
     @Output() treeJson: any;
     @Output() selectedNode: OrgNodeModel;
     @Output() isAddOrEditMode: boolean;
@@ -40,6 +40,7 @@ export class OrgComponent {
         this.getAllNodes();
         this.svgWidth = this.getSvgWidth();
         this.svgHeight = this.getSvgHeight();
+        this.currentChartMode= ChartMode.build;
     }
 
     onResize(event) {
@@ -56,7 +57,15 @@ export class OrgComponent {
                 () => console.log("Random Quote Complete"));
         }
     }
-
+    changeToBuildMode()
+    {
+          this.currentChartMode=ChartMode.build;
+  
+    }
+changeToReportMode()
+{
+    this.currentChartMode=ChartMode.report;
+}
     onNodeSelected(node) {
         let nodeID = this.selectedNode ? this.selectedNode.NodeID : 0;
         this.selectedNode = node;

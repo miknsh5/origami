@@ -6,6 +6,12 @@
     <button (click)="getAllNodes()">
         Load Data
     </button>
+    <button (click)="changeToReportMode()">
+        Report
+    </button>
+    <button (click)="changeToBuildMode()">
+        Build
+    </button>
 </div>
 
 <div class="main-canvas" *ngIf="orgChart" (window:resize)="onResize($event)">
@@ -14,6 +20,7 @@
         [treeData]="treeJson" 
         [width]="svgWidth"
         [height]="svgHeight" 
+        [currentMode]="currentChartMode"
         [isAddOrEditModeEnabled]= "isAddOrEditMode"
         (selectNode)="onNodeSelected($event)"
         (switchToAddMode)="onSwitchedToAddMode($event)">
