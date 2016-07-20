@@ -725,30 +725,35 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     }
 
     showUpdatePeerReporteeNode(source) {
-        if (source && this.selectedOrgNode && !this.isAddOrEditModeEnabled) {
-            if (source.NodeID !== -1) {
-                if (source.parent) {
-                    let node: any;
-                    node = source.parent.children ? source.parent.children : source.parent._children;
-                    let childrenCount = node.length - 1;
-                    if (node[childrenCount]) {
-                        let x = node[childrenCount].x + (childrenCount === 0 ? NODE_DEFAULT_DISTANCE : (node[childrenCount].x - node[childrenCount - 1].x));
-                        this.setPeerReporteeNode(PEER_TEXT, x, source.y, "peerNode");
+        if (this.currentMode === ChartMode.build) {
+            if (source && this.selectedOrgNode && !this.isAddOrEditModeEnabled) {
+                if (source.NodeID !== -1) {
+                    if (source.parent) {
+                        let node: any;
+                        node = source.parent.children ? source.parent.children : source.parent._children;
+                        let childrenCount = node.length - 1;
+                        if (node[childrenCount]) {
+                            let x = node[childrenCount].x + (childrenCount === 0 ? NODE_DEFAULT_DISTANCE : (node[childrenCount].x - node[childrenCount - 1].x));
+                            this.setPeerReporteeNode(PEER_TEXT, x, source.y, "peerNode");
+                        }
+                    } else {
+                        d3.select("g.peerNode").remove();
+                    }
+
+                    if (!this.selectedOrgNode.children) {
+                        let y = source.y + NODE_DEFAULT_DISTANCE;
+                        this.setPeerReporteeNode(REPORTEE_TEXT, source.x, y, "directReporteeNode");
+                    } else {
+                        d3.select("g.directReporteeNode").remove();
                     }
                 } else {
-                    d3.select("g.peerNode").remove();
-                }
-
-                if (!this.selectedOrgNode.children) {
-                    let y = source.y + NODE_DEFAULT_DISTANCE;
-                    this.setPeerReporteeNode(REPORTEE_TEXT, source.x, y, "directReporteeNode");
-                } else {
-                    d3.select("g.directReporteeNode").remove();
+                    this.removePeerAndReporteeNodes();
                 }
             } else {
                 this.removePeerAndReporteeNodes();
             }
-        } else {
+        }
+        else{
             this.removePeerAndReporteeNodes();
         }
     }
@@ -874,7 +879,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                     let node = this.selectedOrgNode.children[0];
                     this.highlightAndCenterNode(node);
                 } else {
-                    this.addNewNode(this.selectedOrgNode);
+                  //  this.addNewNode(this.selectedOrgNode);
                 }
             }
             // left arrow
@@ -899,7 +904,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                         let youngerSibling = siblings[index + 1];
                         this.highlightAndCenterNode(youngerSibling);
                     } else {
-                        this.addNewNode(node.parent);
+                     //   this.addNewNode(node.parent);
                     }
                 }
             }
