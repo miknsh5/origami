@@ -3,7 +3,7 @@ import {Component, Input, Output, Directive, EventEmitter, Attribute, OnChanges,
 import {Inject} from "@angular/core";
 
 import * as d3 from "d3";
-import { OrgNodeModel, OrgService} from "../shared/index";
+import { OrgNodeModel, OrgService,ChartMode} from "../shared/index";
 
 const DURATION = 250;
 const TOPBOTTOM_MARGIN = 20;
@@ -60,7 +60,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     previousRoot: any;
     lastSelectedNode: any;
     arrows: any;
-
+    currentMode:ChartMode= ChartMode.build;
     @Input() isAddOrEditModeEnabled: boolean;
     @Input() width: number;
     @Input() height: number;
