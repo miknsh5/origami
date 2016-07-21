@@ -564,7 +564,11 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         });
 
         node.select(TEXT).text(function (d) { return d.IsSelected || d.IsGrandParent ? "" : d.NodeFirstName; })
-            .attr("class", "label");
+            .attr("class", "label")
+             .attr("text-anchor", (d) => {
+                if (this.currentMode === ChartMode.build) { return "start"; } else {
+                    return "bottom"}
+                });
 
         if (this.currentMode === ChartMode.build) {
             node.select(TEXT).attr("x", function (d) {
@@ -573,7 +577,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             });
         }
         else {
-            nodeEnter.select(TEXT).attr("y", 30);
+            node.select(TEXT).attr("y", 30);
 
         }
 

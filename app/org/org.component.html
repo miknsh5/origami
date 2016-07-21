@@ -6,14 +6,18 @@
     <button (click)="getAllNodes()">
         Load Data
     </button>
-    <button (click)="changeToReportMode()">
-        Report
-    </button>
-    <button (click)="changeToBuildMode()">
+   
+</div>
+ <div class="modes-wrap">
+   <button (click)="changeToBuildMode()" >
         Build
     </button>
-</div>
-
+    <br/>
+    
+     <button (click)="changeToReportMode()">
+        Report
+    </button>
+    </div>
 <div class="main-canvas" *ngIf="orgChart" (window:resize)="onResize($event)">
     <!--<h1>Welcome to {{orgChart.OrganizationName}}</h1>-->
     <sg-org-tree 
