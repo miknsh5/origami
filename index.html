@@ -1,43 +1,34 @@
-<!doctype html>
-<html lang="en">
+<!Doctype html>
+<html>
+
 <head>
+    <script>
+        document.write('<base href="' + document.location + '" />');
+    </script>
     <meta charset="UTF-8">
-    <title>Auth0 - Angular 2 With SystemJS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>
+    <title>Origami</title>
 
     <!-- Auth0 Lock script and AngularJS module -->
     <script src="//cdn.auth0.com/js/lock-8.2.min.js"></script>
-    <link href='https://fonts.googleapis.com/css?family=Roboto:400,700,300' rel='stylesheet' type='text/css'>
+
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:400,700,300">
+    <link rel="stylesheet" href="org-tree.css">
+    <!-- Polyfill(s) for older browsers -->
+    <script src="node_modules/core-js/client/shim.min.js"></script>
+    <script src="node_modules/zone.js/dist/zone.js"></script>
+    <script src="node_modules/reflect-metadata/Reflect.js"></script>
+    <script src="node_modules/systemjs/dist/system.src.js"></script>
+
+    <!-- Configure(s) SystemJS -->
+    <script src="systemjs.config.js"></script>
+    <script>
+        System.import('app').catch(function(err){ console.error(err);  });
+    </script>
 </head>
 
 <body>
-<app>Loading...</app>
+    <sg-origami> Loading... </sg-origami>
 </body>
-
-<!-- ES6-related imports -->
-<script src="/node_modules/angular2/bundles/angular2-polyfills.js"></script>
-<script src="/node_modules/es6-shim/es6-shim.min.js"></script>
-<script src="/node_modules/systemjs/dist/system.js"></script>
-<script>
-    //configure system loader
-    System.config({
-        defaultJSExtensions: true,
-        packages: {
-            "/angular2-jwt": {
-                "defaultExtension": "js"
-            }
-        },
-        map: {
-            "angular2-jwt": "node_modules/angular2-jwt/angular2-jwt"
-        }
-    });
-</script>
-<script src="/node_modules/rxjs/bundles/Rx.js"></script>
-<script src="/node_modules/angular2/bundles/angular2.js"></script>
-<script src="/node_modules/angular2/bundles/http.min.js"></script>
-<script src="/node_modules/angular2/bundles/router.min.js"></script>
-<script>
-    //bootstrap the Angular2 application
-    System.import('app/main').catch(console.log.bind(console));
-</script>
 
 </html>

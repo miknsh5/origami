@@ -1,0 +1,103 @@
+.node {
+  cursor: pointer;
+}
+
+.node circle {
+  fill: #fff;
+  stroke: steelblue;
+  stroke-width: 1.5px;
+}
+
+.node text {
+  font: 10px sans-serif;
+}
+
+.link {
+  fill: none;
+  stroke: #ccc;
+  stroke-width: 1.5px;
+}
+
+.chart {
+  background: #eee;
+  padding: 3px;
+}
+
+.chart div {
+  width: 0;
+  transition: all 1s ease-out;
+  -moz-transition: all 1s ease-out;
+  -webkit-transition: all 1s ease-out;
+}
+
+.chart div {
+  font: 10px sans-serif;
+  background-color: steelblue;
+  text-align: right;
+  padding: 3px;
+  margin: 5px;
+  color: white;
+  box-shadow: 2px 2px 2px #666;
+}
+
+.title {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.person {
+  cursor: pointer;
+  color: #222222;
+}
+
+.title {
+  cursor: pointer;
+  color: #222222;
+  font-style: italic;
+}
+
+.auth-panel {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+}
+
+.auth-panel h2 {
+  margin: 0.4em 0;
+}
+
+.auth-panel button {
+  float: right;
+  margin-left: 0.7em;
+}
+
+.person:hover {
+  color: #029BFF;
+}
+
+.main-canvas {
+  /*padding: 50px 50px 0;
+  position: absolute;
+  top: 0;*/
+  width: 100%;
+  height: 97vh;
+  overflow: hidden;
+}
+
+.main-canvas h1 {
+  margin-top: 0;
+}
+
+@media only screen and (max-width:993px) {
+  .auth-panel {
+    position: relative;
+    top: 0;
+    right: 20px;
+    float: right;
+  }
+}
+
+@media only screen and (max-width:600px) {
+  .main-canvas {
+    height: auto;
+  }
+}

@@ -1,0 +1,114 @@
+.node {
+  cursor: pointer;
+}
+
+node circle {
+  -webkit-box-shadow: 0 0 40px rgba(0, 0, 0, 0.8);
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.8);
+  stroke: none;
+}
+
+.node text {
+  font-family: Roboto, sans-serif;
+  font-size: 10.5px;
+  font-weight: bold;
+  text-align: center;
+  color: #ffffff;
+  text-transform: capitalize;
+}
+
+.node text#abbr {
+  fill: #FFF;
+  text-transform: uppercase;
+}
+
+.node .stagedCircle ~ text#abbr {
+  font-weight: normal;
+}
+
+.node text.label {
+  font-size: 15px;
+  font-weight: normal;
+  fill: #979797;
+}
+
+.link {
+  fill: none;
+  stroke: #979797;
+  stroke-width: 1px;
+}
+
+.chart {
+  background: #eee;
+  padding: 3px;
+}
+
+.chart div {
+  width: 0;
+  transition: all 1s ease-out;
+  -moz-transition: all 1s ease-out;
+  -webkit-transition: all 1s ease-out;
+}
+
+.chart div {
+  font: 0.75em sans-serif;
+  background-color: steelblue;
+  text-align: right;
+  padding: 3px;
+  margin: 5px;
+  color: white;
+  box-shadow: 2px 2px 2px #666;
+}
+
+.title {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.reporteeNode {
+  cursor: pointer;
+}
+
+.selectedCircle {
+  fill: #0097FF;
+}
+
+.stagedCircle {
+  fill: #FFFFFF;
+  stroke: #0097FF;
+  stroke-width: 2;
+}
+
+.defaultCircle {
+  fill: #CFD8DC;
+}
+
+.new-peer_reportee-circle {
+  fill: #FAFAFA;
+  stroke: #CFD8dC;
+  stroke-width: 1;
+  stroke-dasharray: 2, 2;
+  cursor: pointer;
+}
+
+.new-peer_reportee-innerText {
+  font-size: .75em;
+  fill: #B6B6B6;
+  text-anchor: middle;
+  fill-opacity: 1;
+  cursor: pointer;
+}
+
+.new-peer_reportee-outerText {
+  font-size: 0.62em;
+  fill: #CFD8dC;
+  text-anchor: middle;
+  fill-opacity: 1;
+}
+
+polygon[data-id='childIndicator'] {
+  stroke: transparent;
+}
+
+path.vertical, path.horizontal {
+  opacity: 0.3;
+}

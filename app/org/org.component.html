@@ -1,0 +1,35 @@
+<div class="auth-panel">
+    <h2>Organization Chart</h2>
+    <button (click)="logout()">
+        Logout
+     </button>
+    <button (click)="getAllNodes()">
+        Load Data
+    </button>
+</div>
+
+<div class="main-canvas" *ngIf="orgChart" (window:resize)="onResize($event)">
+    <!--<h1>Welcome to {{orgChart.OrganizationName}}</h1>-->
+    <sg-org-tree 
+        [treeData]="treeJson" 
+        [width]="svgWidth"
+        [height]="svgHeight" 
+        [isAddOrEditModeEnabled]= "isAddOrEditMode"
+        (selectNode)="onNodeSelected($event)"
+        (switchToAddMode)="onSwitchedToAddMode($event)">
+    </sg-org-tree>
+</div>
+
+<sg-org-node-detail 
+    #nodeDetail
+    [selectedOrgNode]="selectedNode"
+    [isAddOrEditModeEnabled]= "detailAddOrEditMode"
+    (deleteNode)="onNodeDeleted($event)" 
+    (updateNode)="onNodeUpdated($event)"
+    (addNode)="onNodeAdded($event)"
+    (setAddOrEditModeValue)="onAddOrEditModeValueSet($event)">
+  </sg-org-node-detail>
+  
+<div>
+   
+</div>

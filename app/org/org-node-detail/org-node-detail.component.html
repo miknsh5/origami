@@ -1,0 +1,40 @@
+<div class="detail-wrap">
+    <form #orgform="ngForm" *ngIf="selectedOrgNode" (ngSubmit)="onSubmit()">
+
+        <!-- Expect to see code comments before blocks of logic like this to explain intended behavior -->
+        <div class="orgFormControls" *ngIf="selectedOrgNode">
+
+            <div *ngIf="!isAddOrEditModeEnabled">
+                <div class="delete-icon" (click)="onDeleteNodeClicked(selectedOrgNode)"> </div>
+                <div class="edit-icon" (click)="onEditNodeClicked()"> </div>
+            </div>
+
+            <div *ngIf="isAddOrEditModeEnabled">
+                <div class="close-icon" (click)="onCancelEditClicked()"> </div>
+                <button type="submit" class="save-icon" [disabled]="!orgform.form.valid"></button>
+            </div>
+
+        </div>
+
+        <!-- Expect to see code comments before blocks of logic like this to explain intended behavior -->
+        <div *ngIf="selectedOrgNode && !isAddOrEditModeEnabled" class="text-wrap">
+            <div class="h-1">
+                {{orgNode.NodeFirstName}} {{orgNode.NodeLastName}}
+            </div>
+            <div class="h-3">
+                {{orgNode.Description}}
+            </div>
+        </div>
+
+        <!-- Expect to see code comments before blocks of logic like this to explain the intended behavior -->
+        <div *ngIf="selectedOrgNode && isAddOrEditModeEnabled" class="form-group text-wrap">
+            <input type="text" class="h-1 title-name-edit form-control firstName" (keyup)="onInputKeyDownOrUp($event,firstName)" ngControl="firstName"
+                #firstName="ngForm" [ngModel]="orgNode.NodeFirstName" placeholder="First Name" name="firstName" autocomplete="off" />
+            <input type="text" class="h-1 title-name-edit form-control" (keyup)="onInputKeyDownOrUp($event,lastName)" ngControl="lastName"
+                #lastName="ngForm" [ngModel]="orgNode.NodeLastName" placeholder="Last Name" name="lastName" autocomplete="off" />
+            <input type="text" class="h-3 title-position-edit form-control" ngControl="description" #description="ngForm" [ngModel]="orgNode.Description"
+                placeholder="Description" name="description" autocomplete="off" />
+        </div>
+
+    </form>
+</div>
