@@ -112,3 +112,8 @@ polygon[data-id='childIndicator'] {
 path.vertical, path.horizontal {
   opacity: 0.3;
 }
+
+ .btn-white {
+    background-color: rgb(221,221,211) !important; 
+    color: #212121 !important;
+}

@@ -1,46 +1,43 @@
 <div class="auth-panel">
     <h2>Organization Chart</h2>
-    <button (click)="logout()">
+    <button  class=" btn-white" (click)="logout()">
         Logout
      </button>
-    <button (click)="getAllNodes()">
+    <button  class=" btn-white" (click)="getAllNodes()">
         Load Data
     </button>
-   
+
 </div>
- <div class="modes-wrap">
-   <button (click)="changeToBuildMode()" >
+<div class="modes-wrap ">
+    <button class=" btn-white" (click)="changeToBuildMode()">
         Build
     </button>
     <br/>
-    
-     <button (click)="changeToReportMode()">
+
+    <button class=" btn-white" (click)="changeToReportMode()">
         Report
     </button>
-    </div>
+</div>
 <div class="main-canvas" *ngIf="orgChart" (window:resize)="onResize($event)">
     <!--<h1>Welcome to {{orgChart.OrganizationName}}</h1>-->
-    <sg-org-tree 
-        [treeData]="treeJson" 
-        [width]="svgWidth"
-        [height]="svgHeight" 
-        [currentMode]="currentChartMode"
-        [isAddOrEditModeEnabled]= "isAddOrEditMode"
-        (selectNode)="onNodeSelected($event)"
-        (switchToAddMode)="onSwitchedToAddMode($event)">
+    <sg-org-tree [treeData]="treeJson" [width]="svgWidth" [height]="svgHeight" [currentMode]="currentChartMode" [isAddOrEditModeEnabled]="isAddOrEditMode"
+        (selectNode)="onNodeSelected($event)" (switchToAddMode)="onSwitchedToAddMode($event)">
     </sg-org-tree>
 </div>
 
-<sg-org-node-detail 
-    #nodeDetail
-    [selectedOrgNode]="selectedNode"
-    [isAddOrEditModeEnabled]= "detailAddOrEditMode"
-    (deleteNode)="onNodeDeleted($event)" 
-    (updateNode)="onNodeUpdated($event)"
-    (addNode)="onNodeAdded($event)"
-    (setAddOrEditModeValue)="onAddOrEditModeValueSet($event)">
-  </sg-org-node-detail>
-  
+<sg-org-node-detail #nodeDetail [selectedOrgNode]="selectedNode" [isAddOrEditModeEnabled]="detailAddOrEditMode" (deleteNode)="onNodeDeleted($event)"
+    (updateNode)="onNodeUpdated($event)" (addNode)="onNodeAdded($event)" (setAddOrEditModeValue)="onAddOrEditModeValueSet($event)">
+</sg-org-node-detail>
+
+<div *ngIf="isCurrentChartInReportMode">
+    <sg-origami-CSV-reports [orgChartData]="orgChart">
+    </sg-origami-CSV-reports>
+</div>
+
+<div *ngIf="isCurrentChartInReportMode">
+    <sg-origami-PNG [orgName]="orgChart.OrganizationName">        
+    </sg-origami-PNG>
+</div>
 <div>
-   
+
 </div>

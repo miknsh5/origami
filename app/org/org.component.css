@@ -90,11 +90,10 @@
 .modes-wrap {
     height: 100px;
     min-width: 25px;
- position: absolute;
+    position: absolute;
     top:0;
     bottom: 0;
-    left: 0;
-    right: 0;
+    left: 0;  
 
     margin: auto;
     /*box-shadow: 0 2px 4px 0 var(--black-50);*/
