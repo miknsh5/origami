@@ -48,6 +48,7 @@ const SIBLING_FONTSIZE = 17.3;
 export class OrgTreeComponent implements OnInit, OnChanges {
     tree: any;
     diagonal: any;
+    descriptionWidths: any;
     svg: any;
     graph: any;
     root: any;
@@ -563,12 +564,30 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             else { return DEFAULT_FONTSIZE + "px"; }
         });
 
-        node.select(TEXT).text(function (d) { return d.IsSelected || d.IsGrandParent ? "" : d.NodeFirstName; })
+        node.select(TEXT).text(function (d) {
+            return d.IsSelected || d.IsGrandParent ? "" : d.NodeFirstName + " " + d.NodeLastName;
+        })
             .attr("class", "label")
-             .attr("text-anchor", (d) => {
+            .attr("text-anchor", (d) => {
                 if (this.currentMode === ChartMode.build) { return "start"; } else {
-                    return "bottom"}
-                });
+                    return "bottom"
+                }
+            });
+
+        nodeEnter.append(TEXT)
+            .attr("dy", "1.5em")
+            .attr("dx", "1.5em")
+            .attr("id", "desc");
+
+        node.select("#desc")
+            .text(function (d) {
+                return d.IsSelected || d.IsGrandParent ? "" : d.Description
+            }).attr("class", "label").attr("text-anchor", (d) => {
+                if (this.currentMode === ChartMode.build) { return "start"; } else {
+                    return "bottom"
+                }
+            });
+
 
         if (this.currentMode === ChartMode.build) {
             node.select(TEXT).attr("x", function (d) {
@@ -586,6 +605,10 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             return d3.select(this).node();
         });
 
+        this.descriptionWidths = node.select("text#desc").each(function (d) {
+            return d3.select(this).node();
+        });
+
         // creates a polygon to indicate it has child(s)
         nodeEnter.append(POLYGON)
             .attr("points", LABEL_POINTS)
@@ -599,7 +622,15 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 return TRANSPARENT_COLOR;
             }
         }).attr("transform", (d, index) => {
-            let x = Math.round(this.labelWidths[0][index].getBoundingClientRect()["width"]);
+            let fullNameLength = Math.round(this.labelWidths[0][index].getBoundingClientRect()["width"]);
+            let descriptionLength = Math.round(this.descriptionWidths[0][index].getBoundingClientRect()["width"]);
+            let x;
+            if (fullNameLength > descriptionLength) {
+                x = fullNameLength;
+            }
+            else {
+                x = descriptionLength;
+            }
             if (d.IsSibling) {
                 x += (DEFAULT_MARGIN * 2) + (SIBLING_RADIUS - PARENTCHILD_RADIUS);
             } else {
@@ -757,7 +788,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 this.removePeerAndReporteeNodes();
             }
         }
-        else{
+        else {
             this.removePeerAndReporteeNodes();
         }
     }
@@ -883,7 +914,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                     let node = this.selectedOrgNode.children[0];
                     this.highlightAndCenterNode(node);
                 } else {
-                  //  this.addNewNode(this.selectedOrgNode);
+                    //  this.addNewNode(this.selectedOrgNode);
                 }
             }
             // left arrow
@@ -908,7 +939,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                         let youngerSibling = siblings[index + 1];
                         this.highlightAndCenterNode(youngerSibling);
                     } else {
-                     //   this.addNewNode(node.parent);
+                        //   this.addNewNode(node.parent);
                     }
                 }
             }
