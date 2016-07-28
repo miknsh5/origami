@@ -62,6 +62,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     previousRoot: any;
     lastSelectedNode: any;
     arrows: any;
+    levelDepth: any;
     @Input() currentMode: ChartMode;
     @Input() isAddOrEditModeEnabled: boolean;
     @Input() width: number;
@@ -75,12 +76,13 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         //  Todo:- We need to use the values coming from the host instead of our own
         let margin = { top: TOPBOTTOM_MARGIN, right: RIGHTLEFT_MARGIN, bottom: TOPBOTTOM_MARGIN, left: RIGHTLEFT_MARGIN };
 
+        this.levelDepth = [1];
         this.treeWidth = this.width;
         this.treeHeight = this.height;
         this.initializeTreeAsPerMode();
         this.svg = this.graph.append("svg")
-            .attr("preserveAspectRatio", "xMinYMin meet")
-            .attr("viewBox", "0 0 " + this.treeWidth + " " + this.treeHeight)
+            .attr("width", this.treeWidth)
+            .attr("height", this.treeHeight)
             .append("g");
 
         let verticalLine: [number, number][] = [[(this.treeWidth / 2), this.treeHeight], [(this.treeWidth / 2), 0]];
@@ -117,28 +119,40 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         };
         this.highlightSelectedNode(this.root);
         this.render(this.root);
+        this.calculateLabelWidth();
+        this.resizeLinesArrowsAndSvg();
         this.centerNode(this.root);
 
         document.addEventListener("keydown", (ev: KeyboardEvent) => this.keyDown(this.selectedOrgNode, ev), false);
         document.addEventListener("click", (ev: MouseEvent) => this.bodyClicked(this.selectedOrgNode, ev), false);
     }
 
+    childCount(level, n) {
+        let children: any = n.children;
+        if (children && children.length > 0) {
+            if (this.levelDepth.length <= level + 1)
+                this.levelDepth.push(0);
+
+            this.levelDepth[level + 1] += children.length;
+            children.forEach((d) => {
+                this.childCount(level + 1, d);
+            });
+        }
+    }
 
     initializeTreeAsPerMode() {
         if (this.currentMode === ChartMode.build) {
             this.tree = d3.layout.tree().nodeSize([NODE_HEIGHT, NODE_WIDTH]);
+        } else if (this.currentMode === ChartMode.report) {
+            this.tree = d3.layout.tree().nodeSize([NODE_WIDTH, NODE_HEIGHT]);
         }
-        else if (this.currentMode === ChartMode.report) {
-            this.tree = d3.layout.tree().nodeSize([NODE_WIDTH, NODE_WIDTH]);
 
-        }
         if (this.currentMode === ChartMode.build) {
             this.diagonal = d3.svg.diagonal()
                 .projection(function (d) {
                     return [d.y, d.x];
                 });
-        }
-        else {
+        } else {
             this.diagonal = d3.svg.diagonal()
                 .projection(function (d) {
                     return [d.x, d.y];
@@ -152,9 +166,14 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         if (this.tree != null) {
             this.previousRoot = this.root;
             this.root = this.treeData[0];
+            this.treeWidth = this.width;
+            this.treeHeight = this.height;
+
             if (changes["currentMode"]) {
                 this.initializeTreeAsPerMode();
                 this.expandTree(this.root);
+                this.calculateLabelWidth();
+                this.resizeLinesArrowsAndSvg();
                 this.highlightAndCenterNode(this.root);
                 return;
             }
@@ -166,6 +185,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 raiseSelectedEvent = false;
             }
 
+            this.calculateLabelWidth();
             this.resizeLinesArrowsAndSvg();
 
             if (!this.root) {
@@ -228,9 +248,32 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         console.log("No nodes in system");
     }
 
+    calculateLabelWidth() {
+        this.levelDepth = [1];
+        if (this.currentMode === ChartMode.build) {
+            this.childCount(0, this.selectedOrgNode);
+        } else {
+            this.childCount(0, this.root);
+        }
+    }
+
     resizeLinesArrowsAndSvg() {
-        this.treeWidth = this.width;
-        this.treeHeight = this.height;
+        if (this.currentMode === ChartMode.build) {
+            let count = this.levelDepth.length >= 2 ? this.levelDepth[1] : this.levelDepth[0];
+            let maxHeight = count * NODE_HEIGHT;
+            this.treeWidth = this.width;
+            this.treeHeight = maxHeight > this.height ? maxHeight : this.height;
+        } else if (this.currentMode === ChartMode.report) {
+            let maxWidth = d3.max(this.levelDepth);
+            if (maxWidth < NODE_HEIGHT) {
+                maxWidth = maxWidth * DEPTH;
+            } else {
+                maxWidth = maxWidth * 105;
+            }
+            let maxHeight = this.levelDepth.length * 110;
+            this.treeWidth = maxWidth > this.width ? maxWidth : this.width;
+            this.treeHeight = this.height > maxHeight ? this.height : maxHeight;
+        }
 
         let verticalLine: [number, number][] = [[(this.treeWidth / 2), this.treeHeight], [(this.treeWidth / 2), 0]];
         let horizontalLine: [number, number][] = [[0, (this.treeHeight / 2)], [this.treeWidth, (this.treeHeight / 2)]];
@@ -247,7 +290,26 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
         this.arrows.attr("transform", "translate(" + ((this.treeWidth / 2) - SIBLING_RADIUS * 1.35) + "," + ((this.treeHeight / 2) - SIBLING_RADIUS * 1.275) + ")");
 
-        d3.select("svg").attr("viewBox", "0 0 " + this.treeWidth + " " + this.treeHeight);
+        d3.select("svg").attr("width", this.treeWidth)
+            .attr("height", this.treeHeight);
+
+        this.scrollToCenter();
+    }
+
+    private scrollToCenter() {
+        if (this.currentMode === ChartMode.build) {
+            if (this.treeHeight > this.height) {
+                let scrollposition = this.treeHeight / 2;
+                scrollposition = scrollposition - (this.height / 2);
+                document.body.scrollTop = Math.abs(scrollposition);
+            }
+        } else if (this.currentMode === ChartMode.report) {
+            if (this.treeWidth > this.width) {
+                let scrollposition = this.treeWidth / 2;
+                scrollposition = scrollposition - (this.width / 2);
+                document.body.scrollLeft = scrollposition;
+            }
+        }
     }
 
     createDropShadow() {
@@ -733,7 +795,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         link.enter().insert("path", "g")
             .attr("class", "link")
             .attr("id", function (d) {
-                // console.log("link" + d.source.NodeID + "-" + d.target.NodeID);
                 return ("link" + d.source.NodeID + "-" + d.target.NodeID);
             })
             .attr("d", function (d) {
@@ -818,8 +879,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             } else {
                 this.removePeerAndReporteeNodes();
             }
-        }
-        else {
+        } else {
             this.removePeerAndReporteeNodes();
         }
     }
@@ -838,11 +898,13 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     }
 
     bodyClicked(d, event) {
-        event.stopPropagation();
-        if (event.target.nodeName === "svg") {
-            if (!this.isAddOrEditModeEnabled) {
-                this.deselectNode();
-                this.selectNode.emit(this.selectedOrgNode);
+        // event.stopPropagation();
+        if (this.currentMode === ChartMode.build) {
+            if (event.target.nodeName === "svg") {
+                if (!this.isAddOrEditModeEnabled) {
+                    this.deselectNode();
+                    this.selectNode.emit(this.selectedOrgNode);
+                }
             }
         }
     }
