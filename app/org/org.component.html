@@ -9,13 +9,10 @@
 </div>
 
 <div class="modes-wrap ">
-    <button class="waves-effect waves-light btn" (click)="changeToBuildMode()">
-        Build
-    </button>
-    <br />
-    <button class="waves-effect waves-light btn" (click)="changeToReportMode()">
-        Report
-    </button>
+    <ul>
+      <li><a class="btn-large btn-floating blue-grey darken-3" (click)="changeToBuildMode()"><i class="large material-icons">insert_chart</i></a> Build </li>
+      <li><a class="btn-large btn-floating blue-grey darken-3" (click)="changeToReportMode()"><i class="large material-icons">assignment</i></a> Report </li>
+    </ul>
 </div>
 
 <div class="main-canvas" *ngIf="orgChart" (window:resize)="onResize($event)">

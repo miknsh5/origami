@@ -91,12 +91,12 @@
   height: 100px;
   min-width: 25px;
   position: absolute;
-  top: 100px;
-  left: 10px;
+  top: 50px;
+  left: 30px
 }
 
-.modes-wrap .btn:nth-child(1){
-  bottom: 5px;
+.modes-wrap li:first-child {
+  margin: 0 5px 5px 0;
 }
 
 @media only screen and (max-width:993px) {
@@ -112,7 +112,8 @@
   .main-canvas {
     height: auto;
   }
-  .modes-wrap{
-    top:140px;
+  .modes-wrap {
+    top: 110px;
+    left: 10px;
   }
 }

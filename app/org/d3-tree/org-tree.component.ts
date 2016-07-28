@@ -159,9 +159,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 return;
             }
 
-
-
-
             let raiseSelectedEvent: boolean = true;
 
             // We don't need to raise a selectednode change event if the only change happening is entering/leaving edit node
@@ -170,7 +167,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             }
 
             this.resizeLinesArrowsAndSvg();
-
 
             if (!this.root) {
                 this.addEmptyRootNode();
@@ -585,7 +581,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
         nodeEnter.select("g.label").append(TEXT)
             .attr("data-id", "description")
-            .attr("dy", "1.25em");
+            .attr("dy", "1em");
 
         node.select("g.label text[data-id='fullName']").text(function (d) {
             let name = d.NodeFirstName + " " + d.NodeLastName;
@@ -594,9 +590,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             else
                 return d.IsSelected || d.IsGrandParent ? "" : name;
         }).attr("text-anchor", (d) => {
-            if (this.currentMode === ChartMode.build) { return "start"; } else {
-                return "bottom";
-            }
+            if (this.currentMode === ChartMode.build) { return "start"; } else { return "middle"; }
         });
 
         node.select("g.label text[data-id='description']").text(function (d) {
@@ -605,9 +599,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             else
                 return d.IsSelected || d.IsGrandParent ? "" : d.Description;
         }).attr("text-anchor", (d) => {
-            if (this.currentMode === ChartMode.build) { return "start"; } else {
-                return "bottom";
-            }
+            if (this.currentMode === ChartMode.build) { return "start"; } else { return "middle"; }
         });
 
 
@@ -635,8 +627,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 }
                 return "translate(" + margin + ",0)";
             } else {
-                let x = Math.round(this.labelWidths[0][index].getBoundingClientRect()["width"]);
-                return "translate(" + -Math.abs(x / 2) + "," + margin + ")";
+                return "translate(0," + margin + ")";
             }
         });
 
@@ -663,8 +654,12 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             return "translate(" + x + ",0)";
         });
 
-        node.select(CIRCLE).attr("class", function (d) {
-            return d.IsSelected ? SELECTED_CIRCLE : DEFAULT_CIRCLE;
+        node.select(CIRCLE).attr("class", (d) => {
+            if (this.currentMode === ChartMode.build) {
+                return d.IsSelected ? SELECTED_CIRCLE : DEFAULT_CIRCLE;
+            } else {
+                return DEFAULT_CIRCLE;
+            }
         });
 
         // Transition nodes to their new position.
@@ -688,7 +683,10 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 else if (d.IsGrandParent === true) { return GRANDPARENT_RADIUS; }
                 else { return DEFAULT_RADIUS; }
             })
-            .attr("class", function (d) {
+            .attr("class", (d) => {
+                if (this.currentMode === ChartMode.report) {
+                    return DEFAULT_CIRCLE;
+                }
                 if (d.IsSelected && d.IsStaging && d.NodeID === -1) { return STAGED_CIRCLE; }
                 if (d.IsSelected) { return SELECTED_CIRCLE; }
                 else if (d.IsSibling) { return DEFAULT_CIRCLE + " sibling"; }
@@ -749,7 +747,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
         link.style("stroke", (d) => {
             if (this.currentMode === ChartMode.report) {
-                return "#ccc";
+                return "rgba(204, 204, 204,0.5)";
             }
             else {
                 return (d.source.IsSelected ? "#ccc" : "none");
