@@ -1,11 +1,12 @@
-.png-wrap {   
+.png-wrap {
     width: 140px;
     height: 20px;
     position: fixed;
     left: 1200px;
     bottom: 80px;
 }
-.waves-effect{
+
+.waves-effect {
     background-color: #0097FF;
-     padding: 0 1rem;
+    padding: 0 1rem;
 }

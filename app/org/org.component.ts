@@ -4,8 +4,8 @@ import { CanActivate, Router } from "@angular/router-deprecated";
 import { tokenNotExpired } from "angular2-jwt";
 
 import { AddNodeComponent } from "./add-node/add-node.component";
-import { ConvertJSONToCSV } from "./convertJSONToCSV/convertJSONToCSV.component";
-import { ConvertTreeToPNG } from "./convertTreeToPNG/convertTreeToPNG.component";
+import { ConvertJSONToCSVComponent } from "./convertJSONToCSV/convertJSONToCSV.component";
+import { ConvertTreeToPNGComponent } from "./convertTreeToPNG/convertTreeToPNG.component";
 import { OrgNodeDetailComponent } from "./org-node-detail/index";
 import { OrgChartModel, OrgNodeModel, OrgService, ChartMode} from "./shared/index";
 import { OrgTreeComponent } from "./d3-tree/org-tree.component";
@@ -21,7 +21,7 @@ const AUTHPANEL_OFFSET: number = 75;
 
 @Component({
     selector: "sg-origami-org",
-    directives: [OrgTreeComponent, OrgNodeDetailComponent, ConvertJSONToCSV, ConvertTreeToPNG],
+    directives: [OrgTreeComponent, OrgNodeDetailComponent, ConvertJSONToCSVComponent, ConvertTreeToPNGComponent],
     templateUrl: "app/org/org.component.html",
     styleUrls: ["app/org/org.component.css"],
     providers: [OrgService, HTTP_PROVIDERS]
