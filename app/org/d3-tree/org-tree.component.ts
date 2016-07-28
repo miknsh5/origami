@@ -127,8 +127,8 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         document.addEventListener("click", (ev: MouseEvent) => this.bodyClicked(this.selectedOrgNode, ev), false);
     }
 
-    childCount(level, n) {
-        let children: any = n.children;
+    childCount(level, node) {
+        let children: any = node.children;
         if (children && children.length > 0) {
             if (this.levelDepth.length <= level + 1)
                 this.levelDepth.push(0);
