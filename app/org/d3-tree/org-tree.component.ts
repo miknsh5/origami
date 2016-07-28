@@ -597,15 +597,15 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             return d.IsSelected || d.IsGrandParent ? "" : d.NodeFirstName + " " + d.NodeLastName;
         }).attr("text-anchor", (d) => {
             if (this.currentMode === ChartMode.build) { return "start"; } else {
-                return "bottom"
+                return "bottom";
             }
         });
 
         node.select("g.label text[data-id='description']").text(function (d) {
-            return d.IsSelected || d.IsGrandParent ? "" : d.Description
+            return d.IsSelected || d.IsGrandParent ? "" : d.Description;
         }).attr("text-anchor", (d) => {
             if (this.currentMode === ChartMode.build) { return "start"; } else {
-                return "bottom"
+                return "bottom";
             }
         });
 
@@ -690,8 +690,9 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         let nodeExit = node.exit().transition().delay(100).
             duration(DURATION)
             .attr("transform", (d) => {
-                if (this.currentMode === ChartMode.build)
-                { return "translate(" + source.y + "," + source.x + ")"; }
+                if (this.currentMode === ChartMode.build) {
+                    return "translate(" + source.y + "," + source.x + ")";
+                }
                 else {
                     return "translate(" + source.x + "," + source.y + ")";
                 }

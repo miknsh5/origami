@@ -5,7 +5,7 @@ import { tokenNotExpired } from "angular2-jwt";
 
 import { AddNodeComponent } from "./add-node/add-node.component";
 import { ConvertJSONToCSV } from "./convertJSONToCSV/convertJSONToCSV.component";
-import { ConvertTreeToPNG } from "./convertTreeToPNG/convertTreeToPNG.component"
+import { ConvertTreeToPNG } from "./convertTreeToPNG/convertTreeToPNG.component";
 import { OrgNodeDetailComponent } from "./org-node-detail/index";
 import { OrgChartModel, OrgNodeModel, OrgService, ChartMode} from "./shared/index";
 import { OrgTreeComponent } from "./d3-tree/org-tree.component";
