@@ -48,6 +48,7 @@ const SIBLING_FONTSIZE = 17.3;
 export class OrgTreeComponent implements OnInit, OnChanges {
     tree: any;
     diagonal: any;
+    descriptionWidths: any;
     svg: any;
     graph: any;
     root: any;
@@ -546,7 +547,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 if (this.currentMode === ChartMode.report) {
                     transformString = "translate(" + source.x0 + "," + source.y0 + ")";
                 }
-
                 return transformString;
             })
             .on("click", (ev) => this.nodeClicked(ev));
@@ -556,14 +556,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 return d.IsStaging && d.NodeID === -1 ? " " : "url(home#drop-shadow)";
             });
 
-        nodeEnter.append(TEXT)
-            .attr("dy", ".35em")
-            .attr("text-anchor", (d) => {
-                if (this.currentMode === ChartMode.build) { return "start"; } else {
-                    return "bottom";
-                }
-            })
-            .style("fill-opacity", 1e-6);
         nodeEnter.append(TEXT)
             .attr("id", "abbr")
             .attr("dy", ".35em")
@@ -585,36 +577,57 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             else { return DEFAULT_FONTSIZE + "px"; }
         });
 
-        node.select(TEXT).text((d) => {
-            if (this.currentMode === ChartMode.report) {
-                return d.NodeFirstName;
+        nodeEnter.append("g")
+            .attr("class", "label");
+        node.select("g.label").attr("transform", function (d) {
+            if (d.IsSibling) {
+                return "translate(" + DEFAULT_MARGIN * 4 + ",0)";
             }
             else {
-                return d.IsSelected || d.IsGrandParent ? "" : d.NodeFirstName;
+                return "translate(" + (DEFAULT_MARGIN * 3) + ",0)";
             }
-        })
-            .attr("class", "label")
-            .attr("text-anchor", (d) => {
-                if (this.currentMode === ChartMode.build) { return "start"; } else {
-                    return "bottom";
-                }
-            });
+        });
+
+        nodeEnter.select("g.label").append(TEXT)
+            .attr("data-id", "fullName");
+
+        nodeEnter.select("g.label").append(TEXT)
+            .attr("data-id", "description")
+            .attr("dy", "1.5em");
+
+        node.select("g.label text[data-id='fullName']").text(function (d) {
+            return d.IsSelected || d.IsGrandParent ? "" : d.NodeFirstName + " " + d.NodeLastName;
+        }).attr("text-anchor", (d) => {
+            if (this.currentMode === ChartMode.build) { return "start"; } else {
+                return "bottom";
+            }
+        });
+
+        node.select("g.label text[data-id='description']").text(function (d) {
+            return d.IsSelected || d.IsGrandParent ? "" : d.Description;
+        }).attr("text-anchor", (d) => {
+            if (this.currentMode === ChartMode.build) { return "start"; } else {
+                return "bottom";
+            }
+        });
+
 
         if (this.currentMode === ChartMode.build) {
-            node.select(TEXT).attr("x", function (d) {
+            node.select("g.label ").attr("x", function (d) {
                 if (d.IsParent === true || d.IsChild === true) { return PARENTCHILD_RADIUS + DEFAULT_MARGIN; }
                 else { return SIBLING_RADIUS + DEFAULT_MARGIN; }
             });
         }
         else {
-            node.select(TEXT).attr("y", 30);
+            node.select("g.label ").attr("y", 30);
 
         }
 
         // used to get the label width of each node
-        this.labelWidths = node.select("text.label").each(function (d) {
+        this.labelWidths = node.select("g.label").each(function (d) {
             return d3.select(this).node();
         });
+
 
         // creates a polygon to indicate it has child(s)
         nodeEnter.append(POLYGON)
@@ -673,7 +686,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 return d.IsStaging && d.NodeID === -1 ? " " : "url(home#drop-shadow)";
             });
 
-        nodeUpdate.select(TEXT)
+        nodeUpdate.select("g.label ")
             .style({ "fill-opacity": 1, "fill": "#979797" });
 
         let nodeExit = node.exit().transition().delay(100).
@@ -691,7 +704,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         nodeExit.select(CIRCLE)
             .attr("r", 1e-6);
 
-        nodeExit.select(TEXT)
+        nodeExit.select("g.label ")
             .style("fill-opacity", 1e-6);
 
         node.each(function (d) {

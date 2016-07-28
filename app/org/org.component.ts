@@ -5,7 +5,7 @@ import { tokenNotExpired } from "angular2-jwt";
 
 import { AddNodeComponent } from "./add-node/add-node.component";
 import { ConvertJSONToCSV } from "./convertJSONToCSV/convertJSONToCSV.component";
-import { ConvertTreeToPNG } from "./convertTreeToPNG/convertTreeToPNG.component"
+import { ConvertTreeToPNG } from "./convertTreeToPNG/convertTreeToPNG.component";
 import { OrgNodeDetailComponent } from "./org-node-detail/index";
 import { OrgChartModel, OrgNodeModel, OrgService, ChartMode} from "./shared/index";
 import { OrgTreeComponent } from "./d3-tree/org-tree.component";
@@ -32,7 +32,9 @@ export class OrgComponent {
     orgNodes: OrgNodeModel[];
     svgWidth: number;
     svgHeight: number;
-    isCurrentChartInReportMode: boolean;
+
+
+
     @Output() currentChartMode: ChartMode;
     @Output() treeJson: any;
     @Output() selectedNode: OrgNodeModel;
@@ -62,12 +64,11 @@ export class OrgComponent {
     }
     changeToBuildMode() {
         this.currentChartMode = ChartMode.build;
-        this.isCurrentChartInReportMode = false;
     }
     changeToReportMode() {
         this.currentChartMode = ChartMode.report;
-        this.isCurrentChartInReportMode = true;
     }
+
     onNodeSelected(node) {
         let nodeID = this.selectedNode ? this.selectedNode.NodeID : 0;
         this.selectedNode = node;
