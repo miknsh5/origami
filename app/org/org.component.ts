@@ -33,8 +33,6 @@ export class OrgComponent {
     svgWidth: number;
     svgHeight: number;
 
-
-
     @Output() currentChartMode: ChartMode;
     @Output() treeJson: any;
     @Output() selectedNode: OrgNodeModel;

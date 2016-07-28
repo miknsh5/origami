@@ -30,6 +30,8 @@ node circle {
   font-size: 15px;
   font-weight: normal;
   fill: #979797;
+  white-space: pre;
+  text-overflow: ellipsis;
 }
 
 .link {
