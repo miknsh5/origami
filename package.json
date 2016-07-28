@@ -34,7 +34,8 @@
     "typings": "^1.0.4",
     "bootstrap": "^3.3.6",
     "es6-promise": "^3.0.2",
-    "angular2-jwt": "^0.1.6"
+    "angular2-jwt": "^0.1.6",
+    "save-svg-as-png": "1.0.3"
   },
   "devDependencies": {
     "codelyzer": "0.0.19",

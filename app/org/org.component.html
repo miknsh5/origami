@@ -1,35 +1,36 @@
 <div class="auth-panel">
     <h2>Organization Chart</h2>
-    <button (click)="logout()">
+    <button  class=" btn-white" (click)="logout()">
         Logout
      </button>
-    <button (click)="getAllNodes()">
+    <button  class=" btn-white" (click)="getAllNodes()">
         Load Data
+    </button>    
+</div>
+
+<div class="modes-wrap ">
+    <button class=" btn-white" (click)="changeToBuildMode()">
+        Build
+    </button>
+    <br/>
+    <button class=" btn-white" (click)="changeToReportMode()">
+        Report
     </button>
 </div>
 
 <div class="main-canvas" *ngIf="orgChart" (window:resize)="onResize($event)">
-    <!--<h1>Welcome to {{orgChart.OrganizationName}}</h1>-->
-    <sg-org-tree 
-        [treeData]="treeJson" 
-        [width]="svgWidth"
-        [height]="svgHeight" 
-        [isAddOrEditModeEnabled]= "isAddOrEditMode"
-        (selectNode)="onNodeSelected($event)"
-        (switchToAddMode)="onSwitchedToAddMode($event)">
+    <sg-org-tree [treeData]="treeJson" [width]="svgWidth" [height]="svgHeight" [currentMode]="currentChartMode" [isAddOrEditModeEnabled]="isAddOrEditMode"
+        (selectNode)="onNodeSelected($event)" (switchToAddMode)="onSwitchedToAddMode($event)">
     </sg-org-tree>
 </div>
 
-<sg-org-node-detail 
-    #nodeDetail
-    [selectedOrgNode]="selectedNode"
-    [isAddOrEditModeEnabled]= "detailAddOrEditMode"
-    (deleteNode)="onNodeDeleted($event)" 
-    (updateNode)="onNodeUpdated($event)"
-    (addNode)="onNodeAdded($event)"
-    (setAddOrEditModeValue)="onAddOrEditModeValueSet($event)">
-  </sg-org-node-detail>
-  
-<div>
-   
+<div *ngIf="currentChartMode===1">
+    <sg-org-node-detail #nodeDetail [selectedOrgNode]="selectedNode" [isAddOrEditModeEnabled]="detailAddOrEditMode" (deleteNode)="onNodeDeleted($event)"
+        (updateNode)="onNodeUpdated($event)" (addNode)="onNodeAdded($event)" (setAddOrEditModeValue)="onAddOrEditModeValueSet($event)">
+    </sg-org-node-detail>
+</div>
+
+<div  *ngIf="currentChartMode===3">
+    <sg-origami-csv [orgChartData]="orgChart"></sg-origami-csv>
+    <sg-origami-png [orgName]="orgChart.OrganizationName"></sg-origami-png>
 </div>
