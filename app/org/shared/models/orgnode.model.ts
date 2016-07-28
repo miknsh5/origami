@@ -14,4 +14,5 @@ export class OrgNodeModel {
     IsStaging: boolean;
     IsAncestor: boolean;
     children: OrgNodeModel[];
+    IsFakeRoot: boolean;
 }

@@ -150,9 +150,11 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     // TODO:- we should refactor this method to work depending on the kind of change that has taken place. 
     // It re-renders on all kinds of changes
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
+
         if (this.tree != null) {
             this.previousRoot = this.root;
             this.root = this.treeData[0];
+            this.root.IsFakeRoot = true;
             if (changes["currentMode"]) {
                 this.initializeTreeAsPerMode();
                 this.expandTree(this.root);
@@ -691,8 +693,13 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
         nodeExit.select(TEXT)
             .style("fill-opacity", 1e-6);
-    }
 
+        node.each(function (d) {
+            if (d.IsFakeRoot)
+                d3.select(this).remove();
+        });
+
+    }
     renderOrUpdateLinks(source) {
         let sourceCoords = { x: source.x0, y: source.y0 };
         let diagCoords = this.diagonal({ source: sourceCoords, target: sourceCoords });
@@ -736,6 +743,10 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 return diagCoords2;
             })
             .remove();
+        link.each(function (d) {
+            if (d.source.IsFakeRoot)
+                d3.select(this).remove();
+        });
     }
 
     setPeerReporteeNode(nodeName, x, y, className) {
@@ -860,6 +871,9 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                     let parentNode = node.parent;
                     this.highlightAndCenterNode(parentNode);
                 }
+                else {
+                    this.addNewRootNode(this.selectedOrgNode);
+                }
             }
             // right arrow
             else if ((event as KeyboardEvent).keyCode === 39) {
@@ -970,24 +984,22 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         }
     }
 
-    addEmptyChildToSelectedOrgNode(parentID: number, node: OrgNodeModel) {
-        if (!this.selectedOrgNode) {
-            return;
-        }
 
-        if (node.NodeID === parentID) {
-            let newNode = this.addEmptyChildToParent(node);
+    addParentToNode(isFake: boolean, node: OrgNodeModel) {
+        if (!node.ParentNodeID) {
+            let newNode = new OrgNodeModel();
+
+            newNode.NodeFirstName = "";
+            newNode.NodeLastName = "";
+            newNode.Description = "";
+            newNode.OrgID = node.OrgID;
+            newNode.NodeID = -1;
+            newNode.IsStaging = true;
+            newNode.IsFakeRoot = isFake;
+            newNode.children = new Array<OrgNodeModel>();
+            newNode.children.push(node);
+            node.ParentNodeID = newNode.NodeID;
             return newNode;
-        } else {
-            if (node.children) {
-                for (let index = 0; index < node.children.length; index++) {
-                    let element = node.children[index];
-                    let newNode = this.addEmptyChildToSelectedOrgNode(parentID, element);
-                    if (newNode != null) {
-                        return newNode;
-                    }
-                }
-            }
         }
     }
 
@@ -1105,6 +1117,14 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         return updatedNode.NodeID === currentNode.NodeID;
     }
 
+    private addNewRootNode(childNode) {
+
+        let rootNode = this.addParentToNode(false, childNode as OrgNodeModel);
+        this.switchToAddMode.emit(rootNode);
+        this.highlightAndCenterNode(rootNode);
+        this.hideAllArrows();
+
+    }
     private addNewNode(node) {
         let newNode = this.addEmptyChildToParent(node as OrgNodeModel);
         this.switchToAddMode.emit(newNode);

@@ -8,7 +8,7 @@ import { OrgNodeModel, OrgService } from "../shared/index";
     selector: "sg-org-node-detail",
     templateUrl: "app/org/org-node-detail/org-node-detail.component.html",
     styleUrls: ["app/org/org-node-detail/org-node-detail.component.css", "app/style.css"],
-    directives: [ REACTIVE_FORM_DIRECTIVES, COMMON_DIRECTIVES]
+    directives: [REACTIVE_FORM_DIRECTIVES, COMMON_DIRECTIVES]
 })
 
 export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
@@ -22,7 +22,10 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
     @ViewChild("firstName") firstName;
     @ViewChild("lastName") lastName;
     @ViewChild("description") description;
-
+    isInputFocused: boolean;
+    private editNodeDetails: OrgNodeModel;
+    private orgNode: OrgNodeModel;
+    private isFormSubmitted: boolean;
     @HostListener("window:keydown", ["$event"])
     onKeyDown(event: any) {
         event.stopPropagation();
@@ -57,10 +60,7 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
         }
     }
 
-    isInputFocused: boolean;
-    private editNodeDetails: OrgNodeModel;
-    private orgNode: OrgNodeModel;
-    private isFormSubmitted: boolean;
+
 
     constructor(private orgService: OrgService, private renderer: Renderer) { }
 
@@ -124,7 +124,12 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
                 this.editNodeDetails.ParentNodeID = this.orgNode.ParentNodeID;
 
                 if (this.orgNode.NodeID === -1) {
-                    this.addNewNode(this.editNodeDetails);
+                    if (this.orgNode.ParentNodeID === 0) {
+                        this.addNewParentNode(this.editNodeDetails);
+                    }
+                    else {
+                        this.addNewNode(this.editNodeDetails);
+                    }
                 } else {
                     this.editNode(this.editNodeDetails);
                 }
@@ -180,6 +185,11 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
         return false;
     }
 
+    private emitAddUpdateNodeNotification(data: any) {
+        if (data) {
+            // call emitAddNodeNotification for root node and emitUpdateNodeNotification for children
+        }
+    }
     private emitAddNodeNotification(data: OrgNodeModel) {
         if (data) {
             this.addNode.emit(data);
@@ -190,6 +200,16 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
             this.isFormSubmitted = false;
             this.setAddOrEditModeValue.emit(false);
         }
+    }
+
+    private addNewParentNode(node: OrgNodeModel) {
+        if (!node) { return; }
+        // we don"t really need to send any child info to the server at this point
+        node.children = null;
+        /* this.orgService.addRootNode(node)
+             .subscribe(data => this.emitAddUpdateNodeNotification(data),
+             error => this.handleError(error),
+             () => console.log("Node Added Complete"));*/
     }
 
     private addNewNode(node: OrgNodeModel) {
