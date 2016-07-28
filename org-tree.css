@@ -27,9 +27,16 @@ node circle {
 }
 
 .node .label text {
-  font-size: 15px;
-  font-weight: normal;
+  font-size: 13px;
+  font-weight: bold;
   fill: #979797;
+  white-space: pre;
+  text-overflow: ellipsis;
+}
+
+.node .label text[data-id="description"] {
+  font-size: 10px;
+  font-weight: normal;
 }
 
 .link {

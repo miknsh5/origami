@@ -88,24 +88,22 @@
 }
 
 .modes-wrap {
-    height: 100px;
-    min-width: 25px;
-    position: absolute;
-    top:0;
-    bottom: 0;
+  height: 100px;
+  min-width: 25px;
+  position: absolute;
+  top: 50px;
+  left: 30px
+}
 
-    left: 0;  
-
-
-    margin: auto;
-    /*box-shadow: 0 2px 4px 0 var(--black-50);*/
+.modes-wrap li:first-child {
+  margin: 0 5px 5px 0;
 }
 
 @media only screen and (max-width:993px) {
   .auth-panel {
     position: relative;
     top: 0;
-    right: 20px;
+    right: 0;
     float: right;
   }
 }
@@ -113,5 +111,9 @@
 @media only screen and (max-width:600px) {
   .main-canvas {
     height: auto;
+  }
+  .modes-wrap {
+    top: 110px;
+    left: 10px;
   }
 }
