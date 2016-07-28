@@ -33,7 +33,7 @@ export class OrgComponent {
     svgWidth: number;
     svgHeight: number;
 
-    isCurrentChartInReportMode: boolean;
+
 
     @Output() currentChartMode: ChartMode;
     @Output() treeJson: any;
@@ -64,14 +64,9 @@ export class OrgComponent {
     }
     changeToBuildMode() {
         this.currentChartMode = ChartMode.build;
-
-        this.isCurrentChartInReportMode = false;
     }
     changeToReportMode() {
         this.currentChartMode = ChartMode.report;
-        this.isCurrentChartInReportMode = true;
-
-
     }
 
     onNodeSelected(node) {
