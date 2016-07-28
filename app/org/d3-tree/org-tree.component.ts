@@ -119,7 +119,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         };
         this.highlightSelectedNode(this.root);
         this.render(this.root);
-        this.calculateLabelWidth();
+        this.calculateLavelDepth();
         this.resizeLinesArrowsAndSvg();
         this.centerNode(this.root);
 
@@ -172,7 +172,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             if (changes["currentMode"]) {
                 this.initializeTreeAsPerMode();
                 this.expandTree(this.root);
-                this.calculateLabelWidth();
+                this.calculateLavelDepth();
                 this.resizeLinesArrowsAndSvg();
                 this.highlightAndCenterNode(this.root);
                 return;
@@ -185,7 +185,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 raiseSelectedEvent = false;
             }
 
-            this.calculateLabelWidth();
+            this.calculateLavelDepth();
             this.resizeLinesArrowsAndSvg();
 
             if (!this.root) {
@@ -248,7 +248,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         console.log("No nodes in system");
     }
 
-    calculateLabelWidth() {
+    calculateLavelDepth() {
         this.levelDepth = [1];
         if (this.currentMode === ChartMode.build) {
             this.childCount(0, this.selectedOrgNode);
