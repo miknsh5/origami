@@ -119,13 +119,13 @@ export class OrgComponent {
     onAddOrEditModeValueSet(value: boolean) {
         this.isAddOrEditMode = value;
         this.detailAddOrEditMode = value;
-        this.switchReportViewTextClass(value);       
+        this.switchReportViewTextClass(value);
     }
     switchReportViewTextClass(value: boolean) {
         if (value) {
             this.reportView = "nav-report inactive";
         }
-        else {           
+        else {
             this.reportView = "nav-report ";
         }
     }
@@ -164,10 +164,10 @@ export class OrgComponent {
         this.treeJson = JSON.parse(JSON.stringify(this.orgNodes));
         if (this.treeJson && this.treeJson.length === 0) {
             this.reportView = "nav-report inactive";
-        } 
+        }
         if (this.selectedNode && this.selectedNode.NodeID === -1) {
-                this.reportView = "nav-report inactive";
-            }       
+            this.reportView = "nav-report inactive";
+        }
         // alert(JSON.stringify(this.orgNodes));
     }
 
