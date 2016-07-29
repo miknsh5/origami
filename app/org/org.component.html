@@ -1,17 +1,19 @@
 <div class="auth-panel">
-    <h3>Organization Chart</h3>
+    <h4>Organization Chart</h4>
     <button  class=" btn-white" (click)="logout()">
         Logout
      </button>
-    <button  class=" btn-white" (click)="getAllNodes()">
+    <button class=" btn-white" (click)="getAllNodes()">
         Load Data
-    </button>    
+    </button>
 </div>
 
 <div class="modes-wrap ">
     <ul>
-      <li><a class="btn-large btn-floating blue-grey darken-3" (click)="changeToBuildMode()"><i class="large material-icons">insert_chart</i></a> Build </li>
-      <li><a class="btn-large btn-floating blue-grey darken-3" (click)="changeToReportMode()"><i class="large material-icons">assignment</i></a> Report </li>
+        <li [ngClass]= "buildView" (click)="changeToBuildMode()"><a> Build</a ></li>       
+        <li *ngIf="currentChartMode!==2" class="nav-explore inactive"><a>Explore</a></li>       
+        <li [ngClass]="reportView" (click)="changeToReportMode()"><a>Report</a> </li>
+      
     </ul>
 </div>
 
@@ -27,7 +29,7 @@
     </sg-org-node-detail>
 </div>
 
-<div  *ngIf="currentChartMode===3">
+<div *ngIf="currentChartMode===3">
     <sg-origami-csv [orgChartData]="orgChart"></sg-origami-csv>
     <sg-origami-png [orgName]="orgChart.OrganizationName"></sg-origami-png>
 </div>
