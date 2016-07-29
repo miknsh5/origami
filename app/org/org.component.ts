@@ -32,6 +32,10 @@ export class OrgComponent {
     orgNodes: OrgNodeModel[];
     svgWidth: number;
     svgHeight: number;
+    buildView: any;
+    reportView: any;
+    buildViewText: any;
+    reportViewText: any;
 
     @Output() currentChartMode: ChartMode;
     @Output() treeJson: any;
@@ -44,6 +48,10 @@ export class OrgComponent {
         this.svgWidth = this.getSvgWidth();
         this.svgHeight = this.getSvgHeight();
         this.currentChartMode = ChartMode.build;
+        this.buildView = "nav-build-active";
+        this.reportView = "nav-report";
+        this.buildViewText = "view-active-text";
+        this.reportViewText = "view-active-text";
     }
 
     onResize(event) {
@@ -62,9 +70,16 @@ export class OrgComponent {
     }
     changeToBuildMode() {
         this.currentChartMode = ChartMode.build;
+        this.buildView = "nav-build-active";
+        this.reportView = "nav-report"
+
     }
     changeToReportMode() {
-        this.currentChartMode = ChartMode.report;
+        if (!this.isAddOrEditMode) {
+            this.currentChartMode = ChartMode.report;
+            this.buildView = "nav-build";
+            this.reportView = "nav-report-active";
+        }
     }
 
     onNodeSelected(node) {
@@ -100,11 +115,23 @@ export class OrgComponent {
         this.isAddOrEditMode = true;
         this.detailAddOrEditMode = true;
         this.selectedNode = node;
+        this.reportView = "nav-report";
+        this.reportViewText = "view-inactive-text";
     }
 
     onAddOrEditModeValueSet(value: boolean) {
         this.isAddOrEditMode = value;
         this.detailAddOrEditMode = value;
+        this.switchReportViewTextClass(value);
+    }
+
+    switchReportViewTextClass(value: boolean) {
+        if (value) {
+            this.reportViewText = "view-inactive-text";
+        }
+        else {
+            this.reportViewText = "view-active-text";
+        }
     }
 
     addChildToSelectedOrgNode(newNode: OrgNodeModel, node: OrgNodeModel) {
@@ -138,6 +165,9 @@ export class OrgComponent {
 
     updateJSON() {
         this.treeJson = JSON.parse(JSON.stringify(this.orgNodes));
+        if (this.treeJson && this.treeJson.length === 0) {
+            this.reportViewText = "view-inactive-text";
+        }
         // alert(JSON.stringify(this.orgNodes));
     }
 
@@ -282,6 +312,10 @@ export class OrgComponent {
         this.orgNodes = JSON.parse(JSON.stringify(this.orgChart.OrgNodes));
         this.treeJson = JSON.parse(JSON.stringify(this.orgNodes));
         localStorage.setItem("org_id", this.orgChart.OrgID.toString());
+        if (this.treeJson && this.treeJson.length === 0) {
+            this.reportView = "nav-report";
+            this.reportViewText = "view-inactive-text";
+        }
     }
 
 }   

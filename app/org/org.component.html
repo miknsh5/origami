@@ -10,13 +10,10 @@
 
 <div class="modes-wrap ">
     <ul>
-        <li *ngIf="currentChartMode!==1" class="nav-build" (click)="changeToBuildMode()"><a class="view-inactive-text"> Build</a ></li>
-        <li *ngIf="currentChartMode===1" class="nav-build-active" ><a class="view-active-text"> Build</a ></li>
-        <li *ngIf="currentChartMode!==2" class="nav-explore "><a class="view-inactive-text">Explore</a></li>
-        <li *ngIf="currentChartMode===2" class="nav-explore-active "><a class="view-active-text">Explore</a></li>
-        <li *ngIf="currentChartMode!==3 && !isAddOrEditMode " class="nav-report" (click)="changeToReportMode()"><a class="view-inactive-text">Report</a> </li>
-        <li *ngIf="currentChartMode===3 " class="nav-report-active"><a class="view-active-text">Report</a> </li>
-
+        <li [ngClass]= "buildView" (click)="changeToBuildMode()"><a [ngClass]="buildViewText"> Build</a ></li>       
+        <li *ngIf="currentChartMode!==2" class="nav-explore "><a class="view-inactive-text">Explore</a></li>       
+        <li [ngClass]="reportView" (click)="changeToReportMode()"><a [ngClass]="reportViewText">Report</a> </li>
+      
     </ul>
 </div>
 

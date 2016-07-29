@@ -140,7 +140,7 @@
 }
 
 .nav-report-active{
-    background-image: url("app/images/nav-explore-active.png");
+    background-image: url("app/images/nav-report-active.png");
     width: 50px;
     height: 45px;
     object-fit: contain;
