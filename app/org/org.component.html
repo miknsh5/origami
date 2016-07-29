@@ -1,17 +1,22 @@
 <div class="auth-panel">
     <h2>Organization Chart</h2>
-    <button  class=" btn-white" (click)="logout()">
+    <button class=" btn-white" (click)="logout()">
         Logout
      </button>
-    <button  class=" btn-white" (click)="getAllNodes()">
+    <button class=" btn-white" (click)="getAllNodes()">
         Load Data
-    </button>    
+    </button>
 </div>
 
 <div class="modes-wrap ">
     <ul>
-      <li><a class="btn-large btn-floating blue-grey darken-3" (click)="changeToBuildMode()"><i class="large material-icons">insert_chart</i></a> Build </li>
-      <li><a class="btn-large btn-floating blue-grey darken-3" (click)="changeToReportMode()"><i class="large material-icons">assignment</i></a> Report </li>
+        <li *ngIf="currentChartMode!==1" class="nav-build" (click)="changeToBuildMode()"><a class="view-inactive-text"> Build</a ></li>
+        <li *ngIf="currentChartMode===1" class="nav-build-active" ><a class="view-active-text"> Build</a ></li>
+        <li *ngIf="currentChartMode!==2" class="nav-explore "><a class="view-inactive-text">Explore</a></li>
+        <li *ngIf="currentChartMode===2" class="nav-explore-active "><a class="view-active-text">Explore</a></li>
+        <li *ngIf="currentChartMode!==3 && !isAddOrEditMode " class="nav-report" (click)="changeToReportMode()"><a class="view-inactive-text">Report</a> </li>
+        <li *ngIf="currentChartMode===3 " class="nav-report-active"><a class="view-active-text">Report</a> </li>
+
     </ul>
 </div>
 
@@ -27,7 +32,7 @@
     </sg-org-node-detail>
 </div>
 
-<div  *ngIf="currentChartMode===3">
+<div *ngIf="currentChartMode===3">
     <sg-origami-csv [orgChartData]="orgChart"></sg-origami-csv>
     <sg-origami-png [orgName]="orgChart.OrganizationName"></sg-origami-png>
 </div>

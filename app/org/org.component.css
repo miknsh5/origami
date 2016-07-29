@@ -99,6 +99,74 @@
   margin: 0 5px 5px 0;
 }
 
+.nav-build {
+    background-image: url("app/images/nav-build.png");
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+    background-repeat: no-repeat;
+}
+
+.nav-build-active{
+   background-image: url("app/images/nav-build-active.png");
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+    background-repeat: no-repeat;
+}
+
+.nav-explore {
+    background-image: url("app/images/nav-explore.png");
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+    background-repeat: no-repeat;
+}
+
+.nav-explore-active {
+    background-image: url("app/images/nav-explore-active.png");
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+    background-repeat: no-repeat;
+}
+
+.nav-report {
+    background-image: url("app/images/nav-report.png");
+    width: 50px;
+    height: 45px;
+    object-fit: contain;
+    background-repeat: no-repeat;
+}
+
+.nav-report-active{
+    background-image: url("app/images/nav-explore-active.png");
+    width: 50px;
+    height: 45px;
+    object-fit: contain;
+    background-repeat: no-repeat;
+}
+
+.view-inactive-text {
+  width: 28px;
+  line-height: 43px;
+  font-family: HelveticaNeue;
+  font-size: 12px;
+  font-weight: 400;
+  color: #cfd8dc; 
+  margin: 55px;
+}
+
+.view-active-text {
+  width: 28px;
+  line-height: 43px;
+  font-family: HelveticaNeue;
+  font-size: 12px;
+  font-weight: 400;
+  color: #607d8b;; 
+  margin: 55px;
+}
+
 @media only screen and (max-width:993px) {
   .auth-panel {
     position: relative;
