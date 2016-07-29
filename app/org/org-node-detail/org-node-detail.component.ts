@@ -148,6 +148,11 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
             node.NodeID = this.orgNode.NodeID;
             node.IsStaging = this.orgNode.IsStaging;
             node.Description = this.orgNode.Description;
+            node.IsFakeRoot = this.orgNode.IsFakeRoot;
+            node.IsNewRoot = this.orgNode.IsNewRoot;
+            if (node.IsNewRoot) {
+                node.children = this.orgNode.children;
+            }
             if (this.isFirstAndLastNameInitialChanged(target.value, ngControl)) {
                 if (ngControl.name === "firstName") {
                     this.orgNode.NodeFirstName = node.NodeFirstName = ngControl.value;
@@ -185,8 +190,12 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
         return false;
     }
 
-    private emitAddUpdateNodeNotification(data: any) {
+    private emitAddUpdateNodeNotification(data: OrgNodeModel) {
         if (data) {
+            this.emitAddNodeNotification(data);
+            data.children.forEach(element => {
+                this.updateNode.emit(this.editNodeDetails);
+            });
             // call emitAddNodeNotification for root node and emitUpdateNodeNotification for children
         }
     }

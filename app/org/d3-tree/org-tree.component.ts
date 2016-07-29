@@ -155,7 +155,10 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         if (this.tree != null) {
             this.previousRoot = this.root;
             this.root = this.treeData[0];
-            this.root.IsFakeRoot = true;
+
+            if (changes["isAddOrEditModeEnabled"]) {
+                return;
+            }
             if (changes["currentMode"]) {
                 this.initializeTreeAsPerMode();
                 this.expandTree(this.root);
@@ -1009,6 +1012,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             newNode.NodeID = -1;
             newNode.IsStaging = true;
             newNode.IsFakeRoot = isFake;
+            newNode.IsNewRoot = true;
             newNode.children = new Array<OrgNodeModel>();
             newNode.children.push(node);
             node.ParentNodeID = newNode.NodeID;
@@ -1133,6 +1137,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     private addNewRootNode(childNode) {
 
         let rootNode = this.addParentToNode(false, childNode as OrgNodeModel);
+        this.root = rootNode;
         this.switchToAddMode.emit(rootNode);
         this.highlightAndCenterNode(rootNode);
         this.hideAllArrows();

@@ -15,4 +15,5 @@ export class OrgNodeModel {
     IsAncestor: boolean;
     children: OrgNodeModel[];
     IsFakeRoot: boolean;
+    IsNewRoot: boolean;
 }

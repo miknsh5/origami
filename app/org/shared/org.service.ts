@@ -10,7 +10,7 @@ export class OrgService {
     private updateUrl = "api/Org/EditNode";
     private deleteUrl = "api/Org/DeleteNode?nodeID=";
     private addUrl = "api/Org/AddNode";
-    private addRootNodeUrl = "";
+    private addRootNodeUrl = "api/Org/AddRootNode";
     constructor(private http: Http) { }
 
     getNodes(userProfile) {
