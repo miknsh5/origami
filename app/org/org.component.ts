@@ -79,6 +79,7 @@ export class OrgComponent {
                 this.detailAddOrEditMode = true;
             } else if (this.isAddOrEditMode && nodeID !== node.NodeID) {
                 this.isAddOrEditMode = false;
+                this.detailAddOrEditMode = false;
             }
         }
     }
