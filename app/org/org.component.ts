@@ -71,7 +71,7 @@ export class OrgComponent {
     changeToBuildMode() {
         this.currentChartMode = ChartMode.build;
         this.buildView = "nav-build-active";
-        this.reportView = "nav-report"
+        this.reportView = "nav-report";
 
     }
     changeToReportMode() {

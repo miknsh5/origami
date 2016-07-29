@@ -133,7 +133,7 @@ export class ConvertJSONToCSVComponent {
 
     private onClickDownloadTemplate() {
         // If JSONData is not an object then JSON.parse will parse the JSON string in an Object       
-        let data = new OrgNodeBaseModel()
+        let data = new OrgNodeBaseModel();
         let node = this.convertDataToBaseModel(data);
         let CSV = "";
 
