@@ -48,10 +48,8 @@ export class OrgComponent {
         this.svgWidth = this.getSvgWidth();
         this.svgHeight = this.getSvgHeight();
         this.currentChartMode = ChartMode.build;
-        this.buildView = "nav-build-active";
+        this.buildView = "nav-build active";
         this.reportView = "nav-report";
-        this.buildViewText = "view-active-text";
-        this.reportViewText = "view-active-text";
     }
 
     onResize(event) {
@@ -70,7 +68,7 @@ export class OrgComponent {
     }
     changeToBuildMode() {
         this.currentChartMode = ChartMode.build;
-        this.buildView = "nav-build-active";
+        this.buildView = "nav-build active";
         this.reportView = "nav-report";
 
     }
@@ -78,7 +76,7 @@ export class OrgComponent {
         if (!this.isAddOrEditMode) {
             this.currentChartMode = ChartMode.report;
             this.buildView = "nav-build";
-            this.reportView = "nav-report-active";
+            this.reportView = "nav-report active";
         }
     }
 
@@ -115,24 +113,23 @@ export class OrgComponent {
         this.isAddOrEditMode = true;
         this.detailAddOrEditMode = true;
         this.selectedNode = node;
-        this.reportView = "nav-report";
-        this.reportViewText = "view-inactive-text";
+        this.reportView = "nav-report inactive";
     }
 
     onAddOrEditModeValueSet(value: boolean) {
         this.isAddOrEditMode = value;
         this.detailAddOrEditMode = value;
-        this.switchReportViewTextClass(value);
+        this.switchReportViewTextClass(value);       
     }
-
     switchReportViewTextClass(value: boolean) {
         if (value) {
-            this.reportViewText = "view-inactive-text";
+            this.reportView = "nav-report inactive";
         }
-        else {
-            this.reportViewText = "view-active-text";
+        else {           
+            this.reportView = "nav-report ";
         }
     }
+
 
     addChildToSelectedOrgNode(newNode: OrgNodeModel, node: OrgNodeModel) {
         if (node) {
@@ -166,8 +163,11 @@ export class OrgComponent {
     updateJSON() {
         this.treeJson = JSON.parse(JSON.stringify(this.orgNodes));
         if (this.treeJson && this.treeJson.length === 0) {
-            this.reportViewText = "view-inactive-text";
-        }
+            this.reportView = "nav-report inactive";
+        } 
+        if (this.selectedNode && this.selectedNode.NodeID === -1) {
+                this.reportView = "nav-report inactive";
+            }       
         // alert(JSON.stringify(this.orgNodes));
     }
 
@@ -313,8 +313,7 @@ export class OrgComponent {
         this.treeJson = JSON.parse(JSON.stringify(this.orgNodes));
         localStorage.setItem("org_id", this.orgChart.OrgID.toString());
         if (this.treeJson && this.treeJson.length === 0) {
-            this.reportView = "nav-report";
-            this.reportViewText = "view-inactive-text";
+            this.reportView = "nav-report inactive";
         }
     }
 

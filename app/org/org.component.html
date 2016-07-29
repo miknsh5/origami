@@ -10,9 +10,9 @@
 
 <div class="modes-wrap ">
     <ul>
-        <li [ngClass]= "buildView" (click)="changeToBuildMode()"><a [ngClass]="buildViewText"> Build</a ></li>       
-        <li *ngIf="currentChartMode!==2" class="nav-explore "><a class="view-inactive-text">Explore</a></li>       
-        <li [ngClass]="reportView" (click)="changeToReportMode()"><a [ngClass]="reportViewText">Report</a> </li>
+        <li [ngClass]= "buildView" (click)="changeToBuildMode()"><a> Build</a ></li>       
+        <li *ngIf="currentChartMode!==2" class="nav-explore inactive"><a>Explore</a></li>       
+        <li [ngClass]="reportView" (click)="changeToReportMode()"><a>Report</a> </li>
       
     </ul>
 </div>
