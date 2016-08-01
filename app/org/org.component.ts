@@ -92,6 +92,7 @@ export class OrgComponent {
                 this.detailAddOrEditMode = true;
             } else if (this.isAddOrEditMode && nodeID !== node.NodeID) {
                 this.isAddOrEditMode = false;
+                this.detailAddOrEditMode = false;
             }
         }
     }
@@ -168,7 +169,6 @@ export class OrgComponent {
         if (this.selectedNode && this.selectedNode.NodeID === -1) {
             this.reportView = "nav-report inactive";
         }
-        // alert(JSON.stringify(this.orgNodes));
     }
 
     deleteNodeFromArray(selectedNode: OrgNodeModel, nodes: OrgNodeModel[]) {

@@ -56,13 +56,13 @@
 }
 
 .auth-panel {
-  position: absolute;
-  top: 20px;
-  right: 20px;
+  position: fixed;
+  top: 0;
+  right: 0;
 }
 
-.auth-panel h2 {
-  margin: 0.4em 0;
+.auth-panel h4 {
+  margin: 0.5rem 0 0.5rem 0;
 }
 
 .auth-panel button {
@@ -75,12 +75,7 @@
 }
 
 .main-canvas {
-  /*padding: 50px 50px 0;
-  position: absolute;
-  top: 0;*/
   width: 100%;
-  height: 97vh;
-  overflow: hidden;
 }
 
 .main-canvas h1 {
@@ -88,10 +83,9 @@
 }
 
 .modes-wrap {
-  height: 100px;
   min-width: 25px;
-  position: absolute;
-  top: 50px;
+  position: fixed;
+  top: 30px;
   left: 30px
 }
 
@@ -99,35 +93,40 @@
   margin: 0 5px 5px 0;
 }
 
-.modes-wrap li{
-    width: 50px;
-    height: 50px;
-    object-fit: contain;
-    background-repeat: no-repeat;
+.modes-wrap li {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+  background-repeat: no-repeat;
+  cursor: pointer;
+}
+
+.modes-wrap li.inactive {
+  cursor: default;
 }
 
 .modes-wrap li.nav-build {
-    background-image: url("app/images/nav-build.png");   
+  background-image: url("app/images/nav-build.png");
 }
 
-.modes-wrap li.nav-build.active{
-   background-image: url("app/images/nav-build-active.png");    
+.modes-wrap li.nav-build.active {
+  background-image: url("app/images/nav-build-active.png");
 }
 
 .modes-wrap li.nav-explore {
-    background-image: url("app/images/nav-explore.png");
+  background-image: url("app/images/nav-explore.png");
 }
 
 .modes-wrap li.nav-explore.active {
-    background-image: url("app/images/nav-explore-active.png");
+  background-image: url("app/images/nav-explore-active.png");
 }
 
 .modes-wrap li.nav-report {
-    background-image: url("app/images/nav-report.png");
+  background-image: url("app/images/nav-report.png");
 }
 
-.modes-wrap li.nav-report.active{
-    background-image: url("app/images/nav-report-active.png");
+.modes-wrap li.nav-report.active {
+  background-image: url("app/images/nav-report-active.png");
 }
 
 .modes-wrap li > a {
@@ -136,7 +135,7 @@
   font-family: HelveticaNeue;
   font-size: 12px;
   font-weight: 400;
-  color: #607d8b;; 
+  color: #607d8b;
   margin: 55px;
 }
 
@@ -146,7 +145,6 @@
 
 @media only screen and (max-width:993px) {
   .auth-panel {
-    position: relative;
     top: 0;
     right: 0;
     float: right;
@@ -158,7 +156,7 @@
     height: auto;
   }
   .modes-wrap {
-    top: 110px;
+    top: 65px;
     left: 10px;
   }
 }
