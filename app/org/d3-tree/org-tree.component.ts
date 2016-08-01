@@ -281,14 +281,25 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         let line = d3.svg.line()
             .x(function (d) { return d[0]; })
             .y(function (d) { return d[1]; });
-
+        
+       if (this.currentMode === ChartMode.build) {
         d3.select("path.vertical")
-            .attr("d", line(verticalLine));
+            .attr("d", line(verticalLine))
+             .attr("stroke", "#979797");
 
         d3.select("path.horizontal")
-            .attr("d", line(horizontalLine));
+            .attr("d", line(horizontalLine))
+             .attr("stroke", "#979797");
 
         this.arrows.attr("transform", "translate(" + ((this.treeWidth / 2) - SIBLING_RADIUS * 1.35) + "," + ((this.treeHeight / 2) - SIBLING_RADIUS * 1.275) + ")");
+       }
+       else if (this.currentMode === ChartMode.report) {
+           d3.select("path.vertical")                
+                .attr("stroke", TRANSPARENT_COLOR);
+
+            d3.select("path.horizontal")
+                .attr("stroke", TRANSPARENT_COLOR);
+       }
 
         d3.select("svg").attr("width", this.treeWidth)
             .attr("height", this.treeHeight);
@@ -511,9 +522,11 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 .attr("stroke", "#FFFFFF")
                 .attr("fill", NAVIGATION_ARROW_FILL);
         } else {
-            d3.selectAll(POLYGON + "#right")
+            if(this.currentMode === ChartMode.build){
+                  d3.selectAll(POLYGON + "#right")
                 .attr("stroke", "#FFFFFF")
                 .attr("fill", NAVIGATION_ARROW_FILL);
+            }          
         }
     }
 
