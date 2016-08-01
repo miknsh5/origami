@@ -501,7 +501,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             x = source.x0;
             y = source.y0;
             x = this.treeWidth / 2 - x;
-            y = 125;
+            y = NODE_WIDTH;
         }
 
         d3.select("g.nodes").transition()
