@@ -94,8 +94,12 @@ export class OrgComponent {
             this.selectedNode = addedNode;
             this.detailAddOrEditMode = false;
         }
-        this.addChildToSelectedOrgNode(addedNode, this.orgNodes[0]);
-        this.updateJSON();
+        if (addedNode.IsNewRoot) {
+            this.orgNodes.splice(0, 1, addedNode);
+        }
+        else {
+            this.addChildToSelectedOrgNode(addedNode, this.orgNodes[0]);
+        } this.updateJSON();
     }
 
     onSwitchedToAddMode(node: OrgNodeModel) {
@@ -137,8 +141,26 @@ export class OrgComponent {
             return true;
         }
     }
-
+    replacer(key, value) {
+        if (typeof key === "parent") {
+            return undefined;
+        }
+        return value;
+    }
+    removeCircularRef(node) {
+        node.parent = null;
+        if (node.children == null && node._children != null) {
+            node.children = node._children;
+        }
+        node._children = null;
+        if (node.children) {
+            for (let i = 0; i < node.children.length; i++) {
+                this.removeCircularRef(node.children[i]);
+            }
+        }
+    }
     updateJSON() {
+        this.removeCircularRef(this.orgNodes[0]);
         this.treeJson = JSON.parse(JSON.stringify(this.orgNodes));
         // alert(JSON.stringify(this.orgNodes));
     }
@@ -168,7 +190,13 @@ export class OrgComponent {
         this.isAddOrEditMode = false;
         this.detailAddOrEditMode = false;
         if (deleted) {
-            this.deleteNodeFromArray(deleted, this.orgNodes);
+            if (deleted.IsNewRoot) {
+                let oldRoot = deleted.children[0];
+                this.orgNodes.splice(0, 1, oldRoot);
+            }
+            else {
+                this.deleteNodeFromArray(deleted, this.orgNodes);
+            }
         } else {
             this.selectedNode = this.getNode(this.selectedNode.NodeID, this.orgNodes[0]);
         }

@@ -156,7 +156,8 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             this.previousRoot = this.root;
             this.root = this.treeData[0];
 
-            if (changes["isAddOrEditModeEnabled"]) {
+
+            if (changes["isAddOrEditModeEnabled"] && !changes["treeData"]) {
                 return;
             }
             if (changes["currentMode"]) {
@@ -299,6 +300,10 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
     getPreviousNodeIfAddedOrDeleted() {
         let previousNode;
+        if (this.selectedOrgNode.ParentNodeID == null && this.selectedOrgNode.IsNewRoot) {
+            this.root.ParentNodeID = null;
+            return this.root;
+        }
         let node = this.getNode(this.selectedOrgNode.ParentNodeID, this.root);
         let index = this.getIndexOfNode(node, this.selectedOrgNode, this.root);
         if (index >= 0) {
@@ -888,7 +893,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                     this.highlightAndCenterNode(parentNode);
                 }
                 else {
-                    this.addNewRootNode(this.selectedOrgNode);
+                    this.addNewRootNode(this.root);
                 }
             }
             // right arrow

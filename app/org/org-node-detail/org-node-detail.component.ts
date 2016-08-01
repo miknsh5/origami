@@ -232,7 +232,7 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
     }
 
     private onCancelEditClicked() {
-        if (!this.orgNode.ParentNodeID && this.orgNode.NodeID === -1) {
+        if (!this.orgNode.IsNewRoot && !this.orgNode.ParentNodeID && this.orgNode.NodeID === -1) {
             this.clearRootNodeDetails();
         } else {
             this.setAddOrEditModeValue.emit(false);
