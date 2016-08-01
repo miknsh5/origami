@@ -191,7 +191,7 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
         return false;
     }
 
-    private emitAddUpdateNodeNotification(data: OrgNodeModel) {
+    private emitChartUpdatedNotification(data: OrgNodeModel) {
         if (data) {
            this.chartStructureUpdated.emit(data);
             // call emitAddNodeNotification for root node and emitUpdateNodeNotification for children
@@ -216,7 +216,7 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
         // we don"t really need to send any child info to the server at this point
         node.children = null;
         this.orgService.addRootNode(node)
-            .subscribe(data => this.emitAddUpdateNodeNotification(data),
+            .subscribe(data => this.emitChartUpdatedNotification(data),
             error => this.handleError(error),
             () => console.log("Node Added Complete"));
     }
