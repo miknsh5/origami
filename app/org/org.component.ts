@@ -306,7 +306,9 @@ export class OrgComponent {
             return false;
         }
     }
-
+    onChartUpdated(data: any) {
+        this.setOrgChartData(data);
+    }
     private setOrgChartData(data: any) {
         this.orgChart = data;
         this.orgNodes = JSON.parse(JSON.stringify(this.orgChart.OrgNodes));

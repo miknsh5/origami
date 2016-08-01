@@ -19,6 +19,7 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
     @Output() updateNode = new EventEmitter<OrgNodeModel>();
     @Output() addNode = new EventEmitter<OrgNodeModel>();
     @Output() setAddOrEditModeValue = new EventEmitter<boolean>();
+    @Output() chartStructureUpdated= new EventEmitter<any>();
     @ViewChild("firstName") firstName;
     @ViewChild("lastName") lastName;
     @ViewChild("description") description;
@@ -124,7 +125,7 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
                 this.editNodeDetails.ParentNodeID = this.orgNode.ParentNodeID;
 
                 if (this.orgNode.NodeID === -1) {
-                    if (this.orgNode.ParentNodeID === 0) {
+                    if (this.orgNode.IsNewRoot) {
                         this.addNewParentNode(this.editNodeDetails);
                     }
                     else {
@@ -192,11 +193,10 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
 
     private emitAddUpdateNodeNotification(data: OrgNodeModel) {
         if (data) {
-            this.emitAddNodeNotification(data);
-            data.children.forEach(element => {
-                this.updateNode.emit(this.editNodeDetails);
-            });
+           this.chartStructureUpdated.emit(data);
             // call emitAddNodeNotification for root node and emitUpdateNodeNotification for children
+              this.isFormSubmitted = false;
+            this.setAddOrEditModeValue.emit(false);
         }
     }
     private emitAddNodeNotification(data: OrgNodeModel) {
@@ -215,10 +215,10 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
         if (!node) { return; }
         // we don"t really need to send any child info to the server at this point
         node.children = null;
-        /* this.orgService.addRootNode(node)
-             .subscribe(data => this.emitAddUpdateNodeNotification(data),
-             error => this.handleError(error),
-             () => console.log("Node Added Complete"));*/
+        this.orgService.addRootNode(node)
+            .subscribe(data => this.emitAddUpdateNodeNotification(data),
+            error => this.handleError(error),
+            () => console.log("Node Added Complete"));
     }
 
     private addNewNode(node: OrgNodeModel) {
