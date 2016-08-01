@@ -10,7 +10,8 @@ export class OrgService {
     private updateUrl = "api/Org/EditNode";
     private deleteUrl = "api/Org/DeleteNode?nodeID=";
     private addUrl = "api/Org/AddNode";
-
+    private addRootNodeUrl = "api/Org/AddRootNode";
+    private getOrgChartUrl = "api/Org/GetChartForOrg?orgID=";
     constructor(private http: Http) { }
 
     getNodes(userProfile) {
@@ -22,6 +23,14 @@ export class OrgService {
             .map(node => node.json());
     }
 
+    getOrgNodes(orgID) {
+        let url = this.origamiUrl + this.getOrgChartUrl + orgID;
+        let headers = new Headers({ "Content-Type": "application/json" });
+        headers.append("Accept", "application/json");
+
+        return this.http.get(url,  { headers: headers })
+            .map(node => node.json());
+    }
     updateNode(orgNode) {
         let node = JSON.stringify(orgNode);
         let headers = new Headers({ "Content-Type": "application/json" });
@@ -46,6 +55,16 @@ export class OrgService {
         headers.append("Accept", "application/json");
         let options = new RequestOptions({ headers: headers });
         let url = this.origamiUrl + this.addUrl;
+        return this.http.post(url, node, options)
+            .map(res => res.json());
+    }
+
+    addRootNode(orgNode) {
+        let node = JSON.stringify(orgNode);
+        let headers = new Headers({ "Content-Type": "application/json" });
+        headers.append("Accept", "application/json");
+        let options = new RequestOptions({ headers: headers });
+        let url = this.origamiUrl + this.addRootNodeUrl;
         return this.http.post(url, node, options)
             .map(res => res.json());
     }
