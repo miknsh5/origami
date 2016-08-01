@@ -81,8 +81,8 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         this.treeHeight = this.height;
         this.initializeTreeAsPerMode();
         this.svg = this.graph.append("svg")
-            .attr("width", this.treeWidth)
-            .attr("height", this.treeHeight)
+            .attr("preserveAspectRatio", "xMinYMin meet")
+            .attr("viewBox", "0 0 " + this.treeWidth + " " + this.treeHeight)
             .append("g");
 
         let verticalLine: [number, number][] = [[(this.treeWidth / 2), this.treeHeight], [(this.treeWidth / 2), 0]];
@@ -163,11 +163,17 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     // TODO:- we should refactor this method to work depending on the kind of change that has taken place. 
     // It re-renders on all kinds of changes
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
+
         if (this.tree != null) {
             this.previousRoot = this.root;
             this.root = this.treeData[0];
             this.treeWidth = this.width;
             this.treeHeight = this.height;
+
+
+            if (changes["isAddOrEditModeEnabled"] && !changes["treeData"]) {
+                return;
+            }
 
             if (changes["currentMode"]) {
                 this.initializeTreeAsPerMode();
@@ -299,9 +305,11 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 .attr("stroke", TRANSPARENT_COLOR);
         }
 
-        d3.select("svg").attr("width", this.treeWidth)
-            .attr("height", this.treeHeight);
-
+        if (this.width !== this.treeWidth || this.height !== this.treeHeight) {
+            d3.select("svg").attr("width", this.treeWidth)
+                .attr("height", this.treeHeight)
+                .attr("viewBox", "0 0 " + this.width + " " + this.height);
+        }
         this.scrollToCenter();
     }
 
@@ -316,7 +324,8 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             if (this.treeWidth > this.width) {
                 let scrollposition = this.treeWidth / 2;
                 scrollposition = scrollposition - (this.width / 2);
-                document.body.scrollLeft = scrollposition;
+                let canvas = document.body.getElementsByClassName("main-canvas")[0];
+                canvas.scrollLeft = scrollposition;
             }
         }
     }
@@ -359,6 +368,10 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
     getPreviousNodeIfAddedOrDeleted() {
         let previousNode;
+        if (this.selectedOrgNode.ParentNodeID == null && this.selectedOrgNode.IsNewRoot) {
+            this.root.ParentNodeID = null;
+            return this.root;
+        }
         let node = this.getNode(this.selectedOrgNode.ParentNodeID, this.root);
         let index = this.getIndexOfNode(node, this.selectedOrgNode, this.root);
         if (index >= 0) {
@@ -788,8 +801,13 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
         nodeExit.select("g.label ")
             .style("fill-opacity", 1e-6);
-    }
 
+        node.each(function (d) {
+            if (d.IsFakeRoot)
+                d3.select(this).remove();
+        });
+
+    }
     renderOrUpdateLinks(source) {
         let sourceCoords = { x: source.x0, y: source.y0 };
         let diagCoords = this.diagonal({ source: sourceCoords, target: sourceCoords });
@@ -832,6 +850,10 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 return diagCoords2;
             })
             .remove();
+        link.each(function (d) {
+            if (d.source.IsFakeRoot)
+                d3.select(this).remove();
+        });
     }
 
     setPeerReporteeNode(nodeName, x, y, className) {
@@ -957,6 +979,9 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                     let parentNode = node.parent;
                     this.highlightAndCenterNode(parentNode);
                 }
+                else {
+                    this.addNewRootNode(this.root);
+                }
             }
             // right arrow
             else if ((event as KeyboardEvent).keyCode === 39) {
@@ -1067,24 +1092,23 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         }
     }
 
-    addEmptyChildToSelectedOrgNode(parentID: number, node: OrgNodeModel) {
-        if (!this.selectedOrgNode) {
-            return;
-        }
 
-        if (node.NodeID === parentID) {
-            let newNode = this.addEmptyChildToParent(node);
+    addParentToNode(isFake: boolean, node: OrgNodeModel) {
+        if (!node.ParentNodeID) {
+            let newNode = new OrgNodeModel();
+
+            newNode.NodeFirstName = "";
+            newNode.NodeLastName = "";
+            newNode.Description = "";
+            newNode.OrgID = node.OrgID;
+            newNode.NodeID = -1;
+            newNode.IsStaging = true;
+            newNode.IsFakeRoot = isFake;
+            newNode.IsNewRoot = true;
+            newNode.children = new Array<OrgNodeModel>();
+            newNode.children.push(node);
+            node.ParentNodeID = newNode.NodeID;
             return newNode;
-        } else {
-            if (node.children) {
-                for (let index = 0; index < node.children.length; index++) {
-                    let element = node.children[index];
-                    let newNode = this.addEmptyChildToSelectedOrgNode(parentID, element);
-                    if (newNode != null) {
-                        return newNode;
-                    }
-                }
-            }
         }
     }
 
@@ -1202,6 +1226,15 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         return updatedNode.NodeID === currentNode.NodeID;
     }
 
+    private addNewRootNode(childNode) {
+
+        let rootNode = this.addParentToNode(false, childNode as OrgNodeModel);
+        this.root = rootNode;
+        this.switchToAddMode.emit(rootNode);
+        this.highlightAndCenterNode(rootNode);
+        this.hideAllArrows();
+
+    }
     private addNewNode(node) {
         let newNode = this.addEmptyChildToParent(node as OrgNodeModel);
         this.switchToAddMode.emit(newNode);

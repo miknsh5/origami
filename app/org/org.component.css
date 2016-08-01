@@ -55,14 +55,27 @@
   font-style: italic;
 }
 
-.auth-panel {
-  position: fixed;
-  top: 0;
-  right: 0;
+nav {
+  background-color: #fff;
 }
 
-.auth-panel h4 {
-  margin: 0.5rem 0 0.5rem 0;
+nav, nav .nav-wrapper i, nav a.button-collapse, nav a.button-collapse i {
+  height: 55px;
+  line-height: 55px;
+}
+
+nav .brand-logo {
+  padding: 0 20px;
+  color: #607d8b;
+}
+
+
+/*nav ul a {
+  color: #607d8b;
+}*/
+
+nav ul a i.right, nav ul a i.left {
+  margin: 0;
 }
 
 .auth-panel button {
@@ -76,6 +89,7 @@
 
 .main-canvas {
   width: 100%;
+  overflow-x: auto;
 }
 
 .main-canvas h1 {
@@ -85,7 +99,7 @@
 .modes-wrap {
   min-width: 25px;
   position: fixed;
-  top: 30px;
+  top: 50px;
   left: 30px
 }
 
@@ -143,11 +157,11 @@
   color: #cfd8dc;
 }
 
-@media only screen and (max-width:993px) {
-  .auth-panel {
-    top: 0;
-    right: 0;
-    float: right;
+@media only screen and (max-width:992px) {
+  nav .brand-logo {
+    left: 0%;
+    -webkit-transform: translateX(0%);
+    transform: translateX(0%);
   }
 }
 

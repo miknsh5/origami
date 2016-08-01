@@ -16,8 +16,7 @@ const MAX_HEIGHT: number = 768;
 const MIN_WIDTH: number = 420;
 const MAX_WIDTH: number = 1366;
 
-const DEFAULT_OFFSET: number = 5;
-const AUTHPANEL_OFFSET: number = 75;
+const DEFAULT_OFFSET: number = 70;
 
 @Component({
     selector: "sg-origami-org",
@@ -66,12 +65,14 @@ export class OrgComponent {
                 () => console.log("Random Quote Complete"));
         }
     }
+
     changeToBuildMode() {
         this.currentChartMode = ChartMode.build;
         this.buildView = "nav-build active";
         this.reportView = "nav-report";
 
     }
+
     changeToReportMode() {
         if (!this.isAddOrEditMode) {
             this.currentChartMode = ChartMode.report;
@@ -106,7 +107,12 @@ export class OrgComponent {
             this.selectedNode = addedNode;
             this.detailAddOrEditMode = false;
         }
-        this.addChildToSelectedOrgNode(addedNode, this.orgNodes[0]);
+        if (addedNode.IsNewRoot) {
+            this.orgNodes.splice(0, 1, addedNode);
+        }
+        else {
+            this.addChildToSelectedOrgNode(addedNode, this.orgNodes[0]);
+        }
         this.updateJSON();
     }
 
@@ -161,7 +167,30 @@ export class OrgComponent {
         }
     }
 
+    replacer(key, value) {
+        if (typeof key === "parent") {
+            return undefined;
+        }
+        return value;
+    }
+
+    removeCircularRef(node) {
+        if (node) {
+            node.parent = null;
+            if (node.children == null && node._children != null) {
+                node.children = node._children;
+            }
+            node._children = null;
+            if (node.children) {
+                for (let i = 0; i < node.children.length; i++) {
+                    this.removeCircularRef(node.children[i]);
+                }
+            }
+        }
+    }
+
     updateJSON() {
+        this.removeCircularRef(this.orgNodes[0]);
         this.treeJson = JSON.parse(JSON.stringify(this.orgNodes));
         if (this.treeJson && this.treeJson.length === 0) {
             this.reportView = "nav-report inactive";
@@ -196,9 +225,16 @@ export class OrgComponent {
         this.isAddOrEditMode = false;
         this.detailAddOrEditMode = false;
         if (deleted) {
-            this.deleteNodeFromArray(deleted, this.orgNodes);
+            if (deleted.IsNewRoot) {
+                let oldRoot = deleted.children[0];
+                this.orgNodes.splice(0, 1, oldRoot);
+            }
+            else {
+                this.deleteNodeFromArray(deleted, this.orgNodes);
+            }
         } else {
-            this.selectedNode = this.getNode(this.selectedNode.NodeID, this.orgNodes[0]);
+            let node = this.getNode(this.selectedNode.NodeID, this.orgNodes[0]);
+            this.selectedNode = JSON.parse(JSON.stringify(node));
         }
         this.updateJSON();
     }
@@ -211,7 +247,7 @@ export class OrgComponent {
             // updating local changes
             let nodes = JSON.parse(JSON.stringify(this.orgNodes));
             this.updateOrgNode(nodes[0], selected);
-            this.treeJson = nodes;
+            this.treeJson = JSON.parse(JSON.stringify(nodes));
         } else {
             // updating submitted or saved changes
             this.updateOrgNode(this.orgNodes[0], selected);
@@ -255,7 +291,7 @@ export class OrgComponent {
 
         // temporarily applied wiil be removed after standard and organization mode added
         if (this.svgWidth < 993 && height > MIN_HEIGHT) {
-            height = height - AUTHPANEL_OFFSET;
+            height = height - DEFAULT_OFFSET;
         } else {
             height = height - DEFAULT_OFFSET;
         }
@@ -305,6 +341,10 @@ export class OrgComponent {
         } else {
             return false;
         }
+    }
+
+    onChartUpdated(data: any) {
+        this.setOrgChartData(data);
     }
 
     private setOrgChartData(data: any) {
