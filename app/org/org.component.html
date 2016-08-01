@@ -1,11 +1,15 @@
 <div class="auth-panel">
-    <h4>Organization Chart</h4>
-    <button  class=" btn-white" (click)="logout()">
-        Logout
-     </button>
-    <button class=" btn-white" (click)="getAllNodes()">
-        Load Data
-    </button>
+    <!-- Dropdown Structure -->
+    <nav>
+        <div class="nav-wrapper">
+            <a href="#!" class="brand-logo">PEOPLE TREE</a>
+            <ul class="right">
+                <li><a class="waves-effect waves-light btn" (click)="logout()">Logout</a></li>
+                <!--<li><a class="dropdown-button" data-activates="groupDropdown"><i class="material-icons left">view_module</i>My Group<i class="material-icons right">arrow_drop_down</i></a></li>
+                <li><a class="dropdown-button" data-activates="userDropdown"><i class="material-icons left">perm_identity</i>User<i class="material-icons right">arrow_drop_down</i></a></li>-->
+            </ul>
+        </div>
+    </nav>
 </div>
 
 <div class="modes-wrap ">
