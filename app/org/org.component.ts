@@ -33,8 +33,6 @@ export class OrgComponent {
     svgWidth: number;
     svgHeight: number;
 
-
-
     @Output() currentChartMode: ChartMode;
     @Output() treeJson: any;
     @Output() selectedNode: OrgNodeModel;
@@ -62,9 +60,11 @@ export class OrgComponent {
                 () => console.log("Random Quote Complete"));
         }
     }
+
     changeToBuildMode() {
         this.currentChartMode = ChartMode.build;
     }
+
     changeToReportMode() {
         this.currentChartMode = ChartMode.report;
     }
@@ -99,7 +99,8 @@ export class OrgComponent {
         }
         else {
             this.addChildToSelectedOrgNode(addedNode, this.orgNodes[0]);
-        } this.updateJSON();
+        }
+        this.updateJSON();
     }
 
     onSwitchedToAddMode(node: OrgNodeModel) {
@@ -141,28 +142,32 @@ export class OrgComponent {
             return true;
         }
     }
+
     replacer(key, value) {
         if (typeof key === "parent") {
             return undefined;
         }
         return value;
     }
+
     removeCircularRef(node) {
-        node.parent = null;
-        if (node.children == null && node._children != null) {
-            node.children = node._children;
-        }
-        node._children = null;
-        if (node.children) {
-            for (let i = 0; i < node.children.length; i++) {
-                this.removeCircularRef(node.children[i]);
+        if (node) {
+            node.parent = null;
+            if (node.children == null && node._children != null) {
+                node.children = node._children;
+            }
+            node._children = null;
+            if (node.children) {
+                for (let i = 0; i < node.children.length; i++) {
+                    this.removeCircularRef(node.children[i]);
+                }
             }
         }
     }
+
     updateJSON() {
         this.removeCircularRef(this.orgNodes[0]);
         this.treeJson = JSON.parse(JSON.stringify(this.orgNodes));
-        // alert(JSON.stringify(this.orgNodes));
     }
 
     deleteNodeFromArray(selectedNode: OrgNodeModel, nodes: OrgNodeModel[]) {
@@ -198,7 +203,8 @@ export class OrgComponent {
                 this.deleteNodeFromArray(deleted, this.orgNodes);
             }
         } else {
-            this.selectedNode = this.getNode(this.selectedNode.NodeID, this.orgNodes[0]);
+            let node = this.getNode(this.selectedNode.NodeID, this.orgNodes[0]);
+            this.selectedNode = JSON.parse(JSON.stringify(node));
         }
         this.updateJSON();
     }
@@ -211,7 +217,7 @@ export class OrgComponent {
             // updating local changes
             let nodes = JSON.parse(JSON.stringify(this.orgNodes));
             this.updateOrgNode(nodes[0], selected);
-            this.treeJson = nodes;
+            this.treeJson = JSON.parse(JSON.stringify(nodes));
         } else {
             // updating submitted or saved changes
             this.updateOrgNode(this.orgNodes[0], selected);
@@ -306,9 +312,11 @@ export class OrgComponent {
             return false;
         }
     }
+
     onChartUpdated(data: any) {
         this.setOrgChartData(data);
     }
+
     private setOrgChartData(data: any) {
         this.orgChart = data;
         this.orgNodes = JSON.parse(JSON.stringify(this.orgChart.OrgNodes));
