@@ -19,7 +19,7 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
     @Output() updateNode = new EventEmitter<OrgNodeModel>();
     @Output() addNode = new EventEmitter<OrgNodeModel>();
     @Output() setAddOrEditModeValue = new EventEmitter<boolean>();
-    @Output() chartStructureUpdated= new EventEmitter<any>();
+    @Output() chartStructureUpdated = new EventEmitter<any>();
     @ViewChild("firstName") firstName;
     @ViewChild("lastName") lastName;
     @ViewChild("description") description;
@@ -32,7 +32,7 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
         event.stopPropagation();
         if ((event as KeyboardEvent).keyCode === 27) {
             if (this.isAddOrEditModeEnabled) {
-                if (!this.orgNode.ParentNodeID && this.orgNode.NodeID === -1) {
+                if (!this.orgNode.IsNewRoot && !this.orgNode.ParentNodeID && this.orgNode.NodeID === -1) {
                     this.clearRootNodeDetails();
                 } else {
                     if (this.orgNode.NodeID === -1) {
@@ -193,9 +193,9 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
 
     private emitChartUpdatedNotification(data: OrgNodeModel) {
         if (data) {
-           this.chartStructureUpdated.emit(data);
+            this.chartStructureUpdated.emit(data);
             // call emitAddNodeNotification for root node and emitUpdateNodeNotification for children
-              this.isFormSubmitted = false;
+            this.isFormSubmitted = false;
             this.setAddOrEditModeValue.emit(false);
         }
     }
