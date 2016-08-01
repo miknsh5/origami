@@ -287,14 +287,23 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         let line = d3.svg.line()
             .x(function (d) { return d[0]; })
             .y(function (d) { return d[1]; });
+        if (this.currentMode === ChartMode.build) {
+            d3.select("path.vertical")
+                .attr("d", line(verticalLine))
+                .attr("stroke", "#979797");
 
-        d3.select("path.vertical")
-            .attr("d", line(verticalLine));
+            d3.select("path.horizontal")
+                .attr("d", line(horizontalLine))
+                .attr("stroke", "#979797");
 
-        d3.select("path.horizontal")
-            .attr("d", line(horizontalLine));
-
-        this.arrows.attr("transform", "translate(" + ((this.treeWidth / 2) - SIBLING_RADIUS * 1.35) + "," + ((this.treeHeight / 2) - SIBLING_RADIUS * 1.275) + ")");
+            this.arrows.attr("transform", "translate(" + ((this.treeWidth / 2) - SIBLING_RADIUS * 1.35) + "," + ((this.treeHeight / 2) - SIBLING_RADIUS * 1.275) + ")");
+        }
+        else if (this.currentMode === ChartMode.report) {
+            d3.select("path.vertical")
+                .attr("stroke", TRANSPARENT_COLOR);
+            d3.select("path.horizontal")
+                .attr("stroke", TRANSPARENT_COLOR);
+        }
 
         if (this.width !== this.treeWidth || this.height !== this.treeHeight) {
             d3.select("svg").attr("width", this.treeWidth)
@@ -524,12 +533,13 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 .attr("stroke", "#FFFFFF")
                 .attr("fill", NAVIGATION_ARROW_FILL);
         } else {
-            d3.selectAll(POLYGON + "#right")
-                .attr("stroke", "#FFFFFF")
-                .attr("fill", NAVIGATION_ARROW_FILL);
+            if (this.currentMode === ChartMode.build) {
+                d3.selectAll(POLYGON + "#right")
+                    .attr("stroke", "#FFFFFF")
+                    .attr("fill", NAVIGATION_ARROW_FILL);
+            }
         }
     }
-
     getGrandParentID(node: d3.layout.tree.Node) {
         if (node && node.parent) {
             let orgNode = node.parent as OrgNodeModel;
