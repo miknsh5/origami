@@ -1,6 +1,5 @@
 import { Component, HostListener, Input, Output, EventEmitter, OnChanges, SimpleChange, AfterContentChecked, ElementRef, Renderer, ViewChild } from "@angular/core";
-import { COMMON_DIRECTIVES } from "@angular/common";
-import { REACTIVE_FORM_DIRECTIVES, NgForm, NgControl } from "@angular/forms";
+import { FORM_DIRECTIVES, REACTIVE_FORM_DIRECTIVES, NgForm, NgControl  } from "@angular/forms";
 
 import { OrgNodeModel, OrgService } from "../shared/index";
 
@@ -8,7 +7,7 @@ import { OrgNodeModel, OrgService } from "../shared/index";
     selector: "sg-org-node-detail",
     templateUrl: "app/org/org-node-detail/org-node-detail.component.html",
     styleUrls: ["app/org/org-node-detail/org-node-detail.component.css", "app/style.css"],
-    directives: [ REACTIVE_FORM_DIRECTIVES, COMMON_DIRECTIVES]
+    directives: [FORM_DIRECTIVES, REACTIVE_FORM_DIRECTIVES]
 })
 
 export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
