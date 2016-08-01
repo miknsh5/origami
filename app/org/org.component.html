@@ -1,41 +1,39 @@
 <div class="auth-panel">
-    <h2>Organization Chart</h2>
-    <button  class=" btn-white" (click)="logout()">
-        Logout
-     </button>
-    <button  class=" btn-white" (click)="getAllNodes()">
-        Load Data
-    </button>
-
+    <!-- Dropdown Structure -->
+    <nav>
+        <div class="nav-wrapper">
+            <a href="#!" class="brand-logo">PEOPLE TREE</a>
+            <ul class="right">
+                <li><a class="waves-effect waves-light btn" (click)="logout()">Logout</a></li>
+                <!--<li><a class="dropdown-button" data-activates="groupDropdown"><i class="material-icons left">view_module</i>My Group<i class="material-icons right">arrow_drop_down</i></a></li>
+                <li><a class="dropdown-button" data-activates="userDropdown"><i class="material-icons left">perm_identity</i>User<i class="material-icons right">arrow_drop_down</i></a></li>-->
+            </ul>
+        </div>
+    </nav>
 </div>
+
 <div class="modes-wrap ">
-    <button class=" btn-white" (click)="changeToBuildMode()">
-        Build
-    </button>
-    <br/>
-
-    <button class=" btn-white" (click)="changeToReportMode()">
-        Report
-    </button>
+    <ul>
+        <li [ngClass]= "buildView" (click)="changeToBuildMode()"><a> Build</a ></li>       
+        <li *ngIf="currentChartMode!==2" class="nav-explore inactive"><a>Explore</a></li>       
+        <li [ngClass]="reportView" (click)="changeToReportMode()"><a>Report</a> </li>
+      
+    </ul>
 </div>
+
 <div class="main-canvas" *ngIf="orgChart" (window:resize)="onResize($event)">
-    <!--<h1>Welcome to {{orgChart.OrganizationName}}</h1>-->
     <sg-org-tree [treeData]="treeJson" [width]="svgWidth" [height]="svgHeight" [currentMode]="currentChartMode" [isAddOrEditModeEnabled]="isAddOrEditMode"
         (selectNode)="onNodeSelected($event)" (switchToAddMode)="onSwitchedToAddMode($event)">
     </sg-org-tree>
 </div>
+
 <div *ngIf="currentChartMode===1">
-<sg-org-node-detail #nodeDetail [selectedOrgNode]="selectedNode" [isAddOrEditModeEnabled]="detailAddOrEditMode" (deleteNode)="onNodeDeleted($event)"
-    (updateNode)="onNodeUpdated($event)" (addNode)="onNodeAdded($event)" (setAddOrEditModeValue)="onAddOrEditModeValueSet($event)" (chartStructureUpdated)="onChartUpdated($event)" >
-</sg-org-node-detail>
+    <sg-org-node-detail #nodeDetail [selectedOrgNode]="selectedNode" [isAddOrEditModeEnabled]="detailAddOrEditMode" (deleteNode)="onNodeDeleted($event)"
+        (updateNode)="onNodeUpdated($event)" (addNode)="onNodeAdded($event)" (setAddOrEditModeValue)="onAddOrEditModeValueSet($event)" (chartStructureUpdated)="onChartUpdated($event)" >
+    </sg-org-node-detail>
 </div>
-<div  *ngIf="currentChartMode===3">
 
-    <sg-origami-CSV-reports [orgChartData]="orgChart">
-    </sg-origami-CSV-reports>
-    <sg-origami-PNG [orgName]="orgChart.OrganizationName">        
-    </sg-origami-PNG>
-</div>
-<div>
-
+<div *ngIf="currentChartMode===3">
+    <sg-origami-csv [orgChartData]="orgChart"></sg-origami-csv>
+    <sg-origami-png [orgName]="orgChart.OrganizationName"></sg-origami-png>
 </div>

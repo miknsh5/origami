@@ -4,8 +4,8 @@ import { CanActivate, Router } from "@angular/router-deprecated";
 import { tokenNotExpired } from "angular2-jwt";
 
 import { AddNodeComponent } from "./add-node/add-node.component";
-import { ConvertJSONToCSV } from "./convertJSONToCSV/convertJSONToCSV.component";
-import { ConvertTreeToPNG } from "./convertTreeToPNG/convertTreeToPNG.component";
+import { ConvertJSONToCSVComponent } from "./convertJSONToCSV/convertJSONToCSV.component";
+import { ConvertTreeToPNGComponent } from "./convertTreeToPNG/convertTreeToPNG.component";
 import { OrgNodeDetailComponent } from "./org-node-detail/index";
 import { OrgChartModel, OrgNodeModel, OrgService, ChartMode} from "./shared/index";
 import { OrgTreeComponent } from "./d3-tree/org-tree.component";
@@ -16,12 +16,11 @@ const MAX_HEIGHT: number = 768;
 const MIN_WIDTH: number = 420;
 const MAX_WIDTH: number = 1366;
 
-const DEFAULT_OFFSET: number = 5;
-const AUTHPANEL_OFFSET: number = 75;
+const DEFAULT_OFFSET: number = 70;
 
 @Component({
     selector: "sg-origami-org",
-    directives: [OrgTreeComponent, OrgNodeDetailComponent, ConvertJSONToCSV, ConvertTreeToPNG],
+    directives: [OrgTreeComponent, OrgNodeDetailComponent, ConvertJSONToCSVComponent, ConvertTreeToPNGComponent],
     templateUrl: "app/org/org.component.html",
     styleUrls: ["app/org/org.component.css"],
     providers: [OrgService, HTTP_PROVIDERS]
@@ -32,6 +31,10 @@ export class OrgComponent {
     orgNodes: OrgNodeModel[];
     svgWidth: number;
     svgHeight: number;
+    buildView: any;
+    reportView: any;
+    buildViewText: any;
+    reportViewText: any;
 
     @Output() currentChartMode: ChartMode;
     @Output() treeJson: any;
@@ -44,6 +47,8 @@ export class OrgComponent {
         this.svgWidth = this.getSvgWidth();
         this.svgHeight = this.getSvgHeight();
         this.currentChartMode = ChartMode.build;
+        this.buildView = "nav-build active";
+        this.reportView = "nav-report";
     }
 
     onResize(event) {
@@ -63,10 +68,17 @@ export class OrgComponent {
 
     changeToBuildMode() {
         this.currentChartMode = ChartMode.build;
+        this.buildView = "nav-build active";
+        this.reportView = "nav-report";
+
     }
 
     changeToReportMode() {
-        this.currentChartMode = ChartMode.report;
+        if (!this.isAddOrEditMode) {
+            this.currentChartMode = ChartMode.report;
+            this.buildView = "nav-build";
+            this.reportView = "nav-report active";
+        }
     }
 
     onNodeSelected(node) {
@@ -81,6 +93,7 @@ export class OrgComponent {
                 this.detailAddOrEditMode = true;
             } else if (this.isAddOrEditMode && nodeID !== node.NodeID) {
                 this.isAddOrEditMode = false;
+                this.detailAddOrEditMode = false;
             }
         }
     }
@@ -107,12 +120,23 @@ export class OrgComponent {
         this.isAddOrEditMode = true;
         this.detailAddOrEditMode = true;
         this.selectedNode = node;
+        this.reportView = "nav-report inactive";
     }
 
     onAddOrEditModeValueSet(value: boolean) {
         this.isAddOrEditMode = value;
         this.detailAddOrEditMode = value;
+        this.switchReportViewTextClass(value);
     }
+    switchReportViewTextClass(value: boolean) {
+        if (value) {
+            this.reportView = "nav-report inactive";
+        }
+        else {
+            this.reportView = "nav-report ";
+        }
+    }
+
 
     addChildToSelectedOrgNode(newNode: OrgNodeModel, node: OrgNodeModel) {
         if (node) {
@@ -168,6 +192,12 @@ export class OrgComponent {
     updateJSON() {
         this.removeCircularRef(this.orgNodes[0]);
         this.treeJson = JSON.parse(JSON.stringify(this.orgNodes));
+        if (this.treeJson && this.treeJson.length === 0) {
+            this.reportView = "nav-report inactive";
+        }
+        if (this.selectedNode && this.selectedNode.NodeID === -1) {
+            this.reportView = "nav-report inactive";
+        }
     }
 
     deleteNodeFromArray(selectedNode: OrgNodeModel, nodes: OrgNodeModel[]) {
@@ -261,7 +291,7 @@ export class OrgComponent {
 
         // temporarily applied wiil be removed after standard and organization mode added
         if (this.svgWidth < 993 && height > MIN_HEIGHT) {
-            height = height - AUTHPANEL_OFFSET;
+            height = height - DEFAULT_OFFSET;
         } else {
             height = height - DEFAULT_OFFSET;
         }
@@ -322,6 +352,9 @@ export class OrgComponent {
         this.orgNodes = JSON.parse(JSON.stringify(this.orgChart.OrgNodes));
         this.treeJson = JSON.parse(JSON.stringify(this.orgNodes));
         localStorage.setItem("org_id", this.orgChart.OrgID.toString());
+        if (this.treeJson && this.treeJson.length === 0) {
+            this.reportView = "nav-report inactive";
+        }
     }
 
 }   
