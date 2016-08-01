@@ -29,7 +29,7 @@
 
 <div *ngIf="currentChartMode===1">
     <sg-org-node-detail #nodeDetail [selectedOrgNode]="selectedNode" [isAddOrEditModeEnabled]="detailAddOrEditMode" (deleteNode)="onNodeDeleted($event)"
-        (updateNode)="onNodeUpdated($event)" (addNode)="onNodeAdded($event)" (setAddOrEditModeValue)="onAddOrEditModeValueSet($event)">
+        (updateNode)="onNodeUpdated($event)" (addNode)="onNodeAdded($event)" (setAddOrEditModeValue)="onAddOrEditModeValueSet($event)" (chartStructureUpdated)="onChartUpdated($event)" >
     </sg-org-node-detail>
 </div>
 

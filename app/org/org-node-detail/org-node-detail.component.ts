@@ -18,16 +18,21 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
     @Output() updateNode = new EventEmitter<OrgNodeModel>();
     @Output() addNode = new EventEmitter<OrgNodeModel>();
     @Output() setAddOrEditModeValue = new EventEmitter<boolean>();
+    @Output() chartStructureUpdated = new EventEmitter<any>();
     @ViewChild("firstName") firstName;
     @ViewChild("lastName") lastName;
     @ViewChild("description") description;
+    isInputFocused: boolean;
+    private editNodeDetails: OrgNodeModel;
+    private orgNode: OrgNodeModel;
+    private isFormSubmitted: boolean;
 
     @HostListener("window:keydown", ["$event"])
     onKeyDown(event: any) {
         event.stopPropagation();
         if ((event as KeyboardEvent).keyCode === 27) {
             if (this.isAddOrEditModeEnabled) {
-                if (!this.orgNode.ParentNodeID && this.orgNode.NodeID === -1) {
+                if (!this.orgNode.IsNewRoot && !this.orgNode.ParentNodeID && this.orgNode.NodeID === -1) {
                     this.clearRootNodeDetails();
                 } else {
                     if (this.orgNode.NodeID === -1) {
@@ -55,11 +60,6 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
             }
         }
     }
-
-    isInputFocused: boolean;
-    private editNodeDetails: OrgNodeModel;
-    private orgNode: OrgNodeModel;
-    private isFormSubmitted: boolean;
 
     constructor(private orgService: OrgService, private renderer: Renderer) { }
 
@@ -123,7 +123,12 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
                 this.editNodeDetails.ParentNodeID = this.orgNode.ParentNodeID;
 
                 if (this.orgNode.NodeID === -1) {
-                    this.addNewNode(this.editNodeDetails);
+                    if (this.orgNode.IsNewRoot) {
+                        this.addNewParentNode(this.editNodeDetails);
+                    }
+                    else {
+                        this.addNewNode(this.editNodeDetails);
+                    }
                 } else {
                     this.editNode(this.editNodeDetails);
                 }
@@ -142,6 +147,11 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
             node.NodeID = this.orgNode.NodeID;
             node.IsStaging = this.orgNode.IsStaging;
             node.Description = this.orgNode.Description;
+            node.IsFakeRoot = this.orgNode.IsFakeRoot;
+            node.IsNewRoot = this.orgNode.IsNewRoot;
+            if (node.IsNewRoot) {
+                node.children = this.orgNode.children;
+            }
             if (this.isFirstAndLastNameInitialChanged(target.value, ngControl)) {
                 if (ngControl.name === "firstName") {
                     this.orgNode.NodeFirstName = node.NodeFirstName = ngControl.value;
@@ -179,6 +189,15 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
         return false;
     }
 
+    private emitChartUpdatedNotification(data: OrgNodeModel) {
+        if (data) {
+            this.chartStructureUpdated.emit(data);
+            // call emitAddNodeNotification for root node and emitUpdateNodeNotification for children
+            this.isFormSubmitted = false;
+            this.setAddOrEditModeValue.emit(false);
+        }
+    }
+
     private emitAddNodeNotification(data: OrgNodeModel) {
         if (data) {
             this.addNode.emit(data);
@@ -189,6 +208,16 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
             this.isFormSubmitted = false;
             this.setAddOrEditModeValue.emit(false);
         }
+    }
+
+    private addNewParentNode(node: OrgNodeModel) {
+        if (!node) { return; }
+        // we don"t really need to send any child info to the server at this point
+        node.children = null;
+        this.orgService.addRootNode(node)
+            .subscribe(data => this.emitChartUpdatedNotification(data),
+            error => this.handleError(error),
+            () => console.log("Node Added Complete"));
     }
 
     private addNewNode(node: OrgNodeModel) {
@@ -202,7 +231,7 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
     }
 
     private onCancelEditClicked() {
-        if (!this.orgNode.ParentNodeID && this.orgNode.NodeID === -1) {
+        if (!this.orgNode.IsNewRoot && !this.orgNode.ParentNodeID && this.orgNode.NodeID === -1) {
             this.clearRootNodeDetails();
         } else {
             this.setAddOrEditModeValue.emit(false);
@@ -264,11 +293,6 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
             alert("OOPs!! Something went wrong!! ");
         }
         console.log(err);
-        /*if (this.orgNode.ParentNodeID) {
-             if (this.orgNode.NodeID !== -1) {
-                 this.setAddOrEditModeValue.emit(false);
-             }
-         }*/
         this.editNodeDetails = null;
         this.isFormSubmitted = false;
     }
