@@ -260,6 +260,7 @@ export class OrgComponent {
             node.NodeFirstName = selectedNode.NodeFirstName;
             node.NodeLastName = selectedNode.NodeLastName;
             node.Description = selectedNode.Description;
+            node.ParentNodeID= selectedNode.ParentNodeID;
             node.IsSelected = true;
             return true;
         } else {
