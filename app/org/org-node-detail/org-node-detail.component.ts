@@ -1,6 +1,5 @@
 import { Component, HostListener, Input, Output, EventEmitter, OnChanges, SimpleChange, AfterContentChecked, ElementRef, Renderer, ViewChild } from "@angular/core";
-import { COMMON_DIRECTIVES } from "@angular/common";
-import { REACTIVE_FORM_DIRECTIVES, NgForm, NgControl } from "@angular/forms";
+import { FORM_DIRECTIVES, REACTIVE_FORM_DIRECTIVES, NgForm, NgControl  } from "@angular/forms";
 
 import { OrgNodeModel, OrgService } from "../shared/index";
 
@@ -8,7 +7,7 @@ import { OrgNodeModel, OrgService } from "../shared/index";
     selector: "sg-org-node-detail",
     templateUrl: "app/org/org-node-detail/org-node-detail.component.html",
     styleUrls: ["app/org/org-node-detail/org-node-detail.component.css", "app/style.css"],
-    directives: [REACTIVE_FORM_DIRECTIVES, COMMON_DIRECTIVES]
+    directives: [FORM_DIRECTIVES, REACTIVE_FORM_DIRECTIVES]
 })
 
 export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
@@ -27,6 +26,7 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
     private editNodeDetails: OrgNodeModel;
     private orgNode: OrgNodeModel;
     private isFormSubmitted: boolean;
+
     @HostListener("window:keydown", ["$event"])
     onKeyDown(event: any) {
         event.stopPropagation();
@@ -60,8 +60,6 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
             }
         }
     }
-
-
 
     constructor(private orgService: OrgService, private renderer: Renderer) { }
 
@@ -199,6 +197,7 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
             this.setAddOrEditModeValue.emit(false);
         }
     }
+
     private emitAddNodeNotification(data: OrgNodeModel) {
         if (data) {
             this.addNode.emit(data);
@@ -294,11 +293,6 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
             alert("OOPs!! Something went wrong!! ");
         }
         console.log(err);
-        /*if (this.orgNode.ParentNodeID) {
-             if (this.orgNode.NodeID !== -1) {
-                 this.setAddOrEditModeValue.emit(false);
-             }
-         }*/
         this.editNodeDetails = null;
         this.isFormSubmitted = false;
     }

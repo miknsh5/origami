@@ -120,12 +120,12 @@
     opacity: 0.3;
   }
   
-  .btn-white {
-    background-color: rgb(221, 221, 211) !important;
-    color: #212121 !important;
+  svg {
+    margin: 0 auto;
+    display: block;
   }
-
-  /* Let's get this party started */  
+  /* Let's get this party started */
+  
   ::-webkit-scrollbar {
     width: 7px;
     height: 7px;

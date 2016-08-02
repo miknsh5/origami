@@ -28,9 +28,10 @@ export class OrgService {
         let headers = new Headers({ "Content-Type": "application/json" });
         headers.append("Accept", "application/json");
 
-        return this.http.get(url,  { headers: headers })
+        return this.http.get(url, { headers: headers })
             .map(node => node.json());
     }
+
     updateNode(orgNode) {
         let node = JSON.stringify(orgNode);
         let headers = new Headers({ "Content-Type": "application/json" });
@@ -49,6 +50,7 @@ export class OrgService {
         return this.http.delete(url, options)
             .map(res => res.json());
     }
+
     addNode(orgNode) {
         let node = JSON.stringify(orgNode);
         let headers = new Headers({ "Content-Type": "application/json" });
