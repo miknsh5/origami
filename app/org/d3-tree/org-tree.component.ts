@@ -145,6 +145,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             this.tree = d3.layout.tree().nodeSize([NODE_HEIGHT, NODE_WIDTH]);
         } else if (this.currentMode === ChartMode.report) {
             this.tree = d3.layout.tree().nodeSize([NODE_WIDTH, NODE_HEIGHT]);
+            this.root = this.selectedOrgNode;
         }
 
         if (this.currentMode === ChartMode.build) {
@@ -177,10 +178,10 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
             if (changes["currentMode"]) {
                 this.initializeTreeAsPerMode();
-                this.expandTree(this.root);
+                this.expandTree(this.selectedOrgNode);
                 this.calculateLevelDepth();
                 this.resizeLinesArrowsAndSvg();
-                this.highlightAndCenterNode(this.root);
+                this.highlightAndCenterNode(this.selectedOrgNode);
                 return;
             }
 
@@ -256,11 +257,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
     calculateLevelDepth() {
         this.levelDepth = [1];
-        if (this.currentMode === ChartMode.build) {
-            this.childCount(0, this.selectedOrgNode);
-        } else {
-            this.childCount(0, this.root);
-        }
+        this.childCount(0, this.root);
     }
 
     resizeLinesArrowsAndSvg() {
@@ -1137,7 +1134,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             let index;
             let currentNode = d;
             let parentNode = this.getNode(d.ParentNodeID, this.root);
-            if (parentNode.children && parentNode.children.length > 0) {
+            if (parentNode && parentNode.children && parentNode.children.length > 0) {
                 parentNode.children.forEach(function (d) {
                     if (d.NodeID === currentNode.NodeID) {
                         index = parentNode.children.indexOf(currentNode, 0);
