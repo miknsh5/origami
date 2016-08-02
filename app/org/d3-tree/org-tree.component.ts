@@ -297,7 +297,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         this.arrows.attr("transform", "translate(" + ((this.treeWidth / 2) - SIBLING_RADIUS * 1.35) + "," + ((this.treeHeight / 2) - SIBLING_RADIUS * 1.275) + ")");
 
         d3.select("svg").attr("width", this.treeWidth)
-            .attr("height", this.treeHeight)
+            .attr("height", this.treeHeight);
         this.scrollToCenter();
     }
 
