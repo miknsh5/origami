@@ -81,8 +81,8 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         this.treeHeight = this.height;
         this.initializeTreeAsPerMode();
         this.svg = this.graph.append("svg")
-            .attr("preserveAspectRatio", "xMinYMin meet")
-            .attr("viewBox", "0 0 " + this.treeWidth + " " + this.treeHeight)
+            .attr("width", this.treeWidth)
+            .attr("height", this.treeHeight)
             .append("g");
 
         let verticalLine: [number, number][] = [[(this.treeWidth / 2), this.treeHeight], [(this.treeWidth / 2), 0]];
@@ -276,7 +276,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             } else {
                 maxWidth = maxWidth * 105;
             }
-            let maxHeight = this.levelDepth.length * 110;
+            let maxHeight = (this.levelDepth.length * 110) + NODE_WIDTH;
             this.treeWidth = maxWidth > this.width ? maxWidth : this.width;
             this.treeHeight = this.height > maxHeight ? this.height : maxHeight;
         }
@@ -296,11 +296,8 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
         this.arrows.attr("transform", "translate(" + ((this.treeWidth / 2) - SIBLING_RADIUS * 1.35) + "," + ((this.treeHeight / 2) - SIBLING_RADIUS * 1.275) + ")");
 
-        if (this.width !== this.treeWidth || this.height !== this.treeHeight) {
-            d3.select("svg").attr("width", this.treeWidth)
-                .attr("height", this.treeHeight)
-                .attr("viewBox", "0 0 " + this.width + " " + this.height);
-        }
+        d3.select("svg").attr("width", this.treeWidth)
+            .attr("height", this.treeHeight)
         this.scrollToCenter();
     }
 
