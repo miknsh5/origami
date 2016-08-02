@@ -121,7 +121,7 @@
   }
   
   svg {
-    margin: 0 auto;
+    margin: 5px auto 0;
     display: block;
   }
   /* Let's get this party started */
