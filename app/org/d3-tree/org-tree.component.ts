@@ -313,6 +313,9 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 let scrollposition = this.treeHeight / 2;
                 scrollposition = scrollposition - (this.height / 2);
                 document.body.scrollTop = Math.abs(scrollposition);
+                if (document.body.scrollTop === 0) {
+                    document.documentElement.scrollTop = Math.abs(scrollposition);
+                }
             }
         } else if (this.currentMode === ChartMode.report) {
             if (this.treeWidth > this.width) {
