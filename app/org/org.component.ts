@@ -90,9 +90,6 @@ export class OrgComponent {
             if (node.NodeID === -1) {
                 this.isAddOrEditMode = true;
                 this.detailAddOrEditMode = true;
-            } else if (!this.isAddOrEditMode && prevNode.NodeID !== node.NodeID && prevNode.NodeID === -1 && !prevNode.IsNewRoot) {
-                this.isAddOrEditMode = true;
-                this.detailAddOrEditMode = true;
             } else if ((this.isAddOrEditMode || !this.isAddOrEditMode && prevNode.IsNewRoot) && prevNode.NodeID !== node.NodeID) {
                 this.isAddOrEditMode = false;
                 this.detailAddOrEditMode = false;
