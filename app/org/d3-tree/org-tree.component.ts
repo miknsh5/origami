@@ -145,7 +145,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             this.tree = d3.layout.tree().nodeSize([NODE_HEIGHT, NODE_WIDTH]);
         } else if (this.currentMode === ChartMode.report) {
             this.tree = d3.layout.tree().nodeSize([NODE_WIDTH, NODE_HEIGHT]);
-            this.root = this.selectedOrgNode;
+            this.root = this.selectedOrgNode || this.lastSelectedNode;
         }
 
         if (this.currentMode === ChartMode.build) {
@@ -171,17 +171,20 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             this.treeWidth = this.width;
             this.treeHeight = this.height;
 
-
             if (changes["isAddOrEditModeEnabled"] && !changes["treeData"]) {
                 return;
             }
 
             if (changes["currentMode"]) {
                 this.initializeTreeAsPerMode();
-                this.expandTree(this.selectedOrgNode);
+                let node = this.selectedOrgNode;
+                if (!node && this.lastSelectedNode) {
+                    node = this.lastSelectedNode;
+                }
+                this.expandTree(node);
                 this.calculateLevelDepth();
                 this.resizeLinesArrowsAndSvg();
-                this.highlightAndCenterNode(this.selectedOrgNode);
+                this.highlightAndCenterNode(node);
                 return;
             }
 
@@ -303,7 +306,14 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         }
 
         d3.select("svg").attr("width", this.treeWidth)
-            .attr("height", this.treeHeight);
+            .attr("height", this.treeHeight)
+            .attr("class", () => {
+                if (this.currentMode === ChartMode.build)
+                    return "buildMode";
+                else if (this.currentMode === ChartMode.report)
+                    return "reportMode";
+            });
+
         this.scrollToCenter();
     }
 
@@ -638,7 +648,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
         nodeEnter.append(TEXT)
             .attr("id", "abbr")
-            .attr("dy", ".35em")
+            .attr("dy", ".4em")
             .attr("text-anchor", "middle")
             .style("fill-opacity", 1);
 
@@ -739,11 +749,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         });
 
         node.select(CIRCLE).attr("class", (d) => {
-            if (this.currentMode === ChartMode.build) {
-                return d.IsSelected ? SELECTED_CIRCLE : DEFAULT_CIRCLE;
-            } else {
-                return DEFAULT_CIRCLE;
-            }
+            return d.IsSelected ? SELECTED_CIRCLE : DEFAULT_CIRCLE;
         });
 
         // Transition nodes to their new position.
@@ -768,9 +774,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 else { return DEFAULT_RADIUS; }
             })
             .attr("class", (d) => {
-                if (this.currentMode === ChartMode.report) {
-                    return DEFAULT_CIRCLE;
-                }
                 if (d.IsSelected && d.IsStaging && d.NodeID === -1) { return STAGED_CIRCLE; }
                 if (d.IsSelected) { return SELECTED_CIRCLE; }
                 else if (d.IsSibling) { return DEFAULT_CIRCLE + " sibling"; }
@@ -869,7 +872,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 .attr("class", "new-peer_reportee-circle");
 
             node.append(TEXT)
-                .attr("dy", ".35em")
+                .attr("dy", ".4em")
                 .text("+")
                 .attr("class", "new-peer_reportee-innerText");
 
@@ -1226,14 +1229,13 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     }
 
     private addNewRootNode(childNode) {
-
         let rootNode = this.addParentToNode(false, childNode as OrgNodeModel);
         this.root = rootNode;
         this.switchToAddMode.emit(rootNode);
         this.highlightAndCenterNode(rootNode);
         this.hideAllArrows();
-
     }
+
     private addNewNode(node) {
         let newNode = this.addEmptyChildToParent(node as OrgNodeModel);
         this.switchToAddMode.emit(newNode);

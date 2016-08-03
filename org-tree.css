@@ -75,8 +75,18 @@
     cursor: pointer;
   }
   
-  .selectedCircle {
+  .buildMode .selectedCircle {
     fill: #0097FF;
+  }
+  
+  .reportMode .selectedCircle {
+    fill: #ffffff;
+    stroke-width: 1px;
+    stroke: rgba(0, 0, 0, 0.1);
+  }
+  
+  .reportMode .selectedCircle + text#abbr {
+    fill: #4A4A4A !important;
   }
   
   .stagedCircle {

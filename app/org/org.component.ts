@@ -72,13 +72,11 @@ export class OrgComponent {
     }
 
     changeViewModeNav(viewMode) {
-        if (viewMode === ChartMode.build) {
-            if (this.selectedNode) {
+        if (!this.isAddOrEditMode) {
+            if (viewMode === ChartMode.build) {
                 this.currentChartMode = ChartMode.build;
                 this.enableViewModesNav(ChartMode.build);
-            }
-        } else {
-            if (!this.isAddOrEditMode && this.selectedNode) {
+            } else {
                 this.currentChartMode = ChartMode.report;
                 this.enableViewModesNav(ChartMode.report);
             }
@@ -99,12 +97,6 @@ export class OrgComponent {
                 this.isAddOrEditMode = false;
                 this.detailAddOrEditMode = false;
             }
-
-            if (this.currentChartMode === ChartMode.build) {
-                this.enableViewModesNav(ChartMode.build)
-            }
-        } else {
-            this.disableViewModesNav(ChartMode.report);
         }
     }
 
