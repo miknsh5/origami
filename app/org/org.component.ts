@@ -53,7 +53,7 @@ export class OrgComponent {
     }
 
     enableDropDown() {
-        $(".dropdown-button").dropdown();
+        $(".dropdown-button").dropdown({ constrain_width: false, alignment: "right" });
     }
 
     onResize(event) {
