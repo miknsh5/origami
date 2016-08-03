@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter} from "@angular/core";
+import { Component, Output, EventEmitter, OnDestroy} from "@angular/core";
 import { HTTP_PROVIDERS } from "@angular/http";
 import { CanActivate, Router } from "@angular/router-deprecated";
 import { tokenNotExpired } from "angular2-jwt";
@@ -19,6 +19,7 @@ const MAX_WIDTH: number = 1366;
 const DEFAULT_OFFSET: number = 70;
 
 declare var $: any;
+declare var SVGPan: any;
 
 @Component({
     selector: "sg-origami-org",
@@ -28,7 +29,7 @@ declare var $: any;
     providers: [OrgService, HTTP_PROVIDERS]
 })
 
-export class OrgComponent {
+export class OrgComponent implements OnDestroy {
     orgChart: OrgChartModel;
     orgNodes: OrgNodeModel[];
     svgWidth: number;
@@ -37,6 +38,7 @@ export class OrgComponent {
     reportView: any;
     buildViewText: any;
     reportViewText: any;
+    svgPan: any;
 
     @Output() currentChartMode: ChartMode;
     @Output() treeJson: any;
@@ -76,9 +78,23 @@ export class OrgComponent {
             if (viewMode === ChartMode.build) {
                 this.currentChartMode = ChartMode.build;
                 this.enableViewModesNav(ChartMode.build);
+                if (this.svgPan) {
+                    this.svgPan.enablePan = false;
+                }
             } else {
                 this.currentChartMode = ChartMode.report;
                 this.enableViewModesNav(ChartMode.report);
+                if (!this.svgPan) {
+                    let elem = document.getElementsByTagName("svg")[0];
+                    this.svgPan = SVGPan(elem, {
+                        enablePan: true,
+                        enableZoom: false,
+                        enableDrag: false,
+                        zoomScale: 0
+                    });
+                } else {
+                    this.svgPan.enablePan = true;
+                }
             }
         }
     }
@@ -366,6 +382,12 @@ export class OrgComponent {
             this.disableViewModesNav(ChartMode.report);
         }
         this.enableDropDown();
+    }
+
+    ngOnDestroy() {
+        if (this.svgPan) {
+            this.svgPan.removeHandlers();
+        }
     }
 
 }   

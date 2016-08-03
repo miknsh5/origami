@@ -83,7 +83,8 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         this.svg = this.graph.append("svg")
             .attr("width", this.treeWidth)
             .attr("height", this.treeHeight)
-            .append("g");
+            .append("g")
+            .attr("id", "viewport");
 
         let verticalLine: [number, number][] = [[(this.treeWidth / 2), this.treeHeight], [(this.treeWidth / 2), 0]];
         let horizontalLine: [number, number][] = [[0, (this.treeHeight / 2)], [this.treeWidth, (this.treeHeight / 2)]];
@@ -271,16 +272,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             let maxHeight = count * NODE_HEIGHT;
             this.treeWidth = this.width;
             this.treeHeight = maxHeight > this.height ? maxHeight : this.height;
-        } else if (this.currentMode === ChartMode.report) {
-            let maxWidth = d3.max(this.levelDepth);
-            if (maxWidth < NODE_HEIGHT) {
-                maxWidth = maxWidth * DEPTH;
-            } else {
-                maxWidth = maxWidth * 105;
-            }
-            let maxHeight = (this.levelDepth.length * 110) + NODE_WIDTH;
-            this.treeWidth = maxWidth > this.width ? maxWidth : this.width;
-            this.treeHeight = this.height > maxHeight ? this.height : maxHeight;
         }
 
         let verticalLine: [number, number][] = [[(this.treeWidth / 2), this.treeHeight], [(this.treeWidth / 2), 0]];

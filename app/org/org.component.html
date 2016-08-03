@@ -45,5 +45,5 @@
 
 <div *ngIf="currentChartMode===3">
     <sg-origami-csv [orgChartData]="orgChart"></sg-origami-csv>
-    <sg-origami-png [orgName]="orgChart.OrganizationName"></sg-origami-png>
+    <sg-origami-png [width]="svgWidth" [height]="svgHeight" [selectedOrgNode]="selectedNode" [orgName]="orgChart.OrganizationName"></sg-origami-png>
 </div>
