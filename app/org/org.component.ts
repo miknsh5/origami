@@ -47,8 +47,7 @@ export class OrgComponent {
         this.svgWidth = this.getSvgWidth();
         this.svgHeight = this.getSvgHeight();
         this.currentChartMode = ChartMode.build;
-        this.buildView = "nav-build active";
-        this.reportView = "nav-report";
+        this.enableViewModesNav(ChartMode.build);
     }
 
     onResize(event) {
@@ -66,35 +65,40 @@ export class OrgComponent {
         }
     }
 
-    changeToBuildMode() {
-        this.currentChartMode = ChartMode.build;
-        this.buildView = "nav-build active";
-        this.reportView = "nav-report";
-
-    }
-
-    changeToReportMode() {
-        if (!this.isAddOrEditMode) {
-            this.currentChartMode = ChartMode.report;
-            this.buildView = "nav-build";
-            this.reportView = "nav-report active";
+    changeViewModeNav(viewMode) {
+        if (viewMode === ChartMode.build) {
+            if (this.selectedNode) {
+                this.currentChartMode = ChartMode.build;
+                this.enableViewModesNav(ChartMode.build);
+            }
+        } else {
+            if (!this.isAddOrEditMode && this.selectedNode) {
+                this.currentChartMode = ChartMode.report;
+                this.enableViewModesNav(ChartMode.report);
+            }
         }
     }
 
     onNodeSelected(node) {
-        let nodeID = this.selectedNode ? this.selectedNode.NodeID : 0;
+        let prevNode = this.selectedNode ? this.selectedNode : new OrgNodeModel();
         this.selectedNode = node;
         if (this.selectedNode) {
             if (node.NodeID === -1) {
                 this.isAddOrEditMode = true;
                 this.detailAddOrEditMode = true;
-            } else if (!this.isAddOrEditMode && nodeID !== node.NodeID && nodeID === -1) {
+            } else if (!this.isAddOrEditMode && prevNode.NodeID !== node.NodeID && prevNode.NodeID === -1 && !prevNode.IsNewRoot) {
                 this.isAddOrEditMode = true;
                 this.detailAddOrEditMode = true;
-            } else if (this.isAddOrEditMode && nodeID !== node.NodeID) {
+            } else if ((this.isAddOrEditMode || !this.isAddOrEditMode && prevNode.IsNewRoot) && prevNode.NodeID !== node.NodeID) {
                 this.isAddOrEditMode = false;
                 this.detailAddOrEditMode = false;
             }
+
+            if (this.currentChartMode === ChartMode.build) {
+                this.enableViewModesNav(ChartMode.build)
+            }
+        } else {
+            this.disableViewModesNav(ChartMode.report);
         }
     }
 
@@ -120,23 +124,18 @@ export class OrgComponent {
         this.isAddOrEditMode = true;
         this.detailAddOrEditMode = true;
         this.selectedNode = node;
-        this.reportView = "nav-report inactive";
+        this.disableViewModesNav(ChartMode.report);
     }
 
     onAddOrEditModeValueSet(value: boolean) {
         this.isAddOrEditMode = value;
         this.detailAddOrEditMode = value;
-        this.switchReportViewTextClass(value);
-    }
-    switchReportViewTextClass(value: boolean) {
         if (value) {
-            this.reportView = "nav-report inactive";
-        }
-        else {
-            this.reportView = "nav-report ";
+            this.disableViewModesNav(ChartMode.report);
+        } else {
+            this.enableViewModesNav(ChartMode.build);
         }
     }
-
 
     addChildToSelectedOrgNode(newNode: OrgNodeModel, node: OrgNodeModel) {
         if (node) {
@@ -192,11 +191,8 @@ export class OrgComponent {
     updateJSON() {
         this.removeCircularRef(this.orgNodes[0]);
         this.treeJson = JSON.parse(JSON.stringify(this.orgNodes));
-        if (this.treeJson && this.treeJson.length === 0) {
-            this.reportView = "nav-report inactive";
-        }
-        if (this.selectedNode && this.selectedNode.NodeID === -1) {
-            this.reportView = "nav-report inactive";
+        if ((this.treeJson && this.treeJson.length === 0) || (this.selectedNode && this.selectedNode.NodeID === -1)) {
+            this.disableViewModesNav(ChartMode.report);
         }
     }
 
@@ -282,6 +278,24 @@ export class OrgComponent {
         this.router.navigate(["/Login"]);
     }
 
+    private enableViewModesNav(viewMode) {
+        if (viewMode === ChartMode.build) {
+            this.buildView = "active";
+            this.reportView = "";
+        } else {
+            this.buildView = "";
+            this.reportView = "active";
+        }
+    }
+
+    private disableViewModesNav(viewMode) {
+        if (viewMode === ChartMode.build) {
+            this.buildView = "inactive";
+        } else {
+            this.reportView = "inactive";
+        }
+    }
+
     private getSvgHeight() {
         let height = window.innerHeight;
 
@@ -354,7 +368,7 @@ export class OrgComponent {
         this.treeJson = JSON.parse(JSON.stringify(this.orgNodes));
         localStorage.setItem("org_id", this.orgChart.OrgID.toString());
         if (this.treeJson && this.treeJson.length === 0) {
-            this.reportView = "nav-report inactive";
+            this.disableViewModesNav(ChartMode.report);
         }
     }
 

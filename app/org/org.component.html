@@ -14,10 +14,9 @@
 
 <div class="modes-wrap ">
     <ul>
-        <li [ngClass]= "buildView" (click)="changeToBuildMode()"><a> Build</a ></li>       
-        <li *ngIf="currentChartMode!==2" class="nav-explore inactive"><a>Explore</a></li>       
-        <li [ngClass]="reportView" (click)="changeToReportMode()"><a>Report</a> </li>
-      
+        <li [ngClass]="buildView" class="nav-build" (click)="changeViewModeNav(1)"><a> Build</a ></li>       
+        <li class="nav-explore inactive"><a>Explore</a></li>       
+        <li [ngClass]="reportView" class="nav-report" (click)="changeViewModeNav(3)"><a>Report</a> </li>
     </ul>
 </div>
 

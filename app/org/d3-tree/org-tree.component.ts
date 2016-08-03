@@ -565,48 +565,50 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     }
 
     render(source) {
-        if (!this.nodes || this.selectedOrgNode) {
-            //  The tree defines the position of the nodes based on the number of nodes it needs to draw.
-            // collapse out the child nodes which will not be shown
-            this.markAncestors(this.selectedOrgNode);
-            if (this.currentMode === ChartMode.build) {
-                if (this.root.children) {
-                    for (let k = 0; k < this.root.children.length; k++) {
-                        this.collapseExceptSelectedNode(this.root.children[k]);
-                    };
+        if (source) {
+            if (!this.nodes || this.selectedOrgNode) {
+                //  The tree defines the position of the nodes based on the number of nodes it needs to draw.
+                // collapse out the child nodes which will not be shown
+                this.markAncestors(this.selectedOrgNode);
+                if (this.currentMode === ChartMode.build) {
+                    if (this.root.children) {
+                        for (let k = 0; k < this.root.children.length; k++) {
+                            this.collapseExceptSelectedNode(this.root.children[k]);
+                        };
+                    }
                 }
+
+                this.nodes = this.tree.nodes(this.root).reverse();
+
+                for (let j = 0; j < this.nodes.length; j++) {
+                    this.isAncestorOrRelated(this.nodes[j]);
+                };
+                this.nodes = this.nodes.filter(function (d) { return d.Show; });
             }
 
-            this.nodes = this.tree.nodes(this.root).reverse();
+            this.links = this.tree.links(this.nodes);
+            source.x0 = source.x;
+            source.y0 = source.y;
 
-            for (let j = 0; j < this.nodes.length; j++) {
-                this.isAncestorOrRelated(this.nodes[j]);
-            };
-            this.nodes = this.nodes.filter(function (d) { return d.Show; });
+            // Normalize for fixed-depth.
+            if (this.currentMode === ChartMode.build) {
+                this.nodes.forEach(function (d) { d.y = d.depth * DEPTH; });
+            } else {
+                this.nodes.forEach(function (d) { d.y = d.depth * NODE_WIDTH; });
+            }
+
+            this.renderOrUpdateNodes(source);
+
+            this.renderOrUpdateLinks(source);
+
+            // Stash the old positions for transition.
+            this.nodes.forEach(function (d) {
+                d.x0 = d.x;
+                d.y0 = d.y;
+            });
+
+            this.showUpdatePeerReporteeNode(source);
         }
-
-        this.links = this.tree.links(this.nodes);
-        source.x0 = source.x;
-        source.y0 = source.y;
-
-        // Normalize for fixed-depth.
-        if (this.currentMode === ChartMode.build) {
-            this.nodes.forEach(function (d) { d.y = d.depth * DEPTH; });
-        } else {
-            this.nodes.forEach(function (d) { d.y = d.depth * NODE_WIDTH; });
-        }
-
-        this.renderOrUpdateNodes(source);
-
-        this.renderOrUpdateLinks(source);
-
-        // Stash the old positions for transition.
-        this.nodes.forEach(function (d) {
-            d.x0 = d.x;
-            d.y0 = d.y;
-        });
-
-        this.showUpdatePeerReporteeNode(source);
         this.resizeLinesArrowsAndSvg();
     }
 
@@ -930,7 +932,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         // event.stopPropagation();
         if (this.currentMode === ChartMode.build) {
             if (event.target.nodeName === "svg") {
-                if (!this.isAddOrEditModeEnabled) {
+                if (!this.isAddOrEditModeEnabled && this.selectedOrgNode) {
                     this.deselectNode();
                     this.selectNode.emit(this.selectedOrgNode);
                 }
