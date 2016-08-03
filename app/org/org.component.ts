@@ -18,6 +18,8 @@ const MAX_WIDTH: number = 1366;
 
 const DEFAULT_OFFSET: number = 70;
 
+declare var $: any;
+
 @Component({
     selector: "sg-origami-org",
     directives: [OrgTreeComponent, OrgNodeDetailComponent, ConvertJSONToCSVComponent, ConvertTreeToPNGComponent],
@@ -48,6 +50,10 @@ export class OrgComponent {
         this.svgHeight = this.getSvgHeight();
         this.currentChartMode = ChartMode.build;
         this.enableViewModesNav(ChartMode.build);
+    }
+
+    enableDropDown() {
+        $(".dropdown-button").dropdown();
     }
 
     onResize(event) {
@@ -370,6 +376,7 @@ export class OrgComponent {
         if (this.treeJson && this.treeJson.length === 0) {
             this.disableViewModesNav(ChartMode.report);
         }
+        this.enableDropDown();
     }
 
 }   

@@ -69,13 +69,21 @@ nav .brand-logo {
   color: #607d8b;
 }
 
-
-/*nav ul a {
+nav ul a {
   color: #607d8b;
-}*/
+}
 
 nav ul a i.right, nav ul a i.left {
   margin: 0;
+}
+
+#userDropdown {
+  top: 55px !important;
+}
+
+.dropdown-content li>a>i {
+  height: inherit !important;
+  line-height: inherit !important;
 }
 
 .auth-panel button {
