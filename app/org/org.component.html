@@ -23,7 +23,7 @@
 
 <div class="main-canvas" *ngIf="orgChart" (window:resize)="onResize($event)">
     <sg-org-tree [treeData]="treeJson" [width]="svgWidth" [height]="svgHeight" [currentMode]="currentChartMode" [isAddOrEditModeEnabled]="isAddOrEditMode"
-        (selectNode)="onNodeSelected($event)" (switchToAddMode)="onSwitchedToAddMode($event)">
+        (selectNode)="onNodeSelected($event)" (switchToAddMode)="onSwitchedToAddMode($event)" [nodeFirstName]="firstName" [nodeLastName]="lastName" [nodeDescription]="description">
     </sg-org-tree>
 </div>
 
@@ -33,7 +33,16 @@
     </sg-org-node-detail>
 </div>
 
-<div *ngIf="currentChartMode===3">
+<div *ngIf="currentChartMode===3">     
     <sg-origami-csv [orgChartData]="orgChart"></sg-origami-csv>
     <sg-origami-png [orgName]="orgChart.OrganizationName"></sg-origami-png>
+    <div class="checkBox">
+        
+       <input type="checkbox" class="filled-in" id="FirstName" checked="checked" (change)="setLabel($event)" />
+      <label for="FirstName" >First Name</label>
+        <input type="checkbox" class="filled-in" id="LastName" checked="checked" (change)="setLabel($event)" />
+      <label for="LastName">Last Name</label>
+        <input type="checkbox" class="filled-in" id="Description" checked="checked" (change)="setLabel($event)" />
+      <label for="Description">Description</label>
+    </div>   
 </div>

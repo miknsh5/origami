@@ -157,6 +157,13 @@ nav ul a i.right, nav ul a i.left {
   color: #cfd8dc;
 }
 
+.checkBox{
+    width: 140px;
+    position: absolute;
+    right :0;
+    top:65px; 
+}
+
 @media only screen and (max-width:992px) {
   nav .brand-logo {
     left: 0%;

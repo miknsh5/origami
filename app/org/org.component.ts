@@ -41,6 +41,9 @@ export class OrgComponent {
     @Output() selectedNode: OrgNodeModel;
     @Output() isAddOrEditMode: boolean;
     @Output() detailAddOrEditMode: boolean;
+    @Output() firstName: boolean;
+    @Output() lastName: boolean;
+    @Output() description: boolean;
 
     constructor(private orgService: OrgService, private router: Router) {
         this.getAllNodes();
@@ -49,6 +52,9 @@ export class OrgComponent {
         this.currentChartMode = ChartMode.build;
         this.buildView = "nav-build active";
         this.reportView = "nav-report";
+        this.firstName = true;
+        this.lastName = true;
+        this.description = true;
     }
 
     onResize(event) {
@@ -77,7 +83,34 @@ export class OrgComponent {
         if (!this.isAddOrEditMode) {
             this.currentChartMode = ChartMode.report;
             this.buildView = "nav-build";
-            this.reportView = "nav-report active";
+            this.reportView = "nav-report active";           
+        }
+    }
+
+    setLabel(event){
+        if(event.target.id==="FirstName"){
+            if(event.target.checked === true){
+                this.firstName = true;
+            }
+            else{
+                this.firstName = false;
+            }
+        }
+        else  if(event.target.id==="LastName"){
+             if(event.target.checked === true){
+                this.lastName = true;
+            }
+            else{
+                this.lastName = false;
+            }
+        }
+         else  if(event.target.id==="Description"){
+            if(event.target.checked === true){
+                this.description = true;
+            }
+            else{
+                this.description = false;
+            }
         }
     }
 
