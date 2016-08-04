@@ -290,6 +290,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 .attr("stroke", "#979797");
 
             this.arrows.attr("transform", "translate(" + ((this.treeWidth / 2) - SIBLING_RADIUS * 1.35) + "," + ((this.treeHeight / 2) - SIBLING_RADIUS * 1.275) + ")");
+            d3.select("#viewport").attr("transform", "");
         }
         else if (this.currentMode === ChartMode.report) {
             d3.select("path.vertical")
