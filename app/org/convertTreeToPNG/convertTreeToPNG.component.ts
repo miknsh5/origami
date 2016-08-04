@@ -29,6 +29,7 @@ export class ConvertTreeToPNGComponent {
             let viewPort = document.getElementById("viewport");
             let mattrix = viewPort.getAttribute("transform");
             let svg = document.getElementsByTagName("svg")[0];
+
             svg.setAttribute("style", "background-color:white");
             svg.setAttribute("width", width.toString());
             svg.setAttribute("height", height.toString());

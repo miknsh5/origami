@@ -191,6 +191,10 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 return;
             }
 
+            if ((changes["width"] || changes["height"]) && this.currentMode === ChartMode.report) {
+                return;
+            }
+
             let raiseSelectedEvent: boolean = true;
 
             // We don't need to raise a selectednode change event if the only change happening is entering/leaving edit node
