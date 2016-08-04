@@ -1,12 +1,23 @@
 <div class="auth-panel">
-    <!-- Dropdown Structure -->
+    <!-- User Dropdown Structure -->
+    <ul id="userDropdown" class="dropdown-content collection">
+        <li class="collection-item avatar">
+            <img src="http://placehold.it/42x42" alt="">            
+            <p>Test</p>
+            <p class="caption">test@abc.com</p>
+        </li>
+        <li class="divider"></li>
+        <li (click)="logout()"><a><i class="material-icons left">remove_circle</i>Logout</a></li>
+        <li class="divider"></li>
+        <li><a><i class="material-icons left">folder_shared</i>Account</a></li>
+    </ul>
+
     <nav>
         <div class="nav-wrapper">
             <a href="#!" class="brand-logo">PEOPLE TREE</a>
             <ul class="right">
-                <li><a class="waves-effect waves-light btn" (click)="logout()">Logout</a></li>
-                <!--<li><a class="dropdown-button" data-activates="groupDropdown"><i class="material-icons left">view_module</i>My Group<i class="material-icons right">arrow_drop_down</i></a></li>
-                <li><a class="dropdown-button" data-activates="userDropdown"><i class="material-icons left">perm_identity</i>User<i class="material-icons right">arrow_drop_down</i></a></li>-->
+                <li><a class="dropdown-button" data-activates="groupDropdown"><i class="material-icons left">apps</i>My Group<i class="material-icons right">arrow_drop_down</i></a></li>
+                <li><a class="dropdown-button" data-activates="userDropdown"><i class="material-icons left">person</i>User<i class="material-icons right">arrow_drop_down</i></a></li>
             </ul>
         </div>
     </nav>
@@ -14,10 +25,9 @@
 
 <div class="modes-wrap ">
     <ul>
-        <li [ngClass]= "buildView" (click)="changeToBuildMode()"><a> Build</a ></li>       
-        <li *ngIf="currentChartMode!==2" class="nav-explore inactive"><a>Explore</a></li>       
-        <li [ngClass]="reportView" (click)="changeToReportMode()"><a>Report</a> </li>
-      
+        <li [ngClass]="buildView" class="nav-build" (click)="changeViewModeNav(1)"><a> Build</a></li>       
+        <li class="nav-explore inactive"><a>Explore</a></li>       
+        <li [ngClass]="reportView" class="nav-report" (click)="changeViewModeNav(3)"><a>Report</a> </li>
     </ul>
 </div>
 
@@ -35,5 +45,5 @@
 
 <div *ngIf="currentChartMode===3">
     <sg-origami-csv [orgChartData]="orgChart"></sg-origami-csv>
-    <sg-origami-png [orgName]="orgChart.OrganizationName"></sg-origami-png>
+    <sg-origami-png [width]="svgWidth" [height]="svgHeight" [selectedOrgNode]="selectedNode" [orgName]="orgChart.OrganizationName"></sg-origami-png>
 </div>
