@@ -45,23 +45,23 @@ export class OrgComponent implements OnDestroy {
     @Output() selectedNode: OrgNodeModel;
     @Output() isAddOrEditMode: boolean;
     @Output() detailAddOrEditMode: boolean;
-    @Output() labelFirstName: boolean;
-    @Output() labelLastName: boolean;
-    @Output() labelDescription: boolean;
+    @Output() displayFirstNameLabel: boolean;
+    @Output() displayLastNameLabel: boolean;
+    @Output() displayDescriptionLabel: boolean;
 
     constructor(private orgService: OrgService, private router: Router) {
         this.getAllNodes();
         this.svgWidth = this.getSvgWidth();
         this.svgHeight = this.getSvgHeight();
         this.currentChartMode = ChartMode.build;
-        this.enableLabels()
+        this.enableLabels();
         this.enableViewModesNav(ChartMode.build);
     }
 
     enableLabels() {
-        this.labelFirstName = true;
-        this.labelLastName = true;
-        this.labelDescription = true;
+        this.displayFirstNameLabel = true;
+        this.displayLastNameLabel = true;
+        this.displayDescriptionLabel = true;
     }
 
     enableDropDown() {
@@ -88,7 +88,7 @@ export class OrgComponent implements OnDestroy {
             if (viewMode === ChartMode.build) {
                 this.enableLabels();
                 this.currentChartMode = ChartMode.build;
-                this.enableViewModesNav(ChartMode.build);               
+                this.enableViewModesNav(ChartMode.build);
                 if (this.svgPan) {
                     this.svgPan.enablePan = false;
                 }
@@ -111,29 +111,29 @@ export class OrgComponent implements OnDestroy {
         }
     }
 
-    setLabel(event) {
+    setLabelVisiblity(event) {
         if (event.target.id === "FirstName") {
             if (event.target.checked === true) {
-                this.labelFirstName = true;
+                this.displayFirstNameLabel = true;
             }
             else {
-                this.labelFirstName = false;
+                this.displayFirstNameLabel = false;
             }
         }
         else if (event.target.id === "LastName") {
             if (event.target.checked === true) {
-                this.labelLastName = true;
+                this.displayLastNameLabel = true;
             }
             else {
-                this.labelLastName = false;
+                this.displayLastNameLabel = false;
             }
         }
         else if (event.target.id === "Description") {
             if (event.target.checked === true) {
-                this.labelDescription = true;
+                this.displayDescriptionLabel = true;
             }
             else {
-                this.labelDescription = false;
+                this.displayDescriptionLabel = false;
             }
         }
     }

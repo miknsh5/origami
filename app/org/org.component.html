@@ -33,7 +33,7 @@
 
 <div class="main-canvas" *ngIf="orgChart" (window:resize)="onResize($event)">
     <sg-org-tree [treeData]="treeJson" [width]="svgWidth" [height]="svgHeight" [currentMode]="currentChartMode" [isAddOrEditModeEnabled]="isAddOrEditMode"
-        (selectNode)="onNodeSelected($event)" (switchToAddMode)="onSwitchedToAddMode($event)" [nodeLabelFirstName]="labelFirstName" [nodeLabelLastName]="labelLastName" [nodeLabelDescription]="labelDescription">
+        (selectNode)="onNodeSelected($event)" (switchToAddMode)="onSwitchedToAddMode($event)" [showFirstNameLabel]="displayFirstNameLabel" [showLastNameLabel]="displayLastNameLabel" [showDescriptionLabel]="displayDescriptionLabel">
     </sg-org-tree>
 </div>
 
@@ -47,11 +47,11 @@
     <sg-origami-csv [orgChartData]="orgChart"></sg-origami-csv>
      <sg-origami-png [width]="svgWidth" [height]="svgHeight" [selectedOrgNode]="selectedNode" [orgName]="orgChart.OrganizationName"></sg-origami-png>
     <div class="checkBoxList">        
-       <input type="checkbox" class="filled-in" id="FirstName" checked="checked" (change)="setLabel($event)" />
+       <input type="checkbox" class="filled-in" id="FirstName" checked="checked" (change)="setLabelVisiblity($event)" />
       <label for="FirstName" >First Name</label>
-        <input type="checkbox" class="filled-in" id="LastName" checked="checked" (change)="setLabel($event)" />
+        <input type="checkbox" class="filled-in" id="LastName" checked="checked" (change)="setLabelVisiblity($event)" />
       <label for="LastName">Last Name</label>
-        <input type="checkbox" class="filled-in" id="Description" checked="checked" (change)="setLabel($event)" />
+        <input type="checkbox" class="filled-in" id="Description" checked="checked" (change)="setLabelVisiblity($event)" />
       <label for="Description">Description</label>
     </div>   
 </div>
