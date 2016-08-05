@@ -45,13 +45,23 @@ export class OrgComponent implements OnDestroy {
     @Output() selectedNode: OrgNodeModel;
     @Output() isAddOrEditMode: boolean;
     @Output() detailAddOrEditMode: boolean;
+    @Output() displayFirstNameLabel: boolean;
+    @Output() displayLastNameLabel: boolean;
+    @Output() displayDescriptionLabel: boolean;
 
     constructor(private orgService: OrgService, private router: Router) {
         this.getAllNodes();
         this.svgWidth = this.getSvgWidth();
         this.svgHeight = this.getSvgHeight();
         this.currentChartMode = ChartMode.build;
+        this.enableLabels();
         this.enableViewModesNav(ChartMode.build);
+    }
+
+    enableLabels() {
+        this.displayFirstNameLabel = true;
+        this.displayLastNameLabel = true;
+        this.displayDescriptionLabel = true;
     }
 
     enableDropDown() {
@@ -76,6 +86,7 @@ export class OrgComponent implements OnDestroy {
     changeViewModeNav(viewMode) {
         if (!this.isAddOrEditMode) {
             if (viewMode === ChartMode.build) {
+                this.enableLabels();
                 this.currentChartMode = ChartMode.build;
                 this.enableViewModesNav(ChartMode.build);
                 if (this.svgPan) {
@@ -84,6 +95,7 @@ export class OrgComponent implements OnDestroy {
             } else {
                 this.currentChartMode = ChartMode.report;
                 this.enableViewModesNav(ChartMode.report);
+                this.enableLabels();
                 if (!this.svgPan) {
                     let elem = document.getElementsByTagName("svg")[0];
                     this.svgPan = SVGPan(elem, {
@@ -95,6 +107,33 @@ export class OrgComponent implements OnDestroy {
                 } else {
                     this.svgPan.enablePan = true;
                 }
+            }
+        }
+    }
+
+    setLabelVisiblity(event) {
+        if (event.target.id === "FirstName") {
+            if (event.target.checked === true) {
+                this.displayFirstNameLabel = true;
+            }
+            else {
+                this.displayFirstNameLabel = false;
+            }
+        }
+        else if (event.target.id === "LastName") {
+            if (event.target.checked === true) {
+                this.displayLastNameLabel = true;
+            }
+            else {
+                this.displayLastNameLabel = false;
+            }
+        }
+        else if (event.target.id === "Description") {
+            if (event.target.checked === true) {
+                this.displayDescriptionLabel = true;
+            }
+            else {
+                this.displayDescriptionLabel = false;
             }
         }
     }
