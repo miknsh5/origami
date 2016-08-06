@@ -56,7 +56,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     nodes: any;
     links: any;
     selectedOrgNode: any;
-    firstNameWidths: any;
     labelWidths: any;
     treeWidth: number;
     treeHeight: number;
@@ -699,60 +698,31 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         nodeEnter.append("g")
             .attr("class", "label");
 
-        nodeEnter.select("g.label").append("g")
-            .attr("class", "fullName");
-
-        nodeEnter.select("g.label g.fullName").append(TEXT)
-            .attr("data-id", "firstName");
-
-        nodeEnter.select("g.label g.fullName").append(TEXT)
-            .attr("data-id", "lastName");
+        nodeEnter.select("g.label").append(TEXT)
+            .attr("data-id", "name");
 
         nodeEnter.select("g.label").append(TEXT)
             .attr("data-id", "description");
 
-        node.select("g.label g.fullName text[data-id='firstName']").text(function (d) {
-            let name = d.NodeFirstName;
-            if (d.NodeFirstName.length > 15)
+        node.select("g.label text[data-id='name']").text((d) => {
+            let name = "";
+            if (this.showFirstNameLabel && this.showLastNameLabel) {
+                name = d.NodeFirstName + " " + d.NodeLastName;
+            } else if (this.showFirstNameLabel) {
+                name = d.NodeFirstName;
+            } else {
+                name = d.NodeLastName;
+            }
+
+            if (name.length > 15)
                 return d.IsSelected || d.IsGrandParent ? "" : name.substring(0, 15) + "...";
             else
                 return d.IsSelected || d.IsGrandParent ? "" : name;
+
         }).attr("text-anchor", (d) => {
-            if (this.currentMode === ChartMode.build) { return "start"; } else {
-                if (this.showFirstNameLabel && this.showLastNameLabel)
-                    return "start";
-                else
-                    return "middle";
-            }
+            if (this.currentMode === ChartMode.build) { return "start"; }
+            else { return "middle"; }
         });
-        this.firstNameWidths = node.select("text[data-id='firstName']").each(function (d) {
-            return d3.select(this).node();
-        });
-
-        node.select("g.label g.fullName text[data-id='lastName']").text((d) => {
-            let name = d.NodeLastName;
-            if ((d.NodeFirstName.length + d.NodeLastName.length) > 15)
-                return d.IsSelected || d.IsGrandParent ? "" : name.substring(0, (15 - d.NodeFirstName.length)) + "...";
-            else
-                return d.IsSelected || d.IsGrandParent ? "" : name;
-        }).attr("text-anchor", (d) => {
-            if (this.currentMode === ChartMode.build) { return "start"; } else {
-                if (this.showFirstNameLabel && this.showLastNameLabel)
-                    return "start";
-                else
-                    return "middle";
-            }
-        }).attr("transform", (d, index) => {
-            let x = 0;
-
-            if (this.showLastNameLabel && !this.showFirstNameLabel)
-                x = 0;
-            else
-                x = (Math.round(this.firstNameWidths[0][index].getBoundingClientRect()["width"])) + (DEFAULT_MARGIN / 2);
-
-            return "translate(" + x + ",0)";
-        });
-
 
         node.select("g.label text[data-id='description']").text((d) => {
             if (d.Description > 15)
@@ -760,9 +730,8 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             else
                 return d.IsSelected || d.IsGrandParent ? "" : d.Description;
         }).attr("text-anchor", (d) => {
-            if (this.currentMode === ChartMode.build) { return "start"; } else {
-                return "middle";
-            }
+            if (this.currentMode === ChartMode.build) { return "start"; }
+            else { return "middle"; }
         }).attr("dy", (d) => {
             if (this.showDescriptionLabel && !this.showFirstNameLabel && !this.showLastNameLabel) {
                 return "0em";
@@ -775,10 +744,8 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 if (d.IsParent === true || d.IsChild === true) { return PARENTCHILD_RADIUS + DEFAULT_MARGIN; }
                 else { return SIBLING_RADIUS + DEFAULT_MARGIN; }
             });
-        }
-        else {
+        } else {
             node.select("g.label ").attr("y", 30);
-
         }
 
         // used to get the label width of each node
@@ -796,17 +763,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             } else {
                 return "translate(0," + margin + ")";
             }
-        });
-
-        node.select("g.label g.fullName").attr("transform", (d, index) => {
-            let x = 0;
-
-            if (this.currentMode === ChartMode.report)
-                x = (Math.round(this.labelWidths[0][index].getBoundingClientRect()["width"])) / 2;
-
-            if (!this.showLastNameLabel || !this.showFirstNameLabel)
-                x = 0;
-            return "translate(" + -x + ",0)";
         });
 
         // creates a polygon to indicate it has child(s)
