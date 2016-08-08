@@ -38,6 +38,7 @@ const POLYGON = "polygon";
 const CIRCLE = "circle";
 const TEXT = "text";
 
+
 const DEFAULT_FONTSIZE = 11;
 const SIBLING_FONTSIZE = 17.3;
 
@@ -710,7 +711,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 name = d.NodeFirstName + " " + d.NodeLastName;
             } else if (this.showFirstNameLabel) {
                 name = d.NodeFirstName;
-            } else {
+            } else if (this.showDescriptionLabel) {
                 name = d.NodeLastName;
             }
 
