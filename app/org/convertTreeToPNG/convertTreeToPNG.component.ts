@@ -24,20 +24,24 @@ export class ConvertTreeToPNGComponent {
         if (this.selectedOrgNode) {
             this.depth = [1];
             this.childCount(0, this.selectedOrgNode);
-            let width = d3.max(this.depth) * 150;
-            let height = (this.depth.length * 110);
+            let width = d3.max(this.depth) * 210;
+            let height = (this.depth.length * 120);
             let viewPort = document.getElementById("viewport");
             let mattrix = viewPort.getAttribute("transform");
             let svg = document.getElementsByTagName("svg")[0];
+            let nodes = svg.getElementsByClassName("nodes")[0];
+            let nodesTransform = nodes.getAttribute("transform");
 
             svg.setAttribute("style", "background-color:white");
             svg.setAttribute("width", width.toString());
             svg.setAttribute("height", height.toString());
+            nodes.setAttribute("transform", "translate(" + (width / 2) + ", 95)");
             viewPort.setAttribute("transform", DEFAULT_MATTRIX);
 
             saveSvgAsPng.saveSvgAsPng(svg, this.orgName + DEFAULT_EXT);
             svg.setAttribute("width", this.width);
             svg.setAttribute("height", this.height);
+            nodes.setAttribute("transform", nodesTransform);
             viewPort.setAttribute("transform", mattrix);
         }
     }
