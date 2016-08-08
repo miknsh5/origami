@@ -23,6 +23,10 @@
     </nav>
 </div>
 
+<div>
+    <sg-org-menu-panel [selectedOrgNode]="selectedNode"></sg-org-menu-panel>
+</div>
+
 <div class="modes-wrap ">
     <ul>
         <li [ngClass]="buildView" class="nav-build" (click)="changeViewModeNav(1)"><a> Build</a></li>       
@@ -34,7 +38,7 @@
 <div class="main-canvas" *ngIf="orgChart" (window:resize)="onResize($event)">
     <sg-org-tree [treeData]="treeJson" [width]="svgWidth" [height]="svgHeight" [currentMode]="currentChartMode" [isAddOrEditModeEnabled]="isAddOrEditMode"
         (selectNode)="onNodeSelected($event)" (switchToAddMode)="onSwitchedToAddMode($event)" [showFirstNameLabel]="displayFirstNameLabel" [showLastNameLabel]="displayLastNameLabel" [showDescriptionLabel]="displayDescriptionLabel">
-    </sg-org-tree>
+    </sg-org-tree> 
 </div>
 
 <div *ngIf="currentChartMode===1">

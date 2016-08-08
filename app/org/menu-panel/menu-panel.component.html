@@ -1,0 +1,18 @@
+<div class="sideNav">
+    <div class="menuButton right">
+        <button class="waves-effect waves-light" (click)="openPanel()"><i class="material-icons left">keyboard_arrow_left</i></button>
+    </div>
+    
+    <div id="menuPanel">
+        <div >
+            <button class="waves-effect waves-light closebtn" (click)="closePanel()"><i class="material-icons">close</i></button>
+            <hr/>
+        </div>
+        <label class="menuTitle">Resource</label>
+
+        <div *ngIf="selectedNode" class="labelWrap">
+            <p class="lblName"> {{selectedNode.NodeFirstName}} {{selectedNode.NodeLastName}}</p>
+            <p class="lblJobTitle"> {{selectedNode.Description}} </p>
+        </div>
+    </div>
+</div>

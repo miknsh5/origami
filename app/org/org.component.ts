@@ -6,6 +6,7 @@ import { tokenNotExpired } from "angular2-jwt";
 import { AddNodeComponent } from "./add-node/add-node.component";
 import { ConvertJSONToCSVComponent } from "./convertJSONToCSV/convertJSONToCSV.component";
 import { ConvertTreeToPNGComponent } from "./convertTreeToPNG/convertTreeToPNG.component";
+import { MenuPanelComponent } from "./menu-panel/menu-panel.component";
 import { OrgNodeDetailComponent } from "./org-node-detail/index";
 import { OrgChartModel, OrgNodeModel, OrgService, ChartMode} from "./shared/index";
 import { OrgTreeComponent } from "./d3-tree/org-tree.component";
@@ -23,7 +24,7 @@ declare var SVGPan: any;
 
 @Component({
     selector: "sg-origami-org",
-    directives: [OrgTreeComponent, OrgNodeDetailComponent, ConvertJSONToCSVComponent, ConvertTreeToPNGComponent],
+    directives: [OrgTreeComponent, OrgNodeDetailComponent, ConvertJSONToCSVComponent, ConvertTreeToPNGComponent, MenuPanelComponent],
     templateUrl: "app/org/org.component.html",
     styleUrls: ["app/org/org.component.css"],
     providers: [OrgService, HTTP_PROVIDERS]
