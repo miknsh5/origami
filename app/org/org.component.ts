@@ -9,6 +9,7 @@ import { ConvertTreeToPNGComponent } from "./convertTreeToPNG/convertTreeToPNG.c
 import { OrgNodeDetailComponent } from "./org-node-detail/index";
 import { OrgChartModel, OrgNodeModel, OrgService, ChartMode} from "./shared/index";
 import { OrgTreeComponent } from "./d3-tree/org-tree.component";
+import { UserModel } from "../Shared/models/user.model";
 
 const MIN_HEIGHT: number = 320;
 const MAX_HEIGHT: number = 768;
@@ -39,6 +40,7 @@ export class OrgComponent implements OnDestroy {
     buildViewText: any;
     reportViewText: any;
     svgPan: any;
+    userModel: UserModel;
 
     @Output() currentChartMode: ChartMode;
     @Output() treeJson: any;
@@ -76,6 +78,8 @@ export class OrgComponent implements OnDestroy {
     getAllNodes() {
         let profile = localStorage.getItem("profile");
         if (profile) {
+            this.userModel = JSON.parse(profile);
+            console.log(this.userModel);
             this.orgService.getNodes(profile)
                 .subscribe(data => this.setOrgChartData(data),
                 err => this.orgService.logError(err),
