@@ -123,6 +123,7 @@ nav ul a i.right, nav ul a i.left {
 .main-canvas {
   width: 100%;
   overflow-x: auto;
+  padding-top: 55px;
 }
 
 .main-canvas h1 {

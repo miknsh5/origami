@@ -38,6 +38,7 @@ const POLYGON = "polygon";
 const CIRCLE = "circle";
 const TEXT = "text";
 
+
 const DEFAULT_FONTSIZE = 11;
 const SIBLING_FONTSIZE = 17.3;
 
@@ -169,24 +170,15 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     }
 
     setNodeLabelVisiblity() {
-        if (this.showFirstNameLabel) {
-            d3.selectAll(" text[data-id='firstName']").style("display", "block");
-        }
-        else {
-            d3.selectAll("text[data-id='firstName']").style("display", "none");
-        }
-        if (this.showLastNameLabel) {
-            d3.selectAll("text[data-id='lastName'] ").style("display", "block");
-        }
-        else {
-            d3.selectAll("text[data-id='lastName']").style("display", "none");
-        }
-        if (this.showDescriptionLabel) {
-            d3.selectAll("text[data-id='description']").style("display", "block");
-        } else {
-            d3.selectAll("text[data-id='description']").style("display", "none");
-        }
+        d3.selectAll("text[data-id='name']").style("visibility", () => {
+            if (this.showFirstNameLabel || this.showLastNameLabel) return "visible";
+            else return "hidden";
+        });
 
+        d3.selectAll("text[data-id='description']").style("visibility", () => {
+            if (this.showDescriptionLabel) return "visible";
+            else return "hidden";
+        });
     }
 
     // TODO:- we should refactor this method to work depending on the kind of change that has taken place. 
@@ -710,14 +702,18 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 name = d.NodeFirstName + " " + d.NodeLastName;
             } else if (this.showFirstNameLabel) {
                 name = d.NodeFirstName;
-            } else {
+            } else if (this.showLastNameLabel) {
                 name = d.NodeLastName;
             }
 
-            if (name.length > 15)
-                return d.IsSelected || d.IsGrandParent ? "" : name.substring(0, 15) + "...";
-            else
-                return d.IsSelected || d.IsGrandParent ? "" : name;
+            if (name.length > 15) {
+                if (this.currentMode === ChartMode.build) { return d.IsSelected || d.IsGrandParent ? "" : name.substring(0, 15) + "..."; }
+                else { return name.substring(0, 15) + "..."; }
+            }
+            else {
+                if (this.currentMode === ChartMode.build) { return d.IsSelected || d.IsGrandParent ? "" : name; }
+                else { return name; }
+            }
 
         }).attr("text-anchor", (d) => {
             if (this.currentMode === ChartMode.build) { return "start"; }
@@ -725,10 +721,13 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         });
 
         node.select("g.label text[data-id='description']").text((d) => {
-            if (d.Description > 15)
-                return d.IsSelected || d.IsGrandParent ? "" : d.Description.substring(0, 15) + "...";
-            else
-                return d.IsSelected || d.IsGrandParent ? "" : d.Description;
+            if (d.Description > 15) {
+                if (this.currentMode === ChartMode.build) { return d.IsSelected || d.IsGrandParent ? "" : d.Description.substring(0, 15) + "..."; }
+                else { return d.Description.substring(0, 15) + "..."; }
+            } else {
+                if (this.currentMode === ChartMode.build) { return d.IsSelected || d.IsGrandParent ? "" : d.Description; }
+                else { return d.Description; }
+            }
         }).attr("text-anchor", (d) => {
             if (this.currentMode === ChartMode.build) { return "start"; }
             else { return "middle"; }
@@ -736,7 +735,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             if (this.showDescriptionLabel && !this.showFirstNameLabel && !this.showLastNameLabel) {
                 return "0em";
             }
-            else return "1em";
+            else { return "1em"; }
         });
 
         if (this.currentMode === ChartMode.build) {
@@ -761,6 +760,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 }
                 return "translate(" + margin + ",0)";
             } else {
+                if (d.IsSelected) margin = DEFAULT_MARGIN * 5;
                 return "translate(0," + margin + ")";
             }
         });

@@ -5,6 +5,10 @@
             <img src="http://placehold.it/42x42" alt="">
             <p>Test</p>
             <p class="caption">test@abc.com</p>
+        <li *ngIf="userModel" class="collection-item avatar">
+            <img [src]="userModel.Picture" alt="">            
+            <p>{{userModel.Name}}</p>
+            <p class="caption">{{userModel.Email}}</p>
         </li>
         <li class="divider"></li>
         <li (click)="logout()"><a><i class="material-icons left">remove_circle</i>Logout</a></li>
