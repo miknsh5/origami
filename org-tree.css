@@ -134,6 +134,11 @@
     margin: 5px auto 0;
     display: block;
   }
+  
+.tabs .indicator {  
+   background-color: transparent !important;
+}
+
   /* Let's get this party started */
   
   ::-webkit-scrollbar {

@@ -1,3 +1,11 @@
+.sideNav{
+  position: fixed;
+  right: 0;
+  top: 58px;
+  height: 100%;
+  overflow-x: hidden;
+  min-width: 40px;
+}
 .sideNav i {
   font-size: 1.3rem;
   line-height: 1.53em;
@@ -19,24 +27,22 @@
   border: none;
 }
 
-.sideNav .menuButton {
-  position: absolute;
-  right: 0;
-  margin-top: 0;
-}
-
 .sideNav i.left {
   margin: 0 8px;  
 }
 
+.sideNav .menuButton{
+  position: absolute;
+  right: 0;
+  z-index: -1;
+}
+
 .sideNav #menuPanel{
   width: 5px;
-  height: 100vh;
-  min-height: 649px;
-  background-color: #455a64;
-  position: fixed;
+  height: 100%;
+  min-height: 585px;
   z-index: 10;
-  right: 0;
+  background-color: #455a64;  
   overflow-x: scroll;
   transition: 0.5s;
 }
@@ -73,4 +79,76 @@
 
 .sideNav .labelWrap {
   margin: 15px 40px;
+}
+
+.sideNav .lblReport{
+  margin:1.0em;
+  font-size: 0.9em;
+  font-weight: 350;
+  color: #b6b6b6;
+  line-height: initial;
+}
+
+.sideNav .lblReportValue{
+  margin-left: 44px;
+  font-size: 0.9em;
+  color: #b6b6b6;
+  line-height: initial;  
+}
+
+.sideNav .checkBoxList{
+ width: 140px;
+ position: absolute;
+ margin: 22px 50px;
+}
+
+[type="checkbox"].filled-in:checked+label:after {
+ top: 0;
+ width: 20px;
+ height: 20px;
+ border: 2px solid #0097FF;
+ background-color: #0097FF;
+ z-index: 0;
+ font-size: 0.9em;
+ font-weight: 350;
+ color: #b6b6b6;
+ line-height: initial;
+}
+
+.sideNav .tabList{
+ padding-top: 250px;
+}
+
+.tabControl{
+ margin-top: 150px;
+}
+
+ul.tabs{
+ background-color: transparent;
+ height: 20px;
+ cursor: default;
+ width: 240px !important;
+}
+
+.tabs .tab a:focus {
+ color: #fff;
+ background-color: #455a64;
+ height: 41px;
+ border-top: 3px solid #607d8b;
+}
+
+.tabs .tab a {
+ color: #fff;
+ display: block;
+ width: 100%;
+ height: 100%;
+ text-overflow: ellipsis;
+ overflow: hidden;
+ transition: color .28s ease;
+}
+
+.tabs .tab{
+ line-height: normal;
+ text-transform: none;
+ height: inherit;
 }

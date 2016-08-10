@@ -4,8 +4,6 @@ import { CanActivate, Router } from "@angular/router-deprecated";
 import { tokenNotExpired } from "angular2-jwt";
 
 import { AddNodeComponent } from "./add-node/add-node.component";
-import { ConvertJSONToCSVComponent } from "./convertJSONToCSV/convertJSONToCSV.component";
-import { ConvertTreeToPNGComponent } from "./convertTreeToPNG/convertTreeToPNG.component";
 import { MenuPanelComponent } from "./menu-panel/menu-panel.component";
 import { OrgNodeDetailComponent } from "./org-node-detail/index";
 import { OrgChartModel, OrgNodeModel, OrgService, ChartMode} from "./shared/index";
@@ -24,7 +22,7 @@ declare var SVGPan: any;
 
 @Component({
     selector: "sg-origami-org",
-    directives: [OrgTreeComponent, OrgNodeDetailComponent, ConvertJSONToCSVComponent, ConvertTreeToPNGComponent, MenuPanelComponent],
+    directives: [OrgTreeComponent, OrgNodeDetailComponent, MenuPanelComponent],
     templateUrl: "app/org/org.component.html",
     styleUrls: ["app/org/org.component.css"],
     providers: [OrgService, HTTP_PROVIDERS]
@@ -59,12 +57,6 @@ export class OrgComponent implements OnDestroy {
         this.enableViewModesNav(ChartMode.build);
     }
 
-    enableLabels() {
-        this.displayFirstNameLabel = true;
-        this.displayLastNameLabel = true;
-        this.displayDescriptionLabel = true;
-    }
-
     enableDropDown() {
         $(".dropdown-button").dropdown({ constrain_width: false, alignment: "right" });
     }
@@ -82,6 +74,21 @@ export class OrgComponent implements OnDestroy {
                 err => this.orgService.logError(err),
                 () => console.log("Random Quote Complete"));
         }
+    }
+
+    enableFirstNameLabel(data) {
+        this.displayFirstNameLabel = data;
+    }
+    enableLastNameLabel(data) {
+        this.displayLastNameLabel = data;
+    }
+    enableDescriptionLabel(data) {
+        this.displayDescriptionLabel = data;
+    }
+    enableLabels() {
+        this.displayFirstNameLabel = true;
+        this.displayLastNameLabel = true;
+        this.displayDescriptionLabel = true;
     }
 
     changeViewModeNav(viewMode) {
@@ -108,33 +115,6 @@ export class OrgComponent implements OnDestroy {
                 } else {
                     this.svgPan.enablePan = true;
                 }
-            }
-        }
-    }
-
-    setLabelVisiblity(event) {
-        if (event.target.id === "FirstName") {
-            if (event.target.checked === true) {
-                this.displayFirstNameLabel = true;
-            }
-            else {
-                this.displayFirstNameLabel = false;
-            }
-        }
-        else if (event.target.id === "LastName") {
-            if (event.target.checked === true) {
-                this.displayLastNameLabel = true;
-            }
-            else {
-                this.displayLastNameLabel = false;
-            }
-        }
-        else if (event.target.id === "Description") {
-            if (event.target.checked === true) {
-                this.displayDescriptionLabel = true;
-            }
-            else {
-                this.displayDescriptionLabel = false;
             }
         }
     }
@@ -284,6 +264,12 @@ export class OrgComponent implements OnDestroy {
             this.selectedNode = JSON.parse(JSON.stringify(node));
         }
         this.updateJSON();
+    }
+
+    onNodeTextChange(selected) {
+        if (selected) {
+            this.selectedNode = selected;
+        }
     }
 
     onNodeUpdated(selected) {

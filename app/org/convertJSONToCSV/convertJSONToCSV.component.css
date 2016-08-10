@@ -1,12 +1,9 @@
 .csv-wrap {
-    width: 140px;
-    height: 20px;
-    position: fixed;
-    right: 0;
-    bottom: 40px;
+ text-align: center;
 }
 
 .waves-effect {
-    background-color: #0097FF;
-    padding: 0 1rem;
+ background-color: #0097FF;
+ padding: 0 1rem;
+ margin: 50px 0 0;
 }
