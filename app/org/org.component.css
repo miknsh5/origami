@@ -123,6 +123,7 @@ nav ul a i.right, nav ul a i.left {
 .main-canvas {
   width: 100%;
   overflow-x: auto;
+  padding-top: 55px;
 }
 
 .main-canvas h1 {
@@ -134,6 +135,10 @@ nav ul a i.right, nav ul a i.left {
   position: fixed;
   top: 50px;
   left: 30px
+}
+
+.fixed{
+  position: fixed;
 }
 
 .modes-wrap li:first-child {
@@ -188,13 +193,6 @@ nav ul a i.right, nav ul a i.left {
 
 .modes-wrap li.inactive > a {
   color: #cfd8dc;
-}
-
-.checkBoxList{
-    width: 140px;
-    position: absolute;
-    right :0;
-    top:65px; 
 }
 
 @media only screen and (max-width:992px) {

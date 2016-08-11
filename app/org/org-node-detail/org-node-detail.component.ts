@@ -15,6 +15,7 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
     @Input() isAddOrEditModeEnabled: boolean;
 
     @Output() deleteNode = new EventEmitter<OrgNodeModel>();
+    @Output() updateMenuNode = new EventEmitter<OrgNodeModel>();
     @Output() updateNode = new EventEmitter<OrgNodeModel>();
     @Output() addNode = new EventEmitter<OrgNodeModel>();
     @Output() setAddOrEditModeValue = new EventEmitter<boolean>();
@@ -140,6 +141,7 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
 
     private onInputKeyDownOrUp(event: KeyboardEvent, ngControl: NgControl) {
         if (this.orgNode) {
+            let isInitialChanged: boolean = false;
             let target = (<HTMLInputElement>event.target);
             let node = new OrgNodeModel();
             node.OrgID = this.orgNode.OrgID;
@@ -149,10 +151,8 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
             node.Description = this.orgNode.Description;
             node.IsFakeRoot = this.orgNode.IsFakeRoot;
             node.IsNewRoot = this.orgNode.IsNewRoot;
-            if (node.IsNewRoot) {
-                node.children = this.orgNode.children;
-            }
             if (this.isFirstAndLastNameInitialChanged(target.value, ngControl)) {
+                isInitialChanged = true;
                 if (ngControl.name === "firstName") {
                     this.orgNode.NodeFirstName = node.NodeFirstName = ngControl.value;
                     node.NodeLastName = this.orgNode.NodeLastName;
@@ -170,8 +170,49 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
                     }
                     this.updateNode.emit(node);
                 }
+            } else if (this.isFirstAndLastNameAndDescriptionChanged(target.value, ngControl) && !isInitialChanged) {
+                if (ngControl.name === "firstName") {
+                    this.orgNode.NodeFirstName = node.NodeFirstName = ngControl.value;
+                    node.NodeLastName = this.orgNode.NodeLastName;
+                    node.Description = this.orgNode.Description;
+                } else if (ngControl.name === "lastName") {
+                    node.NodeFirstName = this.orgNode.NodeFirstName;
+                    this.orgNode.NodeLastName = node.NodeLastName = ngControl.value;
+                    node.Description = this.orgNode.Description;
+                }
+                else if (ngControl.name === "description") {
+                    node.NodeFirstName = this.orgNode.NodeFirstName;
+                    node.NodeLastName = this.orgNode.NodeLastName;
+                    this.orgNode.Description = node.Description = ngControl.value;
+
+                }
+
+                if (node.IsStaging && node.NodeID === -1) {
+                    this.orgNode.IsStaging = node.IsStaging = false;
+                    this.addNode.emit(node);
+                } else {
+                    if (node.NodeID !== -1) {
+                        node.IsStaging = true;
+                    }
+                    if (node.IsNewRoot) {
+                        this.updateNode.emit(node);
+                    }
+                    this.updateMenuNode.emit(node);
+                }
             }
         }
+    }
+
+    private isFirstAndLastNameAndDescriptionChanged(value: string, ngControl: NgControl) {
+        if (ngControl.name === "firstName" && value !== "") {
+            return true;
+        }
+        if (ngControl.name === "lastName" && value !== "") {
+            return true;
+        } if (ngControl.name === "description" && value !== "") {
+            return true;
+        }
+        return false;
     }
 
     private isFirstAndLastNameInitialChanged(value: string, ngControl: NgControl) {
@@ -237,6 +278,8 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
             this.setAddOrEditModeValue.emit(false);
             if (this.orgNode.NodeID === -1) {
                 this.deleteNode.emit(this.orgNode);
+            } else {
+                this.deleteNode.emit(null);
             }
         }
     }

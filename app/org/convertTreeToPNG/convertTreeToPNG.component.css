@@ -1,12 +1,18 @@
 .png-wrap {
-    width: 140px;
-    height: 20px;
-    position: fixed;
-    right: 0;
-    bottom: 80px;
+  text-align: center;
 }
 
 .waves-effect {
-    background-color: #0097FF;
-    padding: 0 1rem;
+ background-color: #0097FF;
+ padding: 0px 0.8rem;
+ margin: 10px;
+ font-size: 0.7rem;
+ border-radius: 0px;
+ height: 31px;
+}
+
+.btn i{
+ font-size: 1rem;
+ line-height: inherit;
+ margin-right: 8px;
 }

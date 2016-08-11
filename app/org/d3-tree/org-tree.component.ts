@@ -1135,7 +1135,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
 
     addParentToNode(isFake: boolean, node: OrgNodeModel) {
-        if (!node.ParentNodeID) {
+        if (!node.ParentNodeID || node.ParentNodeID === -1) {
             let newNode = new OrgNodeModel();
 
             newNode.NodeFirstName = "";
