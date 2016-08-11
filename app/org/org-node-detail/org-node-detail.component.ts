@@ -151,6 +151,7 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
             node.Description = this.orgNode.Description;
             node.IsFakeRoot = this.orgNode.IsFakeRoot;
             node.IsNewRoot = this.orgNode.IsNewRoot;
+            node.children = this.orgNode.children;
             if (this.isFirstAndLastNameInitialChanged(target.value, ngControl)) {
                 isInitialChanged = true;
                 if (ngControl.name === "firstName") {
