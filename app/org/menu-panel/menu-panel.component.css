@@ -90,7 +90,7 @@
 }
 
 .sideNav .lblReportValue{
-  margin-left: 44px;
+  margin-left: 38px;
   font-size: 0.9em;
   color: #b6b6b6;
   line-height: initial;  
@@ -104,8 +104,8 @@
 
 [type="checkbox"].filled-in:checked+label:after {
  top: 0;
- width: 20px;
- height: 20px;
+ width: 18px;
+ height: 18px;
  border: 2px solid #0097FF;
  background-color: #0097FF;
  z-index: 0;
@@ -113,6 +113,39 @@
  font-weight: 350;
  color: #b6b6b6;
  line-height: initial;
+ border-radius: 0;
+}
+[type="checkbox"]+label {
+ position: relative;
+ padding-left: 30px;
+ cursor: pointer;
+ display: inline-block;
+ height: 25px;
+ font-size: 0.8rem; 
+}
+
+[type="checkbox"].filled-in:checked+label:before {
+ top: 0;
+ left: 3px;
+ width: 5px;
+ height: 10px;
+ border-top: 2px solid transparent;
+ border-left: 2px solid transparent;
+ border-right: 2px solid #fff;
+ border-bottom: 2px solid #fff;
+ -webkit-transform: rotateZ(37deg);
+ transform: rotateZ(37deg);
+ -webkit-transform-origin: 100% 100%;
+ transform-origin: 100% 100%;
+}
+
+[type="checkbox"].filled-in:not(:checked)+label:after {
+ height: 20px;
+ width: 20px;
+ background-color: transparent;
+ border: 2px solid #FFFFFF;
+ top: 0px;
+ z-index: 0;
 }
 
 .sideNav .tabList{
@@ -120,20 +153,38 @@
 }
 
 .tabControl{
- margin-top: 150px;
+ margin-top: 270px;
+}
+
+.tabs .tab.disabled {
+ background-color: #607d8b;
+ cursor: default;
+}
+
+.disabled a{
+ text-align: center;
+ padding-top: 5px;
+ opacity: 0.5;
 }
 
 ul.tabs{
  background-color: transparent;
- height: 20px;
+ height: 25px;
  cursor: default;
  width: 240px !important;
+ font-size: 0.8rem;
 }
 
-.tabs .tab a:focus {
+a{
+  text-align: center;
+  padding-top: 3px;
+}
+
+.active {
  color: #fff;
  background-color: #455a64;
  height: 41px;
+ cursor:pointer;
  border-top: 3px solid #607d8b;
 }
 

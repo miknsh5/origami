@@ -258,6 +258,7 @@ export class OrgComponent implements OnDestroy {
         if (deleted) {
             if (deleted.IsNewRoot) {
                 let oldRoot = deleted.children[0];
+                oldRoot.ParentNodeID = null;
                 this.orgNodes.splice(0, 1, oldRoot);
             }
             else {

@@ -141,6 +141,7 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
 
     private onInputKeyDownOrUp(event: KeyboardEvent, ngControl: NgControl) {
         if (this.orgNode) {
+            let isInitialChanged: boolean = false;
             let target = (<HTMLInputElement>event.target);
             let node = new OrgNodeModel();
             node.OrgID = this.orgNode.OrgID;
@@ -150,29 +151,27 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
             node.Description = this.orgNode.Description;
             node.IsFakeRoot = this.orgNode.IsFakeRoot;
             node.IsNewRoot = this.orgNode.IsNewRoot;
-            if (node.IsNewRoot) {
-                node.children = this.orgNode.children;
-            }
-            if (this.isFirstAndLastNameAndDescriptionChanged(target.value, ngControl)) {
-                if (this.isFirstAndLastNameInitialChanged(target.value, ngControl)) {
-                    if (ngControl.name === "firstName") {
-                        this.orgNode.NodeFirstName = node.NodeFirstName = ngControl.value;
-                        node.NodeLastName = this.orgNode.NodeLastName;
-                    } else {
-                        node.NodeFirstName = this.orgNode.NodeFirstName;
-                        this.orgNode.NodeLastName = node.NodeLastName = ngControl.value;
-                    }
-
-                    if (node.IsStaging && node.NodeID === -1) {
-                        this.orgNode.IsStaging = node.IsStaging = false;
-                        this.addNode.emit(node);
-                    } else {
-                        if (node.NodeID !== -1) {
-                            node.IsStaging = true;
-                        }
-                        this.updateNode.emit(node);
-                    }
+            node.children = this.orgNode.children;            
+            if (this.isFirstAndLastNameInitialChanged(target.value, ngControl)) {
+                isInitialChanged = true;
+                if (ngControl.name === "firstName") {
+                    this.orgNode.NodeFirstName = node.NodeFirstName = ngControl.value;
+                    node.NodeLastName = this.orgNode.NodeLastName;
+                } else {
+                    node.NodeFirstName = this.orgNode.NodeFirstName;
+                    this.orgNode.NodeLastName = node.NodeLastName = ngControl.value;
                 }
+
+                if (node.IsStaging && node.NodeID === -1) {
+                    this.orgNode.IsStaging = node.IsStaging = false;
+                    this.addNode.emit(node);
+                } else {
+                    if (node.NodeID !== -1) {
+                        node.IsStaging = true;
+                    }
+                    this.updateNode.emit(node);
+                }
+            } else if (this.isFirstAndLastNameAndDescriptionChanged(target.value, ngControl) && !isInitialChanged) {
                 if (ngControl.name === "firstName") {
                     this.orgNode.NodeFirstName = node.NodeFirstName = ngControl.value;
                     node.NodeLastName = this.orgNode.NodeLastName;
@@ -196,6 +195,9 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
                     if (node.NodeID !== -1) {
                         node.IsStaging = true;
                     }
+                    if (node.IsNewRoot) {
+                        this.updateNode.emit(node);
+                    }
                     this.updateMenuNode.emit(node);
                 }
             }
@@ -203,13 +205,12 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
     }
 
     private isFirstAndLastNameAndDescriptionChanged(value: string, ngControl: NgControl) {
-        if (ngControl.name === "firstName") {
+        if (ngControl.name === "firstName" && value !== "") {
             return true;
         }
-        if (ngControl.name === "lastName") {
+        if (ngControl.name === "lastName" && value !== "") {
             return true;
-        }
-        if (ngControl.name === "description") {
+        } if (ngControl.name === "description" && value !== "") {
             return true;
         }
         return false;
