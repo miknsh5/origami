@@ -278,6 +278,10 @@ export class OrgComponent implements OnDestroy {
     }
 
     onNodeUpdated(selected) {
+        // since while updating data to server we send children as null so refreshing the value
+        if (selected && !selected.children && selected.NodeID === this.selectedNode.NodeID && this.selectedNode.children) {
+            selected.children = this.selectedNode.children;
+        }
         if (selected.NodeID !== -1) {
             this.selectedNode = selected;
         }
