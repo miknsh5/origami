@@ -114,7 +114,7 @@ export class MenuPanelComponent implements OnChanges {
     private enableTabControl() {
         setTimeout(() => {
             if (!this.tabs) {
-                this.tabs = $('ul.tabs').tabs();
+                this.tabs = $("ul.tabs").tabs();
             }
         }, 500);
     }
