@@ -78,11 +78,10 @@
 }
 
 .sideNav .labelWrap {
-  margin: 15px 40px;
+  margin: 25px 62px;
 }
 
 .sideNav .lblReport{
-  margin:1.0em;
   font-size: 0.9em;
   font-weight: 350;
   color: #b6b6b6;
@@ -90,16 +89,16 @@
 }
 
 .sideNav .lblReportValue{
-  margin-left: 38px;
   font-size: 0.9em;
   color: #b6b6b6;
   line-height: initial;  
+  float: right;
 }
 
 .sideNav .checkBoxList{
  width: 140px;
  position: absolute;
- margin: 22px 50px;
+ margin: 25px 47px;
 }
 
 [type="checkbox"].filled-in:checked+label:after {
