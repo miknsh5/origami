@@ -7,6 +7,7 @@ import { AddNodeComponent } from "./add-node/add-node.component";
 import { MenuPanelComponent } from "./menu-panel/menu-panel.component";
 import { OrgNodeDetailComponent } from "./org-node-detail/index";
 import { OrgChartModel, OrgNodeModel, OrgService, ChartMode} from "./shared/index";
+import { TitleMenuPanelComponent } from "./title-menu-panel/title-menu-panel.component";
 import { OrgTreeComponent } from "./d3-tree/org-tree.component";
 import { UserModel } from "../Shared/models/user.model";
 
@@ -23,7 +24,7 @@ declare var SVGPan: any;
 
 @Component({
     selector: "sg-origami-org",
-    directives: [OrgTreeComponent, OrgNodeDetailComponent, MenuPanelComponent],
+    directives: [OrgTreeComponent, OrgNodeDetailComponent, MenuPanelComponent, TitleMenuPanelComponent],
     templateUrl: "app/org/org.component.html",
     styleUrls: ["app/org/org.component.css"],
     providers: [OrgService, HTTP_PROVIDERS]
@@ -39,8 +40,8 @@ export class OrgComponent implements OnDestroy {
     buildViewText: any;
     reportViewText: any;
     svgPan: any;
-    userModel: UserModel;
 
+    @Output() userModel: UserModel;
     @Output() currentChartMode: ChartMode;
     @Output() treeJson: any;
     @Output() selectedNode: OrgNodeModel;
@@ -61,6 +62,8 @@ export class OrgComponent implements OnDestroy {
 
     enableDropDown() {
         $(".dropdown-button").dropdown({ constrain_width: false, alignment: "right" });
+        $(".organization").dropdown({ constrain_width: false, belowOrigin: true, alignment: "left" });
+        $(".group").dropdown({ constrain_width: false, belowOrigin: true, alignment: "left" });
     }
 
     onResize(event) {
@@ -72,7 +75,6 @@ export class OrgComponent implements OnDestroy {
         let profile = localStorage.getItem("profile");
         if (profile) {
             this.userModel = JSON.parse(profile);
-            console.log(this.userModel);
             this.orgService.getNodes(profile)
                 .subscribe(data => this.setOrgChartData(data),
                 err => this.orgService.logError(err),

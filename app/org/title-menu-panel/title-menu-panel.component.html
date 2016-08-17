@@ -1,0 +1,48 @@
+<div class="auth-panel">
+    <!-- User Dropdown Structure -->
+    <ul id="userDropdown" class="dropdown-content collection">
+        <li *ngIf="userModel" class="collection-item avatar">
+            <img [src]="userModel.Picture" alt="">
+            <p>{{userModel.Name}}</p>
+            <p class="caption">{{userModel.Email}}</p>
+        </li>
+        <li class="divider"></li>
+        <li (click)="logout()"><a><i class="material-icons left">remove_circle</i>Logout</a></li>
+        <li class="divider"></li>
+        <li><a><i class="material-icons left">folder_shared</i>Account</a></li>
+    </ul>
+
+    <ul id="designDropdown" class="dropdown-content">
+        <li><a><i class="Small material-icons left">mode_edit</i><label class="lbl">Settings</label></a></li>
+        <li class="divider"></li>
+        <li class="divider"></li>
+        <li><label class="defaultlbl">Accounts</label></li>
+        <li class="active"><a><i class="material-icons left">label</i><label class="lbl">Applied by Design </label><label class="lblResult">0</label></a></li>
+        <li><a><i class="material-icons left">label_outline</i><label class="lbl">My Startup</label><label class="lblResult">0</label></a></li>
+        <li><a><i class="material-icons left">add</i><label class="lbl">Add New</label></a></li>
+    </ul>
+
+    <ul id="groupDropdown" class="dropdown-content">
+        <li><a><i class="Small material-icons left">mode_edit</i><label class="lbl">Settings</label></a></li>
+        <li class="divider"></li>
+        <li class="divider"></li>
+        <li><label class="defaultlbl">Default Groups</label></li>
+        <li><a><i class="material-icons left">apps</i><label class="lbl">Company </label><label class="lblResult">0</label></a></li>
+        <li class="divider"></li>
+        <li><label class="defaultlbl">Custom Groups</label></li>
+        <li><a><i class="material-icons left">apps</i><label class="lbl">Engineering</label><label class="lblResult">0</label></a></li>
+        <li class="active"><a><i class="material-icons left ">apps</i><label class="lbl">Marketing</label><label class="lblResult">0</label></a></li>
+        <li><a><i class="material-icons left">add</i><label class="lbl">Add New</label></a></li>
+    </ul>
+
+    <nav class="fixed">
+        <div class="nav-wrapper">
+            <a href="#!" class="brand-logo">PEOPLE TREE</a>
+            <ul class="right">
+                <li><a class="dropdown-button organization" data-activates="designDropdown"><i class="material-icons left">label</i>Applied by Design<i class="material-icons right">arrow_drop_down</i></a></li>
+                <li><a class="dropdown-button group" data-activates="groupDropdown"><i class="material-icons left">apps</i>Marketing<i class="material-icons right">arrow_drop_down</i></a></li>
+                <li><a class="dropdown-button" data-activates="userDropdown"><i class="material-icons left">person</i>User<i class="material-icons right">arrow_drop_down</i></a></li>
+            </ul>
+        </div>
+    </nav>
+</div>
