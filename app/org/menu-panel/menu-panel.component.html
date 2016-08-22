@@ -14,14 +14,21 @@
             <p class="lblName"> {{selectedNode.NodeFirstName}} {{selectedNode.NodeLastName}}</p>
             <p class="lblJobTitle"> {{selectedNode.Description}} </p>
         </div>
+
         <div *ngIf="currentMode===1">
             <label class="menuTitle">Stats</label>
             <hr/>
             <div class="labelWrap">
-                <div><label class="lblReport">Direct Reports </label><label class="lblReportValue">{{directReportees}}</label>
-                </div>
-                <div><label class="lblReport">Total Reports </label> <label class="lblReportValue">{{totalReportees}}</label>
-                </div>
+                <ul class="collection">
+                    <li class="collection-item avatar">
+                        <p class="lblReport">Direct Reports </p>
+                        <label class="secondary-content">{{directReportees}}</label>
+                    </li>
+                    <li class="collection-item avatar">
+                        <p class="lblReport">Total Reports </p>
+                        <label class="secondary-content">{{totalReportees}}</label>
+                    </li>
+                </ul>
             </div>
             <hr/>
         </div>
@@ -41,7 +48,7 @@
             <div class="tabControl">
                 <ul class="tabs">
                     <li class="tab disabled" href="#publishData"><a>Publish</a></li>
-                    <li class="tab"><a  class="active">Export</a></li>
+                    <li class="tab"><a class="active">Export</a></li>
                 </ul>
 
                 <div id="publishData" class="col s12"></div>
