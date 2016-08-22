@@ -13,36 +13,141 @@
     </ul>
 
     <ul id="designDropdown" class="dropdown-content">
-        <li><a><i class="Small material-icons left">mode_edit</i><label class="lbl">Settings</label></a></li>
+        <li (click)="OnClickOfCompanySetting($event)">
+            <a><i class="Small material-icons left">mode_edit</i><label class="lbl ">Settings</label>
+            </a>
+        </li>
         <li class="divider"></li>
         <li class="divider"></li>
         <li><label class="defaultlbl">Accounts</label></li>
-        <li class="active"><a><i class="material-icons left">label</i><label class="lbl">Applied by Design </label><label class="lblResult">0</label></a></li>
-        <li><a><i class="material-icons left">label_outline</i><label class="lbl">My Startup</label><label class="lblResult">0</label></a></li>
+        <li *ngFor="let company of userCompanies" class="companyList" (click)="onCompanySelection(company)">
+            <a *ngIf="company && company.IsDefaultCompany">
+                <label class="lbl active "> {{company.CompanyName}}</label>
+                <!--<label class="lblResult ">{{groupCount}}</label>-->
+            </a>
+            <a *ngIf="company && !company.IsDefaultCompany">
+                <label class="lbl icon "> {{company.CompanyName}}</label>
+            </a>
+        </li>
         <li><a><i class="material-icons left">add</i><label class="lbl">Add New</label></a></li>
     </ul>
 
     <ul id="groupDropdown" class="dropdown-content">
-        <li><a><i class="Small material-icons left">mode_edit</i><label class="lbl">Settings</label></a></li>
+        <li (click)="OnClickOfGroupSetting($event)">
+            <a><i class="Small material-icons left">mode_edit</i><label class="lbl ">Settings</label>
+            </a>
+        </li>
         <li class="divider"></li>
         <li class="divider"></li>
         <li><label class="defaultlbl">Default Groups</label></li>
-        <li><a><i class="material-icons left">apps</i><label class="lbl">Company </label><label class="lblResult">0</label></a></li>
+        <li (click)="onGroupSelection(group)">
+            <a *ngIf="group && group.IsDefaultGroup">
+                <i class="material-icons left">apps</i>
+                <label class="lbl active">{{group.GroupName}} </label>
+                <!--<label class="lblResult ">{{nodeCount}}</label>-->
+            </a>
+        </li>
         <li class="divider"></li>
         <li><label class="defaultlbl">Custom Groups</label></li>
-        <li><a><i class="material-icons left">apps</i><label class="lbl">Engineering</label><label class="lblResult">0</label></a></li>
-        <li class="active"><a><i class="material-icons left ">apps</i><label class="lbl">Marketing</label><label class="lblResult">0</label></a></li>
-        <li><a><i class="material-icons left">add</i><label class="lbl">Add New</label></a></li>
+        <li *ngFor="let group of userGroups" (click)="onGroupSelection(group)">
+            <a *ngIf="group && !group.IsDefaultGroup">
+                <i class="material-icons left ">apps</i>
+                <label class="lbl">{{group.GroupName}}</label>
+                <!--<label class="lblResult ">{{nodeCount}}</label>-->
+            </a>
+        </li>
+        <li><a><i class="material-icons left ">add</i><label class="lbl ">Add New</label></a></li>
     </ul>
 
     <nav class="fixed">
         <div class="nav-wrapper">
-            <a href="#!" class="brand-logo">PEOPLE TREE</a>
+            <a href="#!" class="brand-log">PEOPLE TREE</a>
             <ul class="right">
-                <li><a class="dropdown-button organization" data-activates="designDropdown"><i class="material-icons left">label</i>Applied by Design<i class="material-icons right">arrow_drop_down</i></a></li>
-                <li><a class="dropdown-button group" data-activates="groupDropdown"><i class="material-icons left">apps</i>Marketing<i class="material-icons right">arrow_drop_down</i></a></li>
-                <li><a class="dropdown-button" data-activates="userDropdown"><i class="material-icons left">person</i>User<i class="material-icons right">arrow_drop_down</i></a></li>
+                <li *ngIf="selectedCompany">
+                    <a class="dropdown-button organization" data-activates="designDropdown">
+                        <i class="material-icons left">label</i> {{selectedCompany.CompanyName }}
+                        <i class="material-icons right">arrow_drop_down</i>
+                    </a>
+                </li>
+                <li *ngIf="selectedGroup">
+                    <a class="dropdown-button group" data-activates="groupDropdown">
+                        <i class="material-icons left">apps</i> {{selectedGroup.GroupName}}
+                        <i class="material-icons right">arrow_drop_down</i>
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-button" data-activates="userDropdown">
+                        <i class="material-icons left">person</i>User
+                        <i class="material-icons right">arrow_drop_down</i>
+                    </a>
+                </li>
             </ul>
         </div>
     </nav>
+</div>
+
+<!--modal for group setting-->
+
+<div id="groupSettings" class="modal">
+    <div class="modal-content">
+
+        <div class="modaltitle">
+            <div class="title">
+                <i class="Small material-icons left">mode_edit</i>
+                <label>Settings</label>
+            </div>
+            <div class="close" (click)="closeGroupSetting($event)"><i class="material-icons">clear</i></div>
+        </div>
+       
+        <div class="divider"></div>
+
+        <div class="company_groupDetails" *ngIf="selectedGroup">
+            <i class="material-icons left">label</i>
+            <input (keyup)="onGroupSettingsChange($event,groupName)" ngControl="groupName" #groupName="ngModel" [ngModel]="selectedGroup.GroupName"
+                name="groupName" autocomplete="off" />
+            <div>
+                <label class="modaldefaultlabel"> Name Of Group </label>
+            </div>
+        </div>
+
+        <div class="innerdiv">
+            <button class="waves-effect waves-light btn" (click)="onGroupSave($event)"> 
+             <i class="material-icons">save</i>Save</button>
+        </div>
+
+    </div>
+</div>
+
+<!--modal for company setting-->
+
+<div id="companySettings" class="modal">
+    <div class="modal-content">
+        <div class="modaltitle">
+            <div class="title">
+                <i class="Small material-icons left">mode_edit</i>
+                <label>EDIT</label>
+            </div>
+            <div class="close" (click)="closeCompanySetting($event)"><i class="material-icons">clear</i></div>
+        </div>
+
+        <div class="inlineblock titlewithdivider">
+            <div class="divider">
+            </div><label class="lbl">Settings</label>
+        </div>
+
+        <div class="company_groupDetails" *ngIf="selectedCompany">
+            <i class="material-icons left">label</i>
+            <input (keyup)="onCompanySettingsChange($event,companyName)" ngControl="companyName" #companyName="ngModel" [ngModel]="selectedCompany.CompanyName"
+                name="companyName" autocomplete="off" />
+            <div>
+                <label class="modaldefaultlabel"> Name Of Account </label>
+            </div>
+        </div>
+
+        <div class="innerdiv">
+            <button class="waves-effect waves-light btn" (click)="onCompanySave($event) "> 
+             <i class="material-icons">save</i>Save</button>
+        </div>
+
+    </div>
 </div>

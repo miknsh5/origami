@@ -279,7 +279,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         this.root = new OrgNodeModel();
         this.root.children = new Array<OrgNodeModel>();
         this.root.NodeID = -1;
-        this.root.OrgID = parseInt(localStorage.getItem("org_id"));
+        this.root.OrgGroupID= parseInt(localStorage.getItem("org_id"));
         this.root.IsStaging = true;
         this.root.NodeFirstName = "";
         this.root.NodeLastName = "";
@@ -1141,7 +1141,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             newNode.NodeFirstName = "";
             newNode.NodeLastName = "";
             newNode.Description = "";
-            newNode.OrgID = node.OrgID;
+            newNode.OrgGroupID = node.OrgGroupID;
             newNode.NodeID = -1;
             newNode.IsStaging = true;
             newNode.IsFakeRoot = isFake;
@@ -1162,7 +1162,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         newNode.NodeFirstName = "";
         newNode.NodeLastName = "";
         newNode.Description = "";
-        newNode.OrgID = node.OrgID;
+        newNode.OrgGroupID = node.OrgGroupID;
         newNode.NodeID = -1;
         newNode.IsStaging = true;
         node.children.push(newNode);

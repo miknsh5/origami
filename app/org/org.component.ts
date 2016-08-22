@@ -6,7 +6,7 @@ import { tokenNotExpired } from "angular2-jwt";
 import { AddNodeComponent } from "./add-node/add-node.component";
 import { MenuPanelComponent } from "./menu-panel/menu-panel.component";
 import { OrgNodeDetailComponent } from "./org-node-detail/index";
-import { OrgChartModel, OrgNodeModel, OrgService, ChartMode} from "./shared/index";
+import { OrgNodeModel, OrgService, ChartMode, OrgCompanyModel, OrgGroupModel} from "./shared/index";
 import { TitleMenuPanelComponent } from "./title-menu-panel/title-menu-panel.component";
 import { OrgTreeComponent } from "./d3-tree/org-tree.component";
 import { UserModel } from "../Shared/models/user.model";
@@ -31,7 +31,9 @@ declare var SVGPan: any;
 })
 
 export class OrgComponent implements OnDestroy {
-    orgChart: OrgChartModel;
+    orgCompanies: OrgCompanyModel[];
+    orgCompanyGroup: OrgGroupModel[];
+    orgChart: OrgGroupModel;
     orgNodes: OrgNodeModel[];
     svgWidth: number;
     svgHeight: number;
@@ -40,7 +42,10 @@ export class OrgComponent implements OnDestroy {
     buildViewText: any;
     reportViewText: any;
     svgPan: any;
+    defaultCompany: OrgCompanyModel;
+    defaultGroup: OrgGroupModel;
 
+    @Output() userCompanies: OrgCompanyModel;
     @Output() userModel: UserModel;
     @Output() currentChartMode: ChartMode;
     @Output() treeJson: any;
@@ -52,7 +57,7 @@ export class OrgComponent implements OnDestroy {
     @Output() displayDescriptionLabel: boolean;
 
     constructor(private orgService: OrgService, private router: Router) {
-        this.getAllNodes();
+        this.getAllCompanies();
         this.svgWidth = this.getSvgWidth();
         this.svgHeight = this.getSvgHeight();
         this.currentChartMode = ChartMode.build;
@@ -71,11 +76,51 @@ export class OrgComponent implements OnDestroy {
         this.svgHeight = this.getSvgHeight();
     }
 
-    getAllNodes() {
+    getAllCompanies() {
         let profile = localStorage.getItem("profile");
         if (profile) {
             this.userModel = JSON.parse(profile);
-            this.orgService.getNodes(profile)
+            console.log(profile);
+            this.orgService.getCompanies(profile)
+                .subscribe(data => this.setCompanies(data),
+                err => this.orgService.logError(err));
+        }
+    }
+
+    setCompanies(data) {
+        if (data) {
+            this.orgCompanies = this.userCompanies = data;
+            this.orgCompanies.forEach((element) => {
+                let company: OrgCompanyModel = element;
+                let companyGroups: OrgGroupModel[];
+                if (company.IsDefaultCompany) {
+                    this.defaultCompany = company;
+                    companyGroups = company.OrgGroups;
+                    this.getDefaultGroup(companyGroups);
+                }
+            });
+        }
+    }
+
+    getDefaultGroup(groups) {
+        if (groups) {
+            this.orgCompanyGroup = groups
+            this.orgCompanyGroup.forEach((group) => {
+                this.defaultGroup = group;
+                this.getAllNodes(this.defaultGroup.OrgGroupID);
+
+                //this.setOrgChartData(companyGroup);
+                // if(companyGroup.IsDefaultGroup){
+                // this.getAllNodes(companyGroup.OrgGroupID);    
+                // }            
+            });
+        }
+    }
+
+    getAllNodes(groupId) {
+        let profile = localStorage.getItem("profile");
+        if (profile) {
+            this.orgService.getOrgNodes(groupId)
                 .subscribe(data => this.setOrgChartData(data),
                 err => this.orgService.logError(err),
                 () => console.log("Random Quote Complete"));
@@ -320,12 +365,6 @@ export class OrgComponent implements OnDestroy {
         }
     }
 
-    logout() {
-        localStorage.removeItem("profile");
-        localStorage.removeItem("id_token");
-        this.router.navigate(["/Login"]);
-    }
-
     private enableViewModesNav(viewMode) {
         if (viewMode === ChartMode.build) {
             this.buildView = "active";
@@ -414,7 +453,7 @@ export class OrgComponent implements OnDestroy {
         this.orgChart = data;
         this.orgNodes = JSON.parse(JSON.stringify(this.orgChart.OrgNodes));
         this.treeJson = JSON.parse(JSON.stringify(this.orgNodes));
-        localStorage.setItem("org_id", this.orgChart.OrgID.toString());
+        localStorage.setItem("org_id", this.orgChart.CompanyID.toString());
         if (this.treeJson && this.treeJson.length === 0) {
             this.disableViewModesNav(ChartMode.report);
         }

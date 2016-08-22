@@ -3,7 +3,7 @@ export class OrgNodeModel {
     NodeFirstName: string;
     NodeLastName: string;
     NodeID: number;
-    OrgID: number;
+    OrgGroupID: number;
     ParentNodeID: number;
     IsSelected: boolean;
     Show: boolean;

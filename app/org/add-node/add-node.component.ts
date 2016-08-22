@@ -24,7 +24,7 @@ export class AddNodeComponent {
         this.node.Description = dataParts[2];
         // this.node.NodeID=Number.parseInt(dataParts[3]);
         this.node.ParentNodeID = this.selectedNode.NodeID;
-        this.node.OrgID = 1;
+        this.node.OrgGroupID = 1;
 
         console.log(this.node);
         this.addNewNode(this.node);

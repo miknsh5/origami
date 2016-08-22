@@ -120,7 +120,7 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
                 this.editNodeDetails.Description = this.description.value;
                 this.editNodeDetails.children = this.orgNode.children;
                 this.editNodeDetails.NodeID = this.orgNode.NodeID;
-                this.editNodeDetails.OrgID = this.orgNode.OrgID;
+                this.editNodeDetails.OrgGroupID = this.orgNode.OrgGroupID;
                 this.editNodeDetails.ParentNodeID = this.orgNode.ParentNodeID;
 
                 if (this.orgNode.NodeID === -1) {
@@ -144,7 +144,7 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
             let isInitialChanged: boolean = false;
             let target = (<HTMLInputElement>event.target);
             let node = new OrgNodeModel();
-            node.OrgID = this.orgNode.OrgID;
+            node.OrgGroupID = this.orgNode.OrgGroupID;
             node.ParentNodeID = this.orgNode.ParentNodeID;
             node.NodeID = this.orgNode.NodeID;
             node.IsStaging = this.orgNode.IsStaging;
