@@ -1,6 +1,6 @@
 import { Component, Input, Output, OnChanges, SimpleChange, EventEmitter } from "@angular/core";
 
-import { OrgChartModel, OrgNodeModel, ChartMode} from "../shared/index";
+import { OrgCompanyModel, OrgNodeModel, ChartMode} from "../shared/index";
 
 import { ConvertJSONToCSVComponent } from "../convertJSONToCSV/convertJSONToCSV.component";
 import { ConvertTreeToPNGComponent } from "../convertTreeToPNG/convertTreeToPNG.component";
@@ -23,7 +23,7 @@ export class MenuPanelComponent implements OnChanges {
     private tabs: any;
 
     @Input() currentMode: ChartMode;
-    @Input() orgChart: OrgChartModel;
+    @Input() orgChart: OrgCompanyModel;
     @Input() selectedOrgNode: OrgNodeModel;
     @Input() isAddOrEditModeEnabled: boolean;
     @Input() svgWidth: any;
