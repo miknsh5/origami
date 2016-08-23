@@ -106,22 +106,22 @@ export class TitleMenuPanelComponent implements OnChanges {
         }
     }
 
-    OnClickOfGroupSetting(data) {
+    OnClickOfGroupSetting() {
         let modal = document.getElementById("groupSettings");
         modal.style.display = "block";
     }
 
-    closeGroupSetting(data) {
+    closeGroupSetting() {
         let modal = document.getElementById("groupSettings");
         modal.style.display = "none";
     }
 
-    OnClickOfCompanySetting(data) {
+    OnClickOfCompanySetting() {
         let modal = document.getElementById("companySettings");
         modal.style.display = "block";
     }
 
-    closeCompanySetting(data) {
+    closeCompanySetting() {
         let modal = document.getElementById("companySettings");
         modal.style.display = "none";
     }
