@@ -51,13 +51,15 @@ export class TitleMenuPanelComponent implements OnChanges {
             let companies: OrgCompanyModel[] = usercompanies;
             if (companies.length && companies.length <= 1) {
                 this.selectedCompany = companies[0];
+                this.selectedCompany.IsSelected = true;
                 this.userCompany = companies;
                 this.getDefaultGroup(this.selectedCompany.OrgGroups);
             }
             else {
                 companies.forEach(company => {
                     if (company.IsDefaultCompany) {
-                        this.selectedCompany = this.selectedCompany = company;
+                        this.selectedCompany = company;
+                        this.selectedCompany.IsSelected = true;
                         this.userCompany = companies;
                         this.userGroups = company.OrgGroups;
                         this.getDefaultGroup(this.userGroups)
@@ -74,12 +76,14 @@ export class TitleMenuPanelComponent implements OnChanges {
             let groups: OrgGroupModel[] = userGroups;
             if (groups.length && groups.length <= 1) {
                 this.selectedGroup = groups[0];
+                this.selectedGroup.IsSelected = true;
                 this.userGroups = groups;
             }
             else {
                 groups.forEach(group => {
                     if (group && group.IsDefaultGroup) {
                         this.selectedGroup = group;
+                        this.selectedGroup.IsSelected = true;
                     }
                 });
             }
@@ -88,6 +92,7 @@ export class TitleMenuPanelComponent implements OnChanges {
 
     onCompanySelection(data) {
         if (data) {
+            this.selectedCompany.IsSelected = false;
             this.selectedCompany = data;
             this.selectedCompany.IsSelected = true;
         }
@@ -95,8 +100,9 @@ export class TitleMenuPanelComponent implements OnChanges {
 
     onGroupSelection(data) {
         if (data) {
+            this.selectedGroup.IsSelected = false;
             this.selectedGroup = data;
-            this.selectedGroup.IsSelected = true
+            this.selectedGroup.IsSelected = true;
         }
     }
 

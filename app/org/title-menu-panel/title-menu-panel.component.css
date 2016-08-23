@@ -88,12 +88,6 @@ hr {
   display: inline-flex;
 }
 
-.icon::before{
-  content: url("app/images/ic_label_outline_black_24dp_1x.png");
-  width: 30px;
-  margin-top: -10px;     
-}
-
 .lblResult{
   float: right;
   cursor: pointer;
@@ -135,27 +129,36 @@ nav ul a i.right, nav ul a i.left {
   position: fixed;
 }
 
-li.active{
-  border-left: 0.15em solid #607d8b;
+#designDropdown li a.active{
+  border-left: 0.18em solid #607d8b;
   font-weight: 800;
   cursor: pointer;
 }
 
-li.inactive {
-  color: #cfd8dc;
+#groupDropdown li a.active{
+  border-left: 0.18em solid #607d8b;
+  font-weight: 800;
+  cursor: pointer;
 }
 
-#designDropdown li.companyList .lbl:before{
-  content: url("app/images/ic_label_outline_black_24dp_1x.png");
-  width: 30px;
-  margin-top: -10px;     
+#designDropdown li.companyList a{
+  padding: 7px;
 }
 
-#designDropdown li.companyList .lbl.active:before{
-  content: url("app/images/ic_label_black_24dp_1x.png");
-  width: 30px;
-  margin-top: -10px;     
+#designDropdown li.companyList a:before{
+    background-image: url('app/images/ic_label_outline_black_24dp_1x.png');
+    background-repeat: no-repeat;
+    display: inline-block;
+    background-position: 0;
+    width: 35px;
+    height: 17px;
+    content: "";
 }
+
+#designDropdown li.companyList a.active:before{
+  background-image: url('app/images/ic_label_black_24dp_1x.png');
+}
+
 
 /* The Modal (background) */
 .modal {

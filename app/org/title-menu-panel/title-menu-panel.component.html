@@ -20,12 +20,19 @@
         <li class="divider"></li>
         <li class="divider"></li>
         <li><label class="defaultlbl">Accounts</label></li>
-        <li *ngFor="let company of userCompanies" class="companyList" (click)="onCompanySelection(company)">
-            <a *ngIf="company && company.IsDefaultCompany">
-                <label class="lbl active "> {{company.CompanyName}}</label>
+        <li *ngIf="company && company.IsDefaultCompany" *ngFor="let company of userCompanies" class="companyList" (click)="onCompanySelection(company)">
+            <a *ngIf="company && company.IsSelected" class="active">
+                {{company.CompanyName}}
                 <!--<label class="lblResult ">{{groupCount}}</label>-->
             </a>
-            <a *ngIf="company && !company.IsDefaultCompany">
+            <a *ngIf="company && !company.IsSelected">
+                {{company.CompanyName}}
+                <!--<label class="lblResult ">{{groupCount}}</label>-->
+            </a>
+            <a *ngIf="company && !company.IsDefaultCompany" *ngIf="company && company.IsSelected" class="active">
+                <label class="lbl icon "> {{company.CompanyName}}</label>
+            </a>
+            <a *ngIf="company && !company.IsDefaultCompany" *ngIf="company && !company.IsSelected">
                 <label class="lbl icon "> {{company.CompanyName}}</label>
             </a>
         </li>
@@ -40,8 +47,13 @@
         <li class="divider"></li>
         <li class="divider"></li>
         <li><label class="defaultlbl">Default Groups</label></li>
-        <li (click)="onGroupSelection(group)">
-            <a *ngIf="group && group.IsDefaultGroup">
+        <li *ngIf="group && group.IsDefaultGroup" (click)="onGroupSelection(group)">
+            <a *ngIf=" group && group.IsSelected" class="active">
+                <i class="material-icons left">apps</i>
+                <label class="lbl active">{{group.GroupName}} </label>
+                <!--<label class="lblResult ">{{nodeCount}}</label>-->
+            </a>
+            <a *ngIf=" group && !group.IsSelected">
                 <i class="material-icons left">apps</i>
                 <label class="lbl active">{{group.GroupName}} </label>
                 <!--<label class="lblResult ">{{nodeCount}}</label>-->
@@ -49,8 +61,13 @@
         </li>
         <li class="divider"></li>
         <li><label class="defaultlbl">Custom Groups</label></li>
-        <li *ngFor="let group of userGroups" (click)="onGroupSelection(group)">
-            <a *ngIf="group && !group.IsDefaultGroup">
+        <li *ngIf="group && !group.IsDefaultGroup" *ngFor="let group of userGroups" (click)="onGroupSelection(group)">
+            <a *ngIf=" group && group.IsSelected" class="active">
+                <i class="material-icons left ">apps</i>
+                <label class="lbl">{{group.GroupName}}</label>
+                <!--<label class="lblResult ">{{nodeCount}}</label>-->
+            </a>
+            <a *ngIf=" group && !group.IsSelected">
                 <i class="material-icons left ">apps</i>
                 <label class="lbl">{{group.GroupName}}</label>
                 <!--<label class="lblResult ">{{nodeCount}}</label>-->
@@ -98,7 +115,7 @@
             </div>
             <div class="close" (click)="closeGroupSetting($event)"><i class="material-icons">clear</i></div>
         </div>
-       
+
         <div class="divider"></div>
 
         <div class="company_groupDetails" *ngIf="selectedGroup">
