@@ -116,8 +116,8 @@
         <div class="divider"></div>
 
         <div class="company_groupDetails" *ngIf="selectedGroup">
-            <i class="material-icons left">label</i>
-            <input (keyup)="onGroupSettingsChange($event,groupName)" ngControl="groupName" #groupName="ngModel" [ngModel]="selectedGroup.GroupName" name="groupName" autocomplete="off" />
+            <i class="material-icons left">label_outline</i>
+            <input (keyup)="onGroupSettingsChange($event,groupName)" ngControl="groupName" #groupName="ngModel" [(ngModel)]="selectedGroupName" name="groupName" autocomplete="off" />
             <div>
                 <label class="modaldefaultlabel"> Name Of Group </label>
             </div>
@@ -150,7 +150,7 @@
 
         <div class="company_groupDetails" *ngIf="selectedCompany">
             <i class="material-icons left">label</i>
-            <input (keyup)="onCompanySettingsChange($event,companyName)" ngControl="companyName" #companyName="ngModel" [ngModel]="selectedCompany.CompanyName" name="companyName" autocomplete="off" />
+            <input (keyup)="onCompanySettingsChange($event,companyName)" ngControl="companyName" #companyName="ngModel" [(ngModel)]="selectedCompanyName" name="companyName" autocomplete="off" />
             <div>
                 <label class="modaldefaultlabel"> Name Of Account </label>
             </div>

@@ -17,8 +17,8 @@ export class TitleMenuPanelComponent implements OnChanges {
     userGroups: OrgGroupModel[];
     userCompany: OrgCompanyModel[];
 
-    changedGroupName: any;
-    changedCompanyName: any;
+    selectedGroupName: any;
+    selectedCompanyName: any;
 
     // groupCount: number;
     // nodeCount: number;
@@ -51,6 +51,7 @@ export class TitleMenuPanelComponent implements OnChanges {
             let companies: OrgCompanyModel[] = usercompanies;
             if (companies.length && companies.length <= 1) {
                 this.selectedCompany = companies[0];
+                this.selectedCompanyName = this.selectedCompany.CompanyName;
                 this.selectedCompany.IsSelected = true;
                 this.userCompany = companies;
                 this.getDefaultGroup(this.selectedCompany.OrgGroups);
@@ -60,6 +61,7 @@ export class TitleMenuPanelComponent implements OnChanges {
                     if (company.IsDefaultCompany) {
                         this.selectedCompany = company;
                         this.selectedCompany.IsSelected = true;
+                        this.selectedCompanyName = this.selectedCompany.CompanyName;
                         this.userCompany = companies;
                         this.userGroups = company.OrgGroups;
                         this.getDefaultGroup(this.userGroups);
@@ -76,6 +78,7 @@ export class TitleMenuPanelComponent implements OnChanges {
             let groups: OrgGroupModel[] = userGroups;
             if (groups.length && groups.length <= 1) {
                 this.selectedGroup = groups[0];
+                this.selectedGroupName = this.selectedGroup.GroupName;
                 this.selectedGroup.IsSelected = true;
                 this.userGroups = groups;
             }
@@ -83,6 +86,7 @@ export class TitleMenuPanelComponent implements OnChanges {
                 groups.forEach(group => {
                     if (group && group.IsDefaultGroup) {
                         this.selectedGroup = group;
+                        this.selectedGroupName = this.selectedGroup.GroupName;
                         this.selectedGroup.IsSelected = true;
                     }
                 });
@@ -107,21 +111,25 @@ export class TitleMenuPanelComponent implements OnChanges {
     }
 
     OnClickOfGroupSetting() {
+        this.selectedGroupName = this.selectedGroup.GroupName;
         let modal = document.getElementById("groupSettings");
         modal.style.display = "block";
     }
 
     closeGroupSetting() {
+        this.selectedGroupName = this.selectedGroup.GroupName;
         let modal = document.getElementById("groupSettings");
         modal.style.display = "none";
     }
 
     OnClickOfCompanySetting() {
+        this.selectedCompanyName = this.selectedCompany.CompanyName;
         let modal = document.getElementById("companySettings");
         modal.style.display = "block";
     }
 
     closeCompanySetting() {
+        this.selectedCompanyName = this.selectedCompany.CompanyName;
         let modal = document.getElementById("companySettings");
         modal.style.display = "none";
     }
@@ -131,7 +139,7 @@ export class TitleMenuPanelComponent implements OnChanges {
         group.CompanyID = this.selectedGroup.CompanyID;
         group.IsDefaultGroup = this.selectedGroup.IsDefaultGroup;
         group.OrgGroupID = this.selectedGroup.OrgGroupID;
-        group.GroupName = this.changedGroupName;
+        group.GroupName = this.selectedGroupName;
         group.OrgNodes = null;
         this.updateGroup(group);
     }
@@ -139,7 +147,7 @@ export class TitleMenuPanelComponent implements OnChanges {
     onCompanySave() {
         let company = new OrgCompanyModel();
         company.CompanyID = this.selectedCompany.CompanyID;
-        company.CompanyName = this.changedCompanyName;
+        company.CompanyName = this.selectedCompanyName;
         company.DateCreated = this.selectedCompany.DateCreated;
         company.IsDefaultCompany = this.selectedCompany.IsDefaultCompany;
         company.OrgGroups = null;
@@ -223,16 +231,13 @@ export class TitleMenuPanelComponent implements OnChanges {
 
     private onGroupSettingsChange(event: KeyboardEvent, ngControl: NgControl) {
         if (ngControl.name === "groupName") {
-            this.changedGroupName = ngControl.value;
+            this.selectedGroupName = ngControl.value;
         }
     }
 
     private onCompanySettingsChange(event: KeyboardEvent, ngControl: NgControl) {
         if (ngControl.name === "companyName") {
-            this.changedCompanyName = ngControl.value;
+            this.selectedCompanyName = ngControl.value;
         }
     }
-
-
-
 }
