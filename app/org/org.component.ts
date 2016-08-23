@@ -90,30 +90,39 @@ export class OrgComponent implements OnDestroy {
     setCompanies(data) {
         if (data) {
             this.orgCompanies = this.userCompanies = data;
-            this.orgCompanies.forEach((element) => {
-                let company: OrgCompanyModel = element;
-                let companyGroups: OrgGroupModel[];
-                if (company.IsDefaultCompany) {
-                    this.defaultCompany = company;
-                    companyGroups = company.OrgGroups;
-                    this.getDefaultGroup(companyGroups);
-                }
-            });
+            if (this.orgCompanies.length && this.orgCompanies.length <= 1) {
+                this.defaultCompany = data[0];
+                this.getDefaultGroup(this.defaultCompany.OrgGroups);
+            }
+            else {
+                this.orgCompanies.forEach((element) => {
+                    let company: OrgCompanyModel = element;
+                    let companyGroups: OrgGroupModel[];
+                    if (company.IsDefaultCompany) {
+                        this.defaultCompany = company;
+                        companyGroups = company.OrgGroups;
+                        this.getDefaultGroup(companyGroups);
+                    }
+                });
+            }
         }
     }
 
     getDefaultGroup(groups) {
         if (groups) {
-            this.orgCompanyGroup = groups
-            this.orgCompanyGroup.forEach((group) => {
-                this.defaultGroup = group;
+            this.orgCompanyGroup = groups;
+            if (this.orgCompanyGroup.length && this.orgCompanyGroup.length <= 1) {
+                this.defaultGroup = groups[0];
                 this.getAllNodes(this.defaultGroup.OrgGroupID);
-
-                //this.setOrgChartData(companyGroup);
-                // if(companyGroup.IsDefaultGroup){
-                // this.getAllNodes(companyGroup.OrgGroupID);    
-                // }            
-            });
+            } else {
+                this.orgCompanyGroup.forEach((group) => {
+                    this.getAllNodes(this.defaultGroup.OrgGroupID);
+                    if (group.IsDefaultGroup) {
+                        this.defaultGroup = group;
+                        this.getAllNodes(group.OrgGroupID);
+                    }
+                });
+            }
         }
     }
 

@@ -6,7 +6,7 @@ import { Headers, RequestOptions } from "@angular/http";
 @Injectable()
 export class OrgService {
     private origamiUrl = "//origamistageapi.azurewebsites.net/";
-    private getCompaniesUrl = "api/Org/GetCompaniesForUser"
+    private getCompaniesUrl = "api/Org/GetCompaniesForUser";
     private getUrl = "api/Org/GetNodesForGroup?orgGroupID=";
     private updateGroupUrl = "api/Org/UpdateGroup";
     private updateCompanyUrl = "api/Org/UpdateCompany";
@@ -26,8 +26,8 @@ export class OrgService {
             .map(node => node.json());
     }
 
-    getOrgNodes(groupID) { 
-        let url = this.origamiUrl + this.getUrl+groupID;
+    getOrgNodes(groupID) {
+        let url = this.origamiUrl + this.getUrl + groupID;
         let headers = new Headers({ "Content-Type": "application/json" });
         headers.append("Accept", "application/json");
 
@@ -35,8 +35,8 @@ export class OrgService {
             .map(node => node.json());
     }
 
-    updateGroup(orgGroup){
-        let group =JSON.stringify(orgGroup);
+    updateGroup(orgGroup) {
+        let group = JSON.stringify(orgGroup);
         let headers = new Headers({ "Content-Type": "application/json" });
         headers.append("Accept", "application/json");
         let options = new RequestOptions({ headers: headers });
@@ -45,8 +45,8 @@ export class OrgService {
             .map(res => res.json());
     }
 
-    updateCompany(orgCompany){
-         let company =JSON.stringify(orgCompany);
+    updateCompany(orgCompany) {
+        let company = JSON.stringify(orgCompany);
         let headers = new Headers({ "Content-Type": "application/json" });
         headers.append("Accept", "application/json");
         let options = new RequestOptions({ headers: headers });

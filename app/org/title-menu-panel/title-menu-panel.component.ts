@@ -62,7 +62,7 @@ export class TitleMenuPanelComponent implements OnChanges {
                         this.selectedCompany.IsSelected = true;
                         this.userCompany = companies;
                         this.userGroups = company.OrgGroups;
-                        this.getDefaultGroup(this.userGroups)
+                        this.getDefaultGroup(this.userGroups);
                         // this.groupCount = this.userGroups.length;
                         // this.nodeCount = 0;
                     }
@@ -166,7 +166,7 @@ export class TitleMenuPanelComponent implements OnChanges {
         if (data) {
             this.selectedCompany = data;
             this.userCompany.forEach(company => {
-                this.updateOrgCompany(company, data)
+                this.updateOrgCompany(company, data);
             });
             // this.updateOrgCompanies.emit(this.userCompany);
         }
@@ -176,7 +176,7 @@ export class TitleMenuPanelComponent implements OnChanges {
         if (data) {
             this.selectedGroup = data;
             this.userGroups.forEach(group => {
-                this.updateOrgGroup(group, data)
+                this.updateOrgGroup(group, data);
             });
             //  this.updateOrgGroups.emit(this.userGroups);
         }
