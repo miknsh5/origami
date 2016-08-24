@@ -90,9 +90,9 @@ export class MenuPanelComponent {
 
     private setOrgGroupData(data: any) {
         if (data) {
-            this.selectedGroup = data;
+            this.selectedGroup.OrgNodes = data.OrgNodes;
             this.selectedGroup.IsSelected = true;
-            this.groupSelected.emit(data);
+            this.groupSelected.emit(this.selectedGroup);
             this.enableDropDowns();
         }
     }
@@ -164,12 +164,14 @@ export class MenuPanelComponent {
 
     private setGroupData(data) {
         if (data) {
+            let isDefault = this.selectedGroup.IsDefaultGroup;
             this.selectedGroup = data;
+            this.selectedGroup.IsDefaultGroup = isDefault;
             this.orgCompanyGroups.forEach(group => {
                 if (this.compareGroupID(group, data)) {
                     group.CompanyID = data.CompanyID;
                     group.GroupName = data.GroupName;
-                    group.IsDefaultGroup = data.IsDefaultGroup;
+                    group.IsDefaultGroup = isDefault;
                     group.OrgGroupID = data.OrgGroupID;
                     group.IsSelected = true;
                     return true;
@@ -193,13 +195,12 @@ export class MenuPanelComponent {
 
     private setCompanyData(data) {
         if (data) {
-            this.selectedCompany = data;
+            this.selectedCompany.CompanyName = data.CompanyName;
             this.orgCompanies.forEach(company => {
                 if (this.compareCompanyID(company, data)) {
-                    company.CompanyID = data.CompanyID;
                     company.CompanyName = data.CompanyName;
                     company.DateCreated = data.DateCreated;
-                    company.IsDefaultCompany = data.IsDefaultCompany;
+                    // company.OrgGroups = data.OrgGroups;
                     company.IsSelected = true;
                     return true;
                 }
