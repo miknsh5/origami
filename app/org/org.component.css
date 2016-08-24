@@ -53,7 +53,7 @@
 .main-canvas {
     width: 100%;
     overflow-x: auto;
-    position: fixed;
+    position: absolute;
     z-index: -2;
 }
 
