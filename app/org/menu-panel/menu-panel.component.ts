@@ -1,122 +1,254 @@
-import { Component, Input, Output, OnChanges, SimpleChange, EventEmitter } from "@angular/core";
+import { Component, Input, Output, EventEmitter } from "@angular/core";
+import { NgControl  } from "@angular/forms";
+import { CanActivate, Router } from "@angular/router-deprecated";
 
-import { OrgCompanyModel, OrgNodeModel, ChartMode} from "../shared/index";
-
-import { ConvertJSONToCSVComponent } from "../convertJSONToCSV/convertJSONToCSV.component";
-import { ConvertTreeToPNGComponent } from "../convertTreeToPNG/convertTreeToPNG.component";
+import { OrgCompanyModel, OrgGroupModel, OrgService} from "../shared/index";
+import { UserModel } from "../../Shared/index";
 
 declare var $: any;
 
 @Component({
-    selector: "sg-org-menu-panel",
+    selector: "sg-menu-panel",
     templateUrl: "app/org/menu-panel/menu-panel.component.html",
-    styleUrls: ["app/org/menu-panel/menu-panel.component.css", "app/style.css"],
-    directives: [ConvertJSONToCSVComponent, ConvertTreeToPNGComponent],
+    styleUrls: ["app/org/menu-panel/menu-panel.component.css"]
 })
 
-export class MenuPanelComponent implements OnChanges {
-    isCollapsed: boolean;
-    selectedNode: OrgNodeModel;
-    directReportees: any;
-    totalReportees: any;
-    depth: any;
-    private tabs: any;
+export class MenuPanelComponent {
+    orgCompanies: OrgCompanyModel[];
+    orgCompanyGroups: OrgGroupModel[];
 
-    @Input() currentMode: ChartMode;
-    @Input() orgChart: OrgCompanyModel;
-    @Input() selectedOrgNode: OrgNodeModel;
-    @Input() isAddOrEditModeEnabled: boolean;
-    @Input() svgWidth: any;
-    @Input() svgHeight: any;
+    selectedCompany: OrgCompanyModel;
+    selectedGroup: OrgGroupModel;
 
+    userModel: UserModel;
 
-    @Output() showFirstNameLabel = new EventEmitter<boolean>();
-    @Output() showLastNameLabel = new EventEmitter<boolean>();
-    @Output() showDescriptionLabel = new EventEmitter<boolean>();
+    selectedGroupName: any;
+    selectedCompanyName: any;
 
-    ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
-        if (changes["selectedOrgNode"]) {
-            if (this.selectedOrgNode) {
-                if (this.isCollapsed === false) {
-                    this.isCollapsed = true;
-                    this.openPanel();
-                }
-                this.selectedNode = this.selectedOrgNode;
-                this.depth = new Array();
-                this.childCount(0, this.selectedNode);
-                if (this.depth) {
-                    this.directReportees = this.depth[0] || 0;
-                    this.totalReportees = 0;
-                    this.depth.forEach((d) => {
-                        this.totalReportees += d;
-                    });
-                }
-            } else if (!this.selectedOrgNode && this.isCollapsed) {
-                this.isCollapsed = false;
-                this.closePanel();
-            }
-        }
+    @Output() groupSelected = new EventEmitter<OrgGroupModel>();
 
-        if (this.currentMode === ChartMode.report) {
-            this.enableTabControl();
+    constructor(private orgService: OrgService, private router: Router) {
+        this.getAllCompanies();
+    }
+
+    private getAllCompanies() {
+        let profile = localStorage.getItem("profile");
+        if (profile) {
+            this.userModel = JSON.parse(profile);
+            this.orgService.getCompanies(profile)
+                .subscribe(data => this.setCompanies(data),
+                err => this.orgService.logError(err));
         }
     }
-    openPanel() {
-        this.isCollapsed = true;
-        document.getElementById("menuPanel").style.width = "250px";
-    }
-    closePanel() {
-        document.getElementById("menuPanel").style.width = "5px";
-    }
 
-    private childCount(level, node) {
-        if (node) {
-            let children: any = node.children || node._children;
-            if (children && children.length > 0) {
-                if (this.depth.length <= level)
-                    this.depth.push(0);
-
-                this.depth[level] += children.length;
-                children.forEach((d) => {
-                    this.childCount(level + 1, d);
+    private setCompanies(data) {
+        if (data) {
+            this.orgCompanies = data;
+            if (this.orgCompanies.length && this.orgCompanies.length > 0) {
+                this.orgCompanies.forEach((element) => {
+                    if (element.IsDefaultCompany) {
+                        this.selectedCompany = element;
+                    }
                 });
+
+                if (this.selectedCompany) {
+                    this.setSelectedGroup(this.selectedCompany.OrgGroups);
+                } else {
+                    this.selectedCompany = this.orgCompanies[0];
+                    this.setSelectedGroup(this.selectedCompany.OrgGroups);
+                }
             }
         }
     }
 
-    private setLabelVisiblity(event) {
-        if (event.target.id === "FirstName") {
-            if (event.target.checked === true) {
-                this.showFirstNameLabel.emit(true);
-            }
-            else {
-                this.showFirstNameLabel.emit(false);
-            }
-        }
-        else if (event.target.id === "LastName") {
-            if (event.target.checked === true) {
-                this.showLastNameLabel.emit(true);
-            }
-            else {
-                this.showLastNameLabel.emit(false);
-            }
-        }
-        else if (event.target.id === "JobTitle") {
-            if (event.target.checked === true) {
-                this.showDescriptionLabel.emit(true);
-            }
-            else {
-                this.showDescriptionLabel.emit(false);
+    private setSelectedGroup(groups) {
+        if (groups) {
+            this.orgCompanyGroups = groups;
+            if (this.orgCompanyGroups.length && this.orgCompanyGroups.length > 0) {
+                this.orgCompanyGroups.forEach((group) => {
+                    if (group.IsDefaultGroup) {
+                        this.selectedGroup = group;
+                    }
+                });
+
+                if (this.selectedGroup) {
+                    this.getAllNodes(this.selectedGroup.OrgGroupID);
+                } else {
+                    this.selectedGroup = this.orgCompanyGroups[0];
+                    this.getAllNodes(this.selectedGroup.OrgGroupID);
+                }
             }
         }
     }
 
-    private enableTabControl() {
-        setTimeout(() => {
-            if (!this.tabs) {
-                this.tabs = $("ul.tabs").tabs();
-            }
-        }, 500);
+    private getAllNodes(groupID) {
+        let profile = localStorage.getItem("profile");
+        if (profile) {
+            this.orgService.getOrgNodes(groupID)
+                .subscribe(data => this.setOrgGroupData(data),
+                err => this.orgService.logError(err),
+                () => console.log("Random Quote Complete"));
+        }
     }
 
+    private setOrgGroupData(data: any) {
+        if (data) {
+            this.selectedGroup = data;
+            this.selectedGroup.IsSelected = true;
+            this.groupSelected.emit(data);
+            this.enableDropDowns();
+        }
+    }
+
+    private enableDropDowns() {
+        $(".dropdown-button").dropdown({ constrain_width: false, alignment: "right" });
+        $(".organization").dropdown({ constrain_width: false, belowOrigin: true, alignment: "left" });
+        $(".group").dropdown({ constrain_width: false, belowOrigin: true, alignment: "left" });
+    }
+
+    private logout() {
+        localStorage.removeItem("profile");
+        localStorage.removeItem("id_token");
+        this.router.navigate(["/Login"]);
+    }
+
+    private onCompanySelection(data) {
+        if (data && data.CompanyID !== this.selectedCompany.CompanyID) {
+            this.selectedCompany = data;
+            this.selectedCompany.IsSelected = true;
+            this.setSelectedGroup(this.selectedCompany.OrgGroups);
+        }
+    }
+
+    private onGroupSelection(data) {
+        if (data && data.OrgGroupID !== this.selectedGroup.OrgGroupID) {
+            this.selectedGroup = data;
+            this.selectedGroup.IsDefaultGroup = true;
+            this.getAllNodes(data.groupID);
+        }
+    }
+
+    private OnClickOfGroupSetting() {
+        this.selectedGroupName = this.selectedGroup.GroupName;
+        let modal = document.getElementById("groupSettings");
+        modal.style.display = "block";
+    }
+
+    private closeGroupSetting() {
+        this.selectedGroupName = this.selectedGroup.GroupName;
+        let modal = document.getElementById("groupSettings");
+        modal.style.display = "none";
+    }
+
+    private OnClickOfCompanySetting() {
+        this.selectedCompanyName = this.selectedCompany.CompanyName;
+        let modal = document.getElementById("companySettings");
+        modal.style.display = "block";
+    }
+
+    private closeCompanySetting() {
+        this.selectedCompanyName = this.selectedCompany.CompanyName;
+        let modal = document.getElementById("companySettings");
+        modal.style.display = "none";
+    }
+
+    private onGroupSave() {
+        let group = new OrgGroupModel();
+        group.CompanyID = this.selectedGroup.CompanyID;
+        group.IsDefaultGroup = this.selectedGroup.IsDefaultGroup;
+        group.OrgGroupID = this.selectedGroup.OrgGroupID;
+        group.GroupName = this.selectedGroupName;
+        group.OrgNodes = null;
+
+        this.orgService.updateGroup(group)
+            .subscribe(data => this.setGroupData(data),
+            err => this.orgService.logError(err));
+    }
+
+    private onCompanySave() {
+        let company = new OrgCompanyModel();
+        company.CompanyID = this.selectedCompany.CompanyID;
+        company.CompanyName = this.selectedCompanyName;
+        company.DateCreated = this.selectedCompany.DateCreated;
+        company.IsDefaultCompany = this.selectedCompany.IsDefaultCompany;
+        company.OrgGroups = null;
+        this.updateCompany(company);
+    }
+
+    updateCompany(data) {
+        if (data) {
+            this.orgService.updateCompany(data)
+                .subscribe(data => this.setCompanyData(data),
+                err => this.orgService.logError(err));
+        }
+    }
+
+    setCompanyData(data) {
+        if (data) {
+            this.selectedCompany = data;
+            this.orgCompanies.forEach(company => {
+                this.updateOrgCompany(company, data);
+            });
+        }
+    }
+
+    setGroupData(data) {
+        if (data) {
+            this.selectedGroup = data;
+            this.orgCompanyGroups.forEach(group => {
+                this.updateOrgGroup(group, data);
+            });
+        }
+    }
+
+    updateOrgCompany(company: OrgCompanyModel, updatedCompany) {
+        if (this.compareCompanyID(company, updatedCompany)) {
+            company.CompanyID = updatedCompany.CompanyID;
+            company.CompanyName = updatedCompany.CompanyName;
+            company.DateCreated = updatedCompany.DateCreated;
+            company.IsDefaultCompany = updatedCompany.IsDefaultCompany;
+            company.IsSelected = true;
+            return true;
+        }
+    }
+
+    updateOrgGroup(group: OrgGroupModel, updatedGroup) {
+        if (this.compareGroupID(group, updatedGroup)) {
+            group.CompanyID = updatedGroup.CompanyID;
+            group.GroupName = updatedGroup.GroupName;
+            group.IsDefaultGroup = updatedGroup.IsDefaultGroup;
+            group.OrgGroupID = updatedGroup.OrgGroupID;
+            group.IsSelected = true;
+            return true;
+        }
+    }
+
+    private compareCompanyID(updatedNode: OrgCompanyModel, currentNode: OrgCompanyModel): boolean {
+        if (updatedNode != null && currentNode != null) {
+            return updatedNode.CompanyID === currentNode.CompanyID;
+        } else {
+            return false;
+        }
+    }
+
+    private compareGroupID(updatedNode: OrgGroupModel, currentNode: OrgGroupModel): boolean {
+        if (updatedNode != null && currentNode != null) {
+            return updatedNode.OrgGroupID === currentNode.OrgGroupID;
+        } else {
+            return false;
+        }
+    }
+
+
+    private onGroupSettingsChange(event: KeyboardEvent, ngControl: NgControl) {
+        if (ngControl.name === "groupName") {
+            this.selectedGroupName = ngControl.value;
+        }
+    }
+
+    private onCompanySettingsChange(event: KeyboardEvent, ngControl: NgControl) {
+        if (ngControl.name === "companyName") {
+            this.selectedCompanyName = ngControl.value;
+        }
+    }
 }

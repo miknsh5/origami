@@ -1,15 +1,14 @@
 import { Component, Output, EventEmitter, OnDestroy} from "@angular/core";
 import { HTTP_PROVIDERS } from "@angular/http";
-import { CanActivate, Router } from "@angular/router-deprecated";
+import { CanActivate } from "@angular/router-deprecated";
 import { tokenNotExpired } from "angular2-jwt";
 
-import { AddNodeComponent } from "./add-node/add-node.component";
-import { MenuPanelComponent } from "./menu-panel/menu-panel.component";
+import { SideMenuComponent } from "./side-menu-panel/index";
 import { OrgNodeDetailComponent } from "./org-node-detail/index";
-import { OrgNodeModel, OrgService, ChartMode, OrgCompanyModel, OrgGroupModel} from "./shared/index";
-import { TitleMenuPanelComponent } from "./title-menu-panel/title-menu-panel.component";
-import { OrgTreeComponent } from "./d3-tree/org-tree.component";
-import { UserModel } from "../Shared/models/user.model";
+import { MenuPanelComponent } from "./menu-panel/index";
+import { OrgTreeComponent } from "./d3-tree/index";
+
+import { OrgNodeModel, ChartMode, OrgCompanyModel, OrgGroupModel, OrgService} from "./shared/index";
 
 const MIN_HEIGHT: number = 320;
 const MAX_HEIGHT: number = 768;
@@ -19,20 +18,18 @@ const MAX_WIDTH: number = 1366;
 
 const DEFAULT_OFFSET: number = 70;
 
-declare var $: any;
 declare var SVGPan: any;
 
 @Component({
     selector: "sg-origami-org",
-    directives: [OrgTreeComponent, OrgNodeDetailComponent, MenuPanelComponent, TitleMenuPanelComponent],
+    directives: [OrgTreeComponent, OrgNodeDetailComponent, MenuPanelComponent, SideMenuComponent],
     templateUrl: "app/org/org.component.html",
     styleUrls: ["app/org/org.component.css"],
     providers: [OrgService, HTTP_PROVIDERS]
 })
 
 export class OrgComponent implements OnDestroy {
-    orgCompanies: OrgCompanyModel[];
-    orgCompanyGroup: OrgGroupModel[];
+
     orgChart: OrgGroupModel;
     orgNodes: OrgNodeModel[];
     svgWidth: number;
@@ -42,11 +39,8 @@ export class OrgComponent implements OnDestroy {
     buildViewText: any;
     reportViewText: any;
     svgPan: any;
-    defaultCompany: OrgCompanyModel;
-    defaultGroup: OrgGroupModel;
 
     @Output() userCompanies: OrgCompanyModel;
-    @Output() userModel: UserModel;
     @Output() currentChartMode: ChartMode;
     @Output() treeJson: any;
     @Output() selectedNode: OrgNodeModel;
@@ -56,84 +50,16 @@ export class OrgComponent implements OnDestroy {
     @Output() displayLastNameLabel: boolean;
     @Output() displayDescriptionLabel: boolean;
 
-    constructor(private orgService: OrgService, private router: Router) {
-        this.getAllCompanies();
-        this.svgWidth = this.getSvgWidth();
-        this.svgHeight = this.getSvgHeight();
+    constructor() {
         this.currentChartMode = ChartMode.build;
         this.enableLabels();
-        this.enableViewModesNav(ChartMode.build);
-    }
-
-    enableDropDown() {
-        $(".dropdown-button").dropdown({ constrain_width: false, alignment: "right" });
-        $(".organization").dropdown({ constrain_width: false, belowOrigin: true, alignment: "left" });
-        $(".group").dropdown({ constrain_width: false, belowOrigin: true, alignment: "left" });
+        this.svgWidth = this.getSvgWidth();
+        this.svgHeight = this.getSvgHeight();
     }
 
     onResize(event) {
         this.svgWidth = this.getSvgWidth();
         this.svgHeight = this.getSvgHeight();
-    }
-
-    getAllCompanies() {
-        let profile = localStorage.getItem("profile");
-        if (profile) {
-            this.userModel = JSON.parse(profile);
-            console.log(profile);
-            this.orgService.getCompanies(profile)
-                .subscribe(data => this.setCompanies(data),
-                err => this.orgService.logError(err));
-        }
-    }
-
-    setCompanies(data) {
-        if (data) {
-            this.orgCompanies = this.userCompanies = data;
-            if (this.orgCompanies.length && this.orgCompanies.length <= 1) {
-                this.defaultCompany = data[0];
-                this.getDefaultGroup(this.defaultCompany.OrgGroups);
-            }
-            else {
-                this.orgCompanies.forEach((element) => {
-                    let company: OrgCompanyModel = element;
-                    let companyGroups: OrgGroupModel[];
-                    if (company.IsDefaultCompany) {
-                        this.defaultCompany = company;
-                        companyGroups = company.OrgGroups;
-                        this.getDefaultGroup(companyGroups);
-                    }
-                });
-            }
-        }
-    }
-
-    getDefaultGroup(groups) {
-        if (groups) {
-            this.orgCompanyGroup = groups;
-            if (this.orgCompanyGroup.length && this.orgCompanyGroup.length <= 1) {
-                this.defaultGroup = groups[0];
-                this.getAllNodes(this.defaultGroup.OrgGroupID);
-            } else {
-                this.orgCompanyGroup.forEach((group) => {
-                    this.getAllNodes(this.defaultGroup.OrgGroupID);
-                    if (group.IsDefaultGroup) {
-                        this.defaultGroup = group;
-                        this.getAllNodes(group.OrgGroupID);
-                    }
-                });
-            }
-        }
-    }
-
-    getAllNodes(groupId) {
-        let profile = localStorage.getItem("profile");
-        if (profile) {
-            this.orgService.getOrgNodes(groupId)
-                .subscribe(data => this.setOrgChartData(data),
-                err => this.orgService.logError(err),
-                () => console.log("Random Quote Complete"));
-        }
     }
 
     enableFirstNameLabel(data) {
@@ -455,18 +381,18 @@ export class OrgComponent implements OnDestroy {
     }
 
     onChartUpdated(data: any) {
-        this.setOrgChartData(data);
+        // this.setOrgChartData(data);
     }
 
-    private setOrgChartData(data: any) {
+    onGroupSelected(data: any) {
         this.orgChart = data;
         this.orgNodes = JSON.parse(JSON.stringify(this.orgChart.OrgNodes));
         this.treeJson = JSON.parse(JSON.stringify(this.orgNodes));
-        localStorage.setItem("org_id", this.orgChart.CompanyID.toString());
+        // localStorage.setItem("org_id", this.orgChart.CompanyID.toString());
+        this.enableViewModesNav(ChartMode.build);
         if (this.treeJson && this.treeJson.length === 0) {
             this.disableViewModesNav(ChartMode.report);
         }
-        this.enableDropDown();
     }
 
     ngOnDestroy() {

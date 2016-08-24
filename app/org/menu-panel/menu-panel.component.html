@@ -1,56 +1,165 @@
-<div class="sideNav fixed">
-    <div class="menuButton">
-        <button class="waves-effect waves-light" (click)="openPanel()"><i class="material-icons left">keyboard_arrow_left</i></button>
+<div class="auth-panel">
+    <!-- User Dropdown Structure -->
+    <ul id="userDropdown" class="dropdown-content collection">
+        <li *ngIf="userModel" class="collection-item avatar">
+            <img [src]="userModel.Picture" alt="">
+            <p>{{userModel.Name}}</p>
+            <p class="caption">{{userModel.Email}}</p>
+        </li>
+        <li class="divider"></li>
+        <li (click)="logout()"><a><i class="material-icons left">remove_circle</i>Logout</a></li>
+        <li class="divider"></li>
+        <li><a><i class="material-icons left">folder_shared</i>Account</a></li>
+    </ul>
+
+    <ul id="companyDropdown" class="dropdown-content">
+        <li (click)="OnClickOfCompanySetting()">
+            <a><i class="Small material-icons left">mode_edit</i><label class="lbl">Settings</label>
+            </a>
+        </li>
+        <li class="divider"></li>
+        <li class="divider"></li>
+        <label class="defaultlbl">Accounts</label>
+        <li *ngFor="let company of orgCompanies" class="companyList" (click)="onCompanySelection(company)">
+            <a *ngIf="company && company.IsDefaultCompany && company.CompanyID === selectedCompany.CompanyID" class="active">
+                {{company.CompanyName}}
+            </a>
+            <a *ngIf="company && company.IsDefaultCompany && company.CompanyID !== selectedCompany.CompanyID">
+                {{company.CompanyName}}
+            </a>
+        </li>
+        <li *ngFor="let company of orgCompanies" class="companyList" (click)="onCompanySelection(company)">
+            <a *ngIf="company && !company.IsDefaultCompany && company.CompanyID === selectedCompany.CompanyID" class="active">
+                <label class="lbl icon"> {{company.CompanyName}}</label>
+            </a>
+            <a *ngIf="company && !company.IsDefaultCompany && company.CompanyID !== selectedCompany.CompanyID">
+                <label class="lbl icon"> {{company.CompanyName}}</label>
+            </a>
+        </li>
+        <li (click)="onAddCompany()"><a><i class="material-icons left">add</i><label class="lbl">Add New</label></a></li>
+    </ul>
+
+    <ul id="groupDropdown" class="dropdown-content">
+        <li (click)="OnClickOfGroupSetting()">
+            <a>
+                <i class="Small material-icons left">mode_edit</i><label class="lbl ">Settings</label>
+            </a>
+        </li>
+        <li class="divider"></li>
+        <li class="divider"></li>
+        <label class="defaultlbl">Default Groups</label>
+        <li *ngFor="let group of orgCompanyGroups" (click)="onGroupSelection(group)">
+            <a *ngIf="group && group.IsDefaultGroup && group.OrgGroupID === selectedGroup.OrgGroupID" class="active">
+                <i class="material-icons left">apps</i>
+                <label class="lbl active">{{group.GroupName}} </label>
+            </a>
+            <a *ngIf=" group && group.IsDefaultGroup && group.OrgGroupID !== selectedGroup.OrgGroupID">
+                <i class="material-icons left">apps</i>
+                <label class="lbl active">{{group.GroupName}} </label>
+            </a>
+        </li>
+        <li class="divider"></li>
+        <label class="defaultlbl">Custom Groups</label>
+        <li *ngFor="let group of orgCompanyGroups" (click)="onGroupSelection(group)">
+            <a *ngIf=" group && !group.IsDefaultGroup && group.OrgGroupID === selectedGroup.OrgGroupID" class="active">
+                <i class="material-icons left ">apps</i>
+                <label class="lbl">{{group.GroupName}}</label>
+            </a>
+            <a *ngIf=" group && !group.IsDefaultGroup && group.OrgGroupID !== selectedGroup.OrgGroupID">
+                <i class="material-icons left ">apps</i>
+                <label class="lbl">{{group.GroupName}}</label>
+            </a>
+        </li>
+        <li><a><i class="material-icons left">add</i><label class="lbl">Add New</label></a></li>
+    </ul>
+
+    <nav class="fixed">
+        <div class="nav-wrapper">
+            <a href="#!" class="brand-logo">PEOPLE TREE</a>
+            <ul class="right">
+                <li *ngIf="selectedCompany">
+                    <a class="dropdown-button organization" data-activates="companyDropdown">
+                        <i class="material-icons left">label</i> {{selectedCompany.CompanyName }}
+                        <i class="material-icons right">arrow_drop_down</i>
+                    </a>
+                </li>
+                <li *ngIf="selectedGroup">
+                    <a class="dropdown-button group" data-activates="groupDropdown">
+                        <i class="material-icons left">apps</i> {{selectedGroup.GroupName}}
+                        <i class="material-icons right">arrow_drop_down</i>
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-button" data-activates="userDropdown">
+                        <i class="material-icons left">person</i>User
+                        <i class="material-icons right">arrow_drop_down</i>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</div>
+
+<!--modal for group setting-->
+
+<div id="groupSettings" class="modal">
+    <div class="modal-content">
+
+        <div class="modaltitle">
+            <div class="title">
+                <i class="Small material-icons left">mode_edit</i>
+                <label>Settings</label>
+            </div>
+            <div class="close" (click)="closeGroupSetting()"><i class="material-icons">clear</i></div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="company_groupDetails" *ngIf="selectedGroup">
+            <i class="material-icons left">label_outline</i>
+            <input (keyup)="onGroupSettingsChange($event,groupName)" ngControl="groupName" #groupName="ngModel" [(ngModel)]="selectedGroupName" name="groupName" autocomplete="off" />
+            <div>
+                <label class="modaldefaultlabel"> Name Of Group </label>
+            </div>
+        </div>
+
+        <div class="innerdiv">
+            <button class="waves-effect waves-light btn" (click)="onGroupSave($event)"> 
+             <i class="material-icons">save</i>Save</button>
+        </div>
+
     </div>
+</div>
 
-    <div id="menuPanel" class="right">
-        <div>
-            <button class="waves-effect waves-light closebtn" (click)="closePanel()"><i class="material-icons">close</i></button>
-            <hr/>
-        </div>
-        <label class="menuTitle">Resource</label>
+<!--modal for company setting-->
 
-        <div *ngIf="selectedNode" class="labelWrap">
-            <p class="lblName"> {{selectedNode.NodeFirstName}} {{selectedNode.NodeLastName}}</p>
-            <p class="lblJobTitle"> {{selectedNode.Description}} </p>
-        </div>
-        <div *ngIf="currentMode===1">
-            <label class="menuTitle">Stats</label>
-            <hr/>
-            <div class="labelWrap">
-                <div><label class="lblReport">Direct Reports </label><label class="lblReportValue">{{directReportees}}</label>
-                </div>
-                <div><label class="lblReport">Total Reports </label> <label class="lblReportValue">{{totalReportees}}</label>
-                </div>
+<div id="companySettings" class="modal">
+    <div class="modal-content">
+        <div class="modaltitle">
+            <div class="title">
+                <i class="Small material-icons left">mode_edit</i>
+                <label>EDIT</label>
             </div>
-            <hr/>
+            <div class="close" (click)="closeCompanySetting()"><i class="material-icons">clear</i></div>
         </div>
 
-        <div *ngIf="currentMode===3">
-            <hr/>
-            <label class="menuTitle">Settings</label>
-            <div class="checkBoxList">
-                <input type="checkbox" class="filled-in" id="FirstName" checked="checked" (change)="setLabelVisiblity($event)" />
-                <label for="FirstName">First Name</label>
-                <input type="checkbox" class="filled-in" id="LastName" checked="checked" (change)="setLabelVisiblity($event)" />
-                <label for="LastName">Last Name</label>
-                <input type="checkbox" class="filled-in" id="JobTitle" checked="checked" (change)="setLabelVisiblity($event)" />
-                <label for="JobTitle">Job Title</label>
-            </div>
+        <div class="inlineblock titlewithdivider">
+            <div class="divider">
+            </div><label class="lbl">Settings</label>
+        </div>
 
-            <div class="tabControl">
-                <ul class="tabs">
-                    <li class="tab disabled" href="#publishData"><a>Publish</a></li>
-                    <li class="tab"><a  class="active">Export</a></li>
-                </ul>
-
-                <div id="publishData" class="col s12"></div>
-
-                <div id="exportData" class="col s12">
-                    <sg-origami-csv [orgChartData]="orgChart"></sg-origami-csv>
-                    <sg-origami-png [width]="svgWidth" [height]="svgHeight" [selectedOrgNode]="selectedNode" [orgName]="orgChart.OrganizationName"></sg-origami-png>
-                </div>
+        <div class="company_groupDetails" *ngIf="selectedCompany">
+            <i class="material-icons left">label</i>
+            <input (keyup)="onCompanySettingsChange($event,companyName)" ngControl="companyName" #companyName="ngModel" [(ngModel)]="selectedCompanyName" name="companyName" autocomplete="off" />
+            <div>
+                <label class="modaldefaultlabel"> Name Of Account </label>
             </div>
         </div>
+
+        <div class="innerdiv">
+            <button class="waves-effect waves-light btn" (click)="onCompanySave($event) "> 
+             <i class="material-icons">save</i>Save</button>
+        </div>
+
     </div>
 </div>

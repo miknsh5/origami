@@ -1,11 +1,10 @@
 <div>
-    <sg-origami-title-menu-panel [userModel]="userModel" [userCompanies]="userCompanies" >
-    </sg-origami-title-menu-panel>
+    <sg-menu-panel (groupSelected)="onGroupSelected($event)"></sg-menu-panel>
 </div>
 <div>
-    <sg-org-menu-panel [selectedOrgNode]="selectedNode" [isAddOrEditModeEnabled]="isAddOrEditMode" [currentMode]="currentChartMode"
+    <sg-side-menu-panel [selectedOrgNode]="selectedNode" [isAddOrEditModeEnabled]="isAddOrEditMode" [currentMode]="currentChartMode"
         (showFirstNameLabel)="enableFirstNameLabel($event)" (showLastNameLabel)="enableLastNameLabel($event)" (showDescriptionLabel)="enableDescriptionLabel($event)"
-        [svgWidth]="svgWidth" [svgHeight]="svgHeight" [orgChart]="orgChart"></sg-org-menu-panel>
+        [svgWidth]="svgWidth" [svgHeight]="svgHeight" [orgChart]="orgChart"></sg-side-menu-panel>
 </div>
 
 <div class="modes-wrap ">
