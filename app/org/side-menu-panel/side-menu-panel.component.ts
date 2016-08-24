@@ -63,10 +63,10 @@ export class SideMenuComponent implements OnChanges {
     }
     openPanel() {
         this.isCollapsed = true;
-        document.getElementById("menuPanel").style.width = "250px";
+        document.getElementById("menuPanel").style.width = "100%";
     }
     closePanel() {
-        document.getElementById("menuPanel").style.width = "5px";
+        document.getElementById("menuPanel").style.width = "2%";
     }
 
     private childCount(level, node) {

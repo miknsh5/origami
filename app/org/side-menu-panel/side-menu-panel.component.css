@@ -39,7 +39,7 @@
 }
 
 .sideNav #menuPanel {
-    width: 5px;
+    width: 2%;
     height: 100%;
     min-height: 585px;
     z-index: 10;
@@ -79,27 +79,41 @@
 }
 
 .sideNav .labelWrap {
-    margin: 25px 62px;
+    padding: 15px 30px 15px 50px;
+    width: 250px;
+}
+
+.sideNav .labelWrap .collection {
+    border: none;
+}
+
+.sideNav .labelWrap .collection .collection-item {
+    padding: 3px 0;
+    border: none;
+    background-color: transparent;
+    min-height: 10px;
+}
+
+.sideNav .labelWrap .collection .collection-item .secondary-content {
+    color: #b6b6b6;
+    float: none;
+    top: 3px;
+    right: inherit;
+    font-weight: 500;
+    font-size: 0.9em;
 }
 
 .sideNav .lblReport {
     font-size: 0.9em;
-    font-weight: 350;
+    font-weight: 500;
     color: #b6b6b6;
-    line-height: initial;
-}
-
-.sideNav .lblReportValue {
-    font-size: 0.9em;
-    color: #b6b6b6;
-    line-height: initial;
-    float: right;
+    width: 115px;
+    display: inline-block;
 }
 
 .sideNav .checkBoxList {
-    width: 140px;
     position: absolute;
-    margin: 25px 47px;
+    margin: 25px 50px;
 }
 
 [type="checkbox"].filled-in:checked+label:after {
