@@ -14,16 +14,13 @@ declare var $: any;
 })
 
 export class MenuPanelComponent {
-    orgCompanies: OrgCompanyModel[];
-    orgCompanyGroups: OrgGroupModel[];
-
-    selectedCompany: OrgCompanyModel;
-    selectedGroup: OrgGroupModel;
-
-    userModel: UserModel;
-
-    selectedGroupName: any;
-    selectedCompanyName: any;
+    private orgCompanies: OrgCompanyModel[];
+    private orgCompanyGroups: OrgGroupModel[];
+    private selectedCompany: OrgCompanyModel;
+    private selectedGroup: OrgGroupModel;
+    private userModel: UserModel;
+    private selectedGroupName: any;
+    private selectedCompanyName: any;
 
     @Output() groupSelected = new EventEmitter<OrgGroupModel>();
 
@@ -128,28 +125,28 @@ export class MenuPanelComponent {
         }
     }
 
-    private OnClickOfGroupSetting() {
-        this.selectedGroupName = this.selectedGroup.GroupName;
-        let modal = document.getElementById("groupSettings");
-        modal.style.display = "block";
+    private onSettingsClick(name) {
+        if (name === "company") {
+            this.selectedCompanyName = this.selectedCompany.CompanyName;
+            let modal = document.getElementById("companySettings");
+            modal.style.display = "block";
+        } else {
+            this.selectedGroupName = this.selectedGroup.GroupName;
+            let modal = document.getElementById("groupSettings");
+            modal.style.display = "block";
+        }
     }
 
-    private closeGroupSetting() {
-        this.selectedGroupName = this.selectedGroup.GroupName;
-        let modal = document.getElementById("groupSettings");
-        modal.style.display = "none";
-    }
-
-    private OnClickOfCompanySetting() {
-        this.selectedCompanyName = this.selectedCompany.CompanyName;
-        let modal = document.getElementById("companySettings");
-        modal.style.display = "block";
-    }
-
-    private closeCompanySetting() {
-        this.selectedCompanyName = this.selectedCompany.CompanyName;
-        let modal = document.getElementById("companySettings");
-        modal.style.display = "none";
+    private dismissPopup(name) {
+        if (name === "company") {
+            this.selectedCompanyName = this.selectedCompany.CompanyName;
+            let modal = document.getElementById("companySettings");
+            modal.style.display = "none";
+        } else if (name === "group") {
+            this.selectedGroupName = this.selectedGroup.GroupName;
+            let modal = document.getElementById("groupSettings");
+            modal.style.display = "none";
+        }
     }
 
     private onGroupSave() {
@@ -165,6 +162,22 @@ export class MenuPanelComponent {
             err => this.orgService.logError(err));
     }
 
+    private setGroupData(data) {
+        if (data) {
+            this.selectedGroup = data;
+            this.orgCompanyGroups.forEach(group => {
+                if (this.compareGroupID(group, data)) {
+                    group.CompanyID = data.CompanyID;
+                    group.GroupName = data.GroupName;
+                    group.IsDefaultGroup = data.IsDefaultGroup;
+                    group.OrgGroupID = data.OrgGroupID;
+                    group.IsSelected = true;
+                    return true;
+                }
+            });
+        }
+    }
+
     private onCompanySave() {
         let company = new OrgCompanyModel();
         company.CompanyID = this.selectedCompany.CompanyID;
@@ -172,54 +185,25 @@ export class MenuPanelComponent {
         company.DateCreated = this.selectedCompany.DateCreated;
         company.IsDefaultCompany = this.selectedCompany.IsDefaultCompany;
         company.OrgGroups = null;
-        this.updateCompany(company);
+
+        this.orgService.updateCompany(company)
+            .subscribe(data => this.setCompanyData(data),
+            err => this.orgService.logError(err));
     }
 
-    updateCompany(data) {
-        if (data) {
-            this.orgService.updateCompany(data)
-                .subscribe(data => this.setCompanyData(data),
-                err => this.orgService.logError(err));
-        }
-    }
-
-    setCompanyData(data) {
+    private setCompanyData(data) {
         if (data) {
             this.selectedCompany = data;
             this.orgCompanies.forEach(company => {
-                this.updateOrgCompany(company, data);
+                if (this.compareCompanyID(company, data)) {
+                    company.CompanyID = data.CompanyID;
+                    company.CompanyName = data.CompanyName;
+                    company.DateCreated = data.DateCreated;
+                    company.IsDefaultCompany = data.IsDefaultCompany;
+                    company.IsSelected = true;
+                    return true;
+                }
             });
-        }
-    }
-
-    setGroupData(data) {
-        if (data) {
-            this.selectedGroup = data;
-            this.orgCompanyGroups.forEach(group => {
-                this.updateOrgGroup(group, data);
-            });
-        }
-    }
-
-    updateOrgCompany(company: OrgCompanyModel, updatedCompany) {
-        if (this.compareCompanyID(company, updatedCompany)) {
-            company.CompanyID = updatedCompany.CompanyID;
-            company.CompanyName = updatedCompany.CompanyName;
-            company.DateCreated = updatedCompany.DateCreated;
-            company.IsDefaultCompany = updatedCompany.IsDefaultCompany;
-            company.IsSelected = true;
-            return true;
-        }
-    }
-
-    updateOrgGroup(group: OrgGroupModel, updatedGroup) {
-        if (this.compareGroupID(group, updatedGroup)) {
-            group.CompanyID = updatedGroup.CompanyID;
-            group.GroupName = updatedGroup.GroupName;
-            group.IsDefaultGroup = updatedGroup.IsDefaultGroup;
-            group.OrgGroupID = updatedGroup.OrgGroupID;
-            group.IsSelected = true;
-            return true;
         }
     }
 
@@ -239,16 +223,4 @@ export class MenuPanelComponent {
         }
     }
 
-
-    private onGroupSettingsChange(event: KeyboardEvent, ngControl: NgControl) {
-        if (ngControl.name === "groupName") {
-            this.selectedGroupName = ngControl.value;
-        }
-    }
-
-    private onCompanySettingsChange(event: KeyboardEvent, ngControl: NgControl) {
-        if (ngControl.name === "companyName") {
-            this.selectedCompanyName = ngControl.value;
-        }
-    }
 }

@@ -13,7 +13,7 @@
     </ul>
 
     <ul id="companyDropdown" class="dropdown-content">
-        <li (click)="OnClickOfCompanySetting()">
+        <li (click)="onSettingsClick('company')">
             <a><i class="Small material-icons left">mode_edit</i><label class="lbl">Settings</label>
             </a>
         </li>
@@ -40,7 +40,7 @@
     </ul>
 
     <ul id="groupDropdown" class="dropdown-content">
-        <li (click)="OnClickOfGroupSetting()">
+        <li (click)="onSettingsClick('group')">
             <a>
                 <i class="Small material-icons left">mode_edit</i><label class="lbl ">Settings</label>
             </a>
@@ -70,7 +70,7 @@
                 <label class="lbl">{{group.GroupName}}</label>
             </a>
         </li>
-        <li><a><i class="material-icons left">add</i><label class="lbl">Add New</label></a></li>
+        <li><a (click)="addNewGroup()"><i class="material-icons left">add</i><label class="lbl">Add New</label></a></li>
     </ul>
 
     <nav class="fixed">
@@ -110,14 +110,14 @@
                 <i class="Small material-icons left">mode_edit</i>
                 <label>Settings</label>
             </div>
-            <div class="close" (click)="closeGroupSetting()"><i class="material-icons">clear</i></div>
+            <div class="close" (click)="dismissPopup('group')"><i class="material-icons">clear</i></div>
         </div>
 
         <div class="divider"></div>
 
         <div class="company_groupDetails" *ngIf="selectedGroup">
             <i class="material-icons left">label_outline</i>
-            <input (keyup)="onGroupSettingsChange($event,groupName)" ngControl="groupName" #groupName="ngModel" [(ngModel)]="selectedGroupName" name="groupName" autocomplete="off" />
+            <input ngControl="groupName" #groupName="ngModel" [(ngModel)]="selectedGroupName" name="groupName" autocomplete="off" />
             <div>
                 <label class="modaldefaultlabel"> Name Of Group </label>
             </div>
@@ -140,7 +140,7 @@
                 <i class="Small material-icons left">mode_edit</i>
                 <label>EDIT</label>
             </div>
-            <div class="close" (click)="closeCompanySetting()"><i class="material-icons">clear</i></div>
+            <div class="close" (click)="dismissPopup('company')"><i class="material-icons">clear</i></div>
         </div>
 
         <div class="inlineblock titlewithdivider">
@@ -150,7 +150,7 @@
 
         <div class="company_groupDetails" *ngIf="selectedCompany">
             <i class="material-icons left">label</i>
-            <input (keyup)="onCompanySettingsChange($event,companyName)" ngControl="companyName" #companyName="ngModel" [(ngModel)]="selectedCompanyName" name="companyName" autocomplete="off" />
+            <input ngControl="companyName" #companyName="ngModel" [(ngModel)]="selectedCompanyName" name="companyName" autocomplete="off" />
             <div>
                 <label class="modaldefaultlabel"> Name Of Account </label>
             </div>
