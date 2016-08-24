@@ -20,10 +20,12 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
     @Output() addNode = new EventEmitter<OrgNodeModel>();
     @Output() setAddOrEditModeValue = new EventEmitter<boolean>();
     @Output() chartStructureUpdated = new EventEmitter<any>();
+
     @ViewChild("firstName") firstName;
     @ViewChild("lastName") lastName;
     @ViewChild("description") description;
-    isInputFocused: boolean;
+
+    private isInputFocused: boolean;
     private editNodeDetails: OrgNodeModel;
     private orgNode: OrgNodeModel;
     private isFormSubmitted: boolean;
@@ -84,7 +86,7 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
 
     ngAfterContentChecked() {
         if (this.isAddOrEditModeEnabled && this.isInputFocused) {
-            let elements: any = document.getElementsByTagName("input");
+            let elements: any = document.getElementsByClassName("title-name-edit");
             if (elements.length > 0 && (this.orgNode.IsStaging || this.orgNode.NodeID !== -1)) {
                 this.isInputFocused = false;
                 this.renderer.invokeElementMethod(elements[0], "focus", []);
@@ -120,7 +122,7 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
                 this.editNodeDetails.Description = this.description.value;
                 this.editNodeDetails.children = this.orgNode.children;
                 this.editNodeDetails.NodeID = this.orgNode.NodeID;
-                this.editNodeDetails.OrgID = this.orgNode.OrgID;
+                this.editNodeDetails.OrgGroupID = this.orgNode.OrgGroupID;
                 this.editNodeDetails.ParentNodeID = this.orgNode.ParentNodeID;
 
                 if (this.orgNode.NodeID === -1) {
@@ -141,10 +143,9 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
 
     private onInputKeyDownOrUp(event: KeyboardEvent, ngControl: NgControl) {
         if (this.orgNode) {
-            let isInitialChanged: boolean = false;
             let target = (<HTMLInputElement>event.target);
             let node = new OrgNodeModel();
-            node.OrgID = this.orgNode.OrgID;
+            node.OrgGroupID = this.orgNode.OrgGroupID;
             node.ParentNodeID = this.orgNode.ParentNodeID;
             node.NodeID = this.orgNode.NodeID;
             node.IsStaging = this.orgNode.IsStaging;
@@ -152,83 +153,34 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
             node.IsFakeRoot = this.orgNode.IsFakeRoot;
             node.IsNewRoot = this.orgNode.IsNewRoot;
             node.children = this.orgNode.children;
-            if (this.isFirstAndLastNameInitialChanged(target.value, ngControl)) {
-                isInitialChanged = true;
-                if (ngControl.name === "firstName") {
-                    this.orgNode.NodeFirstName = node.NodeFirstName = ngControl.value;
-                    node.NodeLastName = this.orgNode.NodeLastName;
-                } else {
-                    node.NodeFirstName = this.orgNode.NodeFirstName;
-                    this.orgNode.NodeLastName = node.NodeLastName = ngControl.value;
-                }
 
-                if (node.IsStaging && node.NodeID === -1) {
+            if (ngControl.name === "firstName") {
+                this.orgNode.NodeFirstName = node.NodeFirstName = ngControl.value;
+                node.NodeLastName = this.orgNode.NodeLastName;
+                node.Description = this.orgNode.Description;
+            } else if (ngControl.name === "lastName") {
+                node.NodeFirstName = this.orgNode.NodeFirstName;
+                this.orgNode.NodeLastName = node.NodeLastName = ngControl.value;
+                node.Description = this.orgNode.Description;
+            }
+            else if (ngControl.name === "description") {
+                node.NodeFirstName = this.orgNode.NodeFirstName;
+                node.NodeLastName = this.orgNode.NodeLastName;
+                this.orgNode.Description = node.Description = ngControl.value;
+            }
+
+            if (node.IsStaging && node.NodeID === -1) {
+                if (this.orgNode.NodeFirstName || this.orgNode.NodeLastName || this.orgNode.Description) {
                     this.orgNode.IsStaging = node.IsStaging = false;
                     this.addNode.emit(node);
-                } else {
-                    if (node.NodeID !== -1) {
-                        node.IsStaging = true;
-                    }
-                    this.updateNode.emit(node);
                 }
-            } else if (this.isFirstAndLastNameAndDescriptionChanged(target.value, ngControl) && !isInitialChanged) {
-                if (ngControl.name === "firstName") {
-                    this.orgNode.NodeFirstName = node.NodeFirstName = ngControl.value;
-                    node.NodeLastName = this.orgNode.NodeLastName;
-                    node.Description = this.orgNode.Description;
-                } else if (ngControl.name === "lastName") {
-                    node.NodeFirstName = this.orgNode.NodeFirstName;
-                    this.orgNode.NodeLastName = node.NodeLastName = ngControl.value;
-                    node.Description = this.orgNode.Description;
+            } else {
+                if (node.NodeID !== -1) {
+                    node.IsStaging = true;
                 }
-                else if (ngControl.name === "description") {
-                    node.NodeFirstName = this.orgNode.NodeFirstName;
-                    node.NodeLastName = this.orgNode.NodeLastName;
-                    this.orgNode.Description = node.Description = ngControl.value;
-
-                }
-
-                if (node.IsStaging && node.NodeID === -1) {
-                    this.orgNode.IsStaging = node.IsStaging = false;
-                    this.addNode.emit(node);
-                } else {
-                    if (node.NodeID !== -1) {
-                        node.IsStaging = true;
-                    }
-                    if (node.IsNewRoot) {
-                        this.updateNode.emit(node);
-                    }
-                    this.updateMenuNode.emit(node);
-                }
+                this.updateNode.emit(node);
             }
         }
-    }
-
-    private isFirstAndLastNameAndDescriptionChanged(value: string, ngControl: NgControl) {
-        if (ngControl.name === "firstName" && value !== "") {
-            return true;
-        }
-        if (ngControl.name === "lastName" && value !== "") {
-            return true;
-        } if (ngControl.name === "description" && value !== "") {
-            return true;
-        }
-        return false;
-    }
-
-    private isFirstAndLastNameInitialChanged(value: string, ngControl: NgControl) {
-        if (ngControl.name === "firstName" && value.slice(0, 1) !== this.orgNode.NodeFirstName.slice(0, 1)) {
-            return true;
-        }
-        if (ngControl.name === "lastName") {
-            if (value && !this.orgNode.NodeLastName) {
-                return true;
-            }
-            else if (value.slice(0, 1) !== this.orgNode.NodeLastName.slice(0, 1)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     private emitChartUpdatedNotification(data: OrgNodeModel) {

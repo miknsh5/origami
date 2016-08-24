@@ -1,52 +1,27 @@
-<div class="auth-panel">
-    <!-- User Dropdown Structure -->
-    <ul id="userDropdown" class="dropdown-content collection">
-        <li *ngIf="userModel" class="collection-item avatar">
-            <img [src]="userModel.Picture" alt="">
-            <p>{{userModel.Name}}</p>
-            <p class="caption">{{userModel.Email}}</p>
-        </li>
-        <li class="divider"></li>
-        <li (click)="logout()"><a><i class="material-icons left">remove_circle</i>Logout</a></li>
-        <li class="divider"></li>
-        <li><a><i class="material-icons left">folder_shared</i>Account</a></li>
-    </ul>
-
-    <nav class="fixed">
-        <div class="nav-wrapper">
-            <a href="#!" class="brand-logo">PEOPLE TREE</a>
-            <ul class="right">
-                <li><a class="dropdown-button" data-activates="groupDropdown"><i class="material-icons left">apps</i>My Group<i class="material-icons right">arrow_drop_down</i></a></li>
-                <li><a class="dropdown-button" data-activates="userDropdown"><i class="material-icons left">person</i>User<i class="material-icons right">arrow_drop_down</i></a></li>
-            </ul>
-        </div>
-    </nav>
+<div>
+    <sg-menu-panel (groupSelected)="onGroupSelected($event)"></sg-menu-panel>
+</div>
+<div>
+    <sg-side-menu-panel [selectedOrgNode]="selectedNode" [isAddOrEditModeEnabled]="isAddOrEditMode" [currentMode]="currentChartMode" (showFirstNameLabel)="enableFirstNameLabel($event)" (showLastNameLabel)="enableLastNameLabel($event)" (showDescriptionLabel)="enableDescriptionLabel($event)"
+        [svgWidth]="svgWidth" [svgHeight]="svgHeight" [orgChart]="orgGroup"></sg-side-menu-panel>
 </div>
 
-<div class="section no-pad-bot no-pad-top">
-    <div>
-        <sg-org-menu-panel [selectedOrgNode]="selectedNode" [isAddOrEditModeEnabled]="isAddOrEditMode" [currentMode]="currentChartMode" (showFirstNameLabel)="enableFirstNameLabel($event)"
-         (showLastNameLabel)="enableLastNameLabel($event)" (showDescriptionLabel)="enableDescriptionLabel($event)" [svgWidth]="svgWidth" [svgHeight]="svgHeight" [orgChart]="orgChart">
-        </sg-org-menu-panel>
-    </div>
+<div class="modes-wrap ">
+    <ul>
+        <li [ngClass]="buildView" class="nav-build" (click)="changeViewModeNav(1)"><a> Build</a></li>
+        <li class="nav-explore inactive"><a>Explore</a></li>
+        <li [ngClass]="reportView" class="nav-report" (click)="changeViewModeNav(3)"><a>Report</a> </li>
+    </ul>
+</div>
 
-    <div class="modes-wrap ">
-        <ul>
-            <li [ngClass]="buildView" class="nav-build" (click)="changeViewModeNav(1)"><a> Build</a></li>
-            <li class="nav-explore inactive"><a>Explore</a></li>
-            <li [ngClass]="reportView" class="nav-report" (click)="changeViewModeNav(3)"><a>Report</a> </li>
-        </ul>
-    </div>
+<div class="main-canvas" *ngIf="orgGroup" (window:resize)="onResize($event)">
+    <sg-org-tree [treeData]="treeJson" [width]="svgWidth" [height]="svgHeight" [currentMode]="currentChartMode" [isAddOrEditModeEnabled]="isAddOrEditMode" (selectNode)="onNodeSelected($event)" (switchToAddMode)="onSwitchedToAddMode($event)" [showFirstNameLabel]="displayFirstNameLabel"
+        [showLastNameLabel]="displayLastNameLabel" [showDescriptionLabel]="displayDescriptionLabel" [orgGroupID]="groupID">
+    </sg-org-tree>
+</div>
 
-    <div class="main-canvas" *ngIf="orgChart" (window:resize)="onResize($event)">
-        <sg-org-tree [treeData]="treeJson" [width]="svgWidth" [height]="svgHeight" [currentMode]="currentChartMode" [isAddOrEditModeEnabled]="isAddOrEditMode" (selectNode)="onNodeSelected($event)"
-         (switchToAddMode)="onSwitchedToAddMode($event)" [showFirstNameLabel]="displayFirstNameLabel" [showLastNameLabel]="displayLastNameLabel" [showDescriptionLabel]="displayDescriptionLabel">
-        </sg-org-tree>
-    </div>
-
-    <div *ngIf="currentChartMode===1">
-        <sg-org-node-detail #nodeDetail [selectedOrgNode]="selectedNode" [isAddOrEditModeEnabled]="detailAddOrEditMode" (deleteNode)="onNodeDeleted($event)" (updateNode)="onNodeUpdated($event)" 
-         (addNode)="onNodeAdded($event)" (setAddOrEditModeValue)="onAddOrEditModeValueSet($event)" (chartStructureUpdated)="onChartUpdated($event)" (updateMenuNode)="onNodeTextChange($event)">
-        </sg-org-node-detail>
-    </div>
+<div *ngIf="currentChartMode===1">
+    <sg-org-node-detail #nodeDetail [selectedOrgNode]="selectedNode" [isAddOrEditModeEnabled]="detailAddOrEditMode" (deleteNode)="onNodeDeleted($event)" (updateNode)="onNodeUpdated($event)" (addNode)="onNodeAdded($event)" (setAddOrEditModeValue)="onAddOrEditModeValueSet($event)"
+        (chartStructureUpdated)="onChartUpdated($event)" (updateMenuNode)="onNodeTextChange($event)">
+    </sg-org-node-detail>
 </div>

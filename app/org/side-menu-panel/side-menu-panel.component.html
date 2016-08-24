@@ -1,0 +1,62 @@
+<div class="sideNav fixed">
+    <div class="menuButton">
+        <button class="waves-effect waves-light" (click)="openPanel()"><i class="material-icons left">keyboard_arrow_left</i></button>
+    </div>
+
+    <div id="menuPanel" class="right">
+        <div>
+            <button class="waves-effect waves-light closebtn" (click)="closePanel()"><i class="material-icons">close</i></button>
+            <hr/>
+        </div>
+        <label class="menuTitle">Resource</label>
+
+        <div *ngIf="selectedNode" class="labelWrap">
+            <p class="lblName"> {{selectedNode.NodeFirstName}} {{selectedNode.NodeLastName}}</p>
+            <p class="lblJobTitle"> {{selectedNode.Description}} </p>
+        </div>
+        <div *ngIf="currentMode===1">
+            <label class="menuTitle">Stats</label>
+            <hr/>
+            <div class="labelWrap">
+                <ul class="collection">
+                    <li class="collection-item avatar">
+                        <p class="lblReport">Direct Reports </p>
+                        <label class="secondary-content">{{directReportees}}</label>
+                    </li>
+                    <li class="collection-item avatar">
+                        <p class="lblReport">Total Reports </p>
+                        <label class="secondary-content">{{totalReportees}}</label>
+                    </li>
+                </ul>
+            </div>
+            <hr/>
+        </div>
+
+        <div *ngIf="currentMode===3">
+            <hr/>
+            <label class="menuTitle">Settings</label>
+            <div class="checkBoxList">
+                <input type="checkbox" class="filled-in" id="FirstName" checked="checked" (change)="setLabelVisiblity($event)" />
+                <label for="FirstName">First Name</label>
+                <input type="checkbox" class="filled-in" id="LastName" checked="checked" (change)="setLabelVisiblity($event)" />
+                <label for="LastName">Last Name</label>
+                <input type="checkbox" class="filled-in" id="JobTitle" checked="checked" (change)="setLabelVisiblity($event)" />
+                <label for="JobTitle">Job Title</label>
+            </div>
+
+            <div class="tabControl">
+                <ul class="tabs">
+                    <li class="tab disabled" href="#publishData"><a>Publish</a></li>
+                    <li class="tab"><a class="active">Export</a></li>
+                </ul>
+
+                <div id="publishData" class="col s12"></div>
+
+                <div id="exportData" class="col s12">
+                    <sg-origami-csv [orgChartData]="orgChart"></sg-origami-csv>
+                    <sg-origami-png [width]="svgWidth" [height]="svgHeight" [selectedOrgNode]="selectedNode" [orgName]="orgChart.OrganizationName"></sg-origami-png>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

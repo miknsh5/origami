@@ -1,219 +1,304 @@
-.sideNav {
-    position: fixed;
-    right: 0;
-    top: 58px;
-    height: 100%;
-    overflow-x: hidden;
-    min-width: 40px;
+.auth-panel {
+    height: 55px;
 }
 
-.sideNav i {
-    font-size: 1.3rem;
-    line-height: 1.53em;
+.auth-panel button {
+    float: right;
+    margin-left: 0.7em;
 }
 
-.sideNav hr {
+.auth-panel .nav-wrapper i.material-icons {
+    font-size: 1.4rem;
+}
+
+hr {
     width: 100%;
     height: 1px;
-    background-color: #607d8b;
+    background-color: #cfd8dc;
     border: none;
     margin: 0;
 }
 
-.sideNav button {
-    margin: 0 !important;
-    padding: 0 !important;
-    background-color: #607d8b;
-    color: #fff;
-    border: none;
+nav {
+    background-color: #fff;
 }
 
-.sideNav i.left {
-    margin: 0 8px;
+nav,
+nav .nav-wrapper i,
+nav a.button-collapse,
+nav a.button-collapse i {
+    height: 55px;
+    line-height: 55px;
 }
 
-.sideNav .menuButton {
-    position: absolute;
-    right: 0;
-    z-index: -1;
-}
-
-.sideNav #menuPanel {
-    width: 5px;
-    height: 100%;
-    min-height: 585px;
-    z-index: 10;
-    background-color: #455a64;
-    overflow-x: scroll;
-    transition: 0.5s;
-}
-
-.sideNav .closebtn {
-    width: 30px;
-    height: 30px;
-    background-color: #607d8b;
-    border: 0;
-}
-
-.sideNav .menuTitle {
-    padding-left: 15px;
-    font-size: 0.85em;
-    font-weight: 700;
+nav .brand-logo {
+    padding: 0 20px;
     color: #607d8b;
 }
 
-.sideNav p.lblName {
-    margin: 0;
-    font-size: 1em;
-    font-weight: 700;
-    color: #cfd8dc;
-    line-height: initial;
+nav ul a {
+    color: #607d8b;
 }
 
-.sideNav p.lblJobTitle {
-    margin: 0;
-    font-size: 0.9em;
-    font-weight: 400;
-    color: #b6b6b6;
-    line-height: initial;
+nav ul a i.right,
+nav ul a i.left {
+    margin: 0 5px;
 }
 
-.sideNav .labelWrap {
-    margin: 15px 30px 15px 50px;
+#userDropdown {
+    top: 55px !important;
 }
 
-.sideNav .labelWrap .collection {
-    border: none;
+#userDropdown .collection-item.avatar {
+    min-height: 65px
 }
 
-.sideNav .labelWrap .collection .collection-item {
-    padding: 3px 0;
-    border: none;
-    background-color: transparent;
-    min-height: 10px;
-}
-
-.sideNav .labelWrap .collection .collection-item .secondary-content {
-    color: #b6b6b6;
-    float: none;
-    top: 3px;
-    right: inherit;
-    font-weight: 500;
-    font-size: 0.9em;
-}
-
-.sideNav .lblReport {
-    font-size: 0.9em;
-    font-weight: 500;
-    color: #b6b6b6;
-    width: 115px;
-    display: inline-block;
-}
-
-.sideNav .checkBoxList {
+#userDropdown .collection-item.avatar img {
     position: absolute;
-    margin: 22px 50px;
-}
-
-[type="checkbox"].filled-in:checked+label:after {
-    top: 0;
-    width: 18px;
-    height: 18px;
-    border: 2px solid #0097FF;
-    background-color: #0097FF;
-    z-index: 0;
-    font-size: 0.9em;
-    font-weight: 350;
-    color: #b6b6b6;
-    line-height: initial;
-    border-radius: 0;
-}
-
-[type="checkbox"]+label {
-    position: relative;
-    padding-left: 30px;
-    cursor: pointer;
+    width: 42px;
+    height: 42px;
+    overflow: hidden;
+    left: 15px;
     display: inline-block;
-    height: 25px;
-    font-size: 0.8rem;
+    vertical-align: middle;
 }
 
-[type="checkbox"].filled-in:checked+label:before {
-    top: 0;
-    left: 3px;
-    width: 5px;
-    height: 10px;
-    border-top: 2px solid transparent;
-    border-left: 2px solid transparent;
-    border-right: 2px solid #fff;
-    border-bottom: 2px solid #fff;
-    -webkit-transform: rotateZ(37deg);
-    transform: rotateZ(37deg);
-    -webkit-transform-origin: 100% 100%;
-    transform-origin: 100% 100%;
+#userDropdown .collection-item.avatar .title {
+    padding: 0;
 }
 
-[type="checkbox"].filled-in:not(:checked)+label:after {
-    height: 20px;
-    width: 20px;
-    background-color: transparent;
-    border: 2px solid #FFFFFF;
-    top: 0px;
-    z-index: 0;
+.caption {
+    color: #757575;
+    font-size: 11px;
+    white-space: nowrap;
+    z-index: 1;
 }
 
-.sideNav .tabList {
-    padding-top: 250px;
+.dropdown-content li {
+    min-height: 0px;
 }
 
-.tabControl {
-    margin-top: 270px;
-}
-
-.tabs .tab.disabled {
-    background-color: #607d8b;
-    cursor: default;
-}
-
-.disabled a {
-    text-align: center;
-    padding-top: 5px;
-    opacity: 0.5;
-}
-
-ul.tabs {
-    background-color: transparent;
-    height: 25px;
-    cursor: default;
-    width: 240px !important;
-    font-size: 0.8rem;
-}
-
-a {
-    text-align: center;
-    padding-top: 3px;
-}
-
-.active {
-    color: #fff;
-    background-color: #455a64;
-    height: 41px;
-    cursor: pointer;
-    border-top: 3px solid #607d8b;
-}
-
-.tabs .tab a {
-    color: #fff;
+.dropdown-content li > a {
+    padding: 15px 13px;
+    font-size: 13px;
     display: block;
+    line-height: 5px;
+}
+
+.dropdown-content li > a > i {
+    height: inherit !important;
+    line-height: inherit !important;
+    margin-right: 15px !important;
+    margin-left: 0px !important;
+}
+
+#companyDropdown.dropdown-content li > a {
+    width: 235px;
+}
+
+#groupDropdown.dropdown-content li > a {
+    width: 200px;
+}
+
+.divider {
+    margin-bottom: 1px;
+    overflow: none !important;
+}
+
+.lbl {
+    font-size: 0.98em;
+    color: #607d8b;
+    cursor: pointer;
+    display: inline-flex;
+}
+
+.lblResult {
+    float: right;
+    cursor: pointer;
+}
+
+.defaultlbl {
+    padding: 2px 12px;
+    font-size: x-small;
+    width: 100%;
+    height: 10px;
+    line-height: normal;
+    display: table;
+}
+
+.person {
+    cursor: pointer;
+    color: #222222;
+}
+
+.person:hover {
+    color: #029BFF;
+}
+
+.fixed {
+    position: fixed;
+}
+
+#companyDropdown li a.active,
+#groupDropdown li a.active {
+    border-left: 0.18em solid #607d8b;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+#companyDropdown li.companyList a {
+    padding: 6px 7px 12px;
+}
+
+#companyDropdown li.companyList a:before {
+    background-image: url('app/images/ic_label_outline_black_24dp_1x.png');
+    background-repeat: no-repeat;
+    display: inline-block;
+    background-position: 0;
+    width: 35px;
+    height: 17px;
+    content: "";
+    top: 4px;
+    position: relative;
+}
+
+#companyDropdown li.companyList a.active:before {
+    background-image: url('app/images/ic_label_black_24dp_1x.png');
+}
+
+
+/* The Modal (background) */
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    padding-top: 100px;
+    left: 0;
+    top: 0px;
     width: 100%;
     height: 100%;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    transition: color .28s ease;
+    max-height: 100%;
+    overflow: auto;
+    background-color: rgb(0, 0, 0);
+    background-color: rgba(0, 0, 0, 0.4);
 }
 
-.tabs .tab {
+
+/* Modal Content */
+
+.modal-content {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 0px;
+    border: 0px solid #888;
+    width: 345px;
+    height: 350px;
+}
+
+
+/* The Close Button */
+
+.close {
+    float: right;
+    background-color: #607d8b;
+    border: none;
+    height: 30px;
+    width: 30px;
+    cursor: pointer;
+}
+
+.close i {
+    padding: 3px 3.5px;
+}
+
+.company_groupDetails {
+    padding: 10px;
+}
+
+.company_groupDetails i,
+.company_groupDetails input {
+    color: #607d8b;
+}
+
+.modaltitle {
+    color: #cfd8dc !important;
+    display: block;
+}
+
+.modaltitle .title {
+    display: inline-block;
+    margin: 12px 10px 5px;
+}
+
+.modaltitle .title .material-icons {
+    margin: 4px 20px 0 10px;
+    font-size: 1em;
+}
+
+.modaltitle .title label {
+    font-size: 1.15em;
+    font-weight: 100;
+    color: #cfd8dc;
+}
+
+.titlewithdivider .divider {
+    width: 40px;
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 10px;
+}
+
+.titlewithdivider .lbl {
+    display: inline-block;
+    color: #607d8b;
+}
+
+.modaldefaultlabel {
+    color: #cfd8dc !important;
+    font-size: 0.5rem;
+    cursor: pointer;
+    display: block;
+    padding-left: 40px;
+}
+
+.modallbl {
+    color: #111;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+input {
+    width: 88%;
+    height: 25px;
+    margin-bottom: 2px;
+}
+
+.waves-effect {
+    background-color: #0097FF;
+    padding: 5px 0.9rem;
+    font-size: 0.75rem;
+    border-radius: 0px;
+    max-height: 30px;
     line-height: normal;
-    text-transform: none;
-    height: inherit;
+    margin: 0px 50px;
+}
+
+.btn i {
+    font-size: 1rem;
+    line-height: inherit;
+    margin-right: 8px;
+    vertical-align: text-bottom
+}
+
+#companySettings .divider {
+    width: 40px;
+}
+
+@media only screen and (max-width:992px) {
+    nav .brand-logo {
+        left: 0%;
+        -webkit-transform: translateX(0%);
+        transform: translateX(0%);
+    }
 }

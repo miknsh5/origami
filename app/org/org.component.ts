@@ -1,14 +1,14 @@
 import { Component, Output, EventEmitter, OnDestroy} from "@angular/core";
 import { HTTP_PROVIDERS } from "@angular/http";
-import { CanActivate, Router } from "@angular/router-deprecated";
+import { CanActivate } from "@angular/router-deprecated";
 import { tokenNotExpired } from "angular2-jwt";
 
-import { AddNodeComponent } from "./add-node/add-node.component";
-import { MenuPanelComponent } from "./menu-panel/menu-panel.component";
+import { SideMenuComponent } from "./side-menu-panel/index";
 import { OrgNodeDetailComponent } from "./org-node-detail/index";
-import { OrgChartModel, OrgNodeModel, OrgService, ChartMode} from "./shared/index";
-import { OrgTreeComponent } from "./d3-tree/org-tree.component";
-import { UserModel } from "../Shared/models/user.model";
+import { MenuPanelComponent } from "./menu-panel/index";
+import { OrgTreeComponent } from "./d3-tree/index";
+
+import { OrgNodeModel, ChartMode, OrgCompanyModel, OrgGroupModel, OrgService} from "./shared/index";
 
 const MIN_HEIGHT: number = 320;
 const MAX_HEIGHT: number = 768;
@@ -18,19 +18,18 @@ const MAX_WIDTH: number = 1366;
 
 const DEFAULT_OFFSET: number = 70;
 
-declare var $: any;
 declare var SVGPan: any;
 
 @Component({
     selector: "sg-origami-org",
-    directives: [OrgTreeComponent, OrgNodeDetailComponent, MenuPanelComponent],
+    directives: [OrgTreeComponent, OrgNodeDetailComponent, MenuPanelComponent, SideMenuComponent],
     templateUrl: "app/org/org.component.html",
     styleUrls: ["app/org/org.component.css"],
     providers: [OrgService, HTTP_PROVIDERS]
 })
 
 export class OrgComponent implements OnDestroy {
-    orgChart: OrgChartModel;
+    orgGroup: OrgGroupModel;
     orgNodes: OrgNodeModel[];
     svgWidth: number;
     svgHeight: number;
@@ -39,8 +38,9 @@ export class OrgComponent implements OnDestroy {
     buildViewText: any;
     reportViewText: any;
     svgPan: any;
-    userModel: UserModel;
 
+    @Output() groupID: any;
+    @Output() userCompanies: OrgCompanyModel;
     @Output() currentChartMode: ChartMode;
     @Output() treeJson: any;
     @Output() selectedNode: OrgNodeModel;
@@ -50,34 +50,16 @@ export class OrgComponent implements OnDestroy {
     @Output() displayLastNameLabel: boolean;
     @Output() displayDescriptionLabel: boolean;
 
-    constructor(private orgService: OrgService, private router: Router) {
-        this.getAllNodes();
-        this.svgWidth = this.getSvgWidth();
-        this.svgHeight = this.getSvgHeight();
+    constructor() {
         this.currentChartMode = ChartMode.build;
         this.enableLabels();
-        this.enableViewModesNav(ChartMode.build);
-    }
-
-    enableDropDown() {
-        $(".dropdown-button").dropdown({ constrain_width: false, alignment: "right" });
+        this.svgWidth = this.getSvgWidth();
+        this.svgHeight = this.getSvgHeight();
     }
 
     onResize(event) {
         this.svgWidth = this.getSvgWidth();
         this.svgHeight = this.getSvgHeight();
-    }
-
-    getAllNodes() {
-        let profile = localStorage.getItem("profile");
-        if (profile) {
-            this.userModel = JSON.parse(profile);
-            console.log(this.userModel);
-            this.orgService.getNodes(profile)
-                .subscribe(data => this.setOrgChartData(data),
-                err => this.orgService.logError(err),
-                () => console.log("Random Quote Complete"));
-        }
     }
 
     enableFirstNameLabel(data) {
@@ -318,12 +300,6 @@ export class OrgComponent implements OnDestroy {
         }
     }
 
-    logout() {
-        localStorage.removeItem("profile");
-        localStorage.removeItem("id_token");
-        this.router.navigate(["/Login"]);
-    }
-
     private enableViewModesNav(viewMode) {
         if (viewMode === ChartMode.build) {
             this.buildView = "active";
@@ -405,18 +381,19 @@ export class OrgComponent implements OnDestroy {
     }
 
     onChartUpdated(data: any) {
-        this.setOrgChartData(data);
+        this.onGroupSelected(data);
     }
 
-    private setOrgChartData(data: any) {
-        this.orgChart = data;
-        this.orgNodes = JSON.parse(JSON.stringify(this.orgChart.OrgNodes));
+    onGroupSelected(data: any) {
+        this.orgGroup = data;
+        this.orgNodes = JSON.parse(JSON.stringify(this.orgGroup.OrgNodes));
+        if (this.groupID !== this.orgGroup.OrgGroupID)
+            this.groupID = this.orgGroup.OrgGroupID;
         this.treeJson = JSON.parse(JSON.stringify(this.orgNodes));
-        localStorage.setItem("org_id", this.orgChart.OrgID.toString());
+        this.enableViewModesNav(ChartMode.build);
         if (this.treeJson && this.treeJson.length === 0) {
             this.disableViewModesNav(ChartMode.report);
         }
-        this.enableDropDown();
     }
 
     ngOnDestroy() {

@@ -5,47 +5,65 @@ import { Headers, RequestOptions } from "@angular/http";
 
 @Injectable()
 export class OrgService {
-    private origamiUrl = "//origamiapi.azurewebsites.net/";
-    private getUrl = "api/Org/GetOrgChart";
+    private origamiUrl = "//origamistageapi.azurewebsites.net/";
+    private getCompaniesUrl = "api/Org/GetCompaniesForUser";
+    private getUrl = "api/Org/GetNodesForGroup?orgGroupID=";
+    private updateGroupUrl = "api/Org/UpdateGroup";
+    private updateCompanyUrl = "api/Org/UpdateCompany";
     private updateUrl = "api/Org/EditNode";
     private deleteUrl = "api/Org/DeleteNode?nodeID=";
     private addUrl = "api/Org/AddNode";
     private addRootNodeUrl = "api/Org/AddRootNode";
-    private getOrgChartUrl = "api/Org/GetChartForOrg?orgID=";
-    constructor(private http: Http) { }
+    private getOrgChartUrl = "api/Org/GetNodesForGroup?orgGroupID=";
+    private addGroupUrl = "api/Org/AddOrgGroup?userID=";
+    private addCompanyUrl = "api/Org/AddCompanyForUser?userID=";
+    private headers: Headers;
 
-    getNodes(userProfile) {
-        let url = this.origamiUrl + this.getUrl;
-        let headers = new Headers({ "Content-Type": "application/json" });
-        headers.append("Accept", "application/json");
+    constructor(private http: Http) {
+        this.headers = new Headers({ "Content-Type": "application/json" });
+        this.headers.append("Accept", "application/json");
+    }
 
-        return this.http.post(url, userProfile, { headers: headers })
+    getCompanies(userProfile) {
+        let url = this.origamiUrl + this.getCompaniesUrl;
+
+        return this.http.post(url, userProfile, { headers: this.headers })
             .map(node => node.json());
     }
 
-    getOrgNodes(orgID) {
-        let url = this.origamiUrl + this.getOrgChartUrl + orgID;
-        let headers = new Headers({ "Content-Type": "application/json" });
-        headers.append("Accept", "application/json");
+    getOrgNodes(groupID) {
+        let url = this.origamiUrl + this.getUrl + groupID;
 
-        return this.http.get(url, { headers: headers })
+        return this.http.get(url, { headers: this.headers })
             .map(node => node.json());
+    }
+
+    updateGroup(orgGroup) {
+        let group = JSON.stringify(orgGroup);
+        let options = new RequestOptions({ headers: this.headers });
+        let url = this.origamiUrl + this.updateGroupUrl;
+        return this.http.post(url, group, options)
+            .map(res => res.json());
+    }
+
+    updateCompany(orgCompany) {
+        let company = JSON.stringify(orgCompany);
+        let options = new RequestOptions({ headers: this.headers });
+        let url = this.origamiUrl + this.updateCompanyUrl;
+        return this.http.post(url, company, options)
+            .map(res => res.json());
     }
 
     updateNode(orgNode) {
         let node = JSON.stringify(orgNode);
-        let headers = new Headers({ "Content-Type": "application/json" });
-        headers.append("Accept", "application/json");
-        let options = new RequestOptions({ headers: headers });
+        let options = new RequestOptions({ headers: this.headers });
         let url = this.origamiUrl + this.updateUrl;
         return this.http.post(url, node, options)
             .map(res => res.json());
     }
 
     deleteNode(orgNodeID) {
-        let headers = new Headers({ "Content-Type": "application/json" });
-        headers.append("Accept", "application/json");
-        let options = new RequestOptions({ headers: headers });
+        let options = new RequestOptions({ headers: this.headers });
         let url = this.origamiUrl + this.deleteUrl + orgNodeID;
         return this.http.delete(url, options)
             .map(res => res.json());
@@ -53,9 +71,7 @@ export class OrgService {
 
     addNode(orgNode) {
         let node = JSON.stringify(orgNode);
-        let headers = new Headers({ "Content-Type": "application/json" });
-        headers.append("Accept", "application/json");
-        let options = new RequestOptions({ headers: headers });
+        let options = new RequestOptions({ headers: this.headers });
         let url = this.origamiUrl + this.addUrl;
         return this.http.post(url, node, options)
             .map(res => res.json());
@@ -63,13 +79,28 @@ export class OrgService {
 
     addRootNode(orgNode) {
         let node = JSON.stringify(orgNode);
-        let headers = new Headers({ "Content-Type": "application/json" });
-        headers.append("Accept", "application/json");
-        let options = new RequestOptions({ headers: headers });
+        let options = new RequestOptions({ headers: this.headers });
         let url = this.origamiUrl + this.addRootNodeUrl;
         return this.http.post(url, node, options)
             .map(res => res.json());
     }
+
+    addGroup(group, userID) {
+        group = JSON.stringify(group);
+        let options = new RequestOptions({ headers: this.headers });
+        let url = this.origamiUrl + this.addGroupUrl + userID;
+        return this.http.post(url, group, options)
+            .map(res => res.json());
+    }
+
+    addCompany(company, userID) {
+        company = JSON.stringify(company);
+        let options = new RequestOptions({ headers: this.headers });
+        let url = this.origamiUrl + this.addCompanyUrl + userID;
+        return this.http.post(url, company, options)
+            .map(res => res.json());
+    }
+
 
     logError(err: any) {
         console.error(err);
