@@ -53,6 +53,8 @@
 .main-canvas {
     width: 100%;
     overflow-x: auto;
+    position: fixed;
+    z-index: -2;
 }
 
 .main-canvas h1 {

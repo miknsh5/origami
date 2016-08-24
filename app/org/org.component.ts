@@ -29,8 +29,7 @@ declare var SVGPan: any;
 })
 
 export class OrgComponent implements OnDestroy {
-
-    orgChart: OrgGroupModel;
+    orgGroup: OrgGroupModel;
     orgNodes: OrgNodeModel[];
     svgWidth: number;
     svgHeight: number;
@@ -40,6 +39,7 @@ export class OrgComponent implements OnDestroy {
     reportViewText: any;
     svgPan: any;
 
+    @Output() groupID: any;
     @Output() userCompanies: OrgCompanyModel;
     @Output() currentChartMode: ChartMode;
     @Output() treeJson: any;
@@ -381,14 +381,15 @@ export class OrgComponent implements OnDestroy {
     }
 
     onChartUpdated(data: any) {
-        // this.setOrgChartData(data);
+        this.onGroupSelected(data);
     }
 
     onGroupSelected(data: any) {
-        this.orgChart = data;
-        this.orgNodes = JSON.parse(JSON.stringify(this.orgChart.OrgNodes));
+        this.orgGroup = data;
+        this.orgNodes = JSON.parse(JSON.stringify(this.orgGroup.OrgNodes));
+        if (this.groupID !== this.orgGroup.OrgGroupID)
+            this.groupID = this.orgGroup.OrgGroupID;
         this.treeJson = JSON.parse(JSON.stringify(this.orgNodes));
-        // localStorage.setItem("org_id", this.orgChart.CompanyID.toString());
         this.enableViewModesNav(ChartMode.build);
         if (this.treeJson && this.treeJson.length === 0) {
             this.disableViewModesNav(ChartMode.report);

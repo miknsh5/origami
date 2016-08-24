@@ -1,3 +1,7 @@
+.auth-panel {
+    height: 55px;
+}
+
 .auth-panel button {
     float: right;
     margin-left: 0.7em;
@@ -70,6 +74,17 @@ nav ul a i.left {
     z-index: 1;
 }
 
+.dropdown-content li {
+    min-height: 0px;
+}
+
+.dropdown-content li > a {
+    padding: 15px 13px;
+    font-size: 13px;
+    display: block;
+    line-height: 5px;
+}
+
 .dropdown-content li > a > i {
     height: inherit !important;
     line-height: inherit !important;
@@ -77,40 +92,15 @@ nav ul a i.left {
     margin-left: 0px !important;
 }
 
-.dropdown-content li > a,
-.dropdown-content li > span {
-    font-size: 13px;
-    display: block;
-    line-height: 1px;
-    padding: 25px 13px;
-}
-
-#companyDropdown.dropdown-content li > a,
-.dropdown-content li > span {
-    padding: 15px 13px;
+#companyDropdown.dropdown-content li > a {
     width: 235px;
 }
 
-#companyDropdown.dropdown-content li {
-    min-height: 0px;
-}
-
-#groupDropdown.dropdown-content li {
-    min-height: 0;
-}
-
-#groupDropdown.dropdown-content li > a,
-.dropdown-content li > span {
-    padding: 15px 13px;
+#groupDropdown.dropdown-content li > a {
     width: 200px;
 }
 
-.person:hover {
-    color: #029BFF;
-}
-
 .divider {
-    height: 1px;
     margin-bottom: 1px;
     overflow: none !important;
 }
@@ -141,16 +131,15 @@ nav ul a i.left {
     color: #222222;
 }
 
+.person:hover {
+    color: #029BFF;
+}
+
 .fixed {
     position: fixed;
 }
 
-#companyDropdown li a.active {
-    border-left: 0.18em solid #607d8b;
-    font-weight: 800;
-    cursor: pointer;
-}
-
+#companyDropdown li a.active,
 #groupDropdown li a.active {
     border-left: 0.18em solid #607d8b;
     font-weight: 800;
@@ -158,7 +147,7 @@ nav ul a i.left {
 }
 
 #companyDropdown li.companyList a {
-    padding: 5px 7px 10px;
+    padding: 6px 7px 12px;
 }
 
 #companyDropdown li.companyList a:before {
@@ -304,10 +293,6 @@ input {
 
 #companySettings .divider {
     width: 40px;
-}
-
-.inlineblock {
-    display: inline-block;
 }
 
 @media only screen and (max-width:992px) {

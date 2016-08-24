@@ -64,6 +64,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     lastSelectedNode: any;
     arrows: any;
     levelDepth: any;
+
     @Input() currentMode: ChartMode;
     @Input() isAddOrEditModeEnabled: boolean;
     @Input() width: number;
@@ -72,6 +73,8 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     @Input() showFirstNameLabel: boolean;
     @Input() showLastNameLabel: boolean;
     @Input() showDescriptionLabel: boolean;
+    @Input() orgGroupID: number;
+
     @Output() selectNode = new EventEmitter<OrgNodeModel>();
     @Output() addNode = new EventEmitter<OrgNodeModel>();
     @Output() switchToAddMode = new EventEmitter<OrgNodeModel>();
@@ -279,7 +282,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         this.root = new OrgNodeModel();
         this.root.children = new Array<OrgNodeModel>();
         this.root.NodeID = -1;
-        this.root.OrgGroupID = parseInt(localStorage.getItem("org_id"));
+        this.root.OrgGroupID = this.orgGroupID;
         this.root.IsStaging = true;
         this.root.NodeFirstName = "";
         this.root.NodeLastName = "";

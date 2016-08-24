@@ -5,6 +5,7 @@
     height: 100%;
     overflow-x: hidden;
     min-width: 40px;
+    z-index: -1;
 }
 
 .sideNav i {
