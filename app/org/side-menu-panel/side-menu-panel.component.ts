@@ -37,8 +37,7 @@ export class SideMenuComponent implements OnChanges {
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
         if (changes["selectedOrgNode"]) {
             if (this.selectedOrgNode) {
-                if (this.isCollapsed === false) {
-                    this.isCollapsed = true;
+                if (this.isCollapsed) {
                     this.openPanel();
                 }
                 this.selectedNode = this.selectedOrgNode;
@@ -52,8 +51,8 @@ export class SideMenuComponent implements OnChanges {
                     });
                 }
             } else if (!this.selectedOrgNode && this.isCollapsed) {
-                this.isCollapsed = false;
                 this.closePanel();
+                this.isCollapsed = true;
             }
         }
 
@@ -61,11 +60,14 @@ export class SideMenuComponent implements OnChanges {
             this.enableTabControl();
         }
     }
+
     openPanel() {
         this.isCollapsed = true;
         document.getElementById("menuPanel").style.width = "100%";
     }
+
     closePanel() {
+        this.isCollapsed = false;
         document.getElementById("menuPanel").style.width = "2%";
     }
 
