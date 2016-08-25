@@ -389,12 +389,12 @@ export class OrgComponent implements OnDestroy {
         this.orgNodes = JSON.parse(JSON.stringify(this.orgGroup.OrgNodes));
         if (this.groupID !== this.orgGroup.OrgGroupID)
             this.groupID = this.orgGroup.OrgGroupID;
-        this.treeJson = JSON.parse(JSON.stringify(this.orgNodes));
-        if (this.treeJson && this.treeJson.length === 0) {
+        if (this.orgNodes && this.orgNodes.length === 0) {
             this.disableViewModesNav(ChartMode.report);
             this.currentChartMode = ChartMode.build;
         }
         this.enableViewModesNav(this.currentChartMode);
+        this.treeJson = JSON.parse(JSON.stringify(this.orgNodes));
     }
 
     ngOnDestroy() {

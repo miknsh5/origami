@@ -128,7 +128,7 @@ export class MenuPanelComponent {
         }
     }
 
-    private onSettingsOrAddNewDetailsClick(name) {
+    private onAddOrSettingsClick(name) {
         if (name === "company") {
             this.selectedCompanyName = this.selectedCompany.CompanyName;
             let modal = document.getElementById("companySettings");
@@ -182,13 +182,13 @@ export class MenuPanelComponent {
 
         this.orgService.addGroup(group, userID)
             .subscribe(data => {
-                this.selectNewGroup(data);
+                this.setNewGroup(data);
             },
             err => this.orgService.logError(err));
 
     }
 
-    private selectNewGroup(data) {
+    private setNewGroup(data) {
         if (data) {
             this.selectedGroup = data;
             this.selectedGroup.IsDefaultGroup = true;

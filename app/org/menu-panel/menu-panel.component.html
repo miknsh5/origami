@@ -13,7 +13,7 @@
     </ul>
 
     <ul id="companyDropdown" class="dropdown-content">
-        <li (click)="onSettingsOrAddNewDetailsClick('company')">
+        <li (click)="onAddOrSettingsClick('company')">
             <a><i class="Small material-icons left">mode_edit</i><label class="lbl">Settings</label>
             </a>
         </li>
@@ -40,7 +40,7 @@
     </ul>
 
     <ul id="groupDropdown" class="dropdown-content">
-        <li (click)="onSettingsOrAddNewDetailsClick('group')">
+        <li (click)="onAddOrSettingsClick('group')">
             <a>
                 <i class="Small material-icons left">mode_edit</i><label class="lbl ">Settings</label>
             </a>
@@ -70,7 +70,7 @@
                 <label class="lbl">{{group.GroupName}}</label>
             </a>
         </li>
-        <li><a (click)="onSettingsOrAddNewDetailsClick('newGroup')"><i class="material-icons left">add</i><label class="lbl">Add New</label></a></li>
+        <li><a (click)="onAddOrSettingsClick('newGroup')"><i class="material-icons left">add</i><label class="lbl">Add New</label></a></li>
     </ul>
 
     <nav class="fixed">

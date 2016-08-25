@@ -200,7 +200,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 }
             }
 
-            if (changes["isAddOrEditModeEnabled"] && !changes["treeData"]) {
+            if (changes["isAddOrEditModeEnabled"] && changes["isAddOrEditModeEnabled"].currentValue && !changes["treeData"]) {
                 return;
             }
 
