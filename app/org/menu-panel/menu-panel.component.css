@@ -100,6 +100,11 @@ nav ul a i.left {
     width: 200px;
 }
 
+#groupDropdown.dropdown-content{
+    max-height: 350px;
+    overflow-x: hidden;
+}
+
 .divider {
     margin-bottom: 1px;
     overflow: none !important;
@@ -293,6 +298,15 @@ input {
 
 #companySettings .divider {
     width: 40px;
+}
+
+.company_newGroup {
+    padding: 10px;
+}
+
+.company_newGroup i,
+.company_newGroup input {
+    color: #607d8b;
 }
 
 @media only screen and (max-width:992px) {

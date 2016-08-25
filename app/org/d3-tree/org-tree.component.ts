@@ -194,6 +194,12 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             this.treeWidth = this.width;
             this.treeHeight = this.height;
 
+            if (changes["orgGroupID"]) {
+                if (this.root) {
+                    this.selectedOrgNode = this.root;
+                }
+            }
+
             if (changes["isAddOrEditModeEnabled"] && !changes["treeData"]) {
                 return;
             }
@@ -604,7 +610,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 // collapse out the child nodes which will not be shown
                 this.markAncestors(this.selectedOrgNode);
                 if (this.currentMode === ChartMode.build) {
-                    if (this.root.children) {
+                    if (this.root && this.root.children) {
                         for (let k = 0; k < this.root.children.length; k++) {
                             this.collapseExceptSelectedNode(this.root.children[k]);
                         };

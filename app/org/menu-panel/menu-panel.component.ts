@@ -21,6 +21,7 @@ export class MenuPanelComponent {
     private userModel: UserModel;
     private selectedGroupName: any;
     private selectedCompanyName: any;
+    private newGroupName: any;
 
     @Output() groupSelected = new EventEmitter<OrgGroupModel>();
 
@@ -120,19 +121,25 @@ export class MenuPanelComponent {
     private onGroupSelection(data) {
         if (data && data.OrgGroupID !== this.selectedGroup.OrgGroupID) {
             this.selectedGroup = data;
-            this.selectedGroup.IsDefaultGroup = true;
-            this.getAllNodes(data.groupID);
+            this.getAllNodes(data.OrgGroupID);
+            this.orgService.setDefaultGroup(this.userModel.UserID, this.selectedGroup.CompanyID, this.selectedGroup.OrgGroupID)
+                .subscribe(data => { },
+                err => this.orgService.logError(err));
         }
     }
 
-    private onSettingsClick(name) {
+    private onSettingsOrAddNewDetailsClick(name) {
         if (name === "company") {
             this.selectedCompanyName = this.selectedCompany.CompanyName;
             let modal = document.getElementById("companySettings");
             modal.style.display = "block";
-        } else {
+        } else if (name === "group") {
             this.selectedGroupName = this.selectedGroup.GroupName;
             let modal = document.getElementById("groupSettings");
+            modal.style.display = "block";
+        } else if (name === "newGroup") {
+            this.newGroupName = " ";
+            let modal = document.getElementById("addNewGroup");
             modal.style.display = "block";
         }
     }
@@ -145,6 +152,10 @@ export class MenuPanelComponent {
         } else if (name === "group") {
             this.selectedGroupName = this.selectedGroup.GroupName;
             let modal = document.getElementById("groupSettings");
+            modal.style.display = "none";
+        } else if (name === "newGroup") {
+            this.newGroupName = " ";
+            let modal = document.getElementById("addNewGroup");
             modal.style.display = "none";
         }
     }
@@ -160,6 +171,30 @@ export class MenuPanelComponent {
         this.orgService.updateGroup(group)
             .subscribe(data => this.setGroupData(data),
             err => this.orgService.logError(err));
+    }
+
+    private addNewGroup() {
+        let group = new OrgGroupModel();
+        let userID = this.userModel.UserID;
+        group.CompanyID = this.selectedCompany.CompanyID;
+        group.GroupName = this.newGroupName;
+        group.OrgNodes = null;
+
+        this.orgService.addGroup(group, userID)
+            .subscribe(data => {
+                this.selectNewGroup(data);
+            },
+            err => this.orgService.logError(err));
+
+    }
+
+    private selectNewGroup(data) {
+        if (data) {
+            this.selectedGroup = data;
+            this.selectedGroup.IsDefaultGroup = true;
+            this.orgCompanyGroups.push(this.selectedGroup);
+            this.getAllNodes(this.selectedGroup.OrgGroupID);
+        }
     }
 
     private setGroupData(data) {
