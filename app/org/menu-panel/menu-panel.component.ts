@@ -227,6 +227,8 @@ export class MenuPanelComponent {
 
     private setNewGroup(data) {
         if (data) {
+            this.selectedGroup.IsDefaultGroup = false;
+            this.setGroupData(this.selectedGroup);
             this.selectedGroup = data;
             this.selectedGroup.IsDefaultGroup = true;
             this.orgCompanyGroups.push(this.selectedGroup);
