@@ -198,6 +198,17 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 if (this.root) {
                     this.selectedOrgNode = this.root;
                 }
+                if (!this.root) {
+                    this.addEmptyRootNode();
+                    this.selectedOrgNode = this.root;
+                }
+            }
+
+            if (changes["orgGroupID"] && changes["currentMode"] && changes["currentMode"].currentValue) {
+                if (!this.root) {
+                    this.addEmptyRootNode();
+                    this.selectedOrgNode = this.root;
+                }
             }
 
             if (changes["isAddOrEditModeEnabled"] && changes["isAddOrEditModeEnabled"].currentValue && !changes["treeData"]) {
@@ -235,10 +246,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 this.setNodeLabelVisiblity();
                 this.root = this.selectedOrgNode;
             }
-
-            if (!this.root) {
-                this.addEmptyRootNode();
-            }
+            
             if (this.selectedOrgNode != null) {
                 this.selectedOrgNode.IsSelected = false;
                 if (this.selectedOrgNode.NodeID === -1) {
@@ -522,11 +530,11 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         }
     }
     expandTree(d) {
-        if (d._children != null && d.children == null) {
+        if (d && d._children != null && d.children == null) {
 
             d.children = d._children;
         }
-        if (d.children != null) {
+        if (d && d.children != null) {
             for (let i = 0; i < d.children.length; i++) {
                 this.expandTree(d.children[i]);
             };
