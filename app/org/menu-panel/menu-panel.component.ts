@@ -22,6 +22,7 @@ export class MenuPanelComponent {
     private selectedGroupName: any;
     private selectedCompanyName: any;
     private newGroupName: any;
+    private newCompanyName: any;
 
     @Output() groupSelected = new EventEmitter<OrgGroupModel>();
 
@@ -113,16 +114,22 @@ export class MenuPanelComponent {
     private onCompanySelection(data) {
         if (data && data.CompanyID !== this.selectedCompany.CompanyID) {
             this.selectedCompany = data;
-            this.selectedCompany.IsSelected = true;
+            this.selectedCompany.IsDefaultCompany = true;
             this.setSelectedGroup(this.selectedCompany.OrgGroups);
+            this.orgService.setDefaultCompany(this.userModel.UserID, this.selectedCompany.CompanyID)
+                .subscribe(data => { },
+                err => this.orgService.logError(err));
         }
     }
 
     private onGroupSelection(data) {
+        this.selectedGroup.IsDefaultGroup = false;
+        this.setGroupData(this.selectedGroup);
         if (data && data.OrgGroupID !== this.selectedGroup.OrgGroupID) {
             this.selectedGroup = data;
+            this.selectedGroup.IsDefaultGroup = true;
             this.getAllNodes(data.OrgGroupID);
-            this.orgService.setDefaultGroup(this.userModel.UserID, this.selectedGroup.CompanyID, this.selectedGroup.OrgGroupID)
+            this.orgService.setDefaultGroup(this.userModel.UserID, this.selectedCompany.CompanyID, this.selectedGroup.OrgGroupID)
                 .subscribe(data => { },
                 err => this.orgService.logError(err));
         }
@@ -141,6 +148,10 @@ export class MenuPanelComponent {
             this.newGroupName = " ";
             let modal = document.getElementById("addNewGroup");
             modal.style.display = "block";
+        } else if (name === "newCompany") {
+            this.newCompanyName = " ";
+            let modal = document.getElementById("addNewCompany");
+            modal.style.display = "block";
         }
     }
 
@@ -156,6 +167,10 @@ export class MenuPanelComponent {
         } else if (name === "newGroup") {
             this.newGroupName = " ";
             let modal = document.getElementById("addNewGroup");
+            modal.style.display = "none";
+        } else if (name === "newCompany") {
+            this.newCompanyName = " ";
+            let modal = document.getElementById("addNewCompany");
             modal.style.display = "none";
         }
     }
@@ -187,6 +202,28 @@ export class MenuPanelComponent {
             err => this.orgService.logError(err));
 
     }
+
+    private addNewCompany() {
+        let userID = this.userModel.UserID;
+        let company = new OrgCompanyModel();
+        company.CompanyName = this.newCompanyName;
+        company.OrgGroups = null;
+
+        this.orgService.addCompany(company, userID)
+            .subscribe(data => {
+                this.setNewCompany(data);
+            },
+            err => this.orgService.logError(err));
+
+    }
+
+    private setNewCompany(data) {
+        this.selectedCompany = data;
+        this.selectedCompany.IsDefaultCompany = true;
+        this.orgCompanies.push(this.selectedCompany);
+        this.setSelectedGroup(this.selectedCompany.OrgGroups);
+    }
+
 
     private setNewGroup(data) {
         if (data) {

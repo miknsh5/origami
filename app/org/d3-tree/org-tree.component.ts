@@ -246,11 +246,11 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 this.setNodeLabelVisiblity();
                 this.root = this.selectedOrgNode;
             }
-            
+
             if (this.selectedOrgNode != null) {
                 this.selectedOrgNode.IsSelected = false;
                 if (this.selectedOrgNode.NodeID === -1) {
-                    if (this.root.NodeID !== -1) {
+                    if (this.root && this.root.NodeID !== -1) {
                         this.selectedOrgNode = this.getPreviousNodeIfAddedOrDeleted();
                         raiseSelectedEvent = true;
                     }
