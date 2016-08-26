@@ -194,7 +194,24 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             this.treeWidth = this.width;
             this.treeHeight = this.height;
 
-            if (changes["isAddOrEditModeEnabled"] && !changes["treeData"]) {
+            if (changes["orgGroupID"]) {
+                if (this.root) {
+                    this.selectedOrgNode = this.root;
+                }
+                if (!this.root) {
+                    this.addEmptyRootNode();
+                    this.selectedOrgNode = this.root;
+                }
+            }
+
+            if (changes["orgGroupID"] && changes["currentMode"] && changes["currentMode"].currentValue) {
+                if (!this.root) {
+                    this.addEmptyRootNode();
+                    this.selectedOrgNode = this.root;
+                }
+            }
+
+            if (changes["isAddOrEditModeEnabled"] && changes["isAddOrEditModeEnabled"].currentValue && !changes["treeData"]) {
                 return;
             }
 
@@ -230,13 +247,10 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 this.root = this.selectedOrgNode;
             }
 
-            if (!this.root) {
-                this.addEmptyRootNode();
-            }
             if (this.selectedOrgNode != null) {
                 this.selectedOrgNode.IsSelected = false;
                 if (this.selectedOrgNode.NodeID === -1) {
-                    if (this.root.NodeID !== -1) {
+                    if (this.root && this.root.NodeID !== -1) {
                         this.selectedOrgNode = this.getPreviousNodeIfAddedOrDeleted();
                         raiseSelectedEvent = true;
                     }
@@ -516,11 +530,11 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         }
     }
     expandTree(d) {
-        if (d._children != null && d.children == null) {
+        if (d && d._children != null && d.children == null) {
 
             d.children = d._children;
         }
-        if (d.children != null) {
+        if (d && d.children != null) {
             for (let i = 0; i < d.children.length; i++) {
                 this.expandTree(d.children[i]);
             };
@@ -604,7 +618,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 // collapse out the child nodes which will not be shown
                 this.markAncestors(this.selectedOrgNode);
                 if (this.currentMode === ChartMode.build) {
-                    if (this.root.children) {
+                    if (this.root && this.root.children) {
                         for (let k = 0; k < this.root.children.length; k++) {
                             this.collapseExceptSelectedNode(this.root.children[k]);
                         };

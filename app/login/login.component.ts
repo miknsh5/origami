@@ -40,7 +40,7 @@ export class LoginComponent implements OnInit {
                 user.Email = profile.email;
             }
 
-            if (user.IsSocial) {
+            if (user.IsSocial && profile.identities[0].access_token) {
                 user.AccessToken = profile.identities[0].access_token;
             } else {
                 user.AccessToken = id_token;

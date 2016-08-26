@@ -13,7 +13,7 @@
     </ul>
 
     <ul id="companyDropdown" class="dropdown-content">
-        <li (click)="onSettingsClick('company')">
+        <li (click)="onAddOrSettingsClick('company')">
             <a><i class="Small material-icons left">mode_edit</i><label class="lbl">Settings</label>
             </a>
         </li>
@@ -36,11 +36,11 @@
                 <label class="lbl icon"> {{company.CompanyName}}</label>
             </a>
         </li>
-        <li (click)="onAddCompany()"><a><i class="material-icons left">add</i><label class="lbl">Add New</label></a></li>
+        <li (click)="onAddOrSettingsClick('newCompany')"><a><i class="material-icons left">add</i><label class="lbl">Add New</label></a></li>
     </ul>
 
     <ul id="groupDropdown" class="dropdown-content">
-        <li (click)="onSettingsClick('group')">
+        <li (click)="onAddOrSettingsClick('group')">
             <a>
                 <i class="Small material-icons left">mode_edit</i><label class="lbl ">Settings</label>
             </a>
@@ -70,7 +70,7 @@
                 <label class="lbl">{{group.GroupName}}</label>
             </a>
         </li>
-        <li><a (click)="addNewGroup()"><i class="material-icons left">add</i><label class="lbl">Add New</label></a></li>
+        <li><a (click)="onAddOrSettingsClick('newGroup')"><i class="material-icons left">add</i><label class="lbl">Add New</label></a></li>
     </ul>
 
     <nav class="fixed">
@@ -150,7 +150,8 @@
 
         <div class="company_groupDetails" *ngIf="selectedCompany">
             <i class="material-icons left">label</i>
-            <input ngControl="companyName" #companyName="ngModel" [(ngModel)]="selectedCompanyName" name="companyName" autocomplete="off" />
+            <input ngControl="companyName" #companyName="ngModel" [(ngModel)]="selectedCompanyName" name="companyName" autocomplete="off"
+            />
             <div>
                 <label class="modaldefaultlabel"> Name Of Account </label>
             </div>
@@ -158,6 +159,68 @@
 
         <div class="innerdiv">
             <button class="waves-effect waves-light btn" (click)="onCompanySave($event) "> 
+             <i class="material-icons">save</i>Save</button>
+        </div>
+
+    </div>
+</div>
+
+<!--Add New Group-->
+<div id="addNewGroup" class="modal">
+    <div class="modal-content">
+
+        <div class="modaltitle">
+            <div class="title">
+                <i class="Small material-icons left">mode_edit</i>
+                <label>Add New Group</label>
+            </div>
+            <div class="close" (click)="dismissPopup('newGroup')"><i class="material-icons">clear</i></div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="company_newGroup">
+            <i class="material-icons left">label_outline</i>
+            <input ngControl="addNewGroupName" #addNewGroupName="ngModel" [(ngModel)]="newGroupName" name="addNewGroupName" autocomplete="off"
+            />
+            <div>
+                <label class="modaldefaultlabel"> Name Of Group </label>
+            </div>
+        </div>
+
+        <div class="innerdiv">
+            <button class="waves-effect waves-light btn" (click)="addNewGroup($event)"> 
+             <i class="material-icons">save</i>Save</button>
+        </div>
+
+    </div>
+</div>
+
+<!--Add new Company-->
+<div id="addNewCompany" class="modal">
+    <div class="modal-content">
+
+        <div class="modaltitle">
+            <div class="title">
+                <i class="Small material-icons left">mode_edit</i>
+                <label>Add New Company</label>
+            </div>
+            <div class="close" (click)="dismissPopup('newCompany')"><i class="material-icons">clear</i></div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="company_newGroup">
+            <i class="material-icons left">label_outline</i>
+            <input ngControl="addNewCompanyName" #addNewCompanyName="ngModel" [(ngModel)]="newCompanyName" name="addNewCompanyName" autocomplete="off"
+            />
+            <div>
+                <label class="modaldefaultlabel"> Name Of Company </label>
+            </div>
+        </div>
+
+        <div class="innerdiv">
+            <button class="waves-effect waves-light btn" (click)="addNewCompany($event)"> 
              <i class="material-icons">save</i>Save</button>
         </div>
 

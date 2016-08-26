@@ -21,6 +21,8 @@ export class MenuPanelComponent {
     private userModel: UserModel;
     private selectedGroupName: any;
     private selectedCompanyName: any;
+    private newGroupName: any;
+    private newCompanyName: any;
 
     @Output() groupSelected = new EventEmitter<OrgGroupModel>();
 
@@ -112,27 +114,43 @@ export class MenuPanelComponent {
     private onCompanySelection(data) {
         if (data && data.CompanyID !== this.selectedCompany.CompanyID) {
             this.selectedCompany = data;
-            this.selectedCompany.IsSelected = true;
+            this.selectedCompany.IsDefaultCompany = true;
             this.setSelectedGroup(this.selectedCompany.OrgGroups);
+            this.orgService.setDefaultCompany(this.userModel.UserID, this.selectedCompany.CompanyID)
+                .subscribe(data => { },
+                err => this.orgService.logError(err));
         }
     }
 
     private onGroupSelection(data) {
+        this.selectedGroup.IsDefaultGroup = false;
+        this.setGroupData(this.selectedGroup);
         if (data && data.OrgGroupID !== this.selectedGroup.OrgGroupID) {
             this.selectedGroup = data;
             this.selectedGroup.IsDefaultGroup = true;
-            this.getAllNodes(data.groupID);
+            this.getAllNodes(data.OrgGroupID);
+            this.orgService.setDefaultGroup(this.userModel.UserID, this.selectedCompany.CompanyID, this.selectedGroup.OrgGroupID)
+                .subscribe(data => { },
+                err => this.orgService.logError(err));
         }
     }
 
-    private onSettingsClick(name) {
+    private onAddOrSettingsClick(name) {
         if (name === "company") {
             this.selectedCompanyName = this.selectedCompany.CompanyName;
             let modal = document.getElementById("companySettings");
             modal.style.display = "block";
-        } else {
+        } else if (name === "group") {
             this.selectedGroupName = this.selectedGroup.GroupName;
             let modal = document.getElementById("groupSettings");
+            modal.style.display = "block";
+        } else if (name === "newGroup") {
+            this.newGroupName = " ";
+            let modal = document.getElementById("addNewGroup");
+            modal.style.display = "block";
+        } else if (name === "newCompany") {
+            this.newCompanyName = " ";
+            let modal = document.getElementById("addNewCompany");
             modal.style.display = "block";
         }
     }
@@ -145,6 +163,14 @@ export class MenuPanelComponent {
         } else if (name === "group") {
             this.selectedGroupName = this.selectedGroup.GroupName;
             let modal = document.getElementById("groupSettings");
+            modal.style.display = "none";
+        } else if (name === "newGroup") {
+            this.newGroupName = " ";
+            let modal = document.getElementById("addNewGroup");
+            modal.style.display = "none";
+        } else if (name === "newCompany") {
+            this.newCompanyName = " ";
+            let modal = document.getElementById("addNewCompany");
             modal.style.display = "none";
         }
     }
@@ -160,6 +186,54 @@ export class MenuPanelComponent {
         this.orgService.updateGroup(group)
             .subscribe(data => this.setGroupData(data),
             err => this.orgService.logError(err));
+    }
+
+    private addNewGroup() {
+        let group = new OrgGroupModel();
+        let userID = this.userModel.UserID;
+        group.CompanyID = this.selectedCompany.CompanyID;
+        group.GroupName = this.newGroupName;
+        group.OrgNodes = null;
+
+        this.orgService.addGroup(group, userID)
+            .subscribe(data => {
+                this.setNewGroup(data);
+            },
+            err => this.orgService.logError(err));
+
+    }
+
+    private addNewCompany() {
+        let userID = this.userModel.UserID;
+        let company = new OrgCompanyModel();
+        company.CompanyName = this.newCompanyName;
+        company.OrgGroups = null;
+
+        this.orgService.addCompany(company, userID)
+            .subscribe(data => {
+                this.setNewCompany(data);
+            },
+            err => this.orgService.logError(err));
+
+    }
+
+    private setNewCompany(data) {
+        this.selectedCompany = data;
+        this.selectedCompany.IsDefaultCompany = true;
+        this.orgCompanies.push(this.selectedCompany);
+        this.setSelectedGroup(this.selectedCompany.OrgGroups);
+    }
+
+
+    private setNewGroup(data) {
+        if (data) {
+            this.selectedGroup.IsDefaultGroup = false;
+            this.setGroupData(this.selectedGroup);
+            this.selectedGroup = data;
+            this.selectedGroup.IsDefaultGroup = true;
+            this.orgCompanyGroups.push(this.selectedGroup);
+            this.getAllNodes(this.selectedGroup.OrgGroupID);
+        }
     }
 
     private setGroupData(data) {
