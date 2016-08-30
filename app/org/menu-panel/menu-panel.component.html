@@ -128,6 +128,45 @@
              <i class="material-icons">save</i>Save</button>
         </div>
 
+        <div class="import">
+            <div class="inlineblock titlewithdivider">
+                <div class="divider"> </div>
+                <label class="lbl">IMPORT</label>
+                <label class="modallbl"> Load resources from CSV or Excel file to populate the <label class="lblgroupname"> {{selectedGroupName}} </label> group.</label>
+            </div>
+        </div>
+        <div>
+            <button class="waves-effect waves-light btn" (click)="onAddOrSettingsClick('import')">
+                    <i class="material-icons">file_upload</i>Import</button>
+        </div>
+
+    </div>
+</div>
+
+<!--import panel-->
+<div id="importFile" class="modal">
+    <div class="modal-content">
+        <div class="modaltitle">
+            <div class="title">
+                <i class="Small material-icons left">mode_edit</i>
+                <label>Import</label>
+            </div>
+            <div class="close" (click)="dismissPopup('import')"><i class="material-icons">clear</i></div>
+        </div>
+        <div class="divider"></div>
+        <div>
+            <label class="modallbl"> Load resources from CSV or Excel file to populate the <label class="lblgroupname"> {{selectedGroupName}} </label> group.</label>
+        </div>
+        <div>
+            <input type="file" (change)="onClickOnImport($event)" name="File Upload" id="txtFileUpload" accept=".csv" />
+        </div>
+        <!--<div id="dvImportSegments" class="fileupload ">
+            <fieldset>
+                <legend>Upload your CSV File</legend>
+                <input type="file" name="File Upload" id="txtFileUpload" accept=".csv" (change)="onClickOnImport($event)" />
+            </fieldset>
+        </div>-->
+        <div class="divider"></div>
     </div>
 </div>
 
@@ -150,8 +189,7 @@
 
         <div class="company_groupDetails" *ngIf="selectedCompany">
             <i class="material-icons left">label</i>
-            <input ngControl="companyName" #companyName="ngModel" [(ngModel)]="selectedCompanyName" name="companyName" autocomplete="off"
-            />
+            <input ngControl="companyName" #companyName="ngModel" [(ngModel)]="selectedCompanyName" name="companyName" autocomplete="off" />
             <div>
                 <label class="modaldefaultlabel"> Name Of Account </label>
             </div>
@@ -181,8 +219,7 @@
 
         <div class="company_newGroup">
             <i class="material-icons left">label_outline</i>
-            <input ngControl="addNewGroupName" #addNewGroupName="ngModel" [(ngModel)]="newGroupName" name="addNewGroupName" autocomplete="off"
-            />
+            <input ngControl="addNewGroupName" #addNewGroupName="ngModel" [(ngModel)]="newGroupName" name="addNewGroupName" autocomplete="off" />
             <div>
                 <label class="modaldefaultlabel"> Name Of Group </label>
             </div>
@@ -212,8 +249,7 @@
 
         <div class="company_newGroup">
             <i class="material-icons left">label_outline</i>
-            <input ngControl="addNewCompanyName" #addNewCompanyName="ngModel" [(ngModel)]="newCompanyName" name="addNewCompanyName" autocomplete="off"
-            />
+            <input ngControl="addNewCompanyName" #addNewCompanyName="ngModel" [(ngModel)]="newCompanyName" name="addNewCompanyName" autocomplete="off" />
             <div>
                 <label class="modaldefaultlabel"> Name Of Company </label>
             </div>

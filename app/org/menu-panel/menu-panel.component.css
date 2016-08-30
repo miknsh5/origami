@@ -100,7 +100,7 @@ nav ul a i.left {
     width: 200px;
 }
 
-#groupDropdown.dropdown-content{
+#groupDropdown.dropdown-content {
     max-height: 350px;
     overflow-x: hidden;
 }
@@ -198,7 +198,7 @@ nav ul a i.left {
     padding: 0px;
     border: 0px solid #888;
     width: 345px;
-    height: 350px;
+    height: 400px;
 }
 
 
@@ -269,8 +269,10 @@ nav ul a i.left {
 
 .modallbl {
     color: #111;
-    font-size: 1rem;
+    font-size: 0.5rem;
     cursor: pointer;
+    padding-left: 55px;
+    display: block;
 }
 
 input {
@@ -308,6 +310,70 @@ input {
 .company_newGroup input {
     color: #607d8b;
 }
+
+.import {
+    margin: 15px 0 15px;
+}
+
+.lblgroupname {
+    color: #111;
+    font-size: 0.5rem;
+    cursor: pointer;
+    font-weight: 800;
+}
+
+input[type='file'] {
+    border: 2px dashed #cfd8dc;
+    padding: 152px 0px 87px 10px;
+    cursor: move;
+    position: relative;
+    margin: 6px 51px;
+    width: 254px;
+}
+
+input[type='file']:before {
+    content: "Drop Excel or CSV file here";
+    display: block;
+    position: absolute;
+    text-align: center;
+    top: 50%;
+    left: 50%;
+    width: 200px;
+    height: 40px;
+    margin: -69px 0 0 -105px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #cfd8dc;
+}
+
+#importFile .modallbl {
+    color: #111;
+    font-size: 0.8rem;
+    cursor: pointer;
+    padding: 15px 55px;
+    display: block;
+}
+
+#importFile .lblgroupname {
+    color: #111;
+    font-size: 0.8rem;
+    cursor: pointer;
+    font-weight: 800;
+}
+
+
+/*input[type="file"] {
+    display: none;
+}
+
+.custom-file-upload {
+   border: 2px dashed #cfd8dc;
+    padding: 152px 0px 87px 10px;
+    cursor: move;
+    position: relative;
+    margin: 6px 51px;
+    width: 254px;
+}*/
 
 @media only screen and (max-width:992px) {
     nav .brand-logo {

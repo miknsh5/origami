@@ -2,10 +2,10 @@ import { Component, Input, Output, EventEmitter } from "@angular/core";
 import { NgControl  } from "@angular/forms";
 import { CanActivate, Router } from "@angular/router-deprecated";
 
-import { OrgCompanyModel, OrgGroupModel, OrgService} from "../shared/index";
+import { OrgCompanyModel, OrgGroupModel, OrgNodeModel, OrgService} from "../shared/index";
 import { UserModel } from "../../Shared/index";
 
-declare var $: any;
+declare let $: any;
 
 @Component({
     selector: "sg-menu-panel",
@@ -23,6 +23,10 @@ export class MenuPanelComponent {
     private selectedCompanyName: any;
     private newGroupName: any;
     private newCompanyName: any;
+    private json: any;
+    private rootNode: OrgNodeModel;
+
+    @Output() orgNodes = new EventEmitter<any>();
 
     @Output() groupSelected = new EventEmitter<OrgGroupModel>();
 
@@ -152,6 +156,9 @@ export class MenuPanelComponent {
             this.newCompanyName = " ";
             let modal = document.getElementById("addNewCompany");
             modal.style.display = "block";
+        } else if (name === "import") {
+            let modal = document.getElementById("importFile");
+            modal.style.display = "block";
         }
     }
 
@@ -171,6 +178,9 @@ export class MenuPanelComponent {
         } else if (name === "newCompany") {
             this.newCompanyName = " ";
             let modal = document.getElementById("addNewCompany");
+            modal.style.display = "none";
+        } else if (name === "import") {
+            let modal = document.getElementById("importFile");
             modal.style.display = "none";
         }
     }
@@ -298,4 +308,144 @@ export class MenuPanelComponent {
         }
     }
 
+    private onClickOnImport(event) {
+        let files = event.srcElement.files[0];
+        if (!files) {
+            alert('The File APIs are not fully supported in this browser!');
+        } else {
+            let data = null;
+            let file = files;
+            let reader = new FileReader();
+            reader.readAsText(file);
+            reader.onload = (event) => {
+                let csvData = event.target["result"];
+                this.CSV2JSON(csvData);
+            };
+            reader.onerror = function () {
+                alert('Unable to read ' + file.fileName);
+            };
+        }
+    }
+
+    private CSVToArray(strData, strDelimiter): any {
+        let strMatchedValue = "";
+        // Check to see if the delimiter is defined. If not,
+        // then default to comma.
+        strDelimiter = (strDelimiter || ",");
+        // Create a regular expression to parse the CSV values.
+        let objPattern = new RegExp((
+            // Delimiters.
+            "(\\" + strDelimiter + "|\\r?\\n|\\r|^)" +
+            // Quoted fields.
+            "(?:\"([^\"]*(?:\"\"[^\"]*)*)\"|" +
+            // Standard fields.
+            "([^\"\\" + strDelimiter + "\\r\\n]*))"), "gi");
+        // Create an array to hold our data. Give the array
+        // a default empty first row.
+        let arrData = [[]];
+        // Create an array to hold our individual pattern
+        // matching groups.
+        let arrMatches = null;
+        // Keep looping over the regular expression matches
+        // until we can no longer find a match.
+        while (arrMatches = objPattern.exec(strData)) {
+            // Get the delimiter that was found.
+            let strMatchedDelimiter = arrMatches[1];
+            // Check to see if the given delimiter has a length
+            // (is not the start of string) and if it matches
+            // field delimiter. If id does not, then we know
+            // that this delimiter is a row delimiter.
+            if (strMatchedDelimiter.length && (strMatchedDelimiter !== strDelimiter)) {
+                // Since we have reached a new row of data,
+                // add an empty row to our data array.
+                arrData.push([]);
+            }
+            // Now that we have our delimiter out of the way,
+            // let's check to see which kind of value we
+            // captured (quoted or unquoted).
+
+            if (arrMatches[2]) {
+                // We found a quoted value. When we capture
+                // this value, unescape any double quotes.
+                strMatchedValue = arrMatches[2].replace(
+                    new RegExp("\"\"", "g"), "\"");
+            } else {
+                // We found a non-quoted value.
+                strMatchedValue = arrMatches[3];
+            }
+            // Now that we have our value string, let's add
+            // it to the data array.
+            arrData[arrData.length - 1].push(strMatchedValue);
+        }
+        // Return the parsed data.
+        return (arrData);
+    }
+
+    private CSV2JSON(csv) {
+        let array = this.CSVToArray(csv, ",");
+        let objArray = [];
+        for (let i = 1; i < array.length; i++) {
+            objArray[i - 1] = {};
+            for (let k = 0; k < array.length; k++) {
+                let key = array[0][k];
+                if (key === "First Name") {
+                    key = key.replace(" ", "_");
+                }
+                if (key === "Last Name") {
+                    key = key.replace(" ", "_");
+                }
+                objArray[i - 1][key] = array[i][k];
+            }
+        }
+
+        console.log(objArray);
+
+        this.json = JSON.stringify(objArray);
+        this.json = this.json.replace(/},/g, "},\r\n");
+        this.json = JSON.parse(this.json);
+        console.log(this.json);
+        this.orgNodes.emit(this.json);
+
+        // this.orgService.addGroupNodes(this.selectedGroup.OrgGroupID,this.json);
+    }
+
+    private convertDataToBaseModel(node): OrgNodeModel {
+        let orgNode = new OrgNodeModel();
+        if (node) {
+            orgNode.NodeID = node.UID;
+            orgNode.NodeFirstName = node.First_Name;
+            orgNode.NodeLastName = node.Last_Name;
+            orgNode.Description = node.Title;
+            orgNode.ParentNodeID = node.Parent;
+        }
+        if ((orgNode.ParentNodeID).toString() === "null") {
+            orgNode.children = new Array<OrgNodeModel>();
+        }
+        return orgNode;
+    }
+
+    onJSONDataImport(JSONData) {
+        let newOrgNodeData = new OrgNodeModel;
+        // newOrgData.children = new Array<OrgNodeModel>();
+
+        JSONData.forEach((d) => {
+            if (d.UID !== "") {
+                let orgNode = this.convertDataToBaseModel(d);
+                if (orgNode.ParentNodeID.toString() === "null") {
+                    orgNode.ParentNodeID = null;
+                    newOrgNodeData = (orgNode);
+                }
+                if (orgNode.ParentNodeID !== null) {
+                    if (newOrgNodeData.NodeID === orgNode.ParentNodeID) {
+                        newOrgNodeData.children.push(orgNode);
+                    }
+                    else {
+                        //  this.addChildToSelectedOrgNode(orgNode, newOrgNodeData);
+                    }
+                }
+            }
+
+        });
+
+    }
 }

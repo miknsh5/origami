@@ -19,6 +19,7 @@ export class OrgService {
     private addCompanyUrl = "api/Org/AddCompanyForUser?userID=";
     private setDefaultGroupUrl = "api/Org/SetDefaultGroupForCompanyUser?userID=";
     private setDefaultCompanyUrl = "api/Org/SetDefaultCompanyForUser?userID=";
+    private addGroupNodesUrl = "api/Org/AddGroupNodes?groupID=";
     private headers: Headers;
 
     constructor(private http: Http) {
@@ -117,6 +118,14 @@ export class OrgService {
         let options = new RequestOptions({ headers: this.headers });
         let url = this.origamiUrl + this.setDefaultCompanyUrl + userID + companyData;
         return this.http.post(url, null, options)
+            .map(res => res.json());
+    }
+
+    addGroupNodes(groupID, orgNodes) {
+        let orgNodeList = JSON.stringify(orgNodes);
+        let options = new RequestOptions({ headers: this.headers });
+        let url = this.origamiUrl + this.addGroupNodesUrl + groupID;
+        return this.http.post(url, orgNodeList, options)
             .map(res => res.json());
     }
 

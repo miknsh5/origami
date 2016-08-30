@@ -40,7 +40,6 @@ export class OrgComponent implements OnDestroy {
     svgPan: any;
 
     @Output() groupID: any;
-    @Output() userCompanies: OrgCompanyModel;
     @Output() currentChartMode: ChartMode;
     @Output() treeJson: any;
     @Output() selectedNode: OrgNodeModel;
