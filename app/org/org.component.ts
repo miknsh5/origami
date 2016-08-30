@@ -29,7 +29,6 @@ declare var SVGPan: any;
 })
 
 export class OrgComponent implements OnDestroy {
-    orgGroup: OrgGroupModel;
     orgNodes: OrgNodeModel[];
     svgWidth: number;
     svgHeight: number;
@@ -43,6 +42,8 @@ export class OrgComponent implements OnDestroy {
     @Output() userCompanies: OrgCompanyModel;
     @Output() currentChartMode: ChartMode;
     @Output() treeJson: any;
+    @Output() orgGroup: OrgGroupModel;
+    @Output() companyName: any;
     @Output() selectedNode: OrgNodeModel;
     @Output() isAddOrEditMode: boolean;
     @Output() detailAddOrEditMode: boolean;
@@ -207,6 +208,7 @@ export class OrgComponent implements OnDestroy {
 
     updateJSON() {
         this.removeCircularRef(this.orgNodes[0]);
+        this.orgGroup.OrgNodes = JSON.parse(JSON.stringify(this.orgNodes));
         this.treeJson = JSON.parse(JSON.stringify(this.orgNodes));
         if ((this.treeJson && this.treeJson.length === 0) || (this.selectedNode && this.selectedNode.NodeID === -1)) {
             this.disableViewModesNav(ChartMode.report);
@@ -395,6 +397,12 @@ export class OrgComponent implements OnDestroy {
         }
         this.enableViewModesNav(this.currentChartMode);
         this.treeJson = JSON.parse(JSON.stringify(this.orgNodes));
+    }
+
+    onCompanySelected(data: any) {
+        if (data) {
+            this.companyName = data.CompanyName;
+        }
     }
 
     ngOnDestroy() {

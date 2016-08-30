@@ -1,6 +1,6 @@
 import { Component, Input, Output, OnChanges, SimpleChange, EventEmitter } from "@angular/core";
 
-import { OrgCompanyModel, OrgNodeModel, ChartMode} from "../shared/index";
+import { OrgGroupModel, OrgNodeModel, ChartMode} from "../shared/index";
 
 import { ConvertJSONToCSVComponent } from "../convertJSONToCSV/index";
 import { ConvertTreeToPNGComponent } from "../convertTreeToPNG/index";
@@ -23,12 +23,12 @@ export class SideMenuComponent implements OnChanges {
     private tabs: any;
 
     @Input() currentMode: ChartMode;
-    @Input() orgChart: OrgCompanyModel;
+    @Input() orgChart: OrgGroupModel;
+    @Input() companyName: string;
     @Input() selectedOrgNode: OrgNodeModel;
     @Input() isAddOrEditModeEnabled: boolean;
     @Input() svgWidth: any;
     @Input() svgHeight: any;
-
 
     @Output() showFirstNameLabel = new EventEmitter<boolean>();
     @Output() showLastNameLabel = new EventEmitter<boolean>();
