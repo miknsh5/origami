@@ -10,13 +10,11 @@ import { OrgNodeBaseModel, OrgNodeModel } from "../shared/index";
 })
 
 export class ConvertJSONToCSVComponent {
-    treeData: any;
     @Input() orgChartData: any;
+    @Input() orgName: any;
 
     onClickConvertToCSVReport() {
-        this.treeData = JSON.parse(JSON.stringify(this.orgChartData.OrgNodes));
-        let nodeData = this.treeData[0];
-        this.JSONToCSVConvertor(nodeData, this.orgChartData.OrganizationName, true);
+        this.JSONToCSVConvertor(this.orgChartData.OrgNodes[0], this.orgName, true);
     }
 
     private convertDataToBaseModel(node): OrgNodeBaseModel {
@@ -39,7 +37,7 @@ export class ConvertJSONToCSVComponent {
 
         // Set Report title in first row or line
         CSV += reportTitle + "\r\n\n";
-        CSV += "Organization ID: " + orgData.OrgID + "\r\n\n";
+        CSV += "Organization ID: " + this.orgChartData.CompanyID + "\r\n\n";
 
         // This condition will generate the Label/Header
         if (showLabel) {

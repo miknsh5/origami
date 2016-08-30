@@ -29,6 +29,7 @@ export class MenuPanelComponent {
     @Output() orgNodes = new EventEmitter<any>();
 
     @Output() groupSelected = new EventEmitter<OrgGroupModel>();
+    @Output() companySelected = new EventEmitter<OrgCompanyModel>();
 
     constructor(private orgService: OrgService, private router: Router) {
         this.getAllCompanies();
@@ -60,6 +61,7 @@ export class MenuPanelComponent {
                     this.selectedCompany = this.orgCompanies[0];
                     this.setSelectedGroup(this.selectedCompany.OrgGroups);
                 }
+                this.companySelected.emit(this.selectedCompany);
             }
         }
     }
@@ -119,6 +121,7 @@ export class MenuPanelComponent {
         if (data && data.CompanyID !== this.selectedCompany.CompanyID) {
             this.selectedCompany = data;
             this.selectedCompany.IsDefaultCompany = true;
+            this.companySelected.emit(this.selectedCompany);
             this.setSelectedGroup(this.selectedCompany.OrgGroups);
             this.orgService.setDefaultCompany(this.userModel.UserID, this.selectedCompany.CompanyID)
                 .subscribe(data => { },
@@ -231,6 +234,7 @@ export class MenuPanelComponent {
         this.selectedCompany = data;
         this.selectedCompany.IsDefaultCompany = true;
         this.orgCompanies.push(this.selectedCompany);
+        this.companySelected.emit(this.selectedCompany);
         this.setSelectedGroup(this.selectedCompany.OrgGroups);
     }
 
@@ -289,6 +293,7 @@ export class MenuPanelComponent {
                     return true;
                 }
             });
+            this.companySelected.emit(this.selectedCompany);
         }
     }
 

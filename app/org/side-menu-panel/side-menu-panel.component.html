@@ -53,8 +53,8 @@
                 <div id="publishData" class="col s12"></div>
 
                 <div id="exportData" class="col s12">
-                    <sg-origami-csv [orgChartData]="orgChart"></sg-origami-csv>
-                    <sg-origami-png [width]="svgWidth" [height]="svgHeight" [selectedOrgNode]="selectedNode" [orgName]="orgChart.OrganizationName"></sg-origami-png>
+                    <sg-origami-csv [orgChartData]="orgChart" [orgName]="companyName"></sg-origami-csv>
+                    <sg-origami-png [width]="svgWidth" [height]="svgHeight" [selectedOrgNode]="selectedNode" [orgName]="companyName"></sg-origami-png>
                 </div>
             </div>
         </div>

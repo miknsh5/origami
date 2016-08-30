@@ -1,8 +1,8 @@
 <div>
-    <sg-menu-panel (groupSelected)="onGroupSelected($event)"></sg-menu-panel>
+    <sg-menu-panel (groupSelected)="onGroupSelected($event)" (companySelected)="onCompanySelected($event)"></sg-menu-panel>
 </div>
 <div>
-    <sg-side-menu-panel [selectedOrgNode]="selectedNode" [isAddOrEditModeEnabled]="isAddOrEditMode" [currentMode]="currentChartMode"
+    <sg-side-menu-panel [selectedOrgNode]="selectedNode" [isAddOrEditModeEnabled]="isAddOrEditMode" [currentMode]="currentChartMode" [companyName]="companyName"
         (showFirstNameLabel)="enableFirstNameLabel($event)" (showLastNameLabel)="enableLastNameLabel($event)" (showDescriptionLabel)="enableDescriptionLabel($event)"
         [svgWidth]="svgWidth" [svgHeight]="svgHeight" [orgChart]="orgGroup"></sg-side-menu-panel>
 </div>
