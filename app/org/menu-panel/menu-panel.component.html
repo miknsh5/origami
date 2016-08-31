@@ -104,69 +104,78 @@
 
 <div id="groupSettings" class="modal">
     <div class="modal-content">
-
         <div class="modaltitle">
             <div class="title">
                 <i class="Small material-icons left">mode_edit</i>
-                <label>Settings</label>
+                <label>{{groupSettingTitle}}</label>
             </div>
             <div class="close" (click)="dismissPopup('group')"><i class="material-icons">clear</i></div>
         </div>
 
         <div class="divider"></div>
 
-        <div class="company_groupDetails" *ngIf="selectedGroup">
-            <i class="material-icons left">label_outline</i>
-            <input ngControl="groupName" #groupName="ngModel" [(ngModel)]="selectedGroupName" name="groupName" autocomplete="off" />
-            <div>
-                <label class="modaldefaultlabel"> Name Of Group </label>
+        <div *ngIf="!isImport">
+            <div class="company_groupDetails">
+                <i class="material-icons left">label_outline</i>
+                <input ngControl="groupName" #groupName="ngModel" [(ngModel)]="selectedGroupName" name="groupName" autocomplete="off" />
+                <div>
+                    <label class="modaldefaultlabel"> Name Of Group </label>
+                </div>
+            </div>
+
+            <div class="innerdiv">
+                <button class="waves-effect waves-light btn" (click)="onGroupSave($event)"> 
+             <i class="material-icons">save</i>Save</button>
             </div>
         </div>
 
-        <div class="innerdiv">
-            <button class="waves-effect waves-light btn" (click)="onGroupSave($event)"> 
-             <i class="material-icons">save</i>Save</button>
+        <div *ngIf="enableImport && !isImport">
+            <div class="import">
+                <div class="inlineblock titlewithdivider">
+                    <div class="divider"> </div>
+                    <label class="lbl">IMPORT</label>
+                    <label class="modallbl"> Load resources from CSV or Excel file to populate the <label class="lblgroupname"> {{selectedGroupName}} </label> group.</label>
+                </div>
+            </div>
+            <div>
+                <button class="waves-effect waves-light btn" (click)="onClickOnImport()">
+                    <i class="material-icons">file_upload</i>Import</button>
+            </div>
+
         </div>
 
-        <div class="import">
-            <div class="inlineblock titlewithdivider">
-                <div class="divider"> </div>
-                <label class="lbl">IMPORT</label>
+
+        <div id="importFile" *ngIf="isImport">
+            <div>
                 <label class="modallbl"> Load resources from CSV or Excel file to populate the <label class="lblgroupname"> {{selectedGroupName}} </label> group.</label>
             </div>
-        </div>
-        <div>
-            <button class="waves-effect waves-light btn" (click)="onAddOrSettingsClick('import')">
-                    <i class="material-icons">file_upload</i>Import</button>
-        </div>
-
-    </div>
-</div>
-
-<!--import panel-->
-<div id="importFile" class="modal">
-    <div class="modal-content">
-        <div class="modaltitle">
-            <div class="title">
-                <i class="Small material-icons left">mode_edit</i>
-                <label>Import</label>
+            <div>
+                <input type="file" (change)="onImport($event)" name="File Upload" id="txtFileUpload" accept=".csv" />
             </div>
-            <div class="close" (click)="dismissPopup('import')"><i class="material-icons">clear</i></div>
+
         </div>
-        <div class="divider"></div>
-        <div>
-            <label class="modallbl"> Load resources from CSV or Excel file to populate the <label class="lblgroupname"> {{selectedGroupName}} </label> group.</label>
+        <div id="loadScreen" class="loadscreen">
+            <div>
+                <label> Loading...          </label></div>
+            <div>
+                <label>(This may take a minute)</label>
+            </div>
+            <div>
+                <button class="waves-effect waves-light btn">
+                   Cancel</button>
+            </div>
+
         </div>
-        <div>
-            <input type="file" (change)="onClickOnImport($event)" name="File Upload" id="txtFileUpload" accept=".csv" />
+        <div id="confirmImport" class="confirmImport">
+            <div><label> File : </label><label>{{fileName}}</label></div>
+            <div><label>Import Resource Count: </label><label>{{mappedNodesCount}}</label></div>
+            <div><label> Unmapped Resource Count : </label><label>{{unmappedNodesCount}}</label></div>
+            <div><label>Head of Group : </label><label>   {{nodeName}} </label></div>
+            <button class="waves-effect waves-light btn" (click)="onConfirm()">
+                    <i class="material-icons">arrow_forward</i>Confirm</button>
         </div>
-        <!--<div id="dvImportSegments" class="fileupload ">
-            <fieldset>
-                <legend>Upload your CSV File</legend>
-                <input type="file" name="File Upload" id="txtFileUpload" accept=".csv" (change)="onClickOnImport($event)" />
-            </fieldset>
-        </div>-->
-        <div class="divider"></div>
+
+        <div class="divider footer"></div>
     </div>
 </div>
 

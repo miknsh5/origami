@@ -361,18 +361,30 @@ input[type='file']:before {
     font-weight: 800;
 }
 
-
-/*input[type="file"] {
+.loadscreen {
     display: none;
 }
 
-.custom-file-upload {
-   border: 2px dashed #cfd8dc;
-    padding: 152px 0px 87px 10px;
-    cursor: move;
-    position: relative;
-    margin: 6px 51px;
-    width: 254px;
+.confirmImport {
+    display: none;
+}
+
+.footer {
+    margin: 150px 0px;
+}
+
+
+/*
+#loadScreen .footer {
+    margin: 305px 0px;
+}
+
+#importFile .footer {
+    margin: 150px 0px;
+}
+
+#import .footer {
+    margin: 11px 0px;
 }*/
 
 @media only screen and (max-width:992px) {

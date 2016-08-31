@@ -24,7 +24,14 @@ export class MenuPanelComponent {
     private newGroupName: any;
     private newCompanyName: any;
     private json: any;
-    private rootNode: OrgNodeModel;
+    private rootNode = [];
+    private groupSettingTitle: any;
+    private isImport: boolean;
+    private enableImport: boolean;
+    private fileName: any;
+    private mappedNodesCount: any;
+    private unmappedNodesCount: any;
+    private nodeName: any;
 
     @Output() orgNodes = new EventEmitter<any>();
 
@@ -33,6 +40,12 @@ export class MenuPanelComponent {
 
     constructor(private orgService: OrgService, private router: Router) {
         this.getAllCompanies();
+        this.enableImport = false;
+        this.isImport = false;
+        this.groupSettingTitle = "Settings";
+        this.fileName = "";
+        this.mappedNodesCount = 0;
+        this.unmappedNodesCount = 0;
     }
 
     private getAllCompanies() {
@@ -98,6 +111,11 @@ export class MenuPanelComponent {
 
     private setOrgGroupData(data: any) {
         if (data) {
+            if (data.OrgNodes && data.OrgNodes.length === 0) {
+                this.enableImport = true;
+            } else {
+                this.enableImport = false;
+            }
             this.selectedGroup.OrgNodes = data.OrgNodes;
             this.selectedGroup.IsSelected = true;
             this.groupSelected.emit(this.selectedGroup);
@@ -159,9 +177,6 @@ export class MenuPanelComponent {
             this.newCompanyName = " ";
             let modal = document.getElementById("addNewCompany");
             modal.style.display = "block";
-        } else if (name === "import") {
-            let modal = document.getElementById("importFile");
-            modal.style.display = "block";
         }
     }
 
@@ -174,6 +189,8 @@ export class MenuPanelComponent {
             this.selectedGroupName = this.selectedGroup.GroupName;
             let modal = document.getElementById("groupSettings");
             modal.style.display = "none";
+            this.isImport = false;
+            this.groupSettingTitle = "Settings";
         } else if (name === "newGroup") {
             this.newGroupName = " ";
             let modal = document.getElementById("addNewGroup");
@@ -181,9 +198,6 @@ export class MenuPanelComponent {
         } else if (name === "newCompany") {
             this.newCompanyName = " ";
             let modal = document.getElementById("addNewCompany");
-            modal.style.display = "none";
-        } else if (name === "import") {
-            let modal = document.getElementById("importFile");
             modal.style.display = "none";
         }
     }
@@ -313,10 +327,16 @@ export class MenuPanelComponent {
         }
     }
 
-    private onClickOnImport(event) {
+    private onClickOnImport() {
+        this.groupSettingTitle = "Import";
+        this.isImport = true;
+    }
+
+    private onImport(event) {
         let files = event.srcElement.files[0];
+        this.fileName = files.name;
         if (!files) {
-            alert('The File APIs are not fully supported in this browser!');
+            alert("The File APIs are not fully supported in this browser!");
         } else {
             let data = null;
             let file = files;
@@ -324,10 +344,18 @@ export class MenuPanelComponent {
             reader.readAsText(file);
             reader.onload = (event) => {
                 let csvData = event.target["result"];
+                let modalImportFile = document.getElementById("importFile");
+                modalImportFile.style.display = "none";
+                let modalLoadScreen = document.getElementById("loadScreen");
+                modalLoadScreen.style.display = "block";
                 this.CSV2JSON(csvData);
+                modalLoadScreen.style.display = "none";
+                let modalConfirmImport = document.getElementById("confirmImport");
+                modalConfirmImport.style.display = "block";
+
             };
             reader.onerror = function () {
-                alert('Unable to read ' + file.fileName);
+                alert("Unable to read " + file.fileName);
             };
         }
     }
@@ -403,18 +431,21 @@ export class MenuPanelComponent {
             }
         }
 
-        console.log(objArray);
+        objArray.forEach((node) => {
+            if (node.UID !== "") {
+                this.rootNode.push(this.convertBaseModelToData(node));
+            }
+        });
 
-        this.json = JSON.stringify(objArray);
+        this.json = JSON.stringify(this.rootNode);
         this.json = this.json.replace(/},/g, "},\r\n");
         this.json = JSON.parse(this.json);
         console.log(this.json);
-        this.orgNodes.emit(this.json);
-
-        // this.orgService.addGroupNodes(this.selectedGroup.OrgGroupID,this.json);
+        // this.onJSONDataImport(this.json);
+        // console.log(this.rootNode);
     }
 
-    private convertDataToBaseModel(node): OrgNodeModel {
+    private convertBaseModelToData(node): OrgNodeModel {
         let orgNode = new OrgNodeModel();
         if (node) {
             orgNode.NodeID = node.UID;
@@ -422,35 +453,30 @@ export class MenuPanelComponent {
             orgNode.NodeLastName = node.Last_Name;
             orgNode.Description = node.Title;
             orgNode.ParentNodeID = node.Parent;
+            if ((orgNode.ParentNodeID).toString() === "null") {
+                this.nodeName = orgNode.NodeFirstName + " " + orgNode.NodeLastName;
+                this.unmappedNodesCount++;
+            } else {
+                this.mappedNodesCount++;
+            }
+
         }
         if ((orgNode.ParentNodeID).toString() === "null") {
             orgNode.children = new Array<OrgNodeModel>();
+
         }
         return orgNode;
     }
 
-    onJSONDataImport(JSONData) {
-        let newOrgNodeData = new OrgNodeModel;
-        // newOrgData.children = new Array<OrgNodeModel>();
-
-        JSONData.forEach((d) => {
-            if (d.UID !== "") {
-                let orgNode = this.convertDataToBaseModel(d);
-                if (orgNode.ParentNodeID.toString() === "null") {
-                    orgNode.ParentNodeID = null;
-                    newOrgNodeData = (orgNode);
-                }
-                if (orgNode.ParentNodeID !== null) {
-                    if (newOrgNodeData.NodeID === orgNode.ParentNodeID) {
-                        newOrgNodeData.children.push(orgNode);
-                    }
-                    else {
-                        //  this.addChildToSelectedOrgNode(orgNode, newOrgNodeData);
-                    }
-                }
-            }
-
-        });
-
+    onConfirm() {
+        this.orgService.addGroupNodes(this.selectedGroup.OrgGroupID, this.json)
+            .subscribe(data => this.setOrgGroupData(data),
+            err => this.orgService.logError(err));
+        this.dismissPopup("group");
+        let modalConfirmImport = document.getElementById("confirmImport");
+        modalConfirmImport.style.display = "none";
+        this.nodeName = " ";
+        this.unmappedNodesCount = 0;
+        this.mappedNodesCount = 0;
     }
 }

@@ -417,6 +417,9 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             return this.root;
         }
         let node = this.getNode(this.selectedOrgNode.ParentNodeID, this.root);
+        if (!node && this.root) {
+            return this.root;
+        }
         let index = this.getIndexOfNode(node, this.selectedOrgNode, this.root);
         if (index >= 0) {
             previousNode = node.children[index];
@@ -563,7 +566,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
         this.hideAllArrows();
 
-        if (this.root.NodeID !== source.NodeID) {
+        if (this.root && this.root.NodeID !== source.NodeID) {
             let parentNode = source.parent;
             if (!parentNode) {
                 parentNode = this.getNode(source.ParentNodeID, this.root);
