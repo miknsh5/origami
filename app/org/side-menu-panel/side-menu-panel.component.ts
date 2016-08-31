@@ -5,7 +5,7 @@ import { OrgGroupModel, OrgNodeModel, ChartMode} from "../shared/index";
 import { ConvertJSONToCSVComponent } from "../convertJSONToCSV/index";
 import { ConvertTreeToPNGComponent } from "../convertTreeToPNG/index";
 
-declare var $: any;
+declare let $: any;
 
 @Component({
     selector: "sg-side-menu-panel",
@@ -63,12 +63,14 @@ export class SideMenuComponent implements OnChanges {
 
     openPanel() {
         this.isCollapsed = true;
-        document.getElementById("menuPanel").style.width = "100%";
+        $("#menuPanel").width("100%");
+        $(".sideNav.fixed").width("240px");
     }
 
     closePanel() {
         this.isCollapsed = false;
-        document.getElementById("menuPanel").style.width = "2%";
+        $("#menuPanel").width("2%");
+        $(".sideNav.fixed").width("0px");
     }
 
     private childCount(level, node) {
