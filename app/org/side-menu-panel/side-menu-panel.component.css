@@ -3,8 +3,7 @@
     right: 0;
     top: 55px;
     height: 100%;
-    overflow-x: hidden;
-    min-width: 40px;
+    width: 0px;
     z-index: -1;
 }
 

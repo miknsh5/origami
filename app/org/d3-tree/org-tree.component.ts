@@ -229,8 +229,13 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 return;
             }
 
-            if ((changes["width"] || changes["height"]) && this.currentMode === ChartMode.report) {
-                return;
+            if (!this.root) {
+                if (this.selectedOrgNode.NodeID === -1) {
+                    this.root = this.selectedOrgNode;
+                } else {
+                    this.addEmptyRootNode();
+                    this.selectedOrgNode = this.root;
+                }
             }
 
             let raiseSelectedEvent: boolean = true;
