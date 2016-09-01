@@ -337,7 +337,7 @@ export class MenuPanelComponent {
         modalImportFile.style.display = "none";
         let modalLoadScreen = document.getElementById("loadScreen");
         modalLoadScreen.style.display = "block";
-        let files = event.srcElement.files[0];
+        let files = (event.srcElement || event.target).files[0];
         this.fileName = files.name;
         if (!files) {
             alert("The File APIs are not fully supported in this browser!");
@@ -482,13 +482,9 @@ export class MenuPanelComponent {
                 this.rootNode.push(this.convertBaseModelToData(node));
             }
         });
-
+        this.unmappedNodesCount = this.unmappedNodesCount - 1;
         this.json = JSON.stringify(this.rootNode);
         this.json = this.json.replace(/},/g, "},\r\n");
         this.json = JSON.parse(this.json);
-        console.log(this.json);
     }
-
-
-
 }

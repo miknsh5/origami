@@ -414,7 +414,7 @@ input {
 
 .confirmImport {
     display: none;
-    padding: 30px 30px 20px 35px;
+    padding: 20px 30px 20px 35px;
 }
 
 .confirmImport h6 {
@@ -443,7 +443,8 @@ input {
     height: 2px;
     background-color: #cfd8dc;
     border: none;
-    margin: 0px 15px
+    margin: 0px 15px;
+    display: table;
 }
 
 .confirmImport .divspacing {
