@@ -333,6 +333,8 @@ export class MenuPanelComponent {
     }
 
     private onImport(event) {
+        let modalLoadScreen = document.getElementById("loadScreen");
+        modalLoadScreen.style.display = "block";
         let files = event.srcElement.files[0];
         this.fileName = files.name;
         if (!files) {
@@ -346,8 +348,6 @@ export class MenuPanelComponent {
                 let csvData = event.target["result"];
                 let modalImportFile = document.getElementById("importFile");
                 modalImportFile.style.display = "none";
-                let modalLoadScreen = document.getElementById("loadScreen");
-                modalLoadScreen.style.display = "block";
                 this.CSV2JSON(csvData);
                 modalLoadScreen.style.display = "none";
                 let modalConfirmImport = document.getElementById("confirmImport");
@@ -413,38 +413,6 @@ export class MenuPanelComponent {
         // Return the parsed data.
         return (arrData);
     }
-
-    private CSV2JSON(csv) {
-        let array = this.CSVToArray(csv, ",");
-        let objArray = [];
-        for (let i = 1; i < array.length; i++) {
-            objArray[i - 1] = {};
-            for (let k = 0; k < array.length; k++) {
-                let key = array[0][k];
-                if (key === "First Name") {
-                    key = key.replace(" ", "_");
-                }
-                if (key === "Last Name") {
-                    key = key.replace(" ", "_");
-                }
-                objArray[i - 1][key] = array[i][k];
-            }
-        }
-
-        objArray.forEach((node) => {
-            if (node.UID !== "") {
-                this.rootNode.push(this.convertBaseModelToData(node));
-            }
-        });
-
-        this.json = JSON.stringify(this.rootNode);
-        this.json = this.json.replace(/},/g, "},\r\n");
-        this.json = JSON.parse(this.json);
-        console.log(this.json);
-        // this.onJSONDataImport(this.json);
-        // console.log(this.rootNode);
-    }
-
     private convertBaseModelToData(node): OrgNodeModel {
         let orgNode = new OrgNodeModel();
         if (node) {
@@ -479,4 +447,50 @@ export class MenuPanelComponent {
         this.unmappedNodesCount = 0;
         this.mappedNodesCount = 0;
     }
+
+    private onCancelImport() {
+        let modalImportFile = document.getElementById("importFile");
+        modalImportFile.style.display = "block";
+        let modalLoadScreen = document.getElementById("loadScreen");
+        modalLoadScreen.style.display = "none";
+        let modalConfirmImport = document.getElementById("confirmImport");
+        modalConfirmImport.style.display = "none";
+        this.nodeName = " ";
+        this.unmappedNodesCount = 0;
+        this.mappedNodesCount = 0;
+    }
+
+    private CSV2JSON(csv) {
+        let array = this.CSVToArray(csv, ",");
+        let objArray = [];
+        for (let i = 1; i < array.length; i++) {
+            objArray[i - 1] = {};
+            for (let k = 0; k < array.length; k++) {
+                let key = array[0][k];
+                if (key === "First Name") {
+                    key = key.replace(" ", "_");
+                }
+                if (key === "Last Name") {
+                    key = key.replace(" ", "_");
+                }
+                objArray[i - 1][key] = array[i][k];
+            }
+        }
+
+        objArray.forEach((node) => {
+            if (node.UID !== "") {
+                this.rootNode.push(this.convertBaseModelToData(node));
+            }
+        });
+
+        this.json = JSON.stringify(this.rootNode);
+        this.json = this.json.replace(/},/g, "},\r\n");
+        this.json = JSON.parse(this.json);
+        console.log(this.json);
+        // this.onJSONDataImport(this.json);
+        // console.log(this.rootNode);
+    }
+
+
+
 }

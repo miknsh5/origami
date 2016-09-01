@@ -229,6 +229,7 @@ nav ul a i.left {
 .modaltitle {
     color: #cfd8dc !important;
     display: block;
+    height: 40px;
 }
 
 .modaltitle .title {
@@ -237,7 +238,7 @@ nav ul a i.left {
 }
 
 .modaltitle .title .material-icons {
-    margin: 4px 20px 0 10px;
+    margin: 4px 15px 0 5px;
     font-size: 1em;
 }
 
@@ -363,29 +364,72 @@ input[type='file']:before {
 
 .loadscreen {
     display: none;
+    padding: 140px 110px;
+}
+
+.loadscreen .lblLoad {
+    color: #666;
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding-left: 35px;
+}
+
+.loadscreen .lbl {
+    color: #666;
+    font-size: 0.8rem;
+}
+
+.loadscreen .waves-effect {
+    background-color: #9e9e9e;
+    margin: 0px 25px;
+    max-height: 20px;
 }
 
 .confirmImport {
     display: none;
+    padding: 20px 30px 20px 35px;
+}
+
+.confirmImport label {
+    font-size: 0.8rem;
+    color: #666;
+}
+
+.lblResults {
+    font-size: 0.8rem;
+    color: #666;
+    font-weight: 800;
+}
+
+.confirmImport .waves-effect {
+    margin: 0px;
+}
+
+.confirmImport hr {
+    width: 18%;
+    height: 3px;
+    background-color: #cfd8dc;
+    border: none;
+    margin: 0px 11px;
+}
+
+.confirmImport .divspacing {
+    padding: 2px 13px;
 }
 
 .footer {
     margin: 150px 0px;
 }
 
-
-/*
-#loadScreen .footer {
-    margin: 305px 0px;
+.subtitles {
+    font-size: 0.6rem !important;
+    font-style: italic;
+    display: block;
 }
 
-#importFile .footer {
-    margin: 150px 0px;
+.groupBody {
+    height: 175px;
 }
-
-#import .footer {
-    margin: 11px 0px;
-}*/
 
 @media only screen and (max-width:992px) {
     nav .brand-logo {
