@@ -333,6 +333,8 @@ export class MenuPanelComponent {
     }
 
     private onImport(event) {
+        let modalImportFile = document.getElementById("importFile");
+        modalImportFile.style.display = "none";
         let modalLoadScreen = document.getElementById("loadScreen");
         modalLoadScreen.style.display = "block";
         let files = event.srcElement.files[0];
@@ -346,8 +348,6 @@ export class MenuPanelComponent {
             reader.readAsText(file);
             reader.onload = (event) => {
                 let csvData = event.target["result"];
-                let modalImportFile = document.getElementById("importFile");
-                modalImportFile.style.display = "none";
                 this.CSV2JSON(csvData);
                 modalLoadScreen.style.display = "none";
                 let modalConfirmImport = document.getElementById("confirmImport");
@@ -487,8 +487,6 @@ export class MenuPanelComponent {
         this.json = this.json.replace(/},/g, "},\r\n");
         this.json = JSON.parse(this.json);
         console.log(this.json);
-        // this.onJSONDataImport(this.json);
-        // console.log(this.rootNode);
     }
 
 
