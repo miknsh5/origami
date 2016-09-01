@@ -101,7 +101,6 @@
 </div>
 
 <!--modal for group setting-->
-
 <div id="groupSettings" class="modal">
     <div class="modal-content">
         <div class="modaltitle">
@@ -111,7 +110,6 @@
             </div>
             <div class="close" (click)="dismissPopup('group')"><i class="material-icons">clear</i></div>
         </div>
-
         <div class="divider"></div>
         <div class="groupBody">
 
@@ -142,24 +140,23 @@
                     <button class="waves-effect waves-light btn" (click)="onClickOnImport()">
                     <i class="material-icons">file_upload</i>Import</button>
                 </div>
-
             </div>
-
 
             <div id="importFile" *ngIf="isImport">
                 <div>
                     <label class="modallbl"> Load resources from CSV or Excel file to populate the <label class="lblgroupname"> {{selectedGroupName}} </label> group.</label>
                 </div>
-                <div>
-                    <input type="file" (change)="onImport($event)" accept=".csv" />
-                    <!--<button class="waves-effect waves-light btn" (click)="onClickOnImport()">
-                    <i class="material-icons">file_upload</i> <input type="file" class="file-input">Browse
-                    </button>-->
-                    <!--<button class="file-upload waves-effect waves-light btn">            
-                    <input type="file" class="file-input" (change)="onImport($event)" accept=".csv">
-                            <i class="material-icons">file_upload</i>Browse</button>-->
-                </div>
-
+                <center>
+                    <span class="fileinput-button waves-effect">
+                        <h5>Drop Excel or CSV file here</h5>
+                        <i class="material-icons driveicon">insert_drive_file</i>
+                        <h5>Or</h5>
+                        <button class="waves-effect waves-light btn" (click)="onClickOnImport()">
+                            <i class="material-icons">file_upload</i>Browse
+                        </button>
+                        <input type="file" (change)="onImport($event)" accept=".csv" />
+                    </span>
+                </center>
             </div>
             <div id="loadScreen" class="loadscreen">
                 <div>
@@ -168,49 +165,44 @@
                     <label class="lbl">(This may take a minute)</label>
                 </div>
                 <div>
-                    <button class="waves-effect waves-light btn" (click)="onCancelImport()">
-                   Cancel</button>
+                    <button class="waves-effect waves-light btn" (click)="onCancelImport()">Cancel</button>
                 </div>
-
             </div>
             <div id="confirmImport" class="confirmImport">
                 <div class="row">
                     <div class="col s12 divspacing">
-                        <label> File : </label><label class="lblResults">{{fileName}}</label>
+                        <h6> File : <b>{{fileName}}</b></h6>
                     </div>
                     <hr/>
                     <div class="col s9 divspacing">
-                        <label>Import Resource Count: </label>
-                        <label class="subtitles"> Total Resources found in import</label>
+                        <h6>Import Resource Count: </h6>
+                        <h6 class="subtitles"> Total Resources found in import</h6>
                     </div>
                     <div class="col s3 divspacing">
-                        <label class="right lblResults">{{mappedNodesCount}}</label>
+                        <h6 class="right"><b>{{mappedNodesCount}}</b></h6>
                     </div>
                     <div class="col s8 divspacing">
-                        <label>Unmapped Resource Count: </label>
-                        <label class="subtitles"> Resources in import file without a parent. This will be accessible from search, but not visible in tree until defined
-
-    </label>
+                        <h6>Unmapped Resource Count: </h6>
+                        <h6 class="subtitles">
+                             Resources in import file without a parent. This will be accessible from search, but not visible in tree until defined
+                        </h6>
                     </div>
                     <div class="col s4 divspacing">
-                        <label class="right lblResults">{{unmappedNodesCount}}</label>
+                        <h6 class="right"><b>{{unmappedNodesCount}}</b></h6>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col s6 divspacing">
-                        <label>Head of Group : </label>
-                        <label class="subtitles"> Person identified as head of the group. Must map to a single person for each group.</label>
+                        <h6>Head of Group : </h6>
+                        <h6 class="subtitles"> Person identified as head of the group. Must map to a single person for each group.</h6>
                     </div>
                     <div class="col s6 divspacing">
-                        <label class="right lblResults">{{nodeName}}</label>
+                        <h6 class="right"><b>{{nodeName}}</b></h6>
                     </div>
                 </div>
                 <div>
-                    <button class="waves-effect waves-light btn" (click)="onCancelImport()">
-                                 <i class="material-icons">arrow_back</i> Cancel</button>
-
-                    <button class="waves-effect waves-light btn" (click)="onConfirm()">
-                                 <i class="material-icons">arrow_forward</i>Confirm</button>
+                    <button class="waves-effect waves-light btn" (click)="onCancelImport()"><i class="material-icons">arrow_back</i> Cancel</button>
+                    <button class="waves-effect waves-light btn" (click)="onConfirm()"><i class="material-icons">arrow_forward</i>Confirm</button>
                 </div>
             </div>
         </div>
@@ -248,14 +240,12 @@
             <button class="waves-effect waves-light btn" (click)="onCompanySave($event) "> 
              <i class="material-icons">save</i>Save</button>
         </div>
-
     </div>
 </div>
 
 <!--Add New Group-->
 <div id="addNewGroup" class="modal">
     <div class="modal-content">
-
         <div class="modaltitle">
             <div class="title">
                 <i class="Small material-icons left">mode_edit</i>
@@ -278,14 +268,12 @@
             <button class="waves-effect waves-light btn" (click)="addNewGroup($event)"> 
              <i class="material-icons">save</i>Save</button>
         </div>
-
     </div>
 </div>
 
 <!--Add new Company-->
 <div id="addNewCompany" class="modal">
     <div class="modal-content">
-
         <div class="modaltitle">
             <div class="title">
                 <i class="Small material-icons left">mode_edit</i>
@@ -308,6 +296,5 @@
             <button class="waves-effect waves-light btn" (click)="addNewCompany($event)"> 
              <i class="material-icons">save</i>Save</button>
         </div>
-
     </div>
 </div>
