@@ -1,7 +1,8 @@
 import { Component, Input, Output, EventEmitter } from "@angular/core";
 
-
 import { OrgGroupModel, OrgNodeModel, OrgService } from "../shared/index";
+
+declare let $: any;
 
 @Component({
     selector: "sg-org-import-csv-file",
@@ -16,7 +17,9 @@ export class ImportCsvFileComponent {
     private nodeName: any;
     private mappedNodesCount: any;
     private unmappedNodesCount: any;
-
+    private $importfile: any;
+    private $loadScreen: any;
+    private $confirmImport: any;
 
     @Input() selectedGroup: OrgGroupModel;
     @Output() newOrgNodes = new EventEmitter<OrgNodeModel>();
@@ -25,13 +28,14 @@ export class ImportCsvFileComponent {
         this.fileName = "";
         this.mappedNodesCount = 0;
         this.unmappedNodesCount = 0;
+        this.$importfile = "#importFile";
+        this.$loadScreen = "#loadScreen";
+        this.$confirmImport = "#confirmImport";
     }
 
     private onImport(event) {
-        let modalImportFile = document.getElementById("importFile");
-        modalImportFile.style.display = "none";
-        let modalLoadScreen = document.getElementById("loadScreen");
-        modalLoadScreen.style.display = "block";
+        $(this.$importfile).hide();
+        $(this.$loadScreen).show();
         let files = (event.srcElement || event.target).files[0];
         this.fileName = files.name;
         if (!files) {
@@ -44,10 +48,8 @@ export class ImportCsvFileComponent {
             reader.onload = (event) => {
                 let csvData = event.target["result"];
                 this.CSV2JSON(csvData);
-                modalLoadScreen.style.display = "none";
-                let modalConfirmImport = document.getElementById("confirmImport");
-                modalConfirmImport.style.display = "block";
-
+                $(this.$loadScreen).hide();
+                $(this.$confirmImport).show();
             };
             reader.onerror = function () {
                 alert("Unable to read " + file.fileName);
@@ -59,10 +61,8 @@ export class ImportCsvFileComponent {
         this.orgService.addGroupNodes(this.selectedGroup.OrgGroupID, this.json)
             .subscribe(data => this.setOrgGroupData(data),
             err => this.orgService.logError(err));
-        let modalConfirmImport = document.getElementById("confirmImport");
-        modalConfirmImport.style.display = "none";
-        let modal = document.getElementById("groupSettings");
-        modal.style.display = "none";
+        $(this.$confirmImport).hide();
+        $("#groupSettings").hide();
         this.nodeName = " ";
         this.unmappedNodesCount = 0;
         this.mappedNodesCount = 0;
@@ -73,12 +73,9 @@ export class ImportCsvFileComponent {
     }
 
     private onCancelImport() {
-        let modalImportFile = document.getElementById("importFile");
-        modalImportFile.style.display = "block";
-        let modalLoadScreen = document.getElementById("loadScreen");
-        modalLoadScreen.style.display = "none";
-        let modalConfirmImport = document.getElementById("confirmImport");
-        modalConfirmImport.style.display = "none";
+        $(this.$importfile).show();
+        $(this.$loadScreen).hide();
+        $(this.$confirmImport).hide();
         this.nodeName = " ";
         this.unmappedNodesCount = 0;
         this.mappedNodesCount = 0;

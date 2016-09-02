@@ -162,42 +162,34 @@ export class MenuPanelComponent implements OnChanges {
     private onAddOrSettingsClick(name) {
         if (name === "company") {
             this.selectedCompanyName = this.selectedCompany.CompanyName;
-            let modal = document.getElementById("companySettings");
-            modal.style.display = "block";
+            $("#companySettings").show();
         } else if (name === "group") {
             this.selectedGroupName = this.selectedGroup.GroupName;
-            let modal = document.getElementById("groupSettings");
-            modal.style.display = "block";
+            $("#groupSettings").show();
         } else if (name === "newGroup") {
             this.newGroupName = " ";
-            let modal = document.getElementById("addNewGroup");
-            modal.style.display = "block";
+            $("#addNewGroup").show();
         } else if (name === "newCompany") {
             this.newCompanyName = " ";
-            let modal = document.getElementById("addNewCompany");
-            modal.style.display = "block";
+            $("#addNewCompany").show();
         }
     }
 
     private dismissPopup(name) {
         if (name === "company") {
             this.selectedCompanyName = this.selectedCompany.CompanyName;
-            let modal = document.getElementById("companySettings");
-            modal.style.display = "none";
+            $("#companySettings").hide();
         } else if (name === "group") {
             this.selectedGroupName = this.selectedGroup.GroupName;
-            let modal = document.getElementById("groupSettings");
-            modal.style.display = "none";
+            $("#groupSettings").hide();
             this.isImport = false;
             this.groupSettingTitle = "Settings";
         } else if (name === "newGroup") {
             this.newGroupName = " ";
-            let modal = document.getElementById("addNewGroup");
-            modal.style.display = "none";
+            $("#addNewGroup").hide();
         } else if (name === "newCompany") {
             this.newCompanyName = " ";
-            let modal = document.getElementById("addNewCompany");
-            modal.style.display = "none";
+            $("#addNewCompany").hide();
         }
     }
 

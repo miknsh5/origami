@@ -4,17 +4,17 @@
     </div>
     <center>
         <span class="fileinput-button waves-effect">
-                        <h5>Drop Excel or CSV file here</h5>
-                        <i class="material-icons driveicon">insert_drive_file</i>
-                        <h5>Or</h5>
-                        <button class="waves-effect waves-light btn" (click)="onClickOnImport()">
-                            <i class="material-icons">file_upload</i>Browse
-                        </button>
-                        <input type="file" (change)="onImport($event)" accept=".csv" />
-                    </span>
+            <h5>Drop Excel or CSV file here</h5>
+            <i class="material-icons driveicon">insert_drive_file</i>
+            <h5>Or</h5>
+            <button class="waves-effect waves-light btn" (click)="onImport()">
+                <i class="material-icons">file_upload</i>Browse
+            </button>
+            <input type="file" (change)="onImport($event)" accept=".csv" />
+        </span>
     </center>
 </div>
-<div id="loadScreen" class="loadscreen">
+<div id="loadScreen" class="loadscreen center">
     <div>
         <label class="lblLoad"> Loading...</label></div>
     <div>
@@ -37,22 +37,22 @@
         <div class="col s3 divspacing">
             <h6 class="right"><b>{{mappedNodesCount}}</b></h6>
         </div>
-        <div class="col s8 divspacing">
+        <div class="col s9 divspacing">
             <h6>Unmapped Resource Count: </h6>
             <h6 class="subtitles">
-                             Resources in import file without a parent. This will be accessible from search, but not visible in tree until defined
-                        </h6>
+                Resources in import file without a parent. This will be accessible from search, but not visible in tree until defined
+            </h6>
         </div>
-        <div class="col s4 divspacing">
+        <div class="col s3 divspacing">
             <h6 class="right"><b>{{unmappedNodesCount}}</b></h6>
         </div>
     </div>
     <div class="row">
-        <div class="col s6 divspacing">
+        <div class="col s7 divspacing">
             <h6>Head of Group : </h6>
             <h6 class="subtitles"> Person identified as head of the group. Must map to a single person for each group.</h6>
         </div>
-        <div class="col s6 divspacing">
+        <div class="col s5 divspacing">
             <h6 class="right"><b>{{nodeName}}</b></h6>
         </div>
     </div>
