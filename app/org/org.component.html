@@ -1,10 +1,9 @@
 <div>
-    <sg-menu-panel (groupSelected)="onGroupSelected($event)" (companySelected)="onCompanySelected($event)"></sg-menu-panel>
+    <sg-menu-panel (groupSelected)="onGroupSelected($event)" (companySelected)="onCompanySelected($event)" [noNodeExsit]="isOrgNodeEmpty"></sg-menu-panel>
 </div>
 <div>
-    <sg-side-menu-panel [selectedOrgNode]="selectedNode" [isAddOrEditModeEnabled]="isAddOrEditMode" [currentMode]="currentChartMode" [companyName]="companyName"
-        (showFirstNameLabel)="enableFirstNameLabel($event)" (showLastNameLabel)="enableLastNameLabel($event)" (showDescriptionLabel)="enableDescriptionLabel($event)"
-        [svgWidth]="svgWidth" [svgHeight]="svgHeight" [orgChart]="orgGroup"></sg-side-menu-panel>
+    <sg-side-menu-panel [selectedOrgNode]="selectedNode" [isAddOrEditModeEnabled]="isAddOrEditMode" [currentMode]="currentChartMode" [companyName]="companyName" (showFirstNameLabel)="enableFirstNameLabel($event)" (showLastNameLabel)="enableLastNameLabel($event)"
+        (showDescriptionLabel)="enableDescriptionLabel($event)" [svgWidth]="svgWidth" [svgHeight]="svgHeight" [orgChart]="orgGroup"></sg-side-menu-panel>
 </div>
 
 <div class="modes-wrap ">
@@ -16,15 +15,13 @@
 </div>
 
 <div class="main-canvas" *ngIf="orgGroup" (window:resize)="onResize($event)">
-    <sg-org-tree [treeData]="treeJson" [width]="svgWidth" [height]="svgHeight" [currentMode]="currentChartMode" [isAddOrEditModeEnabled]="isAddOrEditMode"
-        (selectNode)="onNodeSelected($event)" (switchToAddMode)="onSwitchedToAddMode($event)" [showFirstNameLabel]="displayFirstNameLabel"
+    <sg-org-tree [treeData]="treeJson" [width]="svgWidth" [height]="svgHeight" [currentMode]="currentChartMode" [isAddOrEditModeEnabled]="isAddOrEditMode" (selectNode)="onNodeSelected($event)" (switchToAddMode)="onSwitchedToAddMode($event)" [showFirstNameLabel]="displayFirstNameLabel"
         [showLastNameLabel]="displayLastNameLabel" [showDescriptionLabel]="displayDescriptionLabel" [orgGroupID]="groupID">
     </sg-org-tree>
 </div>
 
 <div *ngIf="currentChartMode===1">
-    <sg-org-node-detail #nodeDetail [selectedOrgNode]="selectedNode" [isAddOrEditModeEnabled]="detailAddOrEditMode" (deleteNode)="onNodeDeleted($event)"
-        (updateNode)="onNodeUpdated($event)" (addNode)="onNodeAdded($event)" (setAddOrEditModeValue)="onAddOrEditModeValueSet($event)"
+    <sg-org-node-detail #nodeDetail [selectedOrgNode]="selectedNode" [isAddOrEditModeEnabled]="detailAddOrEditMode" (deleteNode)="onNodeDeleted($event)" (updateNode)="onNodeUpdated($event)" (addNode)="onNodeAdded($event)" (setAddOrEditModeValue)="onAddOrEditModeValueSet($event)"
         (chartStructureUpdated)="onChartUpdated($event)" (updateMenuNode)="onNodeTextChange($event)">
     </sg-org-node-detail>
 </div>
