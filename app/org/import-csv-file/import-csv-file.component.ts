@@ -9,7 +9,7 @@ import { OrgGroupModel, OrgNodeModel, OrgService } from "../shared/index";
     styleUrls: ["app/org/import-csv-file/import-csv-file.component.css", "app/style.css", "app/org/menu-panel/menu-panel.component.css"]
 })
 
-export class ImportCsvFileComponent  {
+export class ImportCsvFileComponent {
     private fileName: any;
     private json: any;
     private rootNode = [];
@@ -19,7 +19,6 @@ export class ImportCsvFileComponent  {
 
 
     @Input() selectedGroup: OrgGroupModel;
-    
     @Output() newOrgNodes = new EventEmitter<OrgNodeModel>();
 
     constructor(private orgService: OrgService) {
@@ -28,7 +27,6 @@ export class ImportCsvFileComponent  {
         this.unmappedNodesCount = 0;
     }
 
-   
     private onImport(event) {
         let modalImportFile = document.getElementById("importFile");
         modalImportFile.style.display = "none";
