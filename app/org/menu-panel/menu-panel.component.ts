@@ -336,4 +336,7 @@ export class MenuPanelComponent implements OnChanges {
         this.groupSettingTitle = "Settings";
         this.isImport = false;
     }
+    OnDownloadTemplate(){
+        alert();
+    }
 }
