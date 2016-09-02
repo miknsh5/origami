@@ -1,0 +1,63 @@
+<div id="importFile">
+    <div>
+        <label class="modallbl"> Load resources from CSV or Excel file to populate the <label class="lblgroupname"> {{selectedGroupName}} </label> group.</label>
+    </div>
+    <center>
+        <span class="fileinput-button waves-effect">
+                        <h5>Drop Excel or CSV file here</h5>
+                        <i class="material-icons driveicon">insert_drive_file</i>
+                        <h5>Or</h5>
+                        <button class="waves-effect waves-light btn" (click)="onClickOnImport()">
+                            <i class="material-icons">file_upload</i>Browse
+                        </button>
+                        <input type="file" (change)="onImport($event)" accept=".csv" />
+                    </span>
+    </center>
+</div>
+<div id="loadScreen" class="loadscreen">
+    <div>
+        <label class="lblLoad"> Loading...</label></div>
+    <div>
+        <label class="lbl">(This may take a minute)</label>
+    </div>
+    <div>
+        <button class="waves-effect waves-light btn" (click)="onCancelImport()">Cancel</button>
+    </div>
+</div>
+<div id="confirmImport" class="confirmImport">
+    <div class="row">
+        <div class="col s12 divspacing">
+            <h6> File : <b>{{fileName}}</b></h6>
+        </div>
+        <hr/>
+        <div class="col s9 divspacing">
+            <h6>Import Resource Count: </h6>
+            <h6 class="subtitles"> Total Resources found in import</h6>
+        </div>
+        <div class="col s3 divspacing">
+            <h6 class="right"><b>{{mappedNodesCount}}</b></h6>
+        </div>
+        <div class="col s8 divspacing">
+            <h6>Unmapped Resource Count: </h6>
+            <h6 class="subtitles">
+                             Resources in import file without a parent. This will be accessible from search, but not visible in tree until defined
+                        </h6>
+        </div>
+        <div class="col s4 divspacing">
+            <h6 class="right"><b>{{unmappedNodesCount}}</b></h6>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col s6 divspacing">
+            <h6>Head of Group : </h6>
+            <h6 class="subtitles"> Person identified as head of the group. Must map to a single person for each group.</h6>
+        </div>
+        <div class="col s6 divspacing">
+            <h6 class="right"><b>{{nodeName}}</b></h6>
+        </div>
+    </div>
+    <div>
+        <button class="waves-effect waves-light btn" (click)="onCancelImport()"><i class="material-icons">arrow_back</i> Cancel</button>
+        <button class="waves-effect waves-light btn" (click)="onConfirm()"><i class="material-icons">arrow_forward</i>Confirm</button>
+    </div>
+</div>

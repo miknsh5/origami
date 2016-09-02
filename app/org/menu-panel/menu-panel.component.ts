@@ -1,19 +1,20 @@
-import { Component, Input, Output, EventEmitter } from "@angular/core";
-import { NgControl  } from "@angular/forms";
-import { CanActivate, Router } from "@angular/router-deprecated";
+import { Component, Input, Output, EventEmitter, OnChanges, SimpleChange } from "@angular/core";
+import { Router } from "@angular/router-deprecated";
 
 import { OrgCompanyModel, OrgGroupModel, OrgNodeModel, OrgService} from "../shared/index";
 import { UserModel } from "../../Shared/index";
+import { ImportCsvFileComponent } from "../import-csv-file/import-csv-file.component";
 
 declare let $: any;
 
 @Component({
     selector: "sg-menu-panel",
     templateUrl: "app/org/menu-panel/menu-panel.component.html",
-    styleUrls: ["app/org/menu-panel/menu-panel.component.css"]
+    styleUrls: ["app/org/menu-panel/menu-panel.component.css"],
+    directives: [ImportCsvFileComponent]
 })
 
-export class MenuPanelComponent {
+export class MenuPanelComponent implements OnChanges {
     private orgCompanies: OrgCompanyModel[];
     private orgCompanyGroups: OrgGroupModel[];
     private selectedCompany: OrgCompanyModel;
@@ -23,18 +24,12 @@ export class MenuPanelComponent {
     private selectedCompanyName: any;
     private newGroupName: any;
     private newCompanyName: any;
-    private json: any;
-    private rootNode = [];
     private groupSettingTitle: any;
     private isImport: boolean;
     private enableImport: boolean;
-    private fileName: any;
-    private mappedNodesCount: any;
-    private unmappedNodesCount: any;
-    private nodeName: any;
 
+    @Input() noNodeExsit: boolean;
     @Output() orgNodes = new EventEmitter<any>();
-
     @Output() groupSelected = new EventEmitter<OrgGroupModel>();
     @Output() companySelected = new EventEmitter<OrgCompanyModel>();
 
@@ -43,10 +38,14 @@ export class MenuPanelComponent {
         this.enableImport = false;
         this.isImport = false;
         this.groupSettingTitle = "Settings";
-        this.fileName = "";
-        this.mappedNodesCount = 0;
-        this.unmappedNodesCount = 0;
     }
+
+    ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
+        if (changes["noNodeExsit"] && changes["noNodeExsit"].currentValue) {
+            this.enableImport = true;
+        }
+    }
+
 
     private getAllCompanies() {
         let profile = localStorage.getItem("profile");
@@ -332,159 +331,9 @@ export class MenuPanelComponent {
         this.isImport = true;
     }
 
-    private onImport(event) {
-        let modalImportFile = document.getElementById("importFile");
-        modalImportFile.style.display = "none";
-        let modalLoadScreen = document.getElementById("loadScreen");
-        modalLoadScreen.style.display = "block";
-        let files = (event.srcElement || event.target).files[0];
-        this.fileName = files.name;
-        if (!files) {
-            alert("The File APIs are not fully supported in this browser!");
-        } else {
-            let data = null;
-            let file = files;
-            let reader = new FileReader();
-            reader.readAsText(file);
-            reader.onload = (event) => {
-                let csvData = event.target["result"];
-                this.CSV2JSON(csvData);
-                modalLoadScreen.style.display = "none";
-                let modalConfirmImport = document.getElementById("confirmImport");
-                modalConfirmImport.style.display = "block";
-
-            };
-            reader.onerror = function () {
-                alert("Unable to read " + file.fileName);
-            };
-        }
-    }
-
-    private CSVToArray(strData, strDelimiter): any {
-        let strMatchedValue = "";
-        // Check to see if the delimiter is defined. If not,
-        // then default to comma.
-        strDelimiter = (strDelimiter || ",");
-        // Create a regular expression to parse the CSV values.
-        let objPattern = new RegExp((
-            // Delimiters.
-            "(\\" + strDelimiter + "|\\r?\\n|\\r|^)" +
-            // Quoted fields.
-            "(?:\"([^\"]*(?:\"\"[^\"]*)*)\"|" +
-            // Standard fields.
-            "([^\"\\" + strDelimiter + "\\r\\n]*))"), "gi");
-        // Create an array to hold our data. Give the array
-        // a default empty first row.
-        let arrData = [[]];
-        // Create an array to hold our individual pattern
-        // matching groups.
-        let arrMatches = null;
-        // Keep looping over the regular expression matches
-        // until we can no longer find a match.
-        while (arrMatches = objPattern.exec(strData)) {
-            // Get the delimiter that was found.
-            let strMatchedDelimiter = arrMatches[1];
-            // Check to see if the given delimiter has a length
-            // (is not the start of string) and if it matches
-            // field delimiter. If id does not, then we know
-            // that this delimiter is a row delimiter.
-            if (strMatchedDelimiter.length && (strMatchedDelimiter !== strDelimiter)) {
-                // Since we have reached a new row of data,
-                // add an empty row to our data array.
-                arrData.push([]);
-            }
-            // Now that we have our delimiter out of the way,
-            // let's check to see which kind of value we
-            // captured (quoted or unquoted).
-
-            if (arrMatches[2]) {
-                // We found a quoted value. When we capture
-                // this value, unescape any double quotes.
-                strMatchedValue = arrMatches[2].replace(
-                    new RegExp("\"\"", "g"), "\"");
-            } else {
-                // We found a non-quoted value.
-                strMatchedValue = arrMatches[3];
-            }
-            // Now that we have our value string, let's add
-            // it to the data array.
-            arrData[arrData.length - 1].push(strMatchedValue);
-        }
-        // Return the parsed data.
-        return (arrData);
-    }
-    private convertBaseModelToData(node): OrgNodeModel {
-        let orgNode = new OrgNodeModel();
-        if (node) {
-            orgNode.NodeID = node.UID;
-            orgNode.NodeFirstName = node.First_Name;
-            orgNode.NodeLastName = node.Last_Name;
-            orgNode.Description = node.Title;
-            orgNode.ParentNodeID = node.Parent;
-            if ((orgNode.ParentNodeID).toString() === "null") {
-                this.nodeName = orgNode.NodeFirstName + " " + orgNode.NodeLastName;
-                this.unmappedNodesCount++;
-            } else {
-                this.mappedNodesCount++;
-            }
-
-        }
-        if ((orgNode.ParentNodeID).toString() === "null") {
-            orgNode.children = new Array<OrgNodeModel>();
-
-        }
-        return orgNode;
-    }
-
-    onConfirm() {
-        this.orgService.addGroupNodes(this.selectedGroup.OrgGroupID, this.json)
-            .subscribe(data => this.setOrgGroupData(data),
-            err => this.orgService.logError(err));
-        this.dismissPopup("group");
-        let modalConfirmImport = document.getElementById("confirmImport");
-        modalConfirmImport.style.display = "none";
-        this.nodeName = " ";
-        this.unmappedNodesCount = 0;
-        this.mappedNodesCount = 0;
-    }
-
-    private onCancelImport() {
-        let modalImportFile = document.getElementById("importFile");
-        modalImportFile.style.display = "block";
-        let modalLoadScreen = document.getElementById("loadScreen");
-        modalLoadScreen.style.display = "none";
-        let modalConfirmImport = document.getElementById("confirmImport");
-        modalConfirmImport.style.display = "none";
-        this.nodeName = " ";
-        this.unmappedNodesCount = 0;
-        this.mappedNodesCount = 0;
-    }
-
-    private CSV2JSON(csv) {
-        let array = this.CSVToArray(csv, ",");
-        let objArray = [];
-        for (let i = 1; i < array.length; i++) {
-            objArray[i - 1] = {};
-            for (let k = 0; k < array.length; k++) {
-                let key = array[0][k];
-                if (key === "First Name") {
-                    key = key.replace(" ", "_");
-                }
-                if (key === "Last Name") {
-                    key = key.replace(" ", "_");
-                }
-                objArray[i - 1][key] = array[i][k];
-            }
-        }
-
-        objArray.forEach((node) => {
-            if (node.UID !== "") {
-                this.rootNode.push(this.convertBaseModelToData(node));
-            }
-        });
-        this.unmappedNodesCount = this.unmappedNodesCount - 1;
-        this.json = JSON.stringify(this.rootNode);
-        this.json = this.json.replace(/},/g, "},\r\n");
-        this.json = JSON.parse(this.json);
+    updateNewOrgGroup(OrgNodes) {
+        this.setOrgGroupData(OrgNodes);
+        this.groupSettingTitle = "Settings";
+        this.isImport = false;
     }
 }
