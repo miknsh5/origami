@@ -1,7 +1,8 @@
 import { Component, Input, Output, EventEmitter, OnChanges, SimpleChange } from "@angular/core";
 import { Router } from "@angular/router-deprecated";
 
-import { OrgCompanyModel, OrgGroupModel, OrgNodeModel, OrgService} from "../shared/index";
+import { OrgCompanyModel, OrgGroupModel, OrgNodeModel, OrgService, OrgNodeBaseModel} from "../shared/index";
+import { DataHelperJSONToCSV } from "../data-helper-jsontocsv/data-helper-jsontocsv";
 import { UserModel } from "../../Shared/index";
 import { ImportCsvFileComponent } from "../import-csv-file/import-csv-file.component";
 
@@ -11,7 +12,8 @@ declare let $: any;
     selector: "sg-menu-panel",
     templateUrl: "app/org/menu-panel/menu-panel.component.html",
     styleUrls: ["app/org/menu-panel/menu-panel.component.css"],
-    directives: [ImportCsvFileComponent]
+    directives: [ImportCsvFileComponent],
+    providers: [DataHelperJSONToCSV]
 })
 
 export class MenuPanelComponent implements OnChanges {
@@ -33,7 +35,7 @@ export class MenuPanelComponent implements OnChanges {
     @Output() groupSelected = new EventEmitter<OrgGroupModel>();
     @Output() companySelected = new EventEmitter<OrgCompanyModel>();
 
-    constructor(private orgService: OrgService, private router: Router) {
+    constructor(private orgService: OrgService, private router: Router, private dataHelperForTemplate: DataHelperJSONToCSV) {
         this.getAllCompanies();
         this.enableImport = false;
         this.isImport = false;
@@ -336,7 +338,19 @@ export class MenuPanelComponent implements OnChanges {
         this.groupSettingTitle = "Settings";
         this.isImport = false;
     }
-    OnDownloadTemplate(){
-        alert();
+    private onClickDownloadTemplate() {
+        // If JSONData is not an object then JSON.parse will parse the JSON string in an Object       
+        let orgNode = new OrgNodeBaseModel();
+        let node = this.dataHelperForTemplate.convertDataToBaseModel(orgNode);
+        let CSV = "";
+
+        if (node) {
+            let row = this.dataHelperForTemplate.getCSVFileHeaders(node);
+
+            // append Label row with line break
+            CSV += row + "\r\n";
+        }
+
+        this.dataHelperForTemplate.downloadCSVFile("PeopleTree_Template", CSV);
     }
 }
