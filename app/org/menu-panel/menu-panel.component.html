@@ -130,7 +130,7 @@
                 <div class="import">
                     <div class="inlineblock titlewithdivider">
                         <div class="divider"> </div>
-                        <label class="lbl">IMPORT</label>
+                        <label class="lbl">Import</label>
                         <label class="modallbl"> Load resources from CSV or Excel file to populate the <label class="lblgroupname"> {{selectedGroupName}} </label> group.</label>
                     </div>
                 </div>
@@ -138,10 +138,18 @@
                     <button class="waves-effect waves-light btn" (click)="onClickOnImport()">
                     <i class="material-icons">file_upload</i>Import</button>
                 </div>
+                <div class="template">
+                    <div class="import">
+                        <div class="inlineblock titlewithdivider">
+                            <div class="divider"> </div>
+                            <label class="lbl">Export Template</label>
 
-                <div class="template" id="downloadTemplate">
-                    <button class="waves-effect waves-light btn" (click)="onClickDownloadTemplate()">
-                    <i class="material-icons">file_upload</i>Download</button>
+                        </div>
+                        <div class="template">
+                            <button class="waves-effect waves-light btn" (click)="onClickDownloadTemplate()">
+                             <i class="material-icons">file_download</i>Download</button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -150,7 +158,7 @@
             </div>
         </div>
 
-        <div class="divider footer"></div>
+        <div class="divider"></div>
     </div>
 </div>
 
