@@ -39,7 +39,6 @@ export class OrgComponent implements OnDestroy {
     svgPan: any;
 
     @Output() groupID: any;
-    @Output() userCompanies: OrgCompanyModel;
     @Output() currentChartMode: ChartMode;
     @Output() treeJson: any;
     @Output() orgGroup: OrgGroupModel;
@@ -50,6 +49,7 @@ export class OrgComponent implements OnDestroy {
     @Output() displayFirstNameLabel: boolean;
     @Output() displayLastNameLabel: boolean;
     @Output() displayDescriptionLabel: boolean;
+    @Output() isOrgNodeEmpty: boolean;
 
     constructor() {
         this.currentChartMode = ChartMode.build;
@@ -251,6 +251,9 @@ export class OrgComponent implements OnDestroy {
         } else {
             let node = this.getNode(this.selectedNode.NodeID, this.orgNodes[0]);
             this.selectedNode = JSON.parse(JSON.stringify(node));
+        }
+        if (this.orgNodes && this.orgNodes.length === 0) {
+            this.isOrgNodeEmpty = true;
         }
         this.updateJSON();
     }

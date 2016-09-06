@@ -1,19 +1,22 @@
-import { Component, Input, Output, EventEmitter } from "@angular/core";
-import { NgControl  } from "@angular/forms";
-import { CanActivate, Router } from "@angular/router-deprecated";
+import { Component, Input, Output, EventEmitter, OnChanges, SimpleChange } from "@angular/core";
+import { Router } from "@angular/router-deprecated";
 
-import { OrgCompanyModel, OrgGroupModel, OrgService} from "../shared/index";
+import { OrgCompanyModel, OrgGroupModel, OrgNodeModel, OrgService, OrgNodeBaseModel} from "../shared/index";
+import { DataHelperJSONToCSV } from "../data-helper-jsontocsv/data-helper-jsontocsv";
 import { UserModel } from "../../Shared/index";
+import { ImportCsvFileComponent } from "../import-csv-file/import-csv-file.component";
 
-declare var $: any;
+declare let $: any;
 
 @Component({
     selector: "sg-menu-panel",
     templateUrl: "app/org/menu-panel/menu-panel.component.html",
-    styleUrls: ["app/org/menu-panel/menu-panel.component.css"]
+    styleUrls: ["app/org/menu-panel/menu-panel.component.css"],
+    directives: [ImportCsvFileComponent],
+    providers: [DataHelperJSONToCSV]
 })
 
-export class MenuPanelComponent {
+export class MenuPanelComponent implements OnChanges {
     private orgCompanies: OrgCompanyModel[];
     private orgCompanyGroups: OrgGroupModel[];
     private selectedCompany: OrgCompanyModel;
@@ -23,13 +26,28 @@ export class MenuPanelComponent {
     private selectedCompanyName: any;
     private newGroupName: any;
     private newCompanyName: any;
+    private groupSettingTitle: any;
+    private isImport: boolean;
+    private enableImport: boolean;
 
+    @Input() noNodeExsit: boolean;
+    @Output() orgNodes = new EventEmitter<any>();
     @Output() groupSelected = new EventEmitter<OrgGroupModel>();
     @Output() companySelected = new EventEmitter<OrgCompanyModel>();
 
-    constructor(private orgService: OrgService, private router: Router) {
+    constructor(private orgService: OrgService, private router: Router, private dataHelperForTemplate: DataHelperJSONToCSV) {
         this.getAllCompanies();
+        this.enableImport = false;
+        this.isImport = false;
+        this.groupSettingTitle = "Settings";
     }
+
+    ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
+        if (changes["noNodeExsit"] && changes["noNodeExsit"].currentValue) {
+            this.enableImport = true;
+        }
+    }
+
 
     private getAllCompanies() {
         let profile = localStorage.getItem("profile");
@@ -94,6 +112,11 @@ export class MenuPanelComponent {
 
     private setOrgGroupData(data: any) {
         if (data) {
+            if (data.OrgNodes && data.OrgNodes.length === 0) {
+                this.enableImport = true;
+            } else {
+                this.enableImport = false;
+            }
             this.selectedGroup.OrgNodes = data.OrgNodes;
             this.selectedGroup.IsSelected = true;
             this.groupSelected.emit(this.selectedGroup);
@@ -141,40 +164,34 @@ export class MenuPanelComponent {
     private onAddOrSettingsClick(name) {
         if (name === "company") {
             this.selectedCompanyName = this.selectedCompany.CompanyName;
-            let modal = document.getElementById("companySettings");
-            modal.style.display = "block";
+            $("#companySettings").show();
         } else if (name === "group") {
             this.selectedGroupName = this.selectedGroup.GroupName;
-            let modal = document.getElementById("groupSettings");
-            modal.style.display = "block";
+            $("#groupSettings").show();
         } else if (name === "newGroup") {
             this.newGroupName = " ";
-            let modal = document.getElementById("addNewGroup");
-            modal.style.display = "block";
+            $("#addNewGroup").show();
         } else if (name === "newCompany") {
             this.newCompanyName = " ";
-            let modal = document.getElementById("addNewCompany");
-            modal.style.display = "block";
+            $("#addNewCompany").show();
         }
     }
 
     private dismissPopup(name) {
         if (name === "company") {
             this.selectedCompanyName = this.selectedCompany.CompanyName;
-            let modal = document.getElementById("companySettings");
-            modal.style.display = "none";
+            $("#companySettings").hide();
         } else if (name === "group") {
             this.selectedGroupName = this.selectedGroup.GroupName;
-            let modal = document.getElementById("groupSettings");
-            modal.style.display = "none";
+            $("#groupSettings").hide();
+            this.isImport = false;
+            this.groupSettingTitle = "Settings";
         } else if (name === "newGroup") {
             this.newGroupName = " ";
-            let modal = document.getElementById("addNewGroup");
-            modal.style.display = "none";
+            $("#addNewGroup").hide();
         } else if (name === "newCompany") {
             this.newCompanyName = " ";
-            let modal = document.getElementById("addNewCompany");
-            modal.style.display = "none";
+            $("#addNewCompany").hide();
         }
     }
 
@@ -303,4 +320,29 @@ export class MenuPanelComponent {
         }
     }
 
+    private onClickOnImport() {
+        this.groupSettingTitle = "Import";
+        this.isImport = true;
+    }
+
+    updateNewOrgGroup(OrgNodes) {
+        this.setOrgGroupData(OrgNodes);
+        this.groupSettingTitle = "Settings";
+        this.isImport = false;
+    }
+    private onClickDownloadTemplate() {
+        // If JSONData is not an object then JSON.parse will parse the JSON string in an Object       
+        let orgNode = new OrgNodeBaseModel();
+        let node = this.dataHelperForTemplate.convertDataToBaseModel(orgNode);
+        let CSV = "";
+
+        if (node) {
+            let row = this.dataHelperForTemplate.getCSVFileHeaders(node);
+
+            // append Label row with line break
+            CSV += row + "\r\n";
+        }
+
+        this.dataHelperForTemplate.downloadCSVFile("PeopleTree_Template", CSV);
+    }
 }
