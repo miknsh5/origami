@@ -323,16 +323,23 @@ input {
     font-weight: 800;
 }
 
-.footer {
-    margin: 150px 0px;
-}
-
 .groupBody {
-    height: 175px;
+    height: 320px;
 }
 
 .template {
     padding-top: 10px;
+}
+
+.delete {
+    color: red;
+    text-align: center;
+}
+
+.delete .btn.waves-effect {
+    background-color: #fff;
+    color: red;
+    font-weight: bolder;
 }
 
 @media only screen and (max-width:992px) {

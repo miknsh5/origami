@@ -330,6 +330,18 @@ export class MenuPanelComponent implements OnChanges {
         this.groupSettingTitle = "Settings";
         this.isImport = false;
     }
+    private onDeleteGroup() {
+        let groupID = this.selectedGroup.OrgGroupID;
+        this.orgService.deleteGroup(groupID)
+            .subscribe(data => this.deleteOrgGroup(data) ,
+            err => this.orgService.logError(err));
+    }
+
+    private deleteOrgGroup(data) {
+        if (data) {
+            this.setCompanies(this.selectedCompany);
+        }
+    }
     private onClickDownloadTemplate() {
         // If JSONData is not an object then JSON.parse will parse the JSON string in an Object       
         let orgNode = new OrgNodeBaseModel();

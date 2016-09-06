@@ -20,6 +20,7 @@ export class OrgService {
     private setDefaultGroupUrl = "api/Org/SetDefaultGroupForCompanyUser?userID=";
     private setDefaultCompanyUrl = "api/Org/SetDefaultCompanyForUser?userID=";
     private addGroupNodesUrl = "api/Org/AddGroupNodes?groupID=";
+    private deleteGroupUrl = "//origamiapi.azurewebsites.net/api/Org/DeleteCompanyGroup?groupID=";
     private headers: Headers;
 
     constructor(private http: Http) {
@@ -126,6 +127,13 @@ export class OrgService {
         let options = new RequestOptions({ headers: this.headers });
         let url = this.origamiUrl + this.addGroupNodesUrl + groupID;
         return this.http.post(url, orgNodeList, options)
+            .map(res => res.json());
+    }
+
+    deleteGroup(groupID) {
+        let options = new RequestOptions({ headers: this.headers });
+        let url = this.deleteGroupUrl + groupID;
+        return this.http.delete(url, options)
             .map(res => res.json());
     }
 

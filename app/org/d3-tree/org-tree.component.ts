@@ -74,6 +74,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     @Input() showLastNameLabel: boolean;
     @Input() showDescriptionLabel: boolean;
     @Input() orgGroupID: number;
+    @Input() CompanyID: number;
 
     @Output() selectNode = new EventEmitter<OrgNodeModel>();
     @Output() addNode = new EventEmitter<OrgNodeModel>();
@@ -302,6 +303,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         this.root.children = new Array<OrgNodeModel>();
         this.root.NodeID = -1;
         this.root.OrgGroupID = this.orgGroupID;
+        this.root.CompanyID = this.CompanyID;
         this.root.IsStaging = true;
         this.root.NodeFirstName = "";
         this.root.NodeLastName = "";
@@ -1162,11 +1164,11 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     addParentToNode(isFake: boolean, node: OrgNodeModel) {
         if (!node.ParentNodeID || node.ParentNodeID === -1) {
             let newNode = new OrgNodeModel();
-
             newNode.NodeFirstName = "";
             newNode.NodeLastName = "";
             newNode.Description = "";
             newNode.OrgGroupID = node.OrgGroupID;
+            newNode.CompanyID = node.CompanyID;
             newNode.NodeID = -1;
             newNode.IsStaging = true;
             newNode.IsFakeRoot = isFake;
@@ -1188,6 +1190,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         newNode.NodeLastName = "";
         newNode.Description = "";
         newNode.OrgGroupID = node.OrgGroupID;
+        newNode.CompanyID = node.CompanyID; 
         newNode.NodeID = -1;
         newNode.IsStaging = true;
         node.children.push(newNode);
