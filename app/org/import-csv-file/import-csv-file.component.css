@@ -66,14 +66,13 @@
 
 .loadscreen {
     display: none;
-    padding: 140px 110px;
+    padding: 140px 3em;
 }
 
 .loadscreen .lblLoad {
     color: #666;
     font-size: 0.9rem;
     font-weight: 600;
-    padding-left: 35px;
 }
 
 .loadscreen .lbl {
@@ -98,7 +97,7 @@
     display: block;
 }
 
-.confirmImport .s8 h6,
+.confirmImport .s7 h6,
 .confirmImport .s9 h6 {
     margin-bottom: 1px;
 }
