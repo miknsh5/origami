@@ -344,16 +344,11 @@ export class MenuPanelComponent implements OnChanges {
 
     private deleteOrgGroup(data) {
         if (data) {
-            let previousGroup: OrgGroupModel;
-            this.selectedCompany.OrgGroups.forEach((group, i) => {
-
+            this.selectedCompany.OrgGroups.forEach((group, index) => {
                 if (this.compareGroupID(group, this.selectedGroup)) {
-                    let index = i;
-                    previousGroup = this.selectedGroup;
                     this.selectedCompany.OrgGroups.splice(index, 1);
                 }
             });
-
             this.orgCompanyGroups = this.selectedCompany.OrgGroups;
             this.orgCompanyGroups.forEach((group) => {
                 if (group.IsDefaultGroup) {
@@ -365,6 +360,7 @@ export class MenuPanelComponent implements OnChanges {
                     this.getAllNodes(this.selectedGroup.OrgGroupID);
                 }
             });
+            this.groupSelected.emit(this.selectedGroup);
             this.dismissPopup("group");
         }
     }
