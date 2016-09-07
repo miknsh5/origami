@@ -2,7 +2,7 @@ import { Component, Input, Output, EventEmitter, OnChanges, SimpleChange } from 
 import { Router } from "@angular/router-deprecated";
 
 import { OrgCompanyModel, OrgGroupModel, OrgNodeModel, OrgService, OrgNodeBaseModel} from "../shared/index";
-import { DataHelperJSONToCSV } from "../data-helper-jsontocsv/data-helper-jsontocsv";
+import { DataHelper } from "../data-helper/data-helper";
 import { UserModel } from "../../Shared/index";
 import { ImportCsvFileComponent } from "../import-csv-file/import-csv-file.component";
 
@@ -13,7 +13,7 @@ declare let $: any;
     templateUrl: "app/org/menu-panel/menu-panel.component.html",
     styleUrls: ["app/org/menu-panel/menu-panel.component.css"],
     directives: [ImportCsvFileComponent],
-    providers: [DataHelperJSONToCSV]
+    providers: [DataHelper]
 })
 
 export class MenuPanelComponent implements OnChanges {
@@ -35,7 +35,7 @@ export class MenuPanelComponent implements OnChanges {
     @Output() groupSelected = new EventEmitter<OrgGroupModel>();
     @Output() companySelected = new EventEmitter<OrgCompanyModel>();
 
-    constructor(private orgService: OrgService, private router: Router, private dataHelperForTemplate: DataHelperJSONToCSV) {
+    constructor(private orgService: OrgService, private router: Router, private dataHelper: DataHelper) {
         this.getAllCompanies();
         this.enableImport = false;
         this.isImport = false;
@@ -374,16 +374,16 @@ export class MenuPanelComponent implements OnChanges {
     private onClickDownloadTemplate() {
         // If JSONData is not an object then JSON.parse will parse the JSON string in an Object       
         let orgNode = new OrgNodeBaseModel();
-        let node = this.dataHelperForTemplate.convertDataToBaseModel(orgNode);
+        let node = this.dataHelper.convertDataToBaseModel(orgNode);
         let CSV = "";
 
         if (node) {
-            let row = this.dataHelperForTemplate.getCSVFileHeaders(node);
+            let row = this.dataHelper.getCSVFileHeaders(node);
 
             // append Label row with line break
             CSV += row + "\r\n";
         }
 
-        this.dataHelperForTemplate.downloadCSVFile("PeopleTree_Template", CSV);
+        this.dataHelper.downloadCSVFile("PeopleTree_Template", CSV);
     }
 }
