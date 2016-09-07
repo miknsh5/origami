@@ -290,6 +290,7 @@ input {
     max-height: 30px;
     line-height: normal;
     margin: 0px 50px;
+    text-transform: inherit;
 }
 
 .btn i {
@@ -332,14 +333,22 @@ input {
 }
 
 .delete {
-    color: red;
+    color: #D0021B;
     text-align: center;
 }
 
 .delete .btn.waves-effect {
     background-color: #fff;
-    color: red;
+    color: #D0021B;
     font-weight: bolder;
+    max-height: 35px;
+    margin: 0px;
+    width: 24.6rem;
+    font-size: 14px;
+}
+
+.delete .btn i {
+    font-size: larger;
 }
 
 @media only screen and (max-width:992px) {
