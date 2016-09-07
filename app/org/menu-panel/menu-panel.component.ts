@@ -350,7 +350,7 @@ export class MenuPanelComponent implements OnChanges {
                 if (this.compareGroupID(group, this.selectedGroup)) {
                     let index = i;
                     previousGroup = this.selectedGroup;
-                    this.selectedCompany.OrgGroups.splice(index);
+                    this.selectedCompany.OrgGroups.splice(index, 1);
                 }
             });
 
