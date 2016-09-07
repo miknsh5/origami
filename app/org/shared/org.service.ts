@@ -5,7 +5,7 @@ import { Headers, RequestOptions } from "@angular/http";
 
 @Injectable()
 export class OrgService {
-    private origamiUrl = "//origamistageapi.azurewebsites.net/";
+    private origamiUrl = "//origamiapi.azurewebsites.net/";
     private getCompaniesUrl = "api/Org/GetCompaniesForUser";
     private getUrl = "api/Org/GetNodesForGroup?orgGroupID=";
     private updateGroupUrl = "api/Org/UpdateGroup";
@@ -20,7 +20,7 @@ export class OrgService {
     private setDefaultGroupUrl = "api/Org/SetDefaultGroupForCompanyUser?userID=";
     private setDefaultCompanyUrl = "api/Org/SetDefaultCompanyForUser?userID=";
     private addGroupNodesUrl = "api/Org/AddGroupNodes?groupID=";
-    private deleteGroupUrl = "//origamiapi.azurewebsites.net/api/Org/DeleteCompanyGroup?groupID=";
+    private deleteGroupUrl = "api/Org/DeleteCompanyGroup?groupID=";
     private headers: Headers;
 
     constructor(private http: Http) {
@@ -132,7 +132,7 @@ export class OrgService {
 
     deleteGroup(groupID) {
         let options = new RequestOptions({ headers: this.headers });
-        let url = this.deleteGroupUrl + groupID;
+        let url = this.origamiUrl + this.deleteGroupUrl + groupID;
         return this.http.delete(url, options)
             .map(res => res.json());
     }

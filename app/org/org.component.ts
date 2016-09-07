@@ -123,12 +123,14 @@ export class OrgComponent implements OnDestroy {
 
     onNodeAdded(addedNode: OrgNodeModel) {
         this.isAddOrEditMode = false;
+        this.isOrgNodeEmpty = true;
         if (addedNode.NodeID !== -1) {
             // gets the stagged node and deleting it
             let node = this.getNode(-1, this.orgNodes[0]);
             this.deleteNodeFromArray(node, this.orgNodes);
             this.selectedNode = addedNode;
             this.detailAddOrEditMode = false;
+            this.isOrgNodeEmpty = false;
         }
         if (addedNode.IsNewRoot) {
             this.orgNodes.splice(0, 1, addedNode);

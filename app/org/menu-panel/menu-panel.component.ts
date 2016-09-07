@@ -46,6 +46,9 @@ export class MenuPanelComponent implements OnChanges {
         if (changes["noNodeExsit"] && changes["noNodeExsit"].currentValue) {
             this.enableImport = true;
         }
+        else {
+            this.enableImport = false;
+        }
     }
 
 
@@ -118,7 +121,7 @@ export class MenuPanelComponent implements OnChanges {
                 this.enableImport = false;
             }
             this.selectedGroup.OrgNodes = data.OrgNodes;
-            this.selectedGroup.IsSelected = true;
+            this.selectedGroup.IsDefaultGroup = true;
             this.groupSelected.emit(this.selectedGroup);
             this.enableDropDowns();
         }
@@ -149,8 +152,10 @@ export class MenuPanelComponent implements OnChanges {
     }
 
     private onGroupSelection(data) {
-        this.selectedGroup.IsDefaultGroup = false;
-        this.setGroupData(this.selectedGroup);
+        if (this.selectedGroup.OrgGroupID !== data.OrgGroupID) {
+            this.selectedGroup.IsDefaultGroup = false;
+            this.setGroupData(this.selectedGroup);
+        }
         if (data && data.OrgGroupID !== this.selectedGroup.OrgGroupID) {
             this.selectedGroup = data;
             this.selectedGroup.IsDefaultGroup = true;
@@ -268,7 +273,7 @@ export class MenuPanelComponent implements OnChanges {
                     group.GroupName = data.GroupName;
                     group.IsDefaultGroup = isDefault;
                     group.OrgGroupID = data.OrgGroupID;
-                    group.IsSelected = true;
+                    // group.IsSelected = true;
                     return true;
                 }
             });
@@ -296,7 +301,7 @@ export class MenuPanelComponent implements OnChanges {
                     company.CompanyName = data.CompanyName;
                     company.DateCreated = data.DateCreated;
                     // company.OrgGroups = data.OrgGroups;
-                    company.IsSelected = true;
+                    // company.IsSelected = true;
                     return true;
                 }
             });
@@ -333,13 +338,37 @@ export class MenuPanelComponent implements OnChanges {
     private onDeleteGroup() {
         let groupID = this.selectedGroup.OrgGroupID;
         this.orgService.deleteGroup(groupID)
-            .subscribe(data => this.deleteOrgGroup(data) ,
+            .subscribe(data => this.deleteOrgGroup(data),
             err => this.orgService.logError(err));
     }
 
     private deleteOrgGroup(data) {
         if (data) {
-            this.setCompanies(this.selectedCompany);
+            let previousGroup: OrgGroupModel;
+            this.selectedCompany.OrgGroups.forEach((group, i) => {
+                if (this.compareGroupID(group, this.selectedGroup)) {
+                    let index = i;
+                    previousGroup = this.selectedGroup;
+                    this.selectedCompany.OrgGroups.splice(index);
+                }
+            });
+            this.orgCompanyGroups = this.selectedCompany.OrgGroups;
+            if (this.orgCompanyGroups.length && this.orgCompanyGroups.length > 0) {
+                this.orgCompanyGroups.forEach((group) => {
+                    if (group.IsDefaultGroup) {
+                        this.selectedGroup = group;
+                    }
+                });
+
+                if (this.selectedGroup.OrgGroupID !== previousGroup.OrgGroupID) {
+                    this.getAllNodes(this.selectedGroup.OrgGroupID);
+                } else {
+                    this.selectedGroup = this.orgCompanyGroups[0];
+                    this.getAllNodes(this.selectedGroup.OrgGroupID);
+                }
+            }
+
+            this.dismissPopup("group");
         }
     }
     private onClickDownloadTemplate() {
