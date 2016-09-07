@@ -346,28 +346,25 @@ export class MenuPanelComponent implements OnChanges {
         if (data) {
             let previousGroup: OrgGroupModel;
             this.selectedCompany.OrgGroups.forEach((group, i) => {
+
                 if (this.compareGroupID(group, this.selectedGroup)) {
                     let index = i;
                     previousGroup = this.selectedGroup;
                     this.selectedCompany.OrgGroups.splice(index);
                 }
             });
-            this.orgCompanyGroups = this.selectedCompany.OrgGroups;
-            if (this.orgCompanyGroups.length && this.orgCompanyGroups.length > 0) {
-                this.orgCompanyGroups.forEach((group) => {
-                    if (group.IsDefaultGroup) {
-                        this.selectedGroup = group;
-                    }
-                });
 
-                if (this.selectedGroup.OrgGroupID !== previousGroup.OrgGroupID) {
+            this.orgCompanyGroups = this.selectedCompany.OrgGroups;
+            this.orgCompanyGroups.forEach((group) => {
+                if (group.IsDefaultGroup) {
+                    this.selectedGroup = group;
                     this.getAllNodes(this.selectedGroup.OrgGroupID);
-                } else {
+                }
+                else {
                     this.selectedGroup = this.orgCompanyGroups[0];
                     this.getAllNodes(this.selectedGroup.OrgGroupID);
                 }
-            }
-
+            });
             this.dismissPopup("group");
         }
     }
