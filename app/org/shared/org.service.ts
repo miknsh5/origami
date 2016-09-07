@@ -21,6 +21,7 @@ export class OrgService {
     private setDefaultCompanyUrl = "api/Org/SetDefaultCompanyForUser?userID=";
     private addGroupNodesUrl = "api/Org/AddGroupNodes?groupID=";
     private deleteGroupUrl = "api/Org/DeleteCompanyGroup?groupID=";
+    private deleteComapnyUrl = "api/Org/DeleteCompany?companyID=";
     private headers: Headers;
 
     constructor(private http: Http) {
@@ -137,6 +138,12 @@ export class OrgService {
             .map(res => res.json());
     }
 
+    deleteCompany(companyID) {
+        let options = new RequestOptions({ headers: this.headers });
+        let url = this.origamiUrl + this.deleteComapnyUrl + companyID;
+        return this.http.delete(url, options)
+            .map(res => res.json());
+    }
 
     logError(err: any) {
         console.error(err);

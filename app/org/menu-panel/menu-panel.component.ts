@@ -335,6 +335,34 @@ export class MenuPanelComponent implements OnChanges {
         this.groupSettingTitle = "Settings";
         this.isImport = false;
     }
+    private onDeleteCompany() {
+        let companyID = this.selectedCompany.CompanyID;
+        this.orgService.deleteCompany(companyID)
+            .subscribe(data => this.deleteOrgCompany(data),
+            err => this.orgService.logError(err));
+    }
+
+    private deleteOrgCompany(data) {
+        if (data) {
+            this.orgCompanies.forEach((company, index) => {
+                if (this.compareCompanyID(company, this.selectedCompany)) {
+                    this.orgCompanies.splice(index, 1);
+                }
+            });
+            this.orgCompanies.forEach((company, index) => {
+                if (company.IsDefaultCompany) {
+                    this.selectedCompany = company;
+                    this.setSelectedGroup(this.selectedCompany.OrgGroups);
+                } else {
+                    this.selectedCompany = this.orgCompanies[0];
+                    this.setSelectedGroup(this.selectedCompany.OrgGroups);
+                }
+            });
+            this.companySelected.emit(this.selectedCompany);
+            this.dismissPopup("company");
+        }
+    }
+
     private onDeleteGroup() {
         let groupID = this.selectedGroup.OrgGroupID;
         this.orgService.deleteGroup(groupID)
@@ -344,16 +372,11 @@ export class MenuPanelComponent implements OnChanges {
 
     private deleteOrgGroup(data) {
         if (data) {
-            let previousGroup: OrgGroupModel;
-            this.selectedCompany.OrgGroups.forEach((group, i) => {
-
+            this.selectedCompany.OrgGroups.forEach((group, index) => {
                 if (this.compareGroupID(group, this.selectedGroup)) {
-                    let index = i;
-                    previousGroup = this.selectedGroup;
                     this.selectedCompany.OrgGroups.splice(index, 1);
                 }
             });
-
             this.orgCompanyGroups = this.selectedCompany.OrgGroups;
             this.orgCompanyGroups.forEach((group) => {
                 if (group.IsDefaultGroup) {
@@ -365,6 +388,7 @@ export class MenuPanelComponent implements OnChanges {
                     this.getAllNodes(this.selectedGroup.OrgGroupID);
                 }
             });
+            this.groupSelected.emit(this.selectedGroup);
             this.dismissPopup("group");
         }
     }

@@ -300,7 +300,7 @@ input {
     vertical-align: text-bottom
 }
 
-#companySettings .divider {
+.companySettings .divider {
     width: 40px;
 }
 
@@ -326,6 +326,10 @@ input {
 
 .groupBody {
     height: 325px;
+}
+
+.companyBody {
+    height: 305px;
 }
 
 .template {
