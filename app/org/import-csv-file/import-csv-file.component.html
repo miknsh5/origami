@@ -24,6 +24,18 @@
         <button class="waves-effect waves-light btn" (click)="onCancelImport()">Cancel</button>
     </div>
 </div>
+<div id="templateScreen" class="templateScreen center">
+    <div>
+        <label>
+            You choose a wrong file. Download the following template for the correct format.
+        </label>
+    </div>
+    <div class="template">
+        <button class="waves-effect waves-light btn" (click)="onCancelImport()"><i class="material-icons">arrow_back</i>Back</button>
+        <button class="waves-effect waves-light btn" (click)="onClickDownloadTemplate()"><i class="material-icons">file_download</i>Download</button>
+
+    </div>
+</div>
 <div id="confirmImport" class="confirmImport">
     <div class="row">
         <div class="col s12 divspacing">

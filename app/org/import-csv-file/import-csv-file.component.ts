@@ -1,13 +1,17 @@
 import { Component, Input, Output, EventEmitter } from "@angular/core";
 
 import { OrgGroupModel, OrgNodeModel, OrgService } from "../shared/index";
+import { DataHelper } from "../data-helper/data-helper";
+
+const DEFAULT_EXTENSION: string = ".csv";
 
 declare let $: any;
 
 @Component({
     selector: "sg-org-import-csv-file",
     templateUrl: "app/org/import-csv-file/import-csv-file.component.html",
-    styleUrls: ["app/org/import-csv-file/import-csv-file.component.css", "app/style.css", "app/org/menu-panel/menu-panel.component.css"]
+    styleUrls: ["app/org/import-csv-file/import-csv-file.component.css", "app/style.css", "app/org/menu-panel/menu-panel.component.css"],
+    providers: [DataHelper]
 })
 
 export class ImportCsvFileComponent {
@@ -20,17 +24,33 @@ export class ImportCsvFileComponent {
     private $importfile: any;
     private $loadScreen: any;
     private $confirmImport: any;
+    private $templateScreen: any;
 
     @Input() selectedGroup: OrgGroupModel;
     @Output() newOrgNodes = new EventEmitter<OrgNodeModel>();
 
-    constructor(private orgService: OrgService) {
+    constructor(private orgService: OrgService, private dataHelper: DataHelper) {
         this.fileName = "";
         this.mappedNodesCount = 0;
         this.unmappedNodesCount = 0;
         this.$importfile = "#importFile";
         this.$loadScreen = "#loadScreen";
         this.$confirmImport = "#confirmImport";
+        this.$templateScreen = "#templateScreen";
+    }
+
+    private checkFileExtension(fileName: string): boolean {
+        if (fileName) {
+            if (DEFAULT_EXTENSION === fileName.substr((fileName.length - 4), fileName.length)) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+
+    private onClickDownloadTemplate() {
+        this.dataHelper.DownloadTemplate();
     }
 
     private onImport(event) {
@@ -38,9 +58,10 @@ export class ImportCsvFileComponent {
         $(this.$loadScreen).show();
         let files = (event.srcElement || event.target).files[0];
         this.fileName = files.name;
+        let isFileCorrect = this.checkFileExtension(this.fileName);
         if (!files) {
             alert("The File APIs are not fully supported in this browser!");
-        } else {
+        } else if (isFileCorrect) {
             let data = null;
             let file = files;
             let reader = new FileReader();
@@ -54,6 +75,9 @@ export class ImportCsvFileComponent {
             reader.onerror = function () {
                 alert("Unable to read " + file.fileName);
             };
+        } else {
+            $(this.$loadScreen).hide();
+            $(this.$templateScreen).show();
         }
     }
 
@@ -74,6 +98,7 @@ export class ImportCsvFileComponent {
 
     private onCancelImport() {
         $(this.$importfile).show();
+        $(this.$templateScreen).hide();
         $(this.$loadScreen).hide();
         $(this.$confirmImport).hide();
         this.nodeName = " ";
@@ -158,8 +183,17 @@ export class ImportCsvFileComponent {
         return orgNode;
     }
 
+    // private checkFileFormat(headers) {
+    //     if (headers) {
+    //         headers.forEach(header=>{
+    //             i
+    //         })
+    //     }
+    // }
+
     private CSV2JSON(csv) {
         let array = this.CSVToArray(csv, ",");
+        // let isFormat = this.checkFileFormat(array[0]);
         let objArray = [];
         for (let i = 1; i < array.length; i++) {
             objArray[i - 1] = {};

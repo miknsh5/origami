@@ -405,18 +405,6 @@ export class MenuPanelComponent implements OnChanges {
         }
     }
     private onClickDownloadTemplate() {
-        // If JSONData is not an object then JSON.parse will parse the JSON string in an Object       
-        let orgNode = new OrgNodeBaseModel();
-        let node = this.dataHelper.convertDataToBaseModel(orgNode);
-        let CSV = "";
-
-        if (node) {
-            let row = this.dataHelper.getCSVFileHeaders(node);
-
-            // append Label row with line break
-            CSV += row + "\r\n";
-        }
-
-        this.dataHelper.downloadCSVFile("PeopleTree_Template", CSV);
+       this.dataHelper.DownloadTemplate();
     }
 }
