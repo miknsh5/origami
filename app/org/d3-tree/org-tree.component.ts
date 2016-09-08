@@ -1190,7 +1190,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         newNode.NodeLastName = "";
         newNode.Description = "";
         newNode.OrgGroupID = node.OrgGroupID;
-        newNode.CompanyID = node.CompanyID; 
+        newNode.CompanyID = node.CompanyID;
         newNode.NodeID = -1;
         newNode.IsStaging = true;
         node.children.push(newNode);
