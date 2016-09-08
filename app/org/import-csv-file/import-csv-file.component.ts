@@ -180,7 +180,9 @@ export class ImportCsvFileComponent {
                 this.rootNode.push(this.convertBaseModelToData(node));
             }
         });
-        this.unmappedNodesCount = this.unmappedNodesCount - 1;
+        if (this.unmappedNodesCount >= 1) {
+            this.unmappedNodesCount = this.unmappedNodesCount - 1;
+        }
         this.json = JSON.stringify(this.rootNode);
         this.json = this.json.replace(/},/g, "},\r\n");
         this.json = JSON.parse(this.json);
