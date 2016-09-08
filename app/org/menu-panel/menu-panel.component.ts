@@ -351,6 +351,10 @@ export class MenuPanelComponent implements OnChanges {
                     this.orgCompanies.splice(index, 1);
                 }
             });
+            if (this.orgCompanies && this.orgCompanies.length === 0) {
+                this.newCompanyName = "My Organization";
+                this.addNewCompany();
+            }
             this.orgCompanies.forEach((company, index) => {
                 if (company.IsDefaultCompany) {
                     this.selectedCompany = company;
