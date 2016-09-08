@@ -163,7 +163,7 @@ export class ImportCsvFileComponent {
         let objArray = [];
         for (let i = 1; i < array.length; i++) {
             objArray[i - 1] = {};
-            for (let k = 0; k < array.length; k++) {
+            for (let k = 0; k <= array.length; k++) {
                 let key = array[0][k];
                 if (key === "First Name") {
                     key = key.replace(" ", "_");
