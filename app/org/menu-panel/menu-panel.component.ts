@@ -354,16 +354,17 @@ export class MenuPanelComponent implements OnChanges {
             if (this.orgCompanies && this.orgCompanies.length === 0) {
                 this.newCompanyName = "My Organization";
                 this.addNewCompany();
+            } else {
+                this.orgCompanies.forEach((company, index) => {
+                    if (company.IsDefaultCompany) {
+                        this.selectedCompany = company;
+                        this.setSelectedGroup(this.selectedCompany.OrgGroups);
+                    } else {
+                        this.selectedCompany = this.orgCompanies[0];
+                        this.setSelectedGroup(this.selectedCompany.OrgGroups);
+                    }
+                });
             }
-            this.orgCompanies.forEach((company, index) => {
-                if (company.IsDefaultCompany) {
-                    this.selectedCompany = company;
-                    this.setSelectedGroup(this.selectedCompany.OrgGroups);
-                } else {
-                    this.selectedCompany = this.orgCompanies[0];
-                    this.setSelectedGroup(this.selectedCompany.OrgGroups);
-                }
-            });
             this.companySelected.emit(this.selectedCompany);
             this.dismissPopup("company");
         }
@@ -387,17 +388,18 @@ export class MenuPanelComponent implements OnChanges {
             if (this.orgCompanyGroups && this.orgCompanyGroups.length === 0) {
                 this.newGroupName = "My Group";
                 this.addNewGroup();
+            } else {
+                this.orgCompanyGroups.forEach((group) => {
+                    if (group.IsDefaultGroup) {
+                        this.selectedGroup = group;
+                        this.getAllNodes(this.selectedGroup.OrgGroupID);
+                    }
+                    else {
+                        this.selectedGroup = this.orgCompanyGroups[0];
+                        this.getAllNodes(this.selectedGroup.OrgGroupID);
+                    }
+                });
             }
-            this.orgCompanyGroups.forEach((group) => {
-                if (group.IsDefaultGroup) {
-                    this.selectedGroup = group;
-                    this.getAllNodes(this.selectedGroup.OrgGroupID);
-                }
-                else {
-                    this.selectedGroup = this.orgCompanyGroups[0];
-                    this.getAllNodes(this.selectedGroup.OrgGroupID);
-                }
-            });
             this.groupSelected.emit(this.selectedGroup);
             this.dismissPopup("group");
         }
