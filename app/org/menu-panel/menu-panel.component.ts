@@ -65,6 +65,7 @@ export class MenuPanelComponent implements OnChanges {
     private setCompanies(data) {
         if (data) {
             this.orgCompanies = data;
+            this.selectedCompany = null;
             if (this.orgCompanies.length && this.orgCompanies.length > 0) {
                 this.orgCompanies.forEach((element) => {
                     if (element.IsDefaultCompany) {
@@ -86,6 +87,7 @@ export class MenuPanelComponent implements OnChanges {
     private setSelectedGroup(groups) {
         if (groups) {
             this.orgCompanyGroups = groups;
+            this.selectedGroup = null;
             if (this.orgCompanyGroups.length && this.orgCompanyGroups.length > 0) {
                 this.orgCompanyGroups.forEach((group) => {
                     if (group.IsDefaultGroup) {
@@ -378,6 +380,10 @@ export class MenuPanelComponent implements OnChanges {
                 }
             });
             this.orgCompanyGroups = this.selectedCompany.OrgGroups;
+            if (this.orgCompanyGroups && this.orgCompanyGroups.length === 0) {
+                this.newGroupName = "My Group";
+                this.addNewGroup();
+            }
             this.orgCompanyGroups.forEach((group) => {
                 if (group.IsDefaultGroup) {
                     this.selectedGroup = group;
