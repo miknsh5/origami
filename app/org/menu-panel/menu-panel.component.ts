@@ -352,6 +352,10 @@ export class MenuPanelComponent implements OnChanges {
                 }
             });
             this.orgCompanyGroups = this.selectedCompany.OrgGroups;
+            if (this.orgCompanyGroups && this.orgCompanyGroups.length === 0) {
+                this.newGroupName = "My Group";
+                this.addNewGroup();
+            }
             this.orgCompanyGroups.forEach((group) => {
                 if (group.IsDefaultGroup) {
                     this.selectedGroup = group;
