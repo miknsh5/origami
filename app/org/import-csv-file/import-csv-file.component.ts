@@ -4,6 +4,7 @@ import { OrgGroupModel, OrgNodeModel, OrgService } from "../shared/index";
 import { DataHelper } from "../data-helper/data-helper";
 
 const DEFAULT_EXTENSION: string = ".csv";
+const DEFAULT_HEADERSTRING: string = "UID,First Name,Last Name,Title,Parent,";
 
 declare let $: any;
 
@@ -68,9 +69,14 @@ export class ImportCsvFileComponent {
             reader.readAsText(file);
             reader.onload = (event) => {
                 let csvData = event.target["result"];
-                this.CSV2JSON(csvData);
+                let isFileFormat = this.CSV2JSON(csvData);
                 $(this.$loadScreen).hide();
-                $(this.$confirmImport).show();
+                if (isFileFormat) {
+                    $(this.$confirmImport).show();
+                }
+                else {
+                    $(this.$templateScreen).show();
+                }
             };
             reader.onerror = function () {
                 alert("Unable to read " + file.fileName);
@@ -183,40 +189,51 @@ export class ImportCsvFileComponent {
         return orgNode;
     }
 
-    // private checkFileFormat(headers) {
-    //     if (headers) {
-    //         headers.forEach(header=>{
-    //             i
-    //         })
-    //     }
-    // }
-
-    private CSV2JSON(csv) {
-        let array = this.CSVToArray(csv, ",");
-        // let isFormat = this.checkFileFormat(array[0]);
-        let objArray = [];
-        for (let i = 1; i < array.length; i++) {
-            objArray[i - 1] = {};
-            for (let k = 0; k <= array.length; k++) {
-                let key = array[0][k];
-                if (key === "First Name") {
-                    key = key.replace(" ", "_");
-                }
-                if (key === "Last Name") {
-                    key = key.replace(" ", "_");
-                }
-                objArray[i - 1][key] = array[i][k];
+    private checkFileFormat(headers): boolean {
+        let headerString: string = "";
+        if (headers) {
+            headers.forEach(header => {
+                headerString = headerString + header + ",";
+            });
+            if (DEFAULT_HEADERSTRING === headerString) {
+                return true;
+            }
+            else {
+                return false;
             }
         }
+    }
 
-        objArray.forEach((node) => {
-            if (node.UID !== "") {
-                this.rootNode.push(this.convertBaseModelToData(node));
+    private CSV2JSON(csv): boolean {
+        let array = this.CSVToArray(csv, ",");
+        if (this.checkFileFormat(array[0])) {
+            let objArray = [];
+            for (let i = 1; i < array.length; i++) {
+                objArray[i - 1] = {};
+                for (let k = 0; k <= array.length; k++) {
+                    let key = array[0][k];
+                    if (key === "First Name") {
+                        key = key.replace(" ", "_");
+                    }
+                    if (key === "Last Name") {
+                        key = key.replace(" ", "_");
+                    }
+                    objArray[i - 1][key] = array[i][k];
+                }
             }
-        });
-        this.unmappedNodesCount = this.unmappedNodesCount - 1;
-        this.json = JSON.stringify(this.rootNode);
-        this.json = this.json.replace(/},/g, "},\r\n");
-        this.json = JSON.parse(this.json);
+
+            objArray.forEach((node) => {
+                if (node.UID !== "") {
+                    this.rootNode.push(this.convertBaseModelToData(node));
+                }
+            });
+            this.unmappedNodesCount = this.unmappedNodesCount - 1;
+            this.json = JSON.stringify(this.rootNode);
+            this.json = this.json.replace(/},/g, "},\r\n");
+            this.json = JSON.parse(this.json);
+            return true;
+        } else {
+            return false;
+        }
     }
 }
