@@ -1,103 +1,133 @@
 .node {
-  cursor: pointer;
+    cursor: pointer;
 }
 
 .node circle {
-  fill: #fff;
-  stroke: steelblue;
-  stroke-width: 1.5px;
+    fill: #fff;
+    stroke: steelblue;
+    stroke-width: 1.5px;
 }
 
 .node text {
-  font: 10px sans-serif;
+    font: 10px sans-serif;
 }
 
 .link {
-  fill: none;
-  stroke: #ccc;
-  stroke-width: 1.5px;
+    fill: none;
+    stroke: #ccc;
+    stroke-width: 1.5px;
 }
 
 .chart {
-  background: #eee;
-  padding: 3px;
+    background: #eee;
+    padding: 3px;
 }
 
 .chart div {
-  width: 0;
-  transition: all 1s ease-out;
-  -moz-transition: all 1s ease-out;
-  -webkit-transition: all 1s ease-out;
+    width: 0;
+    transition: all 1s ease-out;
+    -moz-transition: all 1s ease-out;
+    -webkit-transition: all 1s ease-out;
 }
 
 .chart div {
-  font: 10px sans-serif;
-  background-color: steelblue;
-  text-align: right;
-  padding: 3px;
-  margin: 5px;
-  color: white;
-  box-shadow: 2px 2px 2px #666;
+    font: 10px sans-serif;
+    background-color: steelblue;
+    text-align: right;
+    padding: 3px;
+    margin: 5px;
+    color: white;
+    box-shadow: 2px 2px 2px #666;
 }
 
 .title {
-  font-family: Arial, Helvetica, sans-serif;
-}
-
-.person {
-  cursor: pointer;
-  color: #222222;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 .title {
-  cursor: pointer;
-  color: #222222;
-  font-style: italic;
-}
-
-.auth-panel {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-}
-
-.auth-panel h2 {
-  margin: 0.4em 0;
-}
-
-.auth-panel button {
-  float: right;
-  margin-left: 0.7em;
-}
-
-.person:hover {
-  color: #029BFF;
+    cursor: pointer;
+    color: #222222;
+    font-style: italic;
 }
 
 .main-canvas {
-  /*padding: 50px 50px 0;
-  position: absolute;
-  top: 0;*/
-  width: 100%;
-  height: 97vh;
-  overflow: hidden;
+    width: 100%;
+    overflow-x: auto;
+    position: absolute;
+    z-index: -2;
 }
 
 .main-canvas h1 {
-  margin-top: 0;
+    margin-top: 0;
 }
 
-@media only screen and (max-width:993px) {
-  .auth-panel {
-    position: relative;
-    top: 0;
-    right: 20px;
-    float: right;
-  }
+.modes-wrap {
+    min-width: 25px;
+    position: fixed;
+    top: 50px;
+    left: 30px
+}
+
+.modes-wrap li:first-child {
+    margin: 0 5px 5px 0;
+}
+
+.modes-wrap li {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+    background-repeat: no-repeat;
+    cursor: pointer;
+}
+
+.modes-wrap li.inactive {
+    cursor: default;
+}
+
+.modes-wrap li.nav-build {
+    background-image: url("app/images/nav-build.png");
+}
+
+.modes-wrap li.nav-build.active {
+    background-image: url("app/images/nav-build-active.png");
+}
+
+.modes-wrap li.nav-explore {
+    background-image: url("app/images/nav-explore.png");
+}
+
+.modes-wrap li.nav-explore.active {
+    background-image: url("app/images/nav-explore-active.png");
+}
+
+.modes-wrap li.nav-report {
+    background-image: url("app/images/nav-report.png");
+}
+
+.modes-wrap li.nav-report.active {
+    background-image: url("app/images/nav-report-active.png");
+}
+
+.modes-wrap li > a {
+    width: 28px;
+    line-height: 43px;
+    font-family: HelveticaNeue;
+    font-size: 12px;
+    font-weight: 400;
+    color: #607d8b;
+    margin: 55px;
+}
+
+.modes-wrap li.inactive > a {
+    color: #cfd8dc;
 }
 
 @media only screen and (max-width:600px) {
-  .main-canvas {
-    height: auto;
-  }
+    .main-canvas {
+        height: auto;
+    }
+    .modes-wrap {
+        top: 65px;
+        left: 10px;
+    }
 }

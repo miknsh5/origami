@@ -3,8 +3,9 @@ export class OrgNodeModel {
     NodeFirstName: string;
     NodeLastName: string;
     NodeID: number;
-    OrgID: number;
+    OrgGroupID: number;
     ParentNodeID: number;
+    CompanyID: number;
     IsSelected: boolean;
     Show: boolean;
     IsSibling: boolean;
@@ -14,4 +15,6 @@ export class OrgNodeModel {
     IsStaging: boolean;
     IsAncestor: boolean;
     children: OrgNodeModel[];
+    IsFakeRoot: boolean;
+    IsNewRoot: boolean;
 }
