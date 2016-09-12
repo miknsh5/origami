@@ -193,14 +193,17 @@ nav ul a i.left {
 
 .modal-content {
     background-color: #fefefe;
-    margin: 10px auto;
     padding: 0px;
     border: 0px solid #888;
     width: 22%;
     min-width: 325px;
     height: 400px;
-    position: relative;
-    top: 18.5%;
+    bottom: 0;
+    left: 0;
+    top: 0;
+    right: 0;
+    margin: auto;
+    position: absolute;
 }
 
 
