@@ -198,12 +198,9 @@ nav ul a i.left {
     width: 22%;
     min-width: 325px;
     height: 400px;
-    bottom: 0;
-    left: 0;
-    top: 0;
-    right: 0;
-    margin: auto;
-    position: absolute;
+    top: 18.5%;
+    margin: 10px auto;
+    position: relative;
 }
 
 
