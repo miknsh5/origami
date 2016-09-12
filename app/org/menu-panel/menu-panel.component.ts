@@ -46,6 +46,9 @@ export class MenuPanelComponent implements OnChanges {
         if (changes["noNodeExsit"] && changes["noNodeExsit"].currentValue) {
             this.enableImport = true;
         }
+        else {
+            this.enableImport = false;
+        }
     }
 
 
@@ -62,6 +65,7 @@ export class MenuPanelComponent implements OnChanges {
     private setCompanies(data) {
         if (data) {
             this.orgCompanies = data;
+            this.selectedCompany = null;
             if (this.orgCompanies.length && this.orgCompanies.length > 0) {
                 this.orgCompanies.forEach((element) => {
                     if (element.IsDefaultCompany) {
@@ -83,6 +87,7 @@ export class MenuPanelComponent implements OnChanges {
     private setSelectedGroup(groups) {
         if (groups) {
             this.orgCompanyGroups = groups;
+            this.selectedGroup = null;
             if (this.orgCompanyGroups.length && this.orgCompanyGroups.length > 0) {
                 this.orgCompanyGroups.forEach((group) => {
                     if (group.IsDefaultGroup) {
@@ -118,7 +123,7 @@ export class MenuPanelComponent implements OnChanges {
                 this.enableImport = false;
             }
             this.selectedGroup.OrgNodes = data.OrgNodes;
-            this.selectedGroup.IsSelected = true;
+            this.selectedGroup.IsDefaultGroup = true;
             this.groupSelected.emit(this.selectedGroup);
             this.enableDropDowns();
         }
@@ -149,8 +154,10 @@ export class MenuPanelComponent implements OnChanges {
     }
 
     private onGroupSelection(data) {
-        this.selectedGroup.IsDefaultGroup = false;
-        this.setGroupData(this.selectedGroup);
+        if (this.selectedGroup.OrgGroupID !== data.OrgGroupID) {
+            this.selectedGroup.IsDefaultGroup = false;
+            this.setGroupData(this.selectedGroup);
+        }
         if (data && data.OrgGroupID !== this.selectedGroup.OrgGroupID) {
             this.selectedGroup = data;
             this.selectedGroup.IsDefaultGroup = true;
@@ -268,7 +275,7 @@ export class MenuPanelComponent implements OnChanges {
                     group.GroupName = data.GroupName;
                     group.IsDefaultGroup = isDefault;
                     group.OrgGroupID = data.OrgGroupID;
-                    group.IsSelected = true;
+                    // group.IsSelected = true;
                     return true;
                 }
             });
@@ -296,7 +303,7 @@ export class MenuPanelComponent implements OnChanges {
                     company.CompanyName = data.CompanyName;
                     company.DateCreated = data.DateCreated;
                     // company.OrgGroups = data.OrgGroups;
-                    company.IsSelected = true;
+                    // company.IsSelected = true;
                     return true;
                 }
             });
@@ -329,6 +336,73 @@ export class MenuPanelComponent implements OnChanges {
         this.setOrgGroupData(OrgNodes);
         this.groupSettingTitle = "Settings";
         this.isImport = false;
+    }
+    private onDeleteCompany() {
+        let companyID = this.selectedCompany.CompanyID;
+        this.orgService.deleteCompany(companyID)
+            .subscribe(data => this.deleteOrgCompany(data),
+            err => this.orgService.logError(err));
+    }
+
+    private deleteOrgCompany(data) {
+        if (data) {
+            this.orgCompanies.forEach((company, index) => {
+                if (this.compareCompanyID(company, this.selectedCompany)) {
+                    this.orgCompanies.splice(index, 1);
+                }
+            });
+            if (this.orgCompanies && this.orgCompanies.length === 0) {
+                this.newCompanyName = "My Organization";
+                this.addNewCompany();
+            } else {
+                this.orgCompanies.forEach((company, index) => {
+                    if (company.IsDefaultCompany) {
+                        this.selectedCompany = company;
+                        this.setSelectedGroup(this.selectedCompany.OrgGroups);
+                    } else {
+                        this.selectedCompany = this.orgCompanies[0];
+                        this.setSelectedGroup(this.selectedCompany.OrgGroups);
+                    }
+                });
+            }
+            this.companySelected.emit(this.selectedCompany);
+            this.dismissPopup("company");
+        }
+    }
+
+    private onDeleteGroup() {
+        let groupID = this.selectedGroup.OrgGroupID;
+        this.orgService.deleteGroup(groupID)
+            .subscribe(data => this.deleteOrgGroup(data),
+            err => this.orgService.logError(err));
+    }
+
+    private deleteOrgGroup(data) {
+        if (data) {
+            this.selectedCompany.OrgGroups.forEach((group, index) => {
+                if (this.compareGroupID(group, this.selectedGroup)) {
+                    this.selectedCompany.OrgGroups.splice(index, 1);
+                }
+            });
+            this.orgCompanyGroups = this.selectedCompany.OrgGroups;
+            if (this.orgCompanyGroups && this.orgCompanyGroups.length === 0) {
+                this.newGroupName = "My Group";
+                this.addNewGroup();
+            } else {
+                this.orgCompanyGroups.forEach((group) => {
+                    if (group.IsDefaultGroup) {
+                        this.selectedGroup = group;
+                        this.getAllNodes(this.selectedGroup.OrgGroupID);
+                    }
+                    else {
+                        this.selectedGroup = this.orgCompanyGroups[0];
+                        this.getAllNodes(this.selectedGroup.OrgGroupID);
+                    }
+                });
+            }
+            this.groupSelected.emit(this.selectedGroup);
+            this.dismissPopup("group");
+        }
     }
     private onClickDownloadTemplate() {
         // If JSONData is not an object then JSON.parse will parse the JSON string in an Object       

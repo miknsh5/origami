@@ -159,6 +159,10 @@
         </div>
 
         <div class="divider"></div>
+        <div class="delete" id="deleteGroup">
+            <button class="waves-effect waves-light btn" (click)="onDeleteGroup()">
+            <i class="material-icons">delete</i>Delete</button>
+        </div>
     </div>
 </div>
 
@@ -173,23 +177,30 @@
             </div>
             <div class="close" (click)="dismissPopup('company')"><i class="material-icons">clear</i></div>
         </div>
-
-        <div class="inlineblock titlewithdivider">
-            <div class="divider">
-            </div><label class="lbl">Settings</label>
-        </div>
-
-        <div class="company_groupDetails" *ngIf="selectedCompany">
-            <i class="material-icons left">label</i>
-            <input ngControl="companyName" #companyName="ngModel" [(ngModel)]="selectedCompanyName" name="companyName" autocomplete="off" />
-            <div>
-                <label class="modaldefaultlabel"> Name Of Account </label>
+        <div class="companySettings">
+            <div class="inlineblock titlewithdivider">
+                <div class="divider">
+                </div><label class="lbl">Settings</label>
             </div>
         </div>
+        <div class="companyBody">
+            <div class="company_groupDetails" *ngIf="selectedCompany">
+                <i class="material-icons left">label</i>
+                <input ngControl="companyName" #companyName="ngModel" [(ngModel)]="selectedCompanyName" name="companyName" autocomplete="off" />
+                <div>
+                    <label class="modaldefaultlabel"> Name Of Account </label>
+                </div>
+            </div>
 
-        <div class="innerdiv">
-            <button class="waves-effect waves-light btn" (click)="onCompanySave($event) "> 
+            <div class="innerdiv">
+                <button class="waves-effect waves-light btn" (click)="onCompanySave($event) "> 
              <i class="material-icons">save</i>Save</button>
+            </div>
+        </div>
+        <div class="divider"></div>
+        <div class="delete" id="deleteCompany">
+            <button class="waves-effect waves-light btn" (click)="onDeleteCompany()">
+            <i class="material-icons">delete</i>Delete</button>
         </div>
     </div>
 </div>

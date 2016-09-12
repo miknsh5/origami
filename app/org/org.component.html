@@ -16,7 +16,7 @@
 
 <div class="main-canvas" *ngIf="orgGroup" (window:resize)="onResize($event)">
     <sg-org-tree [treeData]="treeJson" [width]="svgWidth" [height]="svgHeight" [currentMode]="currentChartMode" [isAddOrEditModeEnabled]="isAddOrEditMode" (selectNode)="onNodeSelected($event)" (switchToAddMode)="onSwitchedToAddMode($event)" [showFirstNameLabel]="displayFirstNameLabel"
-        [showLastNameLabel]="displayLastNameLabel" [showDescriptionLabel]="displayDescriptionLabel" [orgGroupID]="groupID">
+        [showLastNameLabel]="displayLastNameLabel" [showDescriptionLabel]="displayDescriptionLabel" [orgGroupID]="groupID" [CompanyID]="companyID">
     </sg-org-tree>
 </div>
 

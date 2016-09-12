@@ -163,7 +163,7 @@ export class ImportCsvFileComponent {
         let objArray = [];
         for (let i = 1; i < array.length; i++) {
             objArray[i - 1] = {};
-            for (let k = 0; k < array.length; k++) {
+            for (let k = 0; k <= array.length; k++) {
                 let key = array[0][k];
                 if (key === "First Name") {
                     key = key.replace(" ", "_");
@@ -180,7 +180,9 @@ export class ImportCsvFileComponent {
                 this.rootNode.push(this.convertBaseModelToData(node));
             }
         });
-        this.unmappedNodesCount = this.unmappedNodesCount - 1;
+        if (this.unmappedNodesCount >= 1) {
+            this.unmappedNodesCount = this.unmappedNodesCount - 1;
+        }
         this.json = JSON.stringify(this.rootNode);
         this.json = this.json.replace(/},/g, "},\r\n");
         this.json = JSON.parse(this.json);

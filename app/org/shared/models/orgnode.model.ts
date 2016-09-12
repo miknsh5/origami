@@ -5,6 +5,7 @@ export class OrgNodeModel {
     NodeID: number;
     OrgGroupID: number;
     ParentNodeID: number;
+    CompanyID: number;
     IsSelected: boolean;
     Show: boolean;
     IsSibling: boolean;

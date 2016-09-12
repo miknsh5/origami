@@ -39,6 +39,7 @@ export class OrgComponent implements OnDestroy {
     svgPan: any;
 
     @Output() groupID: any;
+    @Output() companyID: any;
     @Output() currentChartMode: ChartMode;
     @Output() treeJson: any;
     @Output() orgGroup: OrgGroupModel;
@@ -122,15 +123,18 @@ export class OrgComponent implements OnDestroy {
 
     onNodeAdded(addedNode: OrgNodeModel) {
         this.isAddOrEditMode = false;
+        this.isOrgNodeEmpty = true;
         if (addedNode.NodeID !== -1) {
             // gets the stagged node and deleting it
             let node = this.getNode(-1, this.orgNodes[0]);
             this.deleteNodeFromArray(node, this.orgNodes);
             this.selectedNode = addedNode;
             this.detailAddOrEditMode = false;
+            this.isOrgNodeEmpty = false;
         }
         if (addedNode.IsNewRoot) {
             this.orgNodes.splice(0, 1, addedNode);
+            this.isOrgNodeEmpty = false;
         }
         else {
             this.addChildToSelectedOrgNode(addedNode, this.orgNodes[0]);
@@ -392,6 +396,7 @@ export class OrgComponent implements OnDestroy {
     onGroupSelected(data: any) {
         this.orgGroup = data;
         this.orgNodes = JSON.parse(JSON.stringify(this.orgGroup.OrgNodes));
+        this.companyID = this.orgGroup.CompanyID;
         if (this.groupID !== this.orgGroup.OrgGroupID)
             this.groupID = this.orgGroup.OrgGroupID;
         if (this.orgNodes && this.orgNodes.length === 0) {
