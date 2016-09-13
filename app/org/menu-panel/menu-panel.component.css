@@ -25,6 +25,8 @@ nav {
 
 nav,
 nav .nav-wrapper i,
+nav .nav-wrapper>ul>li,
+nav .nav-wrapper>ul>li>a,
 nav a.button-collapse,
 nav a.button-collapse i {
     height: 55px;
@@ -45,12 +47,21 @@ nav ul a i.left {
     margin: 0 5px;
 }
 
+.userName {
+    display: inline-block;
+    max-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 #userDropdown {
     top: 55px !important;
 }
 
 #userDropdown .collection-item.avatar {
-    min-height: 65px
+    min-height: 65px;
+    padding: 10px 20px 10px 72px;
 }
 
 #userDropdown .collection-item.avatar img {
@@ -61,6 +72,10 @@ nav ul a i.left {
     left: 15px;
     display: inline-block;
     vertical-align: middle;
+}
+
+#userDropdown .collection-item.avatar p {
+    margin: 0;
 }
 
 #userDropdown .collection-item.avatar .title {

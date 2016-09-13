@@ -143,22 +143,19 @@ export class ImportCsvFileComponent {
             orgNode.NodeLastName = node.Last_Name;
             orgNode.Description = node.Title;
             orgNode.ParentNodeID = node.Parent;
-            if ((orgNode.ParentNodeID).toString() === "null") {
+            if (Number.isNaN(orgNode.ParentNodeID) || (orgNode.ParentNodeID).toString().toLowerCase() === "null" || (orgNode.ParentNodeID).toString() === "") {
                 this.nodeName = orgNode.NodeFirstName + " " + orgNode.NodeLastName;
                 this.unmappedNodesCount++;
+                orgNode.children = new Array<OrgNodeModel>();
             } else {
                 this.mappedNodesCount++;
             }
-
-        }
-        if ((orgNode.ParentNodeID).toString() === "null") {
-            orgNode.children = new Array<OrgNodeModel>();
-
         }
         return orgNode;
     }
 
     private CSV2JSON(csv) {
+        this.rootNode = [];
         let array = this.CSVToArray(csv, ",");
         let objArray = [];
         for (let i = 1; i < array.length; i++) {
@@ -180,6 +177,7 @@ export class ImportCsvFileComponent {
                 this.rootNode.push(this.convertBaseModelToData(node));
             }
         });
+
         if (this.unmappedNodesCount >= 1) {
             this.unmappedNodesCount = this.unmappedNodesCount - 1;
         }

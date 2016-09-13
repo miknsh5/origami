@@ -1,7 +1,7 @@
 <div class="auth-panel">
     <!-- User Dropdown Structure -->
-    <ul id="userDropdown" class="dropdown-content collection">
-        <li *ngIf="userModel" class="collection-item avatar">
+    <ul id="userDropdown" class="dropdown-content">
+        <li class="collection-item avatar">
             <img [src]="userModel.Picture" alt="">
             <p>{{userModel.Name}}</p>
             <p class="caption">{{userModel.Email}}</p>
@@ -89,9 +89,10 @@
                         <i class="material-icons right">arrow_drop_down</i>
                     </a>
                 </li>
-                <li>
+                <li *ngIf="userModel">
                     <a class="dropdown-button" data-activates="userDropdown">
-                        <i class="material-icons left">person</i>User
+                        <i class="material-icons left">person</i>
+                        <span class="userName">{{userModel.Name}}</span>
                         <i class="material-icons right">arrow_drop_down</i>
                     </a>
                 </li>

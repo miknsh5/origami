@@ -355,17 +355,8 @@ export class MenuPanelComponent implements OnChanges {
                 this.newCompanyName = "My Organization";
                 this.addNewCompany();
             } else {
-                this.orgCompanies.forEach((company, index) => {
-                    if (company.IsDefaultCompany) {
-                        this.selectedCompany = company;
-                        this.setSelectedGroup(this.selectedCompany.OrgGroups);
-                    } else {
-                        this.selectedCompany = this.orgCompanies[0];
-                        this.setSelectedGroup(this.selectedCompany.OrgGroups);
-                    }
-                });
+                this.setCompanies(this.orgCompanies);
             }
-            this.companySelected.emit(this.selectedCompany);
             this.dismissPopup("company");
         }
     }
@@ -389,18 +380,8 @@ export class MenuPanelComponent implements OnChanges {
                 this.newGroupName = "My Group";
                 this.addNewGroup();
             } else {
-                this.orgCompanyGroups.forEach((group) => {
-                    if (group.IsDefaultGroup) {
-                        this.selectedGroup = group;
-                        this.getAllNodes(this.selectedGroup.OrgGroupID);
-                    }
-                    else {
-                        this.selectedGroup = this.orgCompanyGroups[0];
-                        this.getAllNodes(this.selectedGroup.OrgGroupID);
-                    }
-                });
+                this.setSelectedGroup(this.orgCompanyGroups);
             }
-            this.groupSelected.emit(this.selectedGroup);
             this.dismissPopup("group");
         }
     }
@@ -412,7 +393,6 @@ export class MenuPanelComponent implements OnChanges {
 
         if (node) {
             let row = this.dataHelper.getCSVFileHeaders(node);
-
             // append Label row with line break
             CSV += row + "\r\n";
         }
