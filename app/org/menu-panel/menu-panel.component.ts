@@ -275,7 +275,6 @@ export class MenuPanelComponent implements OnChanges {
                     group.GroupName = data.GroupName;
                     group.IsDefaultGroup = isDefault;
                     group.OrgGroupID = data.OrgGroupID;
-                    // group.IsSelected = true;
                     return true;
                 }
             });
@@ -303,7 +302,6 @@ export class MenuPanelComponent implements OnChanges {
                     company.CompanyName = data.CompanyName;
                     company.DateCreated = data.DateCreated;
                     // company.OrgGroups = data.OrgGroups;
-                    // company.IsSelected = true;
                     return true;
                 }
             });

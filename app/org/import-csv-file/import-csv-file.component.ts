@@ -19,13 +19,15 @@ export class ImportCsvFileComponent {
     private fileName: any;
     private json: any;
     private rootNode = [];
-    private nodeName: any;
+    private defaultNode: any;
     private mappedNodesCount: any;
     private unmappedNodesCount: any;
     private $importfile: any;
     private $loadScreen: any;
     private $confirmImport: any;
     private $templateScreen: any;
+    private $confirmParent: any;
+    private hasMultipleParent: boolean;
 
     @Input() selectedGroup: OrgGroupModel;
     @Output() newOrgNodes = new EventEmitter<OrgNodeModel>();
@@ -38,6 +40,9 @@ export class ImportCsvFileComponent {
         this.$loadScreen = "#loadScreen";
         this.$confirmImport = "#confirmImport";
         this.$templateScreen = "#templateScreen";
+        this.$confirmParent = "#confirmParent";
+        this.hasMultipleParent = false;
+        this.defaultNode = new OrgNodeModel();
     }
 
     private checkFileExtension(fileName: string): boolean {
@@ -55,50 +60,59 @@ export class ImportCsvFileComponent {
     }
 
     private onImport(event) {
-        $(this.$importfile).hide();
-        $(this.$loadScreen).show();
         let files = (event.srcElement || event.target).files[0];
-        this.fileName = files.name;
-        let isFileCorrect = this.checkFileExtension(this.fileName);
-        if (!files) {
-            alert("The File APIs are not fully supported in this browser!");
-        } else if (isFileCorrect) {
-            let data = null;
-            let file = files;
-            let reader = new FileReader();
-            reader.readAsText(file);
-            reader.onload = (event) => {
-                let csvData = event.target["result"];
-                let isFileFormat = this.CSV2JSON(csvData);
+        if (files) {
+            this.defaultNode = new OrgNodeModel();
+            $(this.$importfile).hide();
+            $(this.$loadScreen).show();
+            this.fileName = files.name;
+            let isFileCorrect = this.checkFileExtension(this.fileName);
+            if (isFileCorrect) {
+                let data = null;
+                let file = files;
+                let reader = new FileReader();
+                reader.readAsText(file);
+                reader.onload = (event) => {
+                    let csvData = event.target["result"];
+                    let isFileFormat = this.CSV2JSON(csvData);
+                    $(this.$loadScreen).hide();
+                    if (isFileFormat) {
+                        $(this.$confirmImport).show();
+                    } else {
+                        $(this.$templateScreen).show();
+                    }
+                };
+                reader.onerror = function () {
+                    alert("Unable to read " + file.fileName);
+                };
+            } else {
                 $(this.$loadScreen).hide();
-                if (isFileFormat) {
-                $(this.$confirmImport).show();
-                }
-                else {
-                    $(this.$templateScreen).show();
-                }
-            };
-            reader.onerror = function () {
-                alert("Unable to read " + file.fileName);
-            };
-        } else {
-            $(this.$loadScreen).hide();
-            $(this.$templateScreen).show();
+                $(this.$templateScreen).show();
+            }
+
         }
     }
 
     onConfirm() {
-        this.orgService.addGroupNodes(this.selectedGroup.OrgGroupID, this.json)
-            .subscribe(data => this.setOrgGroupData(data),
-            err => this.orgService.logError(err));
+        if (this.unmappedNodesCount > 1) {
+            this.orgService.addGroupNodes(this.selectedGroup.OrgGroupID, this.json, null)
+                .subscribe(data => this.setOrgGroupData(data),
+                err => this.orgService.logError(err));
+        }
+        else {
+            this.orgService.addGroupNodes(this.selectedGroup.OrgGroupID, this.json, this.defaultNode.NodeID)
+                .subscribe(data => this.setOrgGroupData(data),
+                err => this.orgService.logError(err));
+        }
+
         $(this.$confirmImport).hide();
-        $("#groupSettings").hide();
-        this.nodeName = " ";
+        $(this.$loadScreen).show();
         this.unmappedNodesCount = 0;
         this.mappedNodesCount = 0;
     }
 
     private setOrgGroupData(data) {
+        $("#groupSettings").hide();
         this.newOrgNodes.emit(data);
     }
 
@@ -107,9 +121,10 @@ export class ImportCsvFileComponent {
         $(this.$templateScreen).hide();
         $(this.$loadScreen).hide();
         $(this.$confirmImport).hide();
-        this.nodeName = " ";
+        $(this.$confirmParent).hide();
         this.unmappedNodesCount = 0;
         this.mappedNodesCount = 0;
+        this.hasMultipleParent = false;
     }
 
     private CSVToArray(strData, strDelimiter): any {
@@ -175,9 +190,9 @@ export class ImportCsvFileComponent {
             orgNode.Description = node.Title;
             orgNode.ParentNodeID = node.Parent;
             if (Number.isNaN(orgNode.ParentNodeID) || (orgNode.ParentNodeID).toString().toLowerCase() === "null" || (orgNode.ParentNodeID).toString() === "") {
-                this.nodeName = orgNode.NodeFirstName + " " + orgNode.NodeLastName;
                 this.unmappedNodesCount++;
                 orgNode.children = new Array<OrgNodeModel>();
+                this.defaultNode = orgNode;
             } else {
                 this.mappedNodesCount++;
             }
@@ -204,33 +219,39 @@ export class ImportCsvFileComponent {
         this.rootNode = [];
         let array = this.CSVToArray(csv, ",");
         if (this.checkFileFormat(array[0])) {
-        let objArray = [];
-        for (let i = 1; i < array.length; i++) {
-            objArray[i - 1] = {};
-            for (let k = 0; k <= array.length; k++) {
-                let key = array[0][k];
-                if (key === "First Name") {
-                    key = key.replace(" ", "_");
+            let objArray = [];
+            for (let i = 1; i < array.length; i++) {
+                objArray[i - 1] = {};
+                for (let k = 0; k <= array.length; k++) {
+                    let key = array[0][k];
+                    if (key === "First Name") {
+                        key = key.replace(" ", "_");
+                    }
+                    if (key === "Last Name") {
+                        key = key.replace(" ", "_");
+                    }
+                    objArray[i - 1][key] = array[i][k];
                 }
-                if (key === "Last Name") {
-                    key = key.replace(" ", "_");
+            }
+
+            objArray.forEach((node) => {
+                if (node.UID !== "") {
+                    this.rootNode.push(this.convertBaseModelToData(node));
                 }
-                objArray[i - 1][key] = array[i][k];
-            }
-        }
+            });
 
-        objArray.forEach((node) => {
-            if (node.UID !== "") {
-                this.rootNode.push(this.convertBaseModelToData(node));
+            if (this.unmappedNodesCount > 1) {
+                this.hasMultipleParent = true;
+                this.rootNode.forEach((node) => {
+                    node.ParentNodeID = null;
+                });
+            } else {
+                this.hasMultipleParent = false;
+                this.unmappedNodesCount = this.unmappedNodesCount - 1;
             }
-        });
-
-        if (this.unmappedNodesCount >= 1) {
-            this.unmappedNodesCount = this.unmappedNodesCount - 1;
-        }
-        this.json = JSON.stringify(this.rootNode);
-        this.json = this.json.replace(/},/g, "},\r\n");
-        this.json = JSON.parse(this.json);
+            this.json = JSON.stringify(this.rootNode);
+            this.json = this.json.replace(/},/g, "},\r\n");
+            this.json = JSON.parse(this.json);
             return true;
         } else {
             return false;

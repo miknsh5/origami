@@ -42,30 +42,35 @@
             <h6> File : <b>{{fileName}}</b></h6>
         </div>
         <hr/>
-        <div class="col s9 divspacing">
-            <h6>Import Resource Count: </h6>
-            <h6 class="subtitles"> Total Resources found in import</h6>
+        <div class="center divspacing" *ngIf="hasMultipleParent">
+            <h6> Uploaded file has multiple root nodes continue to save data without any relationship. </h6>
         </div>
-        <div class="col s3 divspacing">
-            <h6 class="right"><b>{{mappedNodesCount}}</b></h6>
-        </div>
-        <div class="col s9 divspacing">
-            <h6>Unmapped Resource Count: </h6>
-            <h6 class="subtitles">
-                Resources in import file without a parent. This will be accessible from search, but not visible in tree until defined
-            </h6>
-        </div>
-        <div class="col s3 divspacing">
-            <h6 class="right"><b>{{unmappedNodesCount}}</b></h6>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col s7 divspacing">
-            <h6>Head of Group : </h6>
-            <h6 class="subtitles"> Person identified as head of the group. Must map to a single person for each group.</h6>
-        </div>
-        <div class="col s5 divspacing">
-            <h6 class="right"><b>{{nodeName}}</b></h6>
+        <div *ngIf="!hasMultipleParent">
+            <div class="col s9 divspacing">
+                <h6>Import Resource Count: </h6>
+                <h6 class="subtitles"> Total Resources found in import</h6>
+            </div>
+            <div class="col s3 divspacing">
+                <h6 class="right"><b>{{mappedNodesCount}}</b></h6>
+            </div>
+            <div class="col s9 divspacing">
+                <h6>Unmapped Resource Count: </h6>
+                <h6 class="subtitles">
+                    Resources in import file without a parent. This will be accessible from search, but not visible in tree until defined
+                </h6>
+            </div>
+            <div class="col s3 divspacing">
+                <h6 class="right"><b>{{unmappedNodesCount}}</b></h6>
+            </div>
+            <div class="row">
+                <div class="col s7 divspacing">
+                    <h6>Head of Group : </h6>
+                    <h6 class="subtitles"> Person identified as head of the group. Must map to a single person for each group.</h6>
+                </div>
+                <div class="col s5 divspacing">
+                    <h6 class="right"><b>{{defaultNode.NodeFirstName}} {{defaultNode.NodeLastName}}</b></h6>
+                </div>
+            </div>
         </div>
     </div>
     <div>
