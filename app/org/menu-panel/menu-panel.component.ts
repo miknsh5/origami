@@ -336,10 +336,12 @@ export class MenuPanelComponent implements OnChanges {
         this.isImport = false;
     }
     private onDeleteCompany() {
-        let companyID = this.selectedCompany.CompanyID;
-        this.orgService.deleteCompany(companyID)
-            .subscribe(data => this.deleteOrgCompany(data),
-            err => this.orgService.logError(err));
+        if (confirm("Confirm deletion of company") === true) {
+            let companyID = this.selectedCompany.CompanyID;
+            this.orgService.deleteCompany(companyID)
+                .subscribe(data => this.deleteOrgCompany(data),
+                err => this.orgService.logError(err));
+        }
     }
 
     private deleteOrgCompany(data) {
@@ -354,16 +356,18 @@ export class MenuPanelComponent implements OnChanges {
                 this.addNewCompany();
             } else {
                 this.setCompanies(this.orgCompanies);
-                    }
+            }
             this.dismissPopup("company");
         }
     }
 
     private onDeleteGroup() {
-        let groupID = this.selectedGroup.OrgGroupID;
-        this.orgService.deleteGroup(groupID)
-            .subscribe(data => this.deleteOrgGroup(data),
-            err => this.orgService.logError(err));
+        if (confirm("Confirm deletion of group") === true) {
+            let groupID = this.selectedGroup.OrgGroupID;
+            this.orgService.deleteGroup(groupID)
+                .subscribe(data => this.deleteOrgGroup(data),
+                err => this.orgService.logError(err));
+        }
     }
 
     private deleteOrgGroup(data) {
@@ -384,6 +388,6 @@ export class MenuPanelComponent implements OnChanges {
         }
     }
     private onClickDownloadTemplate() {
-       this.dataHelper.DownloadTemplate();
+        this.dataHelper.DownloadTemplate();
     }
 }

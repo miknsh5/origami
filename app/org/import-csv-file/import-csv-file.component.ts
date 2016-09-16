@@ -252,6 +252,9 @@ export class ImportCsvFileComponent {
             this.json = JSON.stringify(this.rootNode);
             this.json = this.json.replace(/},/g, "},\r\n");
             this.json = JSON.parse(this.json);
+            if (this.json && this.json.length === 0) {
+                return false;
+            }
             return true;
         } else {
             return false;
