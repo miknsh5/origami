@@ -25,6 +25,8 @@ nav {
 
 nav,
 nav .nav-wrapper i,
+nav .nav-wrapper>ul>li,
+nav .nav-wrapper>ul>li>a,
 nav a.button-collapse,
 nav a.button-collapse i {
     height: 55px;
@@ -45,12 +47,21 @@ nav ul a i.left {
     margin: 0 5px;
 }
 
+.userName {
+    display: inline-block;
+    max-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 #userDropdown {
     top: 55px !important;
 }
 
 #userDropdown .collection-item.avatar {
-    min-height: 65px
+    min-height: 65px;
+    padding: 10px 20px 10px 72px;
 }
 
 #userDropdown .collection-item.avatar img {
@@ -61,6 +72,10 @@ nav ul a i.left {
     left: 15px;
     display: inline-block;
     vertical-align: middle;
+}
+
+#userDropdown .collection-item.avatar p {
+    margin: 0;
 }
 
 #userDropdown .collection-item.avatar .title {
@@ -78,25 +93,25 @@ nav ul a i.left {
     min-height: 0px;
 }
 
-.dropdown-content li > a {
+.dropdown-content li>a {
     padding: 15px 13px;
     font-size: 13px;
     display: block;
     line-height: 5px;
 }
 
-.dropdown-content li > a > i {
+.dropdown-content li>a>i {
     height: inherit !important;
     line-height: inherit !important;
     margin-right: 15px !important;
     margin-left: 0px !important;
 }
 
-#companyDropdown.dropdown-content li > a {
+#companyDropdown.dropdown-content li>a {
     width: 235px;
 }
 
-#groupDropdown.dropdown-content li > a {
+#groupDropdown.dropdown-content li>a {
     width: 200px;
 }
 
@@ -178,7 +193,6 @@ nav ul a i.left {
     display: none;
     position: fixed;
     z-index: 1;
-    padding-top: 100px;
     left: 0;
     top: 0px;
     width: 100%;
@@ -194,11 +208,14 @@ nav ul a i.left {
 
 .modal-content {
     background-color: #fefefe;
-    margin: auto;
     padding: 0px;
     border: 0px solid #888;
-    width: 345px;
+    width: 22%;
+    min-width: 325px;
     height: 400px;
+    top: 18.5%;
+    margin: 10px auto;
+    position: relative;
 }
 
 
@@ -277,7 +294,7 @@ nav ul a i.left {
 }
 
 input {
-    width: 88%;
+    width: 87%;
     height: 25px;
     margin-bottom: 2px;
 }
@@ -346,7 +363,7 @@ input {
     color: #D0021B;
     font-weight: bolder;
     margin: 0px;
-    width: 345px;
+    width: 100%;
     font-size: 14px;
 }
 

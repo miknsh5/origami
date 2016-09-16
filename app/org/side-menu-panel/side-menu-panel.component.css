@@ -5,6 +5,7 @@
     height: 100%;
     width: 0px;
     z-index: -1;
+    transition: 0.5s;
 }
 
 .sideNav i {
@@ -26,6 +27,7 @@
     background-color: #607d8b;
     color: #fff;
     border: none;
+    height: 30px;
 }
 
 .sideNav i.left {
@@ -41,7 +43,7 @@
 
 .sideNav #menuPanel {
     position: relative;
-    width: 2%;
+    width: 3px;
     height: 100%;
     min-height: 585px;
     z-index: 10000;

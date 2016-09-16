@@ -72,7 +72,7 @@ export class ImportCsvFileComponent {
                 let isFileFormat = this.CSV2JSON(csvData);
                 $(this.$loadScreen).hide();
                 if (isFileFormat) {
-                    $(this.$confirmImport).show();
+                $(this.$confirmImport).show();
                 }
                 else {
                     $(this.$templateScreen).show();
@@ -174,17 +174,13 @@ export class ImportCsvFileComponent {
             orgNode.NodeLastName = node.Last_Name;
             orgNode.Description = node.Title;
             orgNode.ParentNodeID = node.Parent;
-            if ((orgNode.ParentNodeID).toString() === "null") {
+            if (Number.isNaN(orgNode.ParentNodeID) || (orgNode.ParentNodeID).toString().toLowerCase() === "null" || (orgNode.ParentNodeID).toString() === "") {
                 this.nodeName = orgNode.NodeFirstName + " " + orgNode.NodeLastName;
                 this.unmappedNodesCount++;
+                orgNode.children = new Array<OrgNodeModel>();
             } else {
                 this.mappedNodesCount++;
             }
-
-        }
-        if ((orgNode.ParentNodeID).toString() === "null") {
-            orgNode.children = new Array<OrgNodeModel>();
-
         }
         return orgNode;
     }
@@ -205,33 +201,36 @@ export class ImportCsvFileComponent {
     }
 
     private CSV2JSON(csv): boolean {
+        this.rootNode = [];
         let array = this.CSVToArray(csv, ",");
         if (this.checkFileFormat(array[0])) {
-            let objArray = [];
-            for (let i = 1; i < array.length; i++) {
-                objArray[i - 1] = {};
-                for (let k = 0; k <= array.length; k++) {
-                    let key = array[0][k];
-                    if (key === "First Name") {
-                        key = key.replace(" ", "_");
-                    }
-                    if (key === "Last Name") {
-                        key = key.replace(" ", "_");
-                    }
-                    objArray[i - 1][key] = array[i][k];
+        let objArray = [];
+        for (let i = 1; i < array.length; i++) {
+            objArray[i - 1] = {};
+            for (let k = 0; k <= array.length; k++) {
+                let key = array[0][k];
+                if (key === "First Name") {
+                    key = key.replace(" ", "_");
                 }
-            }
-            objArray.forEach((node) => {
-                if (node.UID !== "") {
-                    this.rootNode.push(this.convertBaseModelToData(node));
+                if (key === "Last Name") {
+                    key = key.replace(" ", "_");
                 }
-            });
-            if (this.unmappedNodesCount >= 1) {
-                this.unmappedNodesCount = this.unmappedNodesCount - 1;
+                objArray[i - 1][key] = array[i][k];
             }
-            this.json = JSON.stringify(this.rootNode);
-            this.json = this.json.replace(/},/g, "},\r\n");
-            this.json = JSON.parse(this.json);
+        }
+
+        objArray.forEach((node) => {
+            if (node.UID !== "") {
+                this.rootNode.push(this.convertBaseModelToData(node));
+            }
+        });
+
+        if (this.unmappedNodesCount >= 1) {
+            this.unmappedNodesCount = this.unmappedNodesCount - 1;
+        }
+        this.json = JSON.stringify(this.rootNode);
+        this.json = this.json.replace(/},/g, "},\r\n");
+        this.json = JSON.parse(this.json);
             return true;
         } else {
             return false;

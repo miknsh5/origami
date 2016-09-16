@@ -103,11 +103,11 @@
 
 .confirmImport {
     display: none;
-    padding: 20px 30px 20px 35px;
+    padding: 20px 30px 20px 45px;
 }
 
 .confirmImport h6 {
-    font-size: 0.86rem;
+    font-size: 0.85rem;
     color: #5A6D76;
     display: block;
 }
@@ -137,5 +137,5 @@
 }
 
 .confirmImport .divspacing {
-    padding: 2px 13px;
+    padding: 2px;
 }
