@@ -158,6 +158,14 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             this.tree = d3.layout.tree().nodeSize([NODE_WIDTH, NODE_HEIGHT]);
             this.setNodeLabelVisiblity();
             this.root = this.selectedOrgNode || this.lastSelectedNode;
+        } else {
+            this.tree = d3.layout.cluster().size([360, NODE_HEIGHT / 2])
+                .separation(function (a, b) {
+                    console.log(a);
+                    return (a.parent === b.parent ? 1 : 2) / a.depth;
+                });
+            this.setNodeLabelVisiblity();
+            this.root = this.selectedOrgNode || this.lastSelectedNode;
         }
 
         if (this.currentMode === ChartMode.build) {
@@ -165,10 +173,15 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 .projection(function (d) {
                     return [d.y, d.x];
                 });
-        } else {
+        } else if (this.currentMode === ChartMode.report) {
             this.diagonal = d3.svg.diagonal()
                 .projection(function (d) {
                     return [d.x, d.y];
+                });
+        } else {
+            this.diagonal = d3.svg.diagonal.radial()
+                .projection(function (d) {
+                    return [d.y, d.x / 180 * Math.PI];
                 });
         }
     }
@@ -180,7 +193,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         });
 
         d3.selectAll("text[data-id='description']").style("visibility", () => {
-            if (this.showDescriptionLabel) return "visible";
+            if (this.showDescriptionLabel && this.currentMode !== ChartMode.explore) return "visible";
             else return "hidden";
         });
     }
@@ -248,7 +261,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
             this.calculateLevelDepth();
             this.resizeLinesArrowsAndSvg();
-            if (this.currentMode === ChartMode.report) {
+            if (this.currentMode !== ChartMode.build) {
                 this.setNodeLabelVisiblity();
                 this.root = this.selectedOrgNode;
             }
@@ -341,8 +354,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
             this.arrows.attr("transform", "translate(" + ((this.treeWidth / 2) - SIBLING_RADIUS * 1.35) + "," + ((this.treeHeight / 2) - SIBLING_RADIUS * 1.275) + ")");
             d3.select("#viewport").attr("transform", "");
-        }
-        else if (this.currentMode === ChartMode.report) {
+        } else {
             d3.select("path.vertical")
                 .attr("stroke", TRANSPARENT_COLOR);
             d3.select("path.horizontal")
@@ -356,6 +368,8 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                     return "buildMode";
                 else if (this.currentMode === ChartMode.report)
                     return "reportMode";
+                else
+                    return "exploreMode";
             });
 
         this.scrollToCenter();
@@ -371,7 +385,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                     document.documentElement.scrollTop = Math.abs(scrollposition);
                 }
             }
-        } else if (this.currentMode === ChartMode.report) {
+        } else {
             if (this.treeWidth > this.width) {
                 let scrollposition = this.treeWidth / 2;
                 scrollposition = scrollposition - (this.width / 2);
@@ -559,17 +573,26 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             y = source.x0;
             x = this.treeWidth / 2 - x;
             y = this.treeHeight / 2 - y;
-        }
-        else {
+        } else if (this.currentMode === ChartMode.report) {
             x = source.x0;
             y = source.y0;
             x = this.treeWidth / 2 - x;
             y = NODE_WIDTH;
+        } else {
+            x = source.x0;
+            y = source.y0;
+            x = this.treeWidth / 2;
+            y = this.treeHeight / 2;
         }
 
         d3.select("g.nodes").transition()
             .duration(DURATION)
-            .attr("transform", "translate(" + x + "," + y + ")");
+            .attr("transform", () => {
+                if (this.currentMode === ChartMode.explore) {
+                    return "translate(" + x + "," + y + ")rotate(-65)";
+                }
+                return "translate(" + x + "," + y + ")";
+            });
 
         this.hideAllArrows();
 
@@ -650,8 +673,10 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             // Normalize for fixed-depth.
             if (this.currentMode === ChartMode.build) {
                 this.nodes.forEach(function (d) { d.y = d.depth * DEPTH; });
-            } else {
+            } else if (this.currentMode == ChartMode.report) {
                 this.nodes.forEach(function (d) { d.y = d.depth * NODE_WIDTH; });
+            } else {
+                this.nodes.forEach(function (d) { d.y = d.depth * RIGHTLEFT_MARGIN; });
             }
 
             this.renderOrUpdateNodes(source);
@@ -683,6 +708,8 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 let transformString = "translate(" + source.y0 + "," + source.x0 + ")";
                 if (this.currentMode === ChartMode.report) {
                     transformString = "translate(" + source.x0 + "," + source.y0 + ")";
+                } else if (this.currentMode === ChartMode.explore) {
+                    transformString = "rotate(" + (source.x0 - 90) + ")translate(" + source.y0 + ")";
                 }
                 return transformString;
             })
@@ -734,29 +761,39 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             }
 
             if (name.length > 15) {
-                if (this.currentMode === ChartMode.build) { return d.IsSelected || d.IsGrandParent ? "" : name.substring(0, 15) + "..."; }
-                else { return name.substring(0, 15) + "..."; }
+                if (this.currentMode === ChartMode.build) {
+                    return d.IsSelected || d.IsGrandParent ? "" : name.substring(0, 15) + "...";
+                } else if (this.currentMode === ChartMode.report) {
+                    return name.substring(0, 15) + "...";
+                } else {
+                    return d.NodeFirstName.substring(0, 15) + "...";
+                }
             }
             else {
-                if (this.currentMode === ChartMode.build) { return d.IsSelected || d.IsGrandParent ? "" : name; }
-                else { return name; }
+                if (this.currentMode === ChartMode.build) {
+                    return d.IsSelected || d.IsGrandParent ? "" : name;
+                } else {
+                    return name;
+                }
             }
-
         }).attr("text-anchor", (d) => {
-            if (this.currentMode === ChartMode.build) { return "start"; }
+            if (this.currentMode !== ChartMode.report) { return "start"; }
             else { return "middle"; }
         });
 
         node.select("g.label text[data-id='description']").text((d) => {
             if (d.Description > 15) {
-                if (this.currentMode === ChartMode.build) { return d.IsSelected || d.IsGrandParent ? "" : d.Description.substring(0, 15) + "..."; }
-                else { return d.Description.substring(0, 15) + "..."; }
+                if (this.currentMode === ChartMode.build) {
+                    return d.IsSelected || d.IsGrandParent ? "" : d.Description.substring(0, 15) + "...";
+                } else {
+                    return d.Description.substring(0, 15) + "...";
+                }
             } else {
                 if (this.currentMode === ChartMode.build) { return d.IsSelected || d.IsGrandParent ? "" : d.Description; }
                 else { return d.Description; }
             }
         }).attr("text-anchor", (d) => {
-            if (this.currentMode === ChartMode.build) { return "start"; }
+            if (this.currentMode !== ChartMode.report) { return "start"; }
             else { return "middle"; }
         }).attr("dy", (d) => {
             if (this.showDescriptionLabel && !this.showFirstNameLabel && !this.showLastNameLabel) {
@@ -786,9 +823,12 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                     margin = DEFAULT_MARGIN * 3;
                 }
                 return "translate(" + margin + ",0)";
-            } else {
+            } else if (this.currentMode === ChartMode.report) {
                 if (d.IsSelected) margin = DEFAULT_MARGIN * 5;
                 return "translate(0," + margin + ")";
+            } else {
+                if (d.IsSelected) margin = DEFAULT_MARGIN * 5;
+                return "translate(" + margin + ",0)";
             }
         });
 
@@ -824,9 +864,10 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             .attr("transform", (d) => {
                 if (this.currentMode === ChartMode.build) {
                     return "translate(" + d.y + "," + d.x + ")";
-                }
-                else {
+                } else if (this.currentMode === ChartMode.report) {
                     return "translate(" + d.x + "," + d.y + ")";
+                } else {
+                    return "rotate(" + (d.x - 90) + ")translate(" + d.y + ")";
                 }
             });
 
@@ -857,9 +898,10 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             .attr("transform", (d) => {
                 if (this.currentMode === ChartMode.build) {
                     return "translate(" + source.y + "," + source.x + ")";
-                }
-                else {
+                } else if (this.currentMode === ChartMode.report) {
                     return "translate(" + source.x + "," + source.y + ")";
+                } else {
+                    return "rotate(" + (source.x - 90) + ")translate(" + source.y + ")";
                 }
             })
             .remove();
@@ -1354,7 +1396,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 }
             }
         }
-        if (this.currentMode === ChartMode.report) {
+        if (this.currentMode !== ChartMode.build) {
             node.Show = true;
         }
         return false;

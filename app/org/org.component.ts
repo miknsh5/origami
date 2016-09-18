@@ -34,6 +34,7 @@ export class OrgComponent implements OnDestroy {
     svgHeight: number;
     buildView: any;
     reportView: any;
+    exploreView: any;
     buildViewText: any;
     reportViewText: any;
     svgPan: any;
@@ -88,9 +89,24 @@ export class OrgComponent implements OnDestroy {
                 if (this.svgPan) {
                     this.svgPan.enablePan = false;
                 }
-            } else {
+            } else if(viewMode === ChartMode.report) {
                 this.currentChartMode = ChartMode.report;
                 this.enableViewModesNav(ChartMode.report);
+                this.enableLabels();
+                if (!this.svgPan) {
+                    let elem = document.getElementsByTagName("svg")[0];
+                    this.svgPan = SVGPan(elem, {
+                        enablePan: true,
+                        enableZoom: false,
+                        enableDrag: false,
+                        zoomScale: 0
+                    });
+                } else {
+                    this.svgPan.enablePan = true;
+                }
+            }else {
+                this.currentChartMode = ChartMode.explore;
+                this.enableViewModesNav(ChartMode.explore);
                 this.enableLabels();
                 if (!this.svgPan) {
                     let elem = document.getElementsByTagName("svg")[0];
@@ -146,14 +162,14 @@ export class OrgComponent implements OnDestroy {
         this.isAddOrEditMode = true;
         this.detailAddOrEditMode = true;
         this.selectedNode = node;
-        this.disableViewModesNav(ChartMode.report);
+        this.disableViewAndExploreModesNav();
     }
 
     onAddOrEditModeValueSet(value: boolean) {
         this.isAddOrEditMode = value;
         this.detailAddOrEditMode = value;
         if (value) {
-            this.disableViewModesNav(ChartMode.report);
+            this.disableViewAndExploreModesNav();
         } else {
             this.enableViewModesNav(ChartMode.build);
         }
@@ -215,7 +231,7 @@ export class OrgComponent implements OnDestroy {
         this.orgGroup.OrgNodes = JSON.parse(JSON.stringify(this.orgNodes));
         this.treeJson = JSON.parse(JSON.stringify(this.orgNodes));
         if ((this.treeJson && this.treeJson.length === 0) || (this.selectedNode && this.selectedNode.NodeID === -1)) {
-            this.disableViewModesNav(ChartMode.report);
+            this.disableViewAndExploreModesNav();
         }
     }
 
@@ -310,21 +326,24 @@ export class OrgComponent implements OnDestroy {
     }
 
     private enableViewModesNav(viewMode) {
-        if (viewMode === ChartMode.build) {
+        if (viewMode === ChartMode.explore) {
+            this.exploreView = "active";
+            this.reportView = "";
+            this.buildView = "";
+        } else if (viewMode === ChartMode.report) {
+            this.buildView = "";
+            this.exploreView = "";
+            this.reportView = "active";
+        } else {
             this.buildView = "active";
             this.reportView = "";
-        } else {
-            this.buildView = "";
-            this.reportView = "active";
+            this.exploreView = "";
         }
     }
 
-    private disableViewModesNav(viewMode) {
-        if (viewMode === ChartMode.build) {
-            this.buildView = "inactive";
-        } else {
-            this.reportView = "inactive";
-        }
+    disableViewAndExploreModesNav() {
+        this.reportView = "inactive";
+        this.exploreView = "inactive";
     }
 
     private getSvgHeight() {
@@ -400,7 +419,7 @@ export class OrgComponent implements OnDestroy {
         if (this.groupID !== this.orgGroup.OrgGroupID)
             this.groupID = this.orgGroup.OrgGroupID;
         if (this.orgNodes && this.orgNodes.length === 0) {
-            this.disableViewModesNav(ChartMode.report);
+            this.disableViewAndExploreModesNav();
             this.currentChartMode = ChartMode.build;
         }
         this.enableViewModesNav(this.currentChartMode);
