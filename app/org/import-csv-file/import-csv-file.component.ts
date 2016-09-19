@@ -107,6 +107,7 @@ export class ImportCsvFileComponent {
 
         $(this.$confirmImport).hide();
         $(this.$loadScreen).show();
+        $("#cancelbtn").hide();
         this.unmappedNodesCount = 0;
         this.mappedNodesCount = 0;
     }
@@ -116,7 +117,17 @@ export class ImportCsvFileComponent {
         this.newOrgNodes.emit(data);
     }
 
-    private onCancelImport() {
+    private onCancelImport(data: boolean) {
+        if (data === true) {
+            if (confirm("Are you sure?") === true) {
+                this.hideDialog();
+            }
+        } else {
+            this.hideDialog();
+        }
+
+    }
+    private hideDialog() {
         $(this.$importfile).show();
         $(this.$templateScreen).hide();
         $(this.$loadScreen).hide();

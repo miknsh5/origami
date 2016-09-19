@@ -21,7 +21,7 @@
         <label class="lbl">(This may take a minute)</label>
     </div>
     <div>
-        <button class="waves-effect waves-light btn" (click)="onCancelImport()">Cancel</button>
+        <button id="cancelbtn" class="waves-effect waves-light btn" (click)="onCancelImport(true)">Cancel</button>
     </div>
 </div>
 <div id="templateScreen" class="templateScreen center">
@@ -31,7 +31,7 @@
         </label>
     </div>
     <div class="template">
-        <button class="waves-effect waves-light btn" (click)="onCancelImport()"><i class="material-icons">arrow_back</i>Back</button>
+        <button class="waves-effect waves-light btn" (click)="onCancelImport(false)"><i class="material-icons">arrow_back</i>Back</button>
         <button class="waves-effect waves-light btn" (click)="onClickDownloadTemplate()"><i class="material-icons">file_download</i>Download</button>
 
     </div>
@@ -74,7 +74,7 @@
         </div>
     </div>
     <div>
-        <button class="waves-effect waves-light btn" (click)="onCancelImport()"><i class="material-icons">arrow_back</i> Cancel</button>
+        <button class="waves-effect waves-light btn" (click)="onCancelImport(true)"><i class="material-icons">arrow_back</i> Cancel</button>
         <button class="waves-effect waves-light btn" (click)="onConfirm()"><i class="material-icons">arrow_forward</i>Confirm</button>
     </div>
 </div>

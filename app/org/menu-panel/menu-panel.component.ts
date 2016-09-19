@@ -25,7 +25,7 @@ export class MenuPanelComponent implements OnChanges {
     private selectedGroupName: any;
     private selectedCompanyName: any;
     private newGroupName: any;
-    private newCompanyName: any;
+    private newCompany: any;
     private groupSettingTitle: any;
     private isImport: boolean;
     private enableImport: boolean;
@@ -179,7 +179,7 @@ export class MenuPanelComponent implements OnChanges {
             this.newGroupName = " ";
             $("#addNewGroup").show();
         } else if (name === "newCompany") {
-            this.newCompanyName = " ";
+            this.newCompany = " ";
             $("#addNewCompany").show();
         }
     }
@@ -197,22 +197,24 @@ export class MenuPanelComponent implements OnChanges {
             this.newGroupName = " ";
             $("#addNewGroup").hide();
         } else if (name === "newCompany") {
-            this.newCompanyName = " ";
+            this.newCompany = " ";
             $("#addNewCompany").hide();
         }
     }
 
     private onGroupSave() {
-        let group = new OrgGroupModel();
-        group.CompanyID = this.selectedGroup.CompanyID;
-        group.IsDefaultGroup = this.selectedGroup.IsDefaultGroup;
-        group.OrgGroupID = this.selectedGroup.OrgGroupID;
-        group.GroupName = this.selectedGroupName;
-        group.OrgNodes = null;
+        if (confirm("Are you sure?") === true) {
+            let group = new OrgGroupModel();
+            group.CompanyID = this.selectedGroup.CompanyID;
+            group.IsDefaultGroup = this.selectedGroup.IsDefaultGroup;
+            group.OrgGroupID = this.selectedGroup.OrgGroupID;
+            group.GroupName = this.selectedGroupName;
+            group.OrgNodes = null;
 
-        this.orgService.updateGroup(group)
-            .subscribe(data => this.setGroupData(data),
-            err => this.orgService.logError(err));
+            this.orgService.updateGroup(group)
+                .subscribe(data => this.setGroupData(data),
+                err => this.orgService.logError(err));
+        }
     }
 
     private addNewGroup() {
@@ -227,13 +229,12 @@ export class MenuPanelComponent implements OnChanges {
                 this.setNewGroup(data);
             },
             err => this.orgService.logError(err));
-
     }
 
     private addNewCompany() {
         let userID = this.userModel.UserID;
         let company = new OrgCompanyModel();
-        company.CompanyName = this.newCompanyName;
+        company.CompanyName = this.newCompany;
         company.OrgGroups = null;
 
         this.orgService.addCompany(company, userID)
@@ -282,16 +283,18 @@ export class MenuPanelComponent implements OnChanges {
     }
 
     private onCompanySave() {
-        let company = new OrgCompanyModel();
-        company.CompanyID = this.selectedCompany.CompanyID;
-        company.CompanyName = this.selectedCompanyName;
-        company.DateCreated = this.selectedCompany.DateCreated;
-        company.IsDefaultCompany = this.selectedCompany.IsDefaultCompany;
-        company.OrgGroups = null;
+        if (confirm("Are you sure?") === true) {
+            let company = new OrgCompanyModel();
+            company.CompanyID = this.selectedCompany.CompanyID;
+            company.CompanyName = this.selectedCompanyName;
+            company.DateCreated = this.selectedCompany.DateCreated;
+            company.IsDefaultCompany = this.selectedCompany.IsDefaultCompany;
+            company.OrgGroups = null;
 
-        this.orgService.updateCompany(company)
-            .subscribe(data => this.setCompanyData(data),
-            err => this.orgService.logError(err));
+            this.orgService.updateCompany(company)
+                .subscribe(data => this.setCompanyData(data),
+                err => this.orgService.logError(err));
+        }
     }
 
     private setCompanyData(data) {
@@ -336,7 +339,7 @@ export class MenuPanelComponent implements OnChanges {
         this.isImport = false;
     }
     private onDeleteCompany() {
-        if (confirm("Confirm deletion of company") === true) {
+        if (confirm("Are you sure?") === true) {
             let companyID = this.selectedCompany.CompanyID;
             this.orgService.deleteCompany(companyID)
                 .subscribe(data => this.deleteOrgCompany(data),
@@ -352,7 +355,7 @@ export class MenuPanelComponent implements OnChanges {
                 }
             });
             if (this.orgCompanies && this.orgCompanies.length === 0) {
-                this.newCompanyName = "My Organization";
+                this.newCompany = "My Organization";
                 this.addNewCompany();
             } else {
                 this.setCompanies(this.orgCompanies);
@@ -362,7 +365,7 @@ export class MenuPanelComponent implements OnChanges {
     }
 
     private onDeleteGroup() {
-        if (confirm("Confirm deletion of group") === true) {
+        if (confirm("Are you sure?") === true) {
             let groupID = this.selectedGroup.OrgGroupID;
             this.orgService.deleteGroup(groupID)
                 .subscribe(data => this.deleteOrgGroup(data),
