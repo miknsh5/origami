@@ -55,4 +55,18 @@ export class DataHelper {
         link.click();
         document.body.removeChild(link);
     }
+
+    DownloadTemplate() {
+        // If JSONData is not an object then JSON.parse will parse the JSON string in an Object       
+        let orgNode = new OrgNodeBaseModel();
+        let node = this.convertDataToBaseModel(orgNode);
+        let CSV = "";
+        if (node) {
+            let row = this.getCSVFileHeaders(node);
+
+            // append Label row with line break
+            CSV += row + "\r\n";
+        }
+        this.downloadCSVFile("PeopleTree_Template", CSV);
+    }
 }

@@ -1,84 +1,130 @@
 import { Component, Input, Output, EventEmitter } from "@angular/core";
 
 import { OrgGroupModel, OrgNodeModel, OrgService } from "../shared/index";
+import { DataHelper } from "../data-helper/data-helper";
+
+const DEFAULT_EXTENSION: string = ".csv";
+const DEFAULT_HEADERSTRING: string = "UID,First Name,Last Name,Title,Parent,";
 
 declare let $: any;
 
 @Component({
     selector: "sg-org-import-csv-file",
     templateUrl: "app/org/import-csv-file/import-csv-file.component.html",
-    styleUrls: ["app/org/import-csv-file/import-csv-file.component.css", "app/style.css", "app/org/menu-panel/menu-panel.component.css"]
+    styleUrls: ["app/org/import-csv-file/import-csv-file.component.css", "app/style.css", "app/org/menu-panel/menu-panel.component.css"],
+    providers: [DataHelper]
 })
 
 export class ImportCsvFileComponent {
     private fileName: any;
     private json: any;
     private rootNode = [];
-    private nodeName: any;
+    private defaultNode: any;
     private mappedNodesCount: any;
     private unmappedNodesCount: any;
     private $importfile: any;
     private $loadScreen: any;
     private $confirmImport: any;
+    private $templateScreen: any;
+    private $confirmParent: any;
+    private hasMultipleParent: boolean;
 
     @Input() selectedGroup: OrgGroupModel;
     @Output() newOrgNodes = new EventEmitter<OrgNodeModel>();
 
-    constructor(private orgService: OrgService) {
+    constructor(private orgService: OrgService, private dataHelper: DataHelper) {
         this.fileName = "";
         this.mappedNodesCount = 0;
         this.unmappedNodesCount = 0;
         this.$importfile = "#importFile";
         this.$loadScreen = "#loadScreen";
         this.$confirmImport = "#confirmImport";
+        this.$templateScreen = "#templateScreen";
+        this.$confirmParent = "#confirmParent";
+        this.hasMultipleParent = false;
+        this.defaultNode = new OrgNodeModel();
+    }
+
+    private checkFileExtension(fileName: string): boolean {
+        if (fileName) {
+            if (DEFAULT_EXTENSION === fileName.substr((fileName.length - 4), fileName.length)) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+
+    private onClickDownloadTemplate() {
+        this.dataHelper.DownloadTemplate();
     }
 
     private onImport(event) {
-        $(this.$importfile).hide();
-        $(this.$loadScreen).show();
         let files = (event.srcElement || event.target).files[0];
-        this.fileName = files.name;
-        if (!files) {
-            alert("The File APIs are not fully supported in this browser!");
-        } else {
-            let data = null;
-            let file = files;
-            let reader = new FileReader();
-            reader.readAsText(file);
-            reader.onload = (event) => {
-                let csvData = event.target["result"];
-                this.CSV2JSON(csvData);
+        if (files) {
+            this.defaultNode = new OrgNodeModel();
+            $(this.$importfile).hide();
+            $(this.$loadScreen).show();
+            this.fileName = files.name;
+            let isFileCorrect = this.checkFileExtension(this.fileName);
+            if (isFileCorrect) {
+                let data = null;
+                let file = files;
+                let reader = new FileReader();
+                reader.readAsText(file);
+                reader.onload = (event) => {
+                    let csvData = event.target["result"];
+                    let isFileFormat = this.CSV2JSON(csvData);
+                    $(this.$loadScreen).hide();
+                    if (isFileFormat) {
+                        $(this.$confirmImport).show();
+                    } else {
+                        $(this.$templateScreen).show();
+                    }
+                };
+                reader.onerror = function () {
+                    alert("Unable to read " + file.fileName);
+                };
+            } else {
                 $(this.$loadScreen).hide();
-                $(this.$confirmImport).show();
-            };
-            reader.onerror = function () {
-                alert("Unable to read " + file.fileName);
-            };
+                $(this.$templateScreen).show();
+            }
+
         }
     }
 
     onConfirm() {
-        this.orgService.addGroupNodes(this.selectedGroup.OrgGroupID, this.json)
-            .subscribe(data => this.setOrgGroupData(data),
-            err => this.orgService.logError(err));
+        if (this.unmappedNodesCount > 1) {
+            this.orgService.addGroupNodes(this.selectedGroup.OrgGroupID, this.json, null)
+                .subscribe(data => this.setOrgGroupData(data),
+                err => this.orgService.logError(err));
+        }
+        else {
+            this.orgService.addGroupNodes(this.selectedGroup.OrgGroupID, this.json, this.defaultNode.NodeID)
+                .subscribe(data => this.setOrgGroupData(data),
+                err => this.orgService.logError(err));
+        }
+
         $(this.$confirmImport).hide();
-        $("#groupSettings").hide();
-        this.nodeName = " ";
+        $(this.$loadScreen).show();
         this.unmappedNodesCount = 0;
         this.mappedNodesCount = 0;
     }
 
     private setOrgGroupData(data) {
+        $("#groupSettings").hide();
         this.newOrgNodes.emit(data);
     }
 
     private onCancelImport() {
         $(this.$importfile).show();
+        $(this.$templateScreen).hide();
         $(this.$loadScreen).hide();
         $(this.$confirmImport).hide();
-        this.nodeName = " ";
+        $(this.$confirmParent).hide();
         this.unmappedNodesCount = 0;
         this.mappedNodesCount = 0;
+        this.hasMultipleParent = false;
     }
 
     private CSVToArray(strData, strDelimiter): any {
@@ -144,9 +190,9 @@ export class ImportCsvFileComponent {
             orgNode.Description = node.Title;
             orgNode.ParentNodeID = node.Parent;
             if (Number.isNaN(orgNode.ParentNodeID) || (orgNode.ParentNodeID).toString().toLowerCase() === "null" || (orgNode.ParentNodeID).toString() === "") {
-                this.nodeName = orgNode.NodeFirstName + " " + orgNode.NodeLastName;
                 this.unmappedNodesCount++;
                 orgNode.children = new Array<OrgNodeModel>();
+                this.defaultNode = orgNode;
             } else {
                 this.mappedNodesCount++;
             }
@@ -154,35 +200,64 @@ export class ImportCsvFileComponent {
         return orgNode;
     }
 
-    private CSV2JSON(csv) {
+    private checkFileFormat(headers): boolean {
+        let headerString: string = "";
+        if (headers) {
+            headers.forEach(header => {
+                headerString = headerString + header + ",";
+            });
+            if (DEFAULT_HEADERSTRING === headerString) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+    }
+
+    private CSV2JSON(csv): boolean {
         this.rootNode = [];
         let array = this.CSVToArray(csv, ",");
-        let objArray = [];
-        for (let i = 1; i < array.length; i++) {
-            objArray[i - 1] = {};
-            for (let k = 0; k <= array.length; k++) {
-                let key = array[0][k];
-                if (key === "First Name") {
-                    key = key.replace(" ", "_");
+        if (this.checkFileFormat(array[0])) {
+            let objArray = [];
+            for (let i = 1; i < array.length; i++) {
+                objArray[i - 1] = {};
+                for (let k = 0; k <= array.length; k++) {
+                    let key = array[0][k];
+                    if (key === "First Name") {
+                        key = key.replace(" ", "_");
+                    }
+                    if (key === "Last Name") {
+                        key = key.replace(" ", "_");
+                    }
+                    objArray[i - 1][key] = array[i][k];
                 }
-                if (key === "Last Name") {
-                    key = key.replace(" ", "_");
+            }
+
+            objArray.forEach((node) => {
+                if (node.UID !== "") {
+                    this.rootNode.push(this.convertBaseModelToData(node));
                 }
-                objArray[i - 1][key] = array[i][k];
-            }
-        }
+            });
 
-        objArray.forEach((node) => {
-            if (node.UID !== "") {
-                this.rootNode.push(this.convertBaseModelToData(node));
+            if (this.unmappedNodesCount > 1) {
+                this.hasMultipleParent = true;
+                this.rootNode.forEach((node) => {
+                    node.ParentNodeID = null;
+                });
+            } else {
+                this.hasMultipleParent = false;
+                this.unmappedNodesCount = this.unmappedNodesCount - 1;
             }
-        });
-
-        if (this.unmappedNodesCount >= 1) {
-            this.unmappedNodesCount = this.unmappedNodesCount - 1;
+            this.json = JSON.stringify(this.rootNode);
+            this.json = this.json.replace(/},/g, "},\r\n");
+            this.json = JSON.parse(this.json);
+            if (this.json && this.json.length === 0) {
+                return false;
+            }
+            return true;
+        } else {
+            return false;
         }
-        this.json = JSON.stringify(this.rootNode);
-        this.json = this.json.replace(/},/g, "},\r\n");
-        this.json = JSON.parse(this.json);
     }
 }
