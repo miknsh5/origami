@@ -161,7 +161,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         } else {
             this.tree = d3.layout.cluster().size([360, NODE_HEIGHT / 2])
                 .separation(function (a, b) {
-                    console.log(a);
                     return (a.parent === b.parent ? 1 : 2) / a.depth;
                 });
             this.setNodeLabelVisiblity();
@@ -739,6 +738,16 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         }).style("font-size", function (d) {
             if (d.IsSelected || d.IsSibling) { return SIBLING_FONTSIZE + "px"; }
             else { return DEFAULT_FONTSIZE + "px"; }
+        }).attr("transform", (d) => {
+            let transformString = "rotate(0)";
+            if (this.currentMode === ChartMode.explore && d.ParentNodeID !== null) {
+                if (d.x > 180) {
+                    transformString = "rotate(-" + ((d.x - 65) - 90) + ")";
+                } else {
+                    transformString = "rotate(115)";
+                }
+            }
+            return transformString;
         });
 
         nodeEnter.append("g")
@@ -760,16 +769,17 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 name = d.NodeLastName;
             }
 
+            if (this.currentMode === ChartMode.explore) {
+                return name = d.NodeFirstName;
+            }
+
             if (name.length > 15) {
                 if (this.currentMode === ChartMode.build) {
                     return d.IsSelected || d.IsGrandParent ? "" : name.substring(0, 15) + "...";
-                } else if (this.currentMode === ChartMode.report) {
-                    return name.substring(0, 15) + "...";
                 } else {
-                    return d.NodeFirstName.substring(0, 15) + "...";
+                    return name.substring(0, 15) + "...";
                 }
-            }
-            else {
+            } else {
                 if (this.currentMode === ChartMode.build) {
                     return d.IsSelected || d.IsGrandParent ? "" : name;
                 } else {
@@ -785,11 +795,14 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             if (d.Description > 15) {
                 if (this.currentMode === ChartMode.build) {
                     return d.IsSelected || d.IsGrandParent ? "" : d.Description.substring(0, 15) + "...";
+                } else if (this.currentMode === ChartMode.explore) {
+                    return "";
                 } else {
                     return d.Description.substring(0, 15) + "...";
                 }
             } else {
                 if (this.currentMode === ChartMode.build) { return d.IsSelected || d.IsGrandParent ? "" : d.Description; }
+                else if (this.currentMode === ChartMode.explore) { return ""; }
                 else { return d.Description; }
             }
         }).attr("text-anchor", (d) => {
@@ -856,6 +869,16 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
         node.select(CIRCLE).attr("class", (d) => {
             return d.IsSelected ? SELECTED_CIRCLE : DEFAULT_CIRCLE;
+        }).attr("transform", (d) => {
+            let transformString = "rotate(0)";
+            if (this.currentMode === ChartMode.explore && d.ParentNodeID !== null) {
+                if (d.x > 180) {
+                    transformString = "rotate(-" + ((d.x - 65) - 90) + ")";
+                } else {
+                    transformString = "rotate(115)";
+                }
+            }
+            return transformString;
         });
 
         // Transition nodes to their new position.
@@ -867,11 +890,12 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 } else if (this.currentMode === ChartMode.report) {
                     return "translate(" + d.x + "," + d.y + ")";
                 } else {
+                    if (d.ParentNodeID == null) {
+                        return "rotate(65)";
+                    }
                     return "rotate(" + (d.x - 90) + ")translate(" + d.y + ")";
                 }
             });
-
-
 
         nodeUpdate.select(CIRCLE)
             .attr("r", function (d) {
