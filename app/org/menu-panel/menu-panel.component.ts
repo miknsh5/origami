@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter, OnChanges, SimpleChange } from "@angular/core";
 import { Router } from "@angular/router-deprecated";
 
-import { OrgCompanyModel, OrgGroupModel, OrgNodeModel, OrgService, OrgNodeBaseModel} from "../shared/index";
+import { OrgCompanyModel, OrgGroupModel, OrgNodeModel, OrgService, OrgNodeStatus, OrgNodeBaseModel} from "../shared/index";
 import { DataHelper } from "../data-helper/data-helper";
 import { UserModel } from "../../Shared/index";
 import { ImportCsvFileComponent } from "../import-csv-file/import-csv-file.component";
@@ -31,6 +31,7 @@ export class MenuPanelComponent implements OnChanges {
     private enableImport: boolean;
 
     @Input() noNodeExsit: boolean;
+    @Input() currentOrgNodeStatus: OrgNodeStatus;
     @Output() orgNodes = new EventEmitter<any>();
     @Output() groupSelected = new EventEmitter<OrgGroupModel>();
     @Output() companySelected = new EventEmitter<OrgCompanyModel>();
@@ -43,11 +44,29 @@ export class MenuPanelComponent implements OnChanges {
     }
 
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
-        if (changes["noNodeExsit"] && changes["noNodeExsit"].currentValue) {
-            this.enableImport = true;
+        if (changes["currentOrgNodeStatus"]) {
+            if (this.currentOrgNodeStatus === OrgNodeStatus.addNode) {
+                this.selectedCompany.TotalOrgNodeCounts = this.selectedCompany.TotalOrgNodeCounts + 1;
+                this.selectedGroup.OrgNodeCounts = this.selectedGroup.OrgNodeCounts + 1;
+            } else if (this.currentOrgNodeStatus === OrgNodeStatus.deleteNode) {
+                this.selectedCompany.TotalOrgNodeCounts = this.selectedCompany.TotalOrgNodeCounts - 1;
+                this.selectedGroup.OrgNodeCounts = this.selectedGroup.OrgNodeCounts - 1;
+                if (this.selectedGroup.OrgNodeCounts === 0) {
+                    this.enableImport = true;
+                }
+            }
+            else if (this.currentOrgNodeStatus === OrgNodeStatus.none) {
+                return;
+            }
         }
-        else {
-            this.enableImport = false;
+
+        if (changes["noNodeExsit"]) {
+            if (changes["noNodeExsit"].currentValue) {
+                this.enableImport = true;
+            }
+            else {
+                this.enableImport = false;
+            }
         }
     }
 
@@ -335,6 +354,8 @@ export class MenuPanelComponent implements OnChanges {
 
     updateNewOrgGroup(OrgNodes) {
         this.setOrgGroupData(OrgNodes);
+        this.selectedCompany.TotalOrgNodeCounts = this.selectedCompany.TotalOrgNodeCounts + OrgNodes.OrgNodeCounts;
+        this.selectedGroup.OrgNodeCounts = OrgNodes.OrgNodeCounts;
         this.groupSettingTitle = "Settings";
         this.isImport = false;
     }
@@ -375,6 +396,7 @@ export class MenuPanelComponent implements OnChanges {
 
     private deleteOrgGroup(data) {
         if (data) {
+            this.selectedCompany.TotalOrgNodeCounts = this.selectedCompany.TotalOrgNodeCounts - this.selectedGroup.OrgNodeCounts;
             this.selectedCompany.OrgGroups.forEach((group, index) => {
                 if (this.compareGroupID(group, this.selectedGroup)) {
                     this.selectedCompany.OrgGroups.splice(index, 1);

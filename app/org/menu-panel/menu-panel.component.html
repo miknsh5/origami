@@ -23,17 +23,21 @@
         <li *ngFor="let company of orgCompanies" class="companyList" (click)="onCompanySelection(company)">
             <a *ngIf="company && company.IsDefaultCompany && company.CompanyID === selectedCompany.CompanyID" class="active">
                 {{company.CompanyName}}
+                <label class="lblCount right">{{company.TotalOrgNodeCounts}}</label>
             </a>
             <a *ngIf="company && company.IsDefaultCompany && company.CompanyID !== selectedCompany.CompanyID">
                 {{company.CompanyName}}
+                <label class="lblCount right">{{company.TotalOrgNodeCounts}}</label>
             </a>
         </li>
         <li *ngFor="let company of orgCompanies" class="companyList" (click)="onCompanySelection(company)">
             <a *ngIf="company && !company.IsDefaultCompany && company.CompanyID === selectedCompany.CompanyID" class="active">
                 <label class="lbl icon"> {{company.CompanyName}}</label>
+                <label class="lblCount right">{{company.TotalOrgNodeCounts}}</label>
             </a>
             <a *ngIf="company && !company.IsDefaultCompany && company.CompanyID !== selectedCompany.CompanyID">
                 <label class="lbl icon"> {{company.CompanyName}}</label>
+                <label class="lblCount right">{{company.TotalOrgNodeCounts}}</label>
             </a>
         </li>
         <li (click)="onAddOrSettingsClick('newCompany')"><a><i class="material-icons left">add</i><label class="lbl">Add New</label></a></li>
@@ -52,10 +56,12 @@
             <a *ngIf="group && group.IsDefaultGroup && group.OrgGroupID === selectedGroup.OrgGroupID" class="active">
                 <i class="material-icons left">apps</i>
                 <label class="lbl active">{{group.GroupName}} </label>
+                <label class="lblCount right">{{group.OrgNodeCounts}}</label>
             </a>
             <a *ngIf=" group && group.IsDefaultGroup && group.OrgGroupID !== selectedGroup.OrgGroupID">
                 <i class="material-icons left">apps</i>
                 <label class="lbl active">{{group.GroupName}} </label>
+                <label class="lblCount right">{{group.OrgNodeCounts}}</label>
             </a>
         </li>
         <li class="divider"></li>
@@ -64,10 +70,12 @@
             <a *ngIf=" group && !group.IsDefaultGroup && group.OrgGroupID === selectedGroup.OrgGroupID" class="active">
                 <i class="material-icons left ">apps</i>
                 <label class="lbl">{{group.GroupName}}</label>
+                <label class="lblCount right">{{group.OrgNodeCounts}}</label>
             </a>
             <a *ngIf=" group && !group.IsDefaultGroup && group.OrgGroupID !== selectedGroup.OrgGroupID">
                 <i class="material-icons left ">apps</i>
                 <label class="lbl">{{group.GroupName}}</label>
+                <label class="lblCount right">{{group.OrgNodeCounts}}</label>
             </a>
         </li>
         <li><a (click)="onAddOrSettingsClick('newGroup')"><i class="material-icons left">add</i><label class="lbl">Add New</label></a></li>
