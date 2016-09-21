@@ -159,7 +159,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             this.setNodeLabelVisiblity();
             this.root = this.selectedOrgNode || this.lastSelectedNode;
         } else {
-            this.tree = d3.layout.cluster().size([360, NODE_HEIGHT / 2])
+            this.tree = d3.layout.cluster().size([360, 90])
                 .separation(function (a, b) {
                     return (a.parent === b.parent ? 1 : 2) / a.depth;
                 });
@@ -587,7 +587,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             .duration(DURATION)
             .attr("transform", () => {
                 if (this.currentMode === ChartMode.explore) {
-                    return "translate(" + x + "," + y + ")rotate(-65)";
+                    return "translate(" + x + "," + y + ")";
                 }
                 return "translate(" + x + "," + y + ")";
             });
@@ -741,10 +741,9 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             let transformString = "rotate(0)";
             if (this.currentMode === ChartMode.explore && d.ParentNodeID !== null) {
                 if (d.x > 180) {
-                    let value = (d.x - 65) - 90;
-                    transformString = "rotate(" + -Math.abs(value) + ")";
+                    transformString = "rotate(" + -Math.abs(d.x - 90) + ")";
                 } else {
-                    transformString = "rotate(" + Math.abs((d.x - 65) - 90) + ")";
+                    transformString = "rotate(" + Math.abs(d.x - 90) + ")";
                 }
             }
             return transformString;
@@ -787,9 +786,10 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 }
             }
         }).attr("text-anchor", (d) => {
-            if (this.currentMode !== ChartMode.report) { return "start"; }
-            else { return "middle"; }
-        });
+            if (this.currentMode === ChartMode.build) { return "start"; }
+            else if (this.currentMode === ChartMode.report) { return "middle"; }
+            else { return d.x < 180 ? "start" : "end"; }
+        }).attr("transform", function (d) { return d.x < 180 ? "rotate(0)" : "rotate(180)"; });
 
         node.select("g.label text[data-id='description']").text((d) => {
             if (d.Description > 15) {
@@ -806,14 +806,15 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 else { return d.Description; }
             }
         }).attr("text-anchor", (d) => {
-            if (this.currentMode !== ChartMode.report) { return "start"; }
-            else { return "middle"; }
+            if (this.currentMode === ChartMode.build) { return "start"; }
+            else if (this.currentMode === ChartMode.report) { return "middle"; }
+            else { return d.x < 180 ? "start" : "end"; }
         }).attr("dy", (d) => {
             if (this.showDescriptionLabel && !this.showFirstNameLabel && !this.showLastNameLabel) {
                 return "0em";
             }
             else { return "1em"; }
-        });
+        }).attr("transform", function (d) { return d.x < 180 ? null : "rotate(180)"; });
 
         if (this.currentMode === ChartMode.build) {
             node.select("g.label").attr("x", function (d) {
@@ -830,7 +831,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         });
 
         node.select("g.label").attr("transform", (d, index) => {
-
             let margin = DEFAULT_MARGIN * 4;
             if (this.currentMode === ChartMode.build) {
                 if (!d.IsSibling) {
@@ -874,9 +874,9 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             let transformString = "rotate(0)";
             if (this.currentMode === ChartMode.explore && d.ParentNodeID !== null) {
                 if (d.x > 180) {
-                    transformString = "rotate(" + -Math.abs((d.x - 65) - 90) + ")";
+                    transformString = "rotate(" + -Math.abs(d.x - 90) + ")";
                 } else {
-                    transformString = "rotate(" + Math.abs((d.x - 65) - 90) + ")";
+                    transformString = "rotate(" + Math.abs(d.x - 90) + ")";
                 }
             }
             return transformString;
@@ -892,7 +892,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                     return "translate(" + d.x + "," + d.y + ")";
                 } else {
                     if (d.ParentNodeID == null) {
-                        return "rotate(65)";
+                        return "rotate(0)";
                     }
                     return "rotate(" + (d.x - 90) + ")translate(" + d.y + ")";
                 }
@@ -939,7 +939,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         nodeExit.select(CIRCLE)
             .attr("r", 1e-6);
 
-        nodeExit.select("g.label ")
+        nodeExit.select("g.label")
             .style("fill-opacity", 1e-6);
 
         node.each(function (d) {
