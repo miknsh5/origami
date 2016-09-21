@@ -371,6 +371,16 @@ input {
     font-size: larger;
 }
 
+#companyDropdown .lblCount {
+    padding-top: 11px;
+    font-weight: normal;
+}
+
+#groupDropdown .lblCount {
+    padding-top: 0.5px;
+    font-weight: normal;
+}
+
 @media only screen and (max-width:992px) {
     nav .brand-logo {
         left: 0%;
