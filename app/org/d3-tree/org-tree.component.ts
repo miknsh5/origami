@@ -161,7 +161,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         } else {
             this.tree = d3.layout.cluster().size([360, 90])
                 .separation(function (a, b) {
-                    return (a.parent === b.parent ? 1 : 2) / a.depth;
+                    return (a.parent === b.parent ? 1 : 4) / a.depth;
                 });
             this.setNodeLabelVisiblity();
             this.selectedOrgNode = this.root;
@@ -806,10 +806,14 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                     return d.x < DEPTH ? "start" : "end";
             }
         }).attr("transform", (d) => {
-            if (d.NodeID === this.root.NodeID && this.currentMode === ChartMode.explore)
+            if (this.currentMode === ChartMode.explore) {
+                if (d.NodeID === this.root.NodeID && this.currentMode === ChartMode.explore)
+                    return "rotate(0)";
+                else
+                    return d.x < DEPTH ? "rotate(0)" : "rotate(180)";
+            } else {
                 return "rotate(0)";
-            else
-                return d.x < DEPTH ? "rotate(0)" : "rotate(180)";
+            }
         });
 
         node.select("g.label text[data-id='description']").text((d) => {
@@ -841,10 +845,15 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             }
             else { return "1em"; }
         }).attr("transform", (d) => {
-            if (d.NodeID === this.root.NodeID && this.currentMode === ChartMode.explore)
+            if (this.currentMode === ChartMode.explore) {
+                if (d.NodeID === this.root.NodeID && this.currentMode === ChartMode.explore)
+                    return "rotate(0)";
+                else {
+                    return d.x < DEPTH ? "rotate(0)" : "rotate(180)";
+                }
+            } else {
                 return "rotate(0)";
-            else
-                return d.x < DEPTH ? "rotate(0)" : "rotate(180)";
+            }
         });
 
         if (this.currentMode === ChartMode.build) {
