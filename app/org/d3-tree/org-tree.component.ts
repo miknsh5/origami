@@ -1169,7 +1169,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                     let node = this.selectedOrgNode.children[0];
                     this.highlightSelectedNode(node);
                     this.render(node);
-                    this.hideTopArrow(node);
                 }
             }
             // left arrow 
@@ -1179,7 +1178,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                     let parentNode = node.parent;
                     this.highlightSelectedNode(parentNode);
                     this.render(parentNode);
-                    this.hideTopArrow(parentNode);
                 }
             }
             // bottom arrow
@@ -1196,7 +1194,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                     }
                     this.highlightSelectedNode(youngerSibling);
                     this.render(youngerSibling);
-                    this.hideTopArrow(youngerSibling);
                 }
             }
             // top arrow
@@ -1214,7 +1211,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                     }
                     this.highlightSelectedNode(elderSibling);
                     this.render(elderSibling);
-                    this.hideTopArrow(elderSibling);
                 }
             }
         }
@@ -1362,6 +1358,9 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             }
             this.expandCollapse(d);
             this.highlightAndCenterNode(d);
+        } else if (this.currentMode === ChartMode.explore) {
+            this.highlightSelectedNode(d);
+            this.render(d);
         }
     }
 
