@@ -22,10 +22,8 @@ export class MenuPanelComponent implements OnChanges {
     private selectedCompany: OrgCompanyModel;
     private selectedGroup: OrgGroupModel;
     private userModel: UserModel;
-    private selectedGroupName: any;
-    private selectedCompanyName: any;
-    private newGroupName: any;
-    private newCompany: any;
+    private groupName: any;
+    private companyName: any;
     private groupSettingTitle: any;
     private isImport: boolean;
     private enableImport: boolean;
@@ -46,16 +44,15 @@ export class MenuPanelComponent implements OnChanges {
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
         if (changes["currentOrgNodeStatus"]) {
             if (this.currentOrgNodeStatus === OrgNodeStatus.addNode) {
-                this.selectedCompany.TotalOrgNodeCounts = this.selectedCompany.TotalOrgNodeCounts + 1;
+                this.selectedCompany.OrgNodeCounts = this.selectedCompany.OrgNodeCounts + 1;
                 this.selectedGroup.OrgNodeCounts = this.selectedGroup.OrgNodeCounts + 1;
             } else if (this.currentOrgNodeStatus === OrgNodeStatus.deleteNode) {
-                this.selectedCompany.TotalOrgNodeCounts = this.selectedCompany.TotalOrgNodeCounts - 1;
+                this.selectedCompany.OrgNodeCounts = this.selectedCompany.OrgNodeCounts - 1;
                 this.selectedGroup.OrgNodeCounts = this.selectedGroup.OrgNodeCounts - 1;
                 if (this.selectedGroup.OrgNodeCounts === 0) {
                     this.enableImport = true;
                 }
-            }
-            else if (this.currentOrgNodeStatus === OrgNodeStatus.none) {
+            } else if (this.currentOrgNodeStatus === OrgNodeStatus.none) {
                 return;
             }
         }
@@ -63,8 +60,7 @@ export class MenuPanelComponent implements OnChanges {
         if (changes["noNodeExsit"]) {
             if (changes["noNodeExsit"].currentValue) {
                 this.enableImport = true;
-            }
-            else {
+            } else {
                 this.enableImport = false;
             }
         }
@@ -189,34 +185,34 @@ export class MenuPanelComponent implements OnChanges {
 
     private onAddOrSettingsClick(name) {
         if (name === "company") {
-            this.selectedCompanyName = this.selectedCompany.CompanyName;
+            this.companyName = this.selectedCompany.CompanyName;
             $("#companySettings").show();
         } else if (name === "group") {
-            this.selectedGroupName = this.selectedGroup.GroupName;
+            this.groupName = this.selectedGroup.GroupName;
             $("#groupSettings").show();
         } else if (name === "newGroup") {
-            this.newGroupName = " ";
+            this.groupName = "";
             $("#addNewGroup").show();
         } else if (name === "newCompany") {
-            this.newCompany = " ";
+            this.companyName = "";
             $("#addNewCompany").show();
         }
     }
 
     private dismissPopup(name) {
         if (name === "company") {
-            this.selectedCompanyName = this.selectedCompany.CompanyName;
+            this.companyName = this.selectedCompany.CompanyName;
             $("#companySettings").hide();
         } else if (name === "group") {
-            this.selectedGroupName = this.selectedGroup.GroupName;
+            this.groupName = this.selectedGroup.GroupName;
             $("#groupSettings").hide();
             this.isImport = false;
             this.groupSettingTitle = "Settings";
         } else if (name === "newGroup") {
-            this.newGroupName = " ";
+            this.groupName = "";
             $("#addNewGroup").hide();
         } else if (name === "newCompany") {
-            this.newCompany = " ";
+            this.companyName = "";
             $("#addNewCompany").hide();
         }
     }
@@ -227,7 +223,7 @@ export class MenuPanelComponent implements OnChanges {
             group.CompanyID = this.selectedGroup.CompanyID;
             group.IsDefaultGroup = this.selectedGroup.IsDefaultGroup;
             group.OrgGroupID = this.selectedGroup.OrgGroupID;
-            group.GroupName = this.selectedGroupName;
+            group.GroupName = this.groupName;
             group.OrgNodes = null;
 
             this.orgService.updateGroup(group)
@@ -240,7 +236,7 @@ export class MenuPanelComponent implements OnChanges {
         let group = new OrgGroupModel();
         let userID = this.userModel.UserID;
         group.CompanyID = this.selectedCompany.CompanyID;
-        group.GroupName = this.newGroupName;
+        group.GroupName = this.groupName;
         group.OrgNodes = null;
 
         this.orgService.addGroup(group, userID)
@@ -253,7 +249,7 @@ export class MenuPanelComponent implements OnChanges {
     private addNewCompany() {
         let userID = this.userModel.UserID;
         let company = new OrgCompanyModel();
-        company.CompanyName = this.newCompany;
+        company.CompanyName = this.companyName;
         company.OrgGroups = null;
 
         this.orgService.addCompany(company, userID)
@@ -261,7 +257,6 @@ export class MenuPanelComponent implements OnChanges {
                 this.setNewCompany(data);
             },
             err => this.orgService.logError(err));
-
     }
 
     private setNewCompany(data) {
@@ -271,7 +266,6 @@ export class MenuPanelComponent implements OnChanges {
         this.companySelected.emit(this.selectedCompany);
         this.setSelectedGroup(this.selectedCompany.OrgGroups);
     }
-
 
     private setNewGroup(data) {
         if (data) {
@@ -305,7 +299,7 @@ export class MenuPanelComponent implements OnChanges {
         if (confirm("Are you sure?") === true) {
             let company = new OrgCompanyModel();
             company.CompanyID = this.selectedCompany.CompanyID;
-            company.CompanyName = this.selectedCompanyName;
+            company.CompanyName = this.companyName;
             company.DateCreated = this.selectedCompany.DateCreated;
             company.IsDefaultCompany = this.selectedCompany.IsDefaultCompany;
             company.OrgGroups = null;
@@ -323,7 +317,6 @@ export class MenuPanelComponent implements OnChanges {
                 if (this.compareCompanyID(company, data)) {
                     company.CompanyName = data.CompanyName;
                     company.DateCreated = data.DateCreated;
-                    // company.OrgGroups = data.OrgGroups;
                     return true;
                 }
             });
@@ -352,13 +345,14 @@ export class MenuPanelComponent implements OnChanges {
         this.isImport = true;
     }
 
-    updateNewOrgGroup(OrgNodes) {
+    private updateNewOrgGroup(OrgNodes) {
         this.setOrgGroupData(OrgNodes);
-        this.selectedCompany.TotalOrgNodeCounts = this.selectedCompany.TotalOrgNodeCounts + OrgNodes.OrgNodeCounts;
+        this.selectedCompany.OrgNodeCounts = this.selectedCompany.OrgNodeCounts + OrgNodes.OrgNodeCounts;
         this.selectedGroup.OrgNodeCounts = OrgNodes.OrgNodeCounts;
         this.groupSettingTitle = "Settings";
         this.isImport = false;
     }
+
     private onDeleteCompany() {
         if (confirm("Are you sure?") === true) {
             let companyID = this.selectedCompany.CompanyID;
@@ -376,7 +370,7 @@ export class MenuPanelComponent implements OnChanges {
                 }
             });
             if (this.orgCompanies && this.orgCompanies.length === 0) {
-                this.newCompany = "My Organization";
+                this.companyName = "My Organization";
                 this.addNewCompany();
             } else {
                 this.setCompanies(this.orgCompanies);
@@ -396,7 +390,7 @@ export class MenuPanelComponent implements OnChanges {
 
     private deleteOrgGroup(data) {
         if (data) {
-            this.selectedCompany.TotalOrgNodeCounts = this.selectedCompany.TotalOrgNodeCounts - this.selectedGroup.OrgNodeCounts;
+            this.selectedCompany.OrgNodeCounts = this.selectedCompany.OrgNodeCounts - this.selectedGroup.OrgNodeCounts;
             this.selectedCompany.OrgGroups.forEach((group, index) => {
                 if (this.compareGroupID(group, this.selectedGroup)) {
                     this.selectedCompany.OrgGroups.splice(index, 1);
@@ -404,7 +398,7 @@ export class MenuPanelComponent implements OnChanges {
             });
             this.orgCompanyGroups = this.selectedCompany.OrgGroups;
             if (this.orgCompanyGroups && this.orgCompanyGroups.length === 0) {
-                this.newGroupName = "My Group";
+                this.groupName = "My Group";
                 this.addNewGroup();
             } else {
                 this.setSelectedGroup(this.orgCompanyGroups);
@@ -412,6 +406,7 @@ export class MenuPanelComponent implements OnChanges {
             this.dismissPopup("group");
         }
     }
+
     private onClickDownloadTemplate() {
         this.dataHelper.DownloadTemplate();
     }

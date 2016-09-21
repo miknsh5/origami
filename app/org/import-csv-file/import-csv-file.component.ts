@@ -117,17 +117,17 @@ export class ImportCsvFileComponent {
         this.newOrgNodes.emit(data);
     }
 
-    private onCancelImport(data: boolean) {
-        if (data === true) {
+    private onCancelImport(showConfirmDialog: boolean) {
+        if (showConfirmDialog === true) {
             if (confirm("Are you sure?") === true) {
-                this.hideDialog();
+                this.returnToImportDialog();
             }
         } else {
-            this.hideDialog();
+            this.returnToImportDialog();
         }
-
     }
-    private hideDialog() {
+
+    private returnToImportDialog() {
         $(this.$importfile).show();
         $(this.$templateScreen).hide();
         $(this.$loadScreen).hide();
