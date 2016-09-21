@@ -261,7 +261,8 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             this.resizeLinesArrowsAndSvg();
             if (this.currentMode !== ChartMode.build) {
                 this.setNodeLabelVisiblity();
-                this.root = this.selectedOrgNode;
+                if (this.currentMode === ChartMode.report)
+                    this.root = this.selectedOrgNode;
             }
 
             if (this.selectedOrgNode != null) {
@@ -285,9 +286,11 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             }
 
             if (this.selectedOrgNode != null) {
-                this.render(this.root);
-                this.showUpdatePeerReporteeNode(this.selectedOrgNode);
-                this.centerNode(this.selectedOrgNode);
+                if (this.currentMode !== ChartMode.explore) {
+                    this.render(this.root);
+                    this.showUpdatePeerReporteeNode(this.selectedOrgNode);
+                    this.centerNode(this.selectedOrgNode);
+                }
                 if (this.isAddOrEditModeEnabled) {
                     this.hideAllArrows();
                 } else {
