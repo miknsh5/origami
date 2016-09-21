@@ -180,7 +180,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         } else {
             this.diagonal = d3.svg.diagonal.radial()
                 .projection(function (d) {
-                    return [d.y, d.x / 180 * Math.PI];
+                    return [d.y, d.x / DEPTH * Math.PI];
                 });
         }
     }
@@ -748,7 +748,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         }).attr("transform", (d) => {
             let transformString = "rotate(0)";
             if (this.currentMode === ChartMode.explore && d.ParentNodeID !== null) {
-                if (d.x > 180) {
+                if (d.x > DEPTH) {
                     transformString = "rotate(" + -Math.abs(d.x - 90) + ")";
                 } else {
                     transformString = "rotate(" + Math.abs(d.x - 90) + ")";
@@ -796,33 +796,53 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         }).attr("text-anchor", (d) => {
             if (this.currentMode === ChartMode.build) { return "start"; }
             else if (this.currentMode === ChartMode.report) { return "middle"; }
-            else { return d.x < 180 ? "start" : "end"; }
-        }).attr("transform", function (d) { return d.x < 180 ? "rotate(0)" : "rotate(180)"; });
+            else {
+                if (d.NodeID === this.root.NodeID && this.currentMode === ChartMode.explore)
+                    return "start";
+                else
+                    return d.x < DEPTH ? "start" : "end";
+            }
+        }).attr("transform", (d) => {
+            if (d.NodeID === this.root.NodeID && this.currentMode === ChartMode.explore)
+                return "rotate(0)";
+            else
+                return d.x < DEPTH ? "rotate(0)" : "rotate(180)";
+        });
 
         node.select("g.label text[data-id='description']").text((d) => {
             if (d.Description > 15) {
                 if (this.currentMode === ChartMode.build) {
                     return d.IsSelected || d.IsGrandParent ? "" : d.Description.substring(0, 15) + "...";
                 } else if (this.currentMode === ChartMode.explore) {
-                     return d.Description.substring(0, 15) + "...";
+                    return d.Description.substring(0, 15) + "...";
                 } else {
                     return d.Description.substring(0, 15) + "...";
                 }
             } else {
                 if (this.currentMode === ChartMode.build) { return d.IsSelected || d.IsGrandParent ? "" : d.Description; }
-                else if (this.currentMode === ChartMode.explore) {  return d.Description; }
+                else if (this.currentMode === ChartMode.explore) { return d.Description; }
                 else { return d.Description; }
             }
         }).attr("text-anchor", (d) => {
             if (this.currentMode === ChartMode.build) { return "start"; }
             else if (this.currentMode === ChartMode.report) { return "middle"; }
-            else { return d.x < 180 ? "start" : "end"; }
+            else {
+                if (d.NodeID === this.root.NodeID && this.currentMode === ChartMode.explore)
+                    return "start";
+                else
+                    return d.x < DEPTH ? "start" : "end";
+            }
         }).attr("dy", (d) => {
             if (this.showDescriptionLabel && !this.showFirstNameLabel && !this.showLastNameLabel) {
                 return "0em";
             }
             else { return "1em"; }
-        }).attr("transform", function (d) { return d.x < 180 ? null : "rotate(180)"; });
+        }).attr("transform", (d) => {
+            if (d.NodeID === this.root.NodeID && this.currentMode === ChartMode.explore)
+                return "rotate(0)";
+            else
+                return d.x < DEPTH ? "rotate(0)" : "rotate(180)";
+        });
 
         if (this.currentMode === ChartMode.build) {
             node.select("g.label").attr("x", function (d) {
@@ -881,7 +901,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         }).attr("transform", (d) => {
             let transformString = "rotate(0)";
             if (this.currentMode === ChartMode.explore && d.ParentNodeID !== null) {
-                if (d.x > 180) {
+                if (d.x > DEPTH) {
                     transformString = "rotate(" + -Math.abs(d.x - 90) + ")";
                 } else {
                     transformString = "rotate(" + Math.abs(d.x - 90) + ")";
