@@ -23,17 +23,21 @@
         <li *ngFor="let company of orgCompanies" class="companyList" (click)="onCompanySelection(company)">
             <a *ngIf="company && company.IsDefaultCompany && company.CompanyID === selectedCompany.CompanyID" class="active">
                 {{company.CompanyName}}
+                <label class="lblCount right">{{company.OrgNodeCounts}}</label>
             </a>
             <a *ngIf="company && company.IsDefaultCompany && company.CompanyID !== selectedCompany.CompanyID">
                 {{company.CompanyName}}
+                <label class="lblCount right">{{company.OrgNodeCounts}}</label>
             </a>
         </li>
         <li *ngFor="let company of orgCompanies" class="companyList" (click)="onCompanySelection(company)">
             <a *ngIf="company && !company.IsDefaultCompany && company.CompanyID === selectedCompany.CompanyID" class="active">
                 <label class="lbl icon"> {{company.CompanyName}}</label>
+                <label class="lblCount right">{{company.OrgNodeCounts}}</label>
             </a>
             <a *ngIf="company && !company.IsDefaultCompany && company.CompanyID !== selectedCompany.CompanyID">
                 <label class="lbl icon"> {{company.CompanyName}}</label>
+                <label class="lblCount right">{{company.OrgNodeCounts}}</label>
             </a>
         </li>
         <li (click)="onAddOrSettingsClick('newCompany')"><a><i class="material-icons left">add</i><label class="lbl">Add New</label></a></li>
@@ -52,10 +56,12 @@
             <a *ngIf="group && group.IsDefaultGroup && group.OrgGroupID === selectedGroup.OrgGroupID" class="active">
                 <i class="material-icons left">apps</i>
                 <label class="lbl active">{{group.GroupName}} </label>
+                <label class="lblCount right">{{group.OrgNodeCounts}}</label>
             </a>
             <a *ngIf=" group && group.IsDefaultGroup && group.OrgGroupID !== selectedGroup.OrgGroupID">
                 <i class="material-icons left">apps</i>
                 <label class="lbl active">{{group.GroupName}} </label>
+                <label class="lblCount right">{{group.OrgNodeCounts}}</label>
             </a>
         </li>
         <li class="divider"></li>
@@ -64,10 +70,12 @@
             <a *ngIf=" group && !group.IsDefaultGroup && group.OrgGroupID === selectedGroup.OrgGroupID" class="active">
                 <i class="material-icons left ">apps</i>
                 <label class="lbl">{{group.GroupName}}</label>
+                <label class="lblCount right">{{group.OrgNodeCounts}}</label>
             </a>
             <a *ngIf=" group && !group.IsDefaultGroup && group.OrgGroupID !== selectedGroup.OrgGroupID">
                 <i class="material-icons left ">apps</i>
                 <label class="lbl">{{group.GroupName}}</label>
+                <label class="lblCount right">{{group.OrgNodeCounts}}</label>
             </a>
         </li>
         <li><a (click)="onAddOrSettingsClick('newGroup')"><i class="material-icons left">add</i><label class="lbl">Add New</label></a></li>
@@ -114,17 +122,19 @@
         <div class="divider"></div>
         <div class="groupBody">
             <div *ngIf="!isImport">
-                <div class="company_groupDetails">
-                    <i class="material-icons left">label_outline</i>
-                    <input ngControl="groupName" #groupName="ngModel" [(ngModel)]="selectedGroupName" name="groupName" autocomplete="off" />
-                    <div>
-                        <label class="modaldefaultlabel"> Name Of Group </label>
+                <form (ngSubmit)="onGroupSave($event)">
+                    <div class="company_groupDetails">
+                        <i class="material-icons left">label_outline</i>
+                        <input required ngControl="existingGroupName" #existingGroupName="ngModel" [(ngModel)]="groupName" name="existingGroupName" autocomplete="off" />
+                        <div>
+                            <label class="modaldefaultlabel"> Name Of Group </label>
+                        </div>
                     </div>
-                </div>
 
-                <div class="innerdiv">
-                    <button class="waves-effect waves-light btn" (click)="onGroupSave($event)"><i class="material-icons">save</i>Save</button>
-                </div>
+                    <div class="innerdiv">
+                        <button class="waves-effect waves-light btn"><i class="material-icons">save</i>Save</button>
+                    </div>
+                </form>
             </div>
 
             <div *ngIf="enableImport && !isImport">
@@ -132,7 +142,7 @@
                     <div class="inlineblock titlewithdivider">
                         <div class="divider"> </div>
                         <label class="lbl">Import</label>
-                        <label class="modallbl"> Load resources from CSV or Excel file to populate the <label class="lblgroupname"> {{selectedGroupName}} </label> group.</label>
+                        <label class="modallbl"> Load resources from CSV or Excel file to populate the <label class="lblgroupname"> {{groupName}} </label> group.</label>
                     </div>
                 </div>
                 <div>
@@ -184,20 +194,22 @@
                 </div><label class="lbl">Settings</label>
             </div>
         </div>
-        <div class="companyBody">
-            <div class="company_groupDetails" *ngIf="selectedCompany">
-                <i class="material-icons left">label</i>
-                <input ngControl="companyName" #companyName="ngModel" [(ngModel)]="selectedCompanyName" name="companyName" autocomplete="off" />
-                <div>
-                    <label class="modaldefaultlabel"> Name Of Account </label>
+        <form (ngSubmit)="onCompanySave($event)">
+            <div class="companyBody">
+                <div class="company_groupDetails" *ngIf="selectedCompany">
+                    <i class="material-icons left">label</i>
+                    <input required ngControl="existingCompanyName" #existingCompanyName="ngModel" [(ngModel)]="companyName" name="existingCompanyName" autocomplete="off" />
+                    <div>
+                        <label class="modaldefaultlabel"> Name Of Account </label>
+                    </div>
+                </div>
+
+                <div class="innerdiv">
+                    <button class="waves-effect waves-light btn"> 
+             <i class="material-icons">save</i>Save</button>
                 </div>
             </div>
-
-            <div class="innerdiv">
-                <button class="waves-effect waves-light btn" (click)="onCompanySave($event) "> 
-             <i class="material-icons">save</i>Save</button>
-            </div>
-        </div>
+        </form>
         <div class="divider"></div>
         <div class="delete" id="deleteCompany">
             <button class="waves-effect waves-light btn" (click)="onDeleteCompany()">
@@ -219,18 +231,20 @@
 
         <div class="divider"></div>
 
-        <div class="company_newGroup">
-            <i class="material-icons left">label_outline</i>
-            <input ngControl="addNewGroupName" #addNewGroupName="ngModel" [(ngModel)]="newGroupName" name="addNewGroupName" autocomplete="off" />
-            <div>
-                <label class="modaldefaultlabel"> Name Of Group </label>
+        <form (ngSubmit)="addNewGroup($event)">
+            <div class="company_newGroup">
+                <i class="material-icons left">label_outline</i>
+                <input required ngControl="addNewGroupName" #addNewGroupName="ngModel" [(ngModel)]="groupName" name="addNewGroupName" autocomplete="off" />
+                <div>
+                    <label class="modaldefaultlabel"> Name Of Group </label>
+                </div>
             </div>
-        </div>
 
-        <div class="innerdiv">
-            <button class="waves-effect waves-light btn" (click)="addNewGroup($event)"> 
+            <div class="innerdiv">
+                <button class="waves-effect waves-light btn"> 
              <i class="material-icons">save</i>Save</button>
-        </div>
+            </div>
+        </form>
     </div>
 </div>
 
@@ -247,17 +261,18 @@
 
         <div class="divider"></div>
 
-        <div class="company_newGroup">
-            <i class="material-icons left">label_outline</i>
-            <input ngControl="addNewCompanyName" #addNewCompanyName="ngModel" [(ngModel)]="newCompanyName" name="addNewCompanyName" autocomplete="off" />
-            <div>
-                <label class="modaldefaultlabel"> Name Of Company </label>
+        <form (ngSubmit)="addNewCompany($event)">
+            <div class="company_newGroup">
+                <i class="material-icons left">label_outline</i>
+                <input required ngControl="newCompanyName" #newCompanyName="ngModel" [(ngModel)]="companyName" name="newCompanyName" autocomplete="off" />
+                <div>
+                    <label class="modaldefaultlabel"> Name Of Company </label>
+                </div>
             </div>
-        </div>
 
-        <div class="innerdiv">
-            <button class="waves-effect waves-light btn" (click)="addNewCompany($event)"> 
-             <i class="material-icons">save</i>Save</button>
-        </div>
+            <div class="innerdiv">
+                <button class="waves-effect waves-light btn"> <i class="material-icons">save</i>Save</button>
+            </div>
+        </form>
     </div>
 </div>

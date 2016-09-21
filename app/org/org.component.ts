@@ -8,7 +8,7 @@ import { OrgNodeDetailComponent } from "./org-node-detail/index";
 import { MenuPanelComponent } from "./menu-panel/index";
 import { OrgTreeComponent } from "./d3-tree/index";
 
-import { OrgNodeModel, ChartMode, OrgCompanyModel, OrgGroupModel, OrgService} from "./shared/index";
+import { OrgNodeModel, ChartMode, OrgCompanyModel, OrgGroupModel, OrgNodeStatus, OrgService} from "./shared/index";
 
 const MIN_HEIGHT: number = 320;
 const MAX_HEIGHT: number = 768;
@@ -52,12 +52,14 @@ export class OrgComponent implements OnDestroy {
     @Output() displayLastNameLabel: boolean;
     @Output() displayDescriptionLabel: boolean;
     @Output() isOrgNodeEmpty: boolean;
+    @Output() currentOrgNodeStatus: OrgNodeStatus;
 
     constructor() {
         this.currentChartMode = ChartMode.build;
         this.enableLabels();
         this.svgWidth = this.getSvgWidth();
         this.svgHeight = this.getSvgHeight();
+        this.currentOrgNodeStatus = OrgNodeStatus.None;
     }
 
     onResize(event) {
@@ -135,9 +137,11 @@ export class OrgComponent implements OnDestroy {
                 this.detailAddOrEditMode = false;
             }
         }
+        this.currentOrgNodeStatus = OrgNodeStatus.None;
     }
 
     onNodeAdded(addedNode: OrgNodeModel) {
+        this.currentOrgNodeStatus = OrgNodeStatus.None;
         this.isAddOrEditMode = false;
         this.isOrgNodeEmpty = true;
         if (addedNode.NodeID !== -1) {
@@ -147,10 +151,12 @@ export class OrgComponent implements OnDestroy {
             this.selectedNode = addedNode;
             this.detailAddOrEditMode = false;
             this.isOrgNodeEmpty = false;
+            this.currentOrgNodeStatus = OrgNodeStatus.Add;
         }
         if (addedNode.IsNewRoot) {
             this.orgNodes.splice(0, 1, addedNode);
             this.isOrgNodeEmpty = false;
+            this.currentOrgNodeStatus = OrgNodeStatus.Add;
         }
         else {
             this.addChildToSelectedOrgNode(addedNode, this.orgNodes[0]);
@@ -257,6 +263,7 @@ export class OrgComponent implements OnDestroy {
     }
 
     onNodeDeleted(deleted) {
+        this.currentOrgNodeStatus = OrgNodeStatus.None;
         this.isAddOrEditMode = false;
         this.detailAddOrEditMode = false;
         if (deleted) {
@@ -268,6 +275,7 @@ export class OrgComponent implements OnDestroy {
             else {
                 this.deleteNodeFromArray(deleted, this.orgNodes);
             }
+            this.currentOrgNodeStatus = OrgNodeStatus.Delete;
         } else {
             let node = this.getNode(this.selectedNode.NodeID, this.orgNodes[0]);
             this.selectedNode = JSON.parse(JSON.stringify(node));
