@@ -164,7 +164,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                     return (a.parent === b.parent ? 1 : 2) / a.depth;
                 });
             this.setNodeLabelVisiblity();
-            this.root = this.selectedOrgNode || this.lastSelectedNode;
+            this.selectedOrgNode = this.root;
         }
 
         if (this.currentMode === ChartMode.build) {
@@ -200,7 +200,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     // TODO:- we should refactor this method to work depending on the kind of change that has taken place. 
     // It re-renders on all kinds of changes
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
-
         if (this.tree != null) {
             this.previousRoot = this.root;
             this.root = this.treeData[0];
@@ -742,9 +741,10 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             let transformString = "rotate(0)";
             if (this.currentMode === ChartMode.explore && d.ParentNodeID !== null) {
                 if (d.x > 180) {
-                    transformString = "rotate(-" + ((d.x - 65) - 90) + ")";
+                    let value = (d.x - 65) - 90;
+                    transformString = "rotate(" + -Math.abs(value) + ")";
                 } else {
-                    transformString = "rotate(115)";
+                    transformString = "rotate(" + Math.abs((d.x - 65) - 90) + ")";
                 }
             }
             return transformString;
@@ -816,12 +816,12 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         });
 
         if (this.currentMode === ChartMode.build) {
-            node.select("g.label ").attr("x", function (d) {
+            node.select("g.label").attr("x", function (d) {
                 if (d.IsParent === true || d.IsChild === true) { return PARENTCHILD_RADIUS + DEFAULT_MARGIN; }
                 else { return SIBLING_RADIUS + DEFAULT_MARGIN; }
             });
         } else {
-            node.select("g.label ").attr("y", 30);
+            node.select("g.label").attr("y", 30);
         }
 
         // used to get the label width of each node
@@ -830,6 +830,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         });
 
         node.select("g.label").attr("transform", (d, index) => {
+
             let margin = DEFAULT_MARGIN * 4;
             if (this.currentMode === ChartMode.build) {
                 if (!d.IsSibling) {
@@ -840,7 +841,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 if (d.IsSelected) margin = DEFAULT_MARGIN * 5;
                 return "translate(0," + margin + ")";
             } else {
-                if (d.IsSelected) margin = DEFAULT_MARGIN * 5;
+                if (!d.IsSelected) margin = DEFAULT_MARGIN * 3;
                 return "translate(" + margin + ",0)";
             }
         });
@@ -873,9 +874,9 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             let transformString = "rotate(0)";
             if (this.currentMode === ChartMode.explore && d.ParentNodeID !== null) {
                 if (d.x > 180) {
-                    transformString = "rotate(-" + ((d.x - 65) - 90) + ")";
+                    transformString = "rotate(" + -Math.abs((d.x - 65) - 90) + ")";
                 } else {
-                    transformString = "rotate(115)";
+                    transformString = "rotate(" + Math.abs((d.x - 65) - 90) + ")";
                 }
             }
             return transformString;
@@ -898,11 +899,16 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             });
 
         nodeUpdate.select(CIRCLE)
-            .attr("r", function (d) {
-                if (d.IsSelected === true || d.IsSibling === true) { return SIBLING_RADIUS; }
-                else if (d.IsParent === true || d.IsChild === true) { return PARENTCHILD_RADIUS; }
-                else if (d.IsGrandParent === true) { return GRANDPARENT_RADIUS; }
-                else { return DEFAULT_RADIUS; }
+            .attr("r", (d) => {
+                if (this.currentMode !== ChartMode.explore) {
+                    if (d.IsSelected === true || d.IsSibling === true) { return SIBLING_RADIUS; }
+                    else if (d.IsParent === true || d.IsChild === true) { return PARENTCHILD_RADIUS; }
+                    else if (d.IsGrandParent === true) { return GRANDPARENT_RADIUS; }
+                    else { return DEFAULT_RADIUS; }
+                } else {
+                    if (d.IsSelected === true || d.IsSibling === true) { return SIBLING_RADIUS; }
+                    else { return PARENTCHILD_RADIUS; }
+                }
             })
             .attr("class", (d) => {
                 if (d.IsSelected && d.IsStaging && d.NodeID === -1) { return STAGED_CIRCLE; }
@@ -971,8 +977,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         link.style("stroke", (d) => {
             if (this.currentMode === ChartMode.report) {
                 return "rgba(204, 204, 204,0.5)";
-            }
-            else {
+            } else {
                 return (d.source.IsSelected ? "#ccc" : "none");
             }
         });
@@ -984,6 +989,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 return diagCoords2;
             })
             .remove();
+
         link.each(function (d) {
             if (d.source.IsFakeRoot)
                 d3.select(this).remove();
