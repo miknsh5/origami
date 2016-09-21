@@ -258,8 +258,8 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 if (this.selectedOrgNode.NodeID === -1) {
                     if (this.root && this.root.NodeID !== -1) {
                         this.selectedOrgNode = this.getPreviousNodeIfAddedOrDeleted();
-                        raiseSelectedEvent = true;
                     }
+                    raiseSelectedEvent = true;
                     this.highlightSelectedNode(this.selectedOrgNode, raiseSelectedEvent);
                 } else {
                     let node = this.getNode(this.selectedOrgNode.NodeID, this.root);

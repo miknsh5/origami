@@ -66,7 +66,7 @@
 
 .loadscreen {
     display: none;
-    padding: 140px 3em;
+    padding: 8em 3em;
 }
 
 .loadscreen .lblLoad {
@@ -84,6 +84,10 @@
     background-color: #9e9e9e;
     margin: 0px 25px;
     max-height: 20px;
+}
+
+.loadscreen img {
+    width: 100%;
 }
 
 .templateScreen {

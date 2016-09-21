@@ -6,5 +6,5 @@ export class OrgCompanyModel {
     DateCreated: string;
     IsDefaultCompany: boolean;
     OrgGroups: OrgGroupModel[];
-    IsSelected: boolean;
+    OrgNodeCounts: number;
 }

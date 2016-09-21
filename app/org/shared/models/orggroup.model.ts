@@ -7,4 +7,5 @@ export class OrgGroupModel {
     OrgGroupID: number;
     OrgNodes: OrgNodeModel[];
     DefaultParentNodeId: number;
+    OrgNodeCounts: number;
 }
