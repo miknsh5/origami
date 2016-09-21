@@ -29,6 +29,7 @@ const TRANSPARENT_COLOR = "transparent";
 const NODE_HEIGHT = 70;
 const NODE_WIDTH = 95;
 const DEPTH = 180;
+const RADIAL_DEPTH = 90;
 
 const DEFAULT_CIRCLE = "defaultCircle";
 const STAGED_CIRCLE = "stagedCircle";
@@ -159,9 +160,9 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             this.setNodeLabelVisiblity();
             this.root = this.selectedOrgNode || this.lastSelectedNode;
         } else {
-            this.tree = d3.layout.cluster().size([360, 90])
+            this.tree = d3.layout.cluster().size([360, RADIAL_DEPTH])
                 .separation(function (a, b) {
-                    return (a.parent === b.parent ? 1 : 4) / a.depth;
+                    return (a.parent === b.parent ? 1 : 1) / a.depth;
                 });
             this.setNodeLabelVisiblity();
             this.selectedOrgNode = this.root;
@@ -710,7 +711,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 if (this.currentMode === ChartMode.report) {
                     transformString = "translate(" + source.x0 + "," + source.y0 + ")";
                 } else if (this.currentMode === ChartMode.explore) {
-                    transformString = "rotate(" + (source.x0 - 90) + ")translate(" + source.y0 + ")";
+                    transformString = "rotate(" + (source.x0 - RADIAL_DEPTH) + ")translate(" + source.y0 + ")";
                 }
                 return transformString;
             })
@@ -751,10 +752,11 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         }).attr("transform", (d) => {
             let transformString = "rotate(0)";
             if (this.currentMode === ChartMode.explore && d.ParentNodeID !== null) {
-                if (d.x > DEPTH) {
-                    transformString = "rotate(" + -Math.abs(d.x - 90) + ")";
+                if (d.x >= RADIAL_DEPTH) {
+                    transformString = "rotate(" + -Math.abs(d.x - RADIAL_DEPTH) + ")";
                 } else {
-                    transformString = "rotate(" + Math.abs(d.x - 90) + ")";
+                    console.log(d);
+                    transformString = "rotate(" + Math.abs(d.x - RADIAL_DEPTH) + ")";
                 }
             }
             return transformString;
@@ -913,10 +915,10 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         }).attr("transform", (d) => {
             let transformString = "rotate(0)";
             if (this.currentMode === ChartMode.explore && d.ParentNodeID !== null) {
-                if (d.x > DEPTH) {
-                    transformString = "rotate(" + -Math.abs(d.x - 90) + ")";
+                if (d.x > RADIAL_DEPTH) {
+                    transformString = "rotate(" + -Math.abs(d.x - RADIAL_DEPTH) + ")";
                 } else {
-                    transformString = "rotate(" + Math.abs(d.x - 90) + ")";
+                    transformString = "rotate(" + Math.abs(d.x - RADIAL_DEPTH) + ")";
                 }
             }
             return transformString;
@@ -934,7 +936,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                     if (d.ParentNodeID == null) {
                         return "rotate(0)";
                     }
-                    return "rotate(" + (d.x - 90) + ")translate(" + d.y + ")";
+                    return "rotate(" + (d.x - RADIAL_DEPTH) + ")translate(" + d.y + ")";
                 }
             });
 
@@ -970,7 +972,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 } else if (this.currentMode === ChartMode.report) {
                     return "translate(" + source.x + "," + source.y + ")";
                 } else {
-                    return "rotate(" + (source.x - 90) + ")translate(" + source.y + ")";
+                    return "rotate(" + (source.x - RADIAL_DEPTH) + ")translate(" + source.y + ")";
                 }
             })
             .remove();
