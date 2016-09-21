@@ -192,7 +192,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         });
 
         d3.selectAll("text[data-id='description']").style("visibility", () => {
-            if (this.showDescriptionLabel && this.currentMode !== ChartMode.explore) return "visible";
+            if (this.showDescriptionLabel) return "visible";
             else return "hidden";
         });
     }
@@ -804,13 +804,13 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 if (this.currentMode === ChartMode.build) {
                     return d.IsSelected || d.IsGrandParent ? "" : d.Description.substring(0, 15) + "...";
                 } else if (this.currentMode === ChartMode.explore) {
-                    return "";
+                     return d.Description.substring(0, 15) + "...";
                 } else {
                     return d.Description.substring(0, 15) + "...";
                 }
             } else {
                 if (this.currentMode === ChartMode.build) { return d.IsSelected || d.IsGrandParent ? "" : d.Description; }
-                else if (this.currentMode === ChartMode.explore) { return ""; }
+                else if (this.currentMode === ChartMode.explore) {  return d.Description; }
                 else { return d.Description; }
             }
         }).attr("text-anchor", (d) => {
