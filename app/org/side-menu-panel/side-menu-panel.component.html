@@ -14,7 +14,7 @@
             <p class="lblName"> {{selectedNode.NodeFirstName}} {{selectedNode.NodeLastName}}</p>
             <p class="lblJobTitle"> {{selectedNode.Description}} </p>
         </div>
-        <div *ngIf="currentMode===1">
+        <div *ngIf="currentMode===1 || currentMode===2">
             <label class="menuTitle">Stats</label>
             <hr/>
             <div class="labelWrap">

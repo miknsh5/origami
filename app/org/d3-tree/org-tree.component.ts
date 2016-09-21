@@ -192,7 +192,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         });
 
         d3.selectAll("text[data-id='description']").style("visibility", () => {
-            if (this.showDescriptionLabel && this.currentMode !== ChartMode.explore) return "visible";
+            if (this.showDescriptionLabel) return "visible";
             else return "hidden";
         });
     }
@@ -671,7 +671,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             // Normalize for fixed-depth.
             if (this.currentMode === ChartMode.build) {
                 this.nodes.forEach(function (d) { d.y = d.depth * DEPTH; });
-            } else if (this.currentMode == ChartMode.report) {
+            } else if (this.currentMode === ChartMode.report) {
                 this.nodes.forEach(function (d) { d.y = d.depth * NODE_WIDTH; });
             } else {
                 this.nodes.forEach(function (d) { d.y = d.depth * RIGHTLEFT_MARGIN; });
@@ -724,17 +724,25 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             .attr("text-anchor", "middle")
             .style("fill-opacity", 1);
 
-        node.select("#abbr").text(function (d) {
-            if (d.IsGrandParent) { return ""; }
+        node.select("#abbr").text((d) => {
             if (d.IsStaging && d.NodeID === -1) { return "+"; }
-
             let fn = "", ln = "";
             if (d.NodeFirstName) { fn = d.NodeFirstName.slice(0, 1); }
             if (d.NodeLastName) { ln = d.NodeLastName.slice(0, 1); }
+            if (d.IsGrandParent) {
+                if (this.currentMode === ChartMode.explore) {
+                    return fn + ln;
+                } else {
+                    return "";
+                }
+            }
             return fn + ln;
         }).style("fill", function (d) {
             return d.IsStaging && d.NodeID === -1 ? "#0097FF" : "#FFFFFF";
-        }).style("font-size", function (d) {
+        }).style("font-size", (d) => {
+            if (this.currentMode === ChartMode.explore) {
+                return DEFAULT_FONTSIZE + "px";
+            }
             if (d.IsSelected || d.IsSibling) { return SIBLING_FONTSIZE + "px"; }
             else { return DEFAULT_FONTSIZE + "px"; }
         }).attr("transform", (d) => {
@@ -796,13 +804,13 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 if (this.currentMode === ChartMode.build) {
                     return d.IsSelected || d.IsGrandParent ? "" : d.Description.substring(0, 15) + "...";
                 } else if (this.currentMode === ChartMode.explore) {
-                    return "";
+                     return d.Description.substring(0, 15) + "...";
                 } else {
                     return d.Description.substring(0, 15) + "...";
                 }
             } else {
                 if (this.currentMode === ChartMode.build) { return d.IsSelected || d.IsGrandParent ? "" : d.Description; }
-                else if (this.currentMode === ChartMode.explore) { return ""; }
+                else if (this.currentMode === ChartMode.explore) {  return d.Description; }
                 else { return d.Description; }
             }
         }).attr("text-anchor", (d) => {
@@ -841,7 +849,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 if (d.IsSelected) margin = DEFAULT_MARGIN * 5;
                 return "translate(0," + margin + ")";
             } else {
-                if (!d.IsSelected) margin = DEFAULT_MARGIN * 3;
+                margin = DEFAULT_MARGIN * 3;
                 return "translate(" + margin + ",0)";
             }
         });
@@ -906,8 +914,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                     else if (d.IsGrandParent === true) { return GRANDPARENT_RADIUS; }
                     else { return DEFAULT_RADIUS; }
                 } else {
-                    if (d.IsSelected === true || d.IsSibling === true) { return SIBLING_RADIUS; }
-                    else { return PARENTCHILD_RADIUS; }
+                    return PARENTCHILD_RADIUS;
                 }
             })
             .attr("class", (d) => {
@@ -920,7 +927,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 return d.IsStaging && d.NodeID === -1 ? " " : "url(home#drop-shadow)";
             });
 
-        nodeUpdate.select("g.label ")
+        nodeUpdate.select("g.label")
             .style({ "fill-opacity": 1, "fill": "#979797" });
 
         let nodeExit = node.exit().transition().delay(100).
@@ -1159,6 +1166,60 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 }
             }
         }
+        else if (this.currentMode === ChartMode.explore) {
+            // right arrow
+            if ((event as KeyboardEvent).keyCode === 39) {
+                let node = this.selectedOrgNode as d3.layout.cluster.Result;
+                console.log(node);
+                if (this.selectedOrgNode.children && this.selectedOrgNode.children.length > 0) {
+                    let node = this.selectedOrgNode.children[0];
+                    this.highlightSelectedNode(node);
+                    this.render(node);
+                }
+            }
+            // left arrow 
+            else if ((event as KeyboardEvent).keyCode === 37) {
+                let node = this.selectedOrgNode as d3.layout.cluster.Result;
+                if (node.parent != null) {
+                    let parentNode = node.parent;
+                    this.highlightSelectedNode(parentNode);
+                    this.render(parentNode);
+                }
+            }
+            // bottom arrow
+            else if ((event as KeyboardEvent).keyCode === 40) {
+                let node = this.selectedOrgNode as d3.layout.cluster.Result;
+                if (node.parent != null) {
+                    let siblings = node.parent.children;
+                    let index = siblings.indexOf(node);
+                    let youngerSibling;
+                    if (index < siblings.length - 1) {
+                        youngerSibling = siblings[index + 1];
+                    } else {
+                        youngerSibling = siblings[0];
+                    }
+                    this.highlightSelectedNode(youngerSibling);
+                    this.render(youngerSibling);
+                }
+            }
+            // top arrow
+            else if ((event as KeyboardEvent).keyCode === 38) {
+                let node = this.selectedOrgNode as d3.layout.cluster.Result;
+                if (node.parent != null) {
+                    let siblings = node.parent.children;
+                    let index = siblings.indexOf(node);
+                    let elderSibling;
+                    if (index > 0) {
+                        elderSibling = siblings[index - 1];
+
+                    } else {
+                        elderSibling = siblings[siblings.length - 1];
+                    }
+                    this.highlightSelectedNode(elderSibling);
+                    this.render(elderSibling);
+                }
+            }
+        }
         /*else {
             // esc
             if ((event as KeyboardEvent).keyCode === 27) {
@@ -1303,6 +1364,9 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             }
             this.expandCollapse(d);
             this.highlightAndCenterNode(d);
+        } else if (this.currentMode === ChartMode.explore) {
+            this.highlightSelectedNode(d);
+            this.render(d);
         }
     }
 
