@@ -275,7 +275,6 @@ export class MenuPanelComponent implements OnChanges {
                     group.GroupName = data.GroupName;
                     group.IsDefaultGroup = isDefault;
                     group.OrgGroupID = data.OrgGroupID;
-                    // group.IsSelected = true;
                     return true;
                 }
             });
@@ -303,7 +302,6 @@ export class MenuPanelComponent implements OnChanges {
                     company.CompanyName = data.CompanyName;
                     company.DateCreated = data.DateCreated;
                     // company.OrgGroups = data.OrgGroups;
-                    // company.IsSelected = true;
                     return true;
                 }
             });
@@ -338,10 +336,12 @@ export class MenuPanelComponent implements OnChanges {
         this.isImport = false;
     }
     private onDeleteCompany() {
-        let companyID = this.selectedCompany.CompanyID;
-        this.orgService.deleteCompany(companyID)
-            .subscribe(data => this.deleteOrgCompany(data),
-            err => this.orgService.logError(err));
+        if (confirm("Confirm deletion of company") === true) {
+            let companyID = this.selectedCompany.CompanyID;
+            this.orgService.deleteCompany(companyID)
+                .subscribe(data => this.deleteOrgCompany(data),
+                err => this.orgService.logError(err));
+        }
     }
 
     private deleteOrgCompany(data) {
@@ -362,10 +362,12 @@ export class MenuPanelComponent implements OnChanges {
     }
 
     private onDeleteGroup() {
-        let groupID = this.selectedGroup.OrgGroupID;
-        this.orgService.deleteGroup(groupID)
-            .subscribe(data => this.deleteOrgGroup(data),
-            err => this.orgService.logError(err));
+        if (confirm("Confirm deletion of group") === true) {
+            let groupID = this.selectedGroup.OrgGroupID;
+            this.orgService.deleteGroup(groupID)
+                .subscribe(data => this.deleteOrgGroup(data),
+                err => this.orgService.logError(err));
+        }
     }
 
     private deleteOrgGroup(data) {
@@ -386,17 +388,6 @@ export class MenuPanelComponent implements OnChanges {
         }
     }
     private onClickDownloadTemplate() {
-        // If JSONData is not an object then JSON.parse will parse the JSON string in an Object       
-        let orgNode = new OrgNodeBaseModel();
-        let node = this.dataHelper.convertDataToBaseModel(orgNode);
-        let CSV = "";
-
-        if (node) {
-            let row = this.dataHelper.getCSVFileHeaders(node);
-            // append Label row with line break
-            CSV += row + "\r\n";
-        }
-
-        this.dataHelper.downloadCSVFile("PeopleTree_Template", CSV);
+        this.dataHelper.DownloadTemplate();
     }
 }
