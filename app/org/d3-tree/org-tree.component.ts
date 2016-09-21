@@ -734,7 +734,10 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             return fn + ln;
         }).style("fill", function (d) {
             return d.IsStaging && d.NodeID === -1 ? "#0097FF" : "#FFFFFF";
-        }).style("font-size", function (d) {
+        }).style("font-size", (d) => {
+            if (this.currentMode === ChartMode.explore) {
+                return DEFAULT_FONTSIZE + "px";
+            }
             if (d.IsSelected || d.IsSibling) { return SIBLING_FONTSIZE + "px"; }
             else { return DEFAULT_FONTSIZE + "px"; }
         }).attr("transform", (d) => {
@@ -830,7 +833,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         });
 
         node.select("g.label").attr("transform", (d, index) => {
-
             let margin = DEFAULT_MARGIN * 4;
             if (this.currentMode === ChartMode.build) {
                 if (!d.IsSibling) {
@@ -841,7 +843,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 if (d.IsSelected) margin = DEFAULT_MARGIN * 5;
                 return "translate(0," + margin + ")";
             } else {
-                if (!d.IsSelected) margin = DEFAULT_MARGIN * 3;
+                margin = DEFAULT_MARGIN * 3;
                 return "translate(" + margin + ",0)";
             }
         });
@@ -906,8 +908,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                     else if (d.IsGrandParent === true) { return GRANDPARENT_RADIUS; }
                     else { return DEFAULT_RADIUS; }
                 } else {
-                    if (d.IsSelected === true || d.IsSibling === true) { return SIBLING_RADIUS; }
-                    else { return PARENTCHILD_RADIUS; }
+                    return PARENTCHILD_RADIUS;
                 }
             })
             .attr("class", (d) => {
@@ -920,7 +921,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 return d.IsStaging && d.NodeID === -1 ? " " : "url(home#drop-shadow)";
             });
 
-        nodeUpdate.select("g.label ")
+        nodeUpdate.select("g.label")
             .style({ "fill-opacity": 1, "fill": "#979797" });
 
         let nodeExit = node.exit().transition().delay(100).
@@ -939,7 +940,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         nodeExit.select(CIRCLE)
             .attr("r", 1e-6);
 
-        nodeExit.select("g.label ")
+        nodeExit.select("g.label")
             .style("fill-opacity", 1e-6);
 
         node.each(function (d) {
