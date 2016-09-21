@@ -89,7 +89,7 @@ export class OrgComponent implements OnDestroy {
                 if (this.svgPan) {
                     this.svgPan.enablePan = false;
                 }
-            } else if(viewMode === ChartMode.report) {
+            } else if (viewMode === ChartMode.report) {
                 this.currentChartMode = ChartMode.report;
                 this.enableViewModesNav(ChartMode.report);
                 this.enableLabels();
@@ -104,7 +104,7 @@ export class OrgComponent implements OnDestroy {
                 } else {
                     this.svgPan.enablePan = true;
                 }
-            }else {
+            } else {
                 this.currentChartMode = ChartMode.explore;
                 this.enableViewModesNav(ChartMode.explore);
                 this.enableLabels();
