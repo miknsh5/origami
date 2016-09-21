@@ -724,13 +724,18 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             .attr("text-anchor", "middle")
             .style("fill-opacity", 1);
 
-        node.select("#abbr").text(function (d) {
-            if (d.IsGrandParent) { return ""; }
+        node.select("#abbr").text((d) => {
             if (d.IsStaging && d.NodeID === -1) { return "+"; }
-
             let fn = "", ln = "";
             if (d.NodeFirstName) { fn = d.NodeFirstName.slice(0, 1); }
             if (d.NodeLastName) { ln = d.NodeLastName.slice(0, 1); }
+            if (d.IsGrandParent) {
+                if (this.currentMode === ChartMode.explore) {
+                    return fn + ln;
+                } else {
+                    return "";
+                }
+            }
             return fn + ln;
         }).style("fill", function (d) {
             return d.IsStaging && d.NodeID === -1 ? "#0097FF" : "#FFFFFF";
