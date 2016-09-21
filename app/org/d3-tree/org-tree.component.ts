@@ -162,7 +162,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         } else {
             this.tree = d3.layout.cluster().size([360, RADIAL_DEPTH])
                 .separation(function (a, b) {
-                    return (a.parent === b.parent ? 1 : 1) / a.depth;
+                    return (a.parent === b.parent ? 1 : 2) / a.depth;
                 });
             this.setNodeLabelVisiblity();
             this.selectedOrgNode = this.root;
@@ -252,10 +252,10 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             }
 
             let raiseSelectedEvent: boolean = true;
-
-            // We don't need to raise a selectednode change event if the only change happening is entering/leaving edit node
             if (changes["isAddOrEditModeEnabled"]) {
-                raiseSelectedEvent = false;
+                // We don't need to raise a selectednode change event if the only change happening is entering/leaving edit node
+                if (this.isAddOrEditModeEnabled)
+                    raiseSelectedEvent = false;
             }
 
             this.calculateLevelDepth();
