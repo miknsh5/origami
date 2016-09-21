@@ -43,16 +43,16 @@ export class MenuPanelComponent implements OnChanges {
 
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
         if (changes["currentOrgNodeStatus"]) {
-            if (this.currentOrgNodeStatus === OrgNodeStatus.addNode) {
+            if (this.currentOrgNodeStatus === OrgNodeStatus.Add) {
                 this.selectedCompany.OrgNodeCounts = this.selectedCompany.OrgNodeCounts + 1;
                 this.selectedGroup.OrgNodeCounts = this.selectedGroup.OrgNodeCounts + 1;
-            } else if (this.currentOrgNodeStatus === OrgNodeStatus.deleteNode) {
+            } else if (this.currentOrgNodeStatus === OrgNodeStatus.Delete) {
                 this.selectedCompany.OrgNodeCounts = this.selectedCompany.OrgNodeCounts - 1;
                 this.selectedGroup.OrgNodeCounts = this.selectedGroup.OrgNodeCounts - 1;
                 if (this.selectedGroup.OrgNodeCounts === 0) {
                     this.enableImport = true;
                 }
-            } else if (this.currentOrgNodeStatus === OrgNodeStatus.none) {
+            } else {
                 return;
             }
         }

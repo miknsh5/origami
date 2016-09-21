@@ -58,7 +58,7 @@ export class OrgComponent implements OnDestroy {
         this.enableLabels();
         this.svgWidth = this.getSvgWidth();
         this.svgHeight = this.getSvgHeight();
-        this.currentOrgNodeStatus = OrgNodeStatus.none;
+        this.currentOrgNodeStatus = OrgNodeStatus.None;
     }
 
     onResize(event) {
@@ -121,11 +121,11 @@ export class OrgComponent implements OnDestroy {
                 this.detailAddOrEditMode = false;
             }
         }
-        this.currentOrgNodeStatus = OrgNodeStatus.none;
+        this.currentOrgNodeStatus = OrgNodeStatus.None;
     }
 
     onNodeAdded(addedNode: OrgNodeModel) {
-        this.currentOrgNodeStatus = OrgNodeStatus.none;
+        this.currentOrgNodeStatus = OrgNodeStatus.None;
         this.isAddOrEditMode = false;
         this.isOrgNodeEmpty = true;
         if (addedNode.NodeID !== -1) {
@@ -135,12 +135,12 @@ export class OrgComponent implements OnDestroy {
             this.selectedNode = addedNode;
             this.detailAddOrEditMode = false;
             this.isOrgNodeEmpty = false;
-            this.currentOrgNodeStatus = OrgNodeStatus.addNode;
+            this.currentOrgNodeStatus = OrgNodeStatus.Add;
         }
         if (addedNode.IsNewRoot) {
             this.orgNodes.splice(0, 1, addedNode);
             this.isOrgNodeEmpty = false;
-            this.currentOrgNodeStatus = OrgNodeStatus.addNode;
+            this.currentOrgNodeStatus = OrgNodeStatus.Add;
         }
         else {
             this.addChildToSelectedOrgNode(addedNode, this.orgNodes[0]);
@@ -247,7 +247,7 @@ export class OrgComponent implements OnDestroy {
     }
 
     onNodeDeleted(deleted) {
-        this.currentOrgNodeStatus = OrgNodeStatus.none;
+        this.currentOrgNodeStatus = OrgNodeStatus.None;
         this.isAddOrEditMode = false;
         this.detailAddOrEditMode = false;
         if (deleted) {
@@ -259,7 +259,7 @@ export class OrgComponent implements OnDestroy {
             else {
                 this.deleteNodeFromArray(deleted, this.orgNodes);
             }
-            this.currentOrgNodeStatus = OrgNodeStatus.deleteNode;
+            this.currentOrgNodeStatus = OrgNodeStatus.Delete;
         } else {
             let node = this.getNode(this.selectedNode.NodeID, this.orgNodes[0]);
             this.selectedNode = JSON.parse(JSON.stringify(node));

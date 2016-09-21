@@ -1,5 +1,5 @@
 export enum OrgNodeStatus {
-    addNode = 1,
-    deleteNode = 2,
-    none = 3
+    Add = 1,
+    Delete = 2,
+    None = 3
 }
