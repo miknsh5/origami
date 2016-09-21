@@ -1161,14 +1161,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             }
         }
         else if (this.currentMode === ChartMode.explore) {
-            // esc
-            if ((event as KeyboardEvent).keyCode === 27) {
-                if (!this.isAddOrEditModeEnabled) {
-                    this.deselectNode();
-                    this.selectNode.emit(this.selectedOrgNode);
-                }
-            }
-
             // right arrow
             if ((event as KeyboardEvent).keyCode === 39) {
                 let node = this.selectedOrgNode as d3.layout.cluster.Result;
