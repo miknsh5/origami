@@ -122,6 +122,10 @@ export class OrgComponent implements OnDestroy {
                     this.svgPan.enablePan = true;
                 }
             }
+        } else {
+            if (this.svgPan) {
+                this.svgPan.enablePan = false;
+            }
         }
     }
 
