@@ -156,7 +156,6 @@ export class OrgComponent implements OnDestroy {
         if (addedNode.IsNewRoot) {
             this.orgNodes.splice(0, 1, addedNode);
             this.isOrgNodeEmpty = false;
-            this.currentOrgNodeStatus = OrgNodeStatus.Add;
         }
         else {
             this.addChildToSelectedOrgNode(addedNode, this.orgNodes[0]);
