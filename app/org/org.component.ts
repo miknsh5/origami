@@ -275,7 +275,9 @@ export class OrgComponent implements OnDestroy {
             else {
                 this.deleteNodeFromArray(deleted, this.orgNodes);
             }
-            this.currentOrgNodeStatus = OrgNodeStatus.Delete;
+            if (deleted.NodeID !== -1) {
+                this.currentOrgNodeStatus = OrgNodeStatus.Delete;
+            }
         } else {
             let node = this.getNode(this.selectedNode.NodeID, this.orgNodes[0]);
             this.selectedNode = JSON.parse(JSON.stringify(node));

@@ -755,7 +755,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 if (d.x >= RADIAL_DEPTH) {
                     transformString = "rotate(" + -Math.abs(d.x - RADIAL_DEPTH) + ")";
                 } else {
-                    console.log(d);
                     transformString = "rotate(" + Math.abs(d.x - RADIAL_DEPTH) + ")";
                 }
             }
@@ -1014,10 +1013,42 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         link.transition()
             .duration(DURATION)
             .attr("d", this.diagonal);
-
+        let targetNode = null;
         link.style("stroke", (d) => {
             if (this.currentMode === ChartMode.report) {
                 return "rgba(204, 204, 204,0.5)";
+            } else if (this.currentMode === ChartMode.explore) {
+                if (d.source.IsSelected) {
+                    return "#ccc";
+                } else {
+                    if (d.target.IsSelected) {
+                        return "#ccc";
+                    }
+                    if (d.target.children) {
+                        let node = null;
+                        d.target.children.forEach(element => {
+                            if (element.IsSelected) {
+                                node = element;
+                                if (element.parent) {
+                                    targetNode = element.parent;
+                                } else {
+                                    targetNode = element;
+                                }
+                            }
+                        });
+
+                        if (node) {
+                            return "#ccc";
+                        }
+                    }
+                    if (targetNode) {
+                        if (targetNode.parent && d.target.NodeID === targetNode.parent.NodeID) {
+                            targetNode = d.target;
+                            return "#ccc";
+                        }
+                    }
+                    return "none";
+                }
             } else {
                 return (d.source.IsSelected ? "#ccc" : "none");
             }
@@ -1036,6 +1067,11 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 d3.select(this).remove();
         });
     }
+
+    private compareParentNodeID(parentNode: OrgNodeModel, currentNode: OrgNodeModel): boolean {
+        return parentNode.NodeID === currentNode.NodeID;
+    }
+
 
     setPeerReporteeNode(nodeName, x, y, className) {
         let node = d3.select("g." + className);
