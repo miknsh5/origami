@@ -228,7 +228,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 return;
             }
 
-            if (changes["currentMode"]) {
+            if (changes["currentMode"] || (changes["orgGroupID"] && this.currentMode === ChartMode.explore)) {
                 this.initializeTreeAsPerMode();
                 let node = this.selectedOrgNode;
                 if (!node && this.lastSelectedNode) {
@@ -781,7 +781,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             }
 
             if (this.currentMode === ChartMode.explore) {
-                return name = d.NodeFirstName;
+                name = d.NodeFirstName;
             }
 
             if (name.length > 15) {
@@ -818,7 +818,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         });
 
         node.select("g.label text[data-id='description']").text((d) => {
-            if (d.Description > 15) {
+            if (d.Description.length > 15) {
                 if (this.currentMode === ChartMode.build) {
                     return d.IsSelected || d.IsGrandParent ? "" : d.Description.substring(0, 15) + "...";
                 } else if (this.currentMode === ChartMode.explore) {
