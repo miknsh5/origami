@@ -1,6 +1,6 @@
 import * as angular from "@angular/core";
 import {Component, Input, Output, Directive, EventEmitter, Attribute, OnChanges, DoCheck, ElementRef, OnInit, SimpleChange} from "@angular/core";
-import {Inject} from "@angular/core";
+import { Inject } from "@angular/core";
 
 import * as d3 from "d3";
 import { OrgNodeModel, OrgService, ChartMode} from "../shared/index";

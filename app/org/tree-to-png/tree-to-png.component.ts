@@ -9,11 +9,11 @@ const DEFAULT_EXT = ".png";
 
 @Component({
     selector: "sg-origami-png",
-    templateUrl: "app/org/convertTreeToPNG/convertTreeToPNG.component.html",
-    styleUrls: ["app/org/convertTreeToPNG/convertTreeToPNG.component.css", "app/style.css"]
+    templateUrl: "app/org/tree-to-png/tree-to-png.component.html",
+    styleUrls: ["app/org/tree-to-png/tree-to-png.component.css", "app/style.css"]
 })
 
-export class ConvertTreeToPNGComponent {
+export class TreeToPNGComponent {
     @Input() orgName: any;
     @Input() selectedOrgNode: any;
     @Input() width: any;

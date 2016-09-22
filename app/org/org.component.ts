@@ -1,14 +1,7 @@
 import { Component, Output, EventEmitter, OnDestroy} from "@angular/core";
-import { HTTP_PROVIDERS } from "@angular/http";
-import { CanActivate } from "@angular/router-deprecated";
 import { tokenNotExpired } from "angular2-jwt";
 
-import { SideMenuComponent } from "./side-menu-panel/index";
-import { OrgNodeDetailComponent } from "./org-node-detail/index";
-import { MenuPanelComponent } from "./menu-panel/index";
-import { OrgTreeComponent } from "./d3-tree/index";
-
-import { OrgNodeModel, ChartMode, OrgCompanyModel, OrgGroupModel, OrgNodeStatus, OrgService} from "./shared/index";
+import { OrgNodeModel, ChartMode, OrgCompanyModel, OrgGroupModel, OrgNodeStatus } from "./shared/index";
 
 const MIN_HEIGHT: number = 320;
 const MAX_HEIGHT: number = 768;
@@ -22,10 +15,8 @@ declare var SVGPan: any;
 
 @Component({
     selector: "sg-origami-org",
-    directives: [OrgTreeComponent, OrgNodeDetailComponent, MenuPanelComponent, SideMenuComponent],
     templateUrl: "app/org/org.component.html",
-    styleUrls: ["app/org/org.component.css"],
-    providers: [OrgService, HTTP_PROVIDERS]
+    styleUrls: ["app/org/org.component.css"]
 })
 
 export class OrgComponent implements OnDestroy {

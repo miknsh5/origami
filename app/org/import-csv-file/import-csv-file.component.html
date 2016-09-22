@@ -2,7 +2,8 @@
     <div>
         <label class="modallbl"> Load resources from CSV or Excel file to populate the <label class="lblgroupname"> {{selectedGroupName}} </label> group.</label>
     </div>
-    <center>
+
+    <div class="valign-wrapper">
         <span class="fileinput-button waves-effect">
             <h5>Drop Excel or CSV file here</h5>
             <i class="material-icons driveicon">insert_drive_file</i>
@@ -12,7 +13,7 @@
             </button>
             <input type="file" (change)="onImport($event)" accept=".csv" />
         </span>
-    </center>
+    </div>
 </div>
 <div id="loadScreen" class="loadscreen center">
     <div>

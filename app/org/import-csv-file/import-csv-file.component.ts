@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter } from "@angular/core";
 
 import { OrgGroupModel, OrgNodeModel, OrgService } from "../shared/index";
-import { DataHelper } from "../data-helper/data-helper";
+import { CSVConversionHelper } from "../shared/csv-helper";
 
 const DEFAULT_EXTENSION: string = ".csv";
 const DEFAULT_HEADERSTRING: string = "UID,First Name,Last Name,Title,Parent,";
@@ -12,7 +12,7 @@ declare let $: any;
     selector: "sg-org-import-csv-file",
     templateUrl: "app/org/import-csv-file/import-csv-file.component.html",
     styleUrls: ["app/org/import-csv-file/import-csv-file.component.css", "app/style.css", "app/org/menu-panel/menu-panel.component.css"],
-    providers: [DataHelper]
+    providers: [CSVConversionHelper]
 })
 
 export class ImportCsvFileComponent {
@@ -32,7 +32,7 @@ export class ImportCsvFileComponent {
     @Input() selectedGroup: OrgGroupModel;
     @Output() newOrgNodes = new EventEmitter<OrgNodeModel>();
 
-    constructor(private orgService: OrgService, private dataHelper: DataHelper) {
+    constructor(private orgService: OrgService, private csvHelper: CSVConversionHelper) {
         this.fileName = "";
         this.mappedNodesCount = 0;
         this.unmappedNodesCount = 0;
@@ -56,7 +56,7 @@ export class ImportCsvFileComponent {
     }
 
     private onClickDownloadTemplate() {
-        this.dataHelper.DownloadTemplate();
+        this.csvHelper.DownloadTemplate();
     }
 
     private onImport(event) {

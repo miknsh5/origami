@@ -1,20 +1,20 @@
 import * as angular from "@angular/core";
 import {Component, Input} from "@angular/core";
 
-import { DataHelper } from "../data-helper/data-helper";
+import { CSVConversionHelper } from "../shared/csv-helper";
 
 @Component({
     selector: "sg-origami-csv",
-    templateUrl: "app/org/convertJSONToCSV/convertJSONToCSV.component.html",
-    styleUrls: ["app/org/convertJSONToCSV/convertJSONToCSV.component.css", "app/style.css"],
-    providers: [DataHelper]
+    templateUrl: "app/org/json-to-csv/json-to-csv.component.html",
+    styleUrls: ["app/org/json-to-csv/json-to-csv.component.css", "app/style.css"],
+    providers: [CSVConversionHelper]
 })
 
-export class ConvertJSONToCSVComponent {
+export class JsonToCSVComponent {
     @Input() orgChartData: any;
     @Input() orgName: any;
 
-    constructor(private dataHelper: DataHelper) {
+    constructor(private csvHelper: CSVConversionHelper) {
     }
 
     onClickConvertToCSVReport() {
@@ -24,7 +24,7 @@ export class ConvertJSONToCSVComponent {
     private JSONToCSVConvertor(jsonData, reportTitle, showLabel) {
         // If JSONData is not an object then JSON.parse will parse the JSON string in an Object       
         let orgData = typeof jsonData !== "object" ? JSON.parse(jsonData) : jsonData;
-        let orgNode = this.dataHelper.convertDataToBaseModel(orgData);
+        let orgNode = this.csvHelper.convertDataToBaseModel(orgData);
         let CSV = "";
 
         // Set Report title in first row or line
@@ -33,7 +33,7 @@ export class ConvertJSONToCSVComponent {
 
         // This condition will generate the Label/Header
         if (showLabel) {
-            let row = this.dataHelper.getCSVFileHeaders(orgNode);
+            let row = this.csvHelper.getCSVFileHeaders(orgNode);
 
             // append Label row with line break
             CSV += row + "\r\n";
@@ -53,13 +53,13 @@ export class ConvertJSONToCSVComponent {
         // this will remove the blank-spaces from the title and replace it with an underscore
         fileName += reportTitle.replace(/ /g, "_");
 
-        this.dataHelper.downloadCSVFile(fileName, CSV);
+        this.csvHelper.downloadCSVFile(fileName, CSV);
     }
 
     private extractRowForCSVData(orgNode): any {
         // 1st loop is to extract each row
         let CSV = "";
-        let orgChild = this.dataHelper.convertDataToBaseModel(orgNode);
+        let orgChild = this.csvHelper.convertDataToBaseModel(orgNode);
         if (orgChild) {
             for (let i = 0; i < 1 /*arrData.length*/; i++) {
                 let row = "";
