@@ -1068,11 +1068,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         });
     }
 
-    private compareParentNodeID(parentNode: OrgNodeModel, currentNode: OrgNodeModel): boolean {
-        return parentNode.NodeID === currentNode.NodeID;
-    }
-
-
     setPeerReporteeNode(nodeName, x, y, className) {
         let node = d3.select("g." + className);
         let element = node[0][0]; // assigns the selected element
