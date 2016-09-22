@@ -223,7 +223,7 @@ export class MenuPanelComponent implements OnChanges {
             group.CompanyID = this.selectedGroup.CompanyID;
             group.IsDefaultGroup = this.selectedGroup.IsDefaultGroup;
             group.OrgGroupID = this.selectedGroup.OrgGroupID;
-            group.GroupName = this.groupName;
+            group.GroupName = this.groupName.trim();
             group.OrgNodes = null;
 
             this.orgService.updateGroup(group)
@@ -236,7 +236,7 @@ export class MenuPanelComponent implements OnChanges {
         let group = new OrgGroupModel();
         let userID = this.userModel.UserID;
         group.CompanyID = this.selectedCompany.CompanyID;
-        group.GroupName = this.groupName;
+        group.GroupName = this.groupName.trim();
         group.OrgNodes = null;
 
         this.orgService.addGroup(group, userID)
@@ -249,7 +249,7 @@ export class MenuPanelComponent implements OnChanges {
     private addNewCompany() {
         let userID = this.userModel.UserID;
         let company = new OrgCompanyModel();
-        company.CompanyName = this.companyName;
+        company.CompanyName = this.companyName.trim();
         company.OrgGroups = null;
 
         this.orgService.addCompany(company, userID)
@@ -289,6 +289,7 @@ export class MenuPanelComponent implements OnChanges {
                     group.GroupName = data.GroupName;
                     group.IsDefaultGroup = isDefault;
                     group.OrgGroupID = data.OrgGroupID;
+                    group.OrgNodeCounts = data.OrgNodeCounts;
                     return true;
                 }
             });
@@ -299,7 +300,7 @@ export class MenuPanelComponent implements OnChanges {
         if (confirm("Are you sure?") === true) {
             let company = new OrgCompanyModel();
             company.CompanyID = this.selectedCompany.CompanyID;
-            company.CompanyName = this.companyName;
+            company.CompanyName = this.companyName.trim();
             company.DateCreated = this.selectedCompany.DateCreated;
             company.IsDefaultCompany = this.selectedCompany.IsDefaultCompany;
             company.OrgGroups = null;
@@ -317,6 +318,7 @@ export class MenuPanelComponent implements OnChanges {
                 if (this.compareCompanyID(company, data)) {
                     company.CompanyName = data.CompanyName;
                     company.DateCreated = data.DateCreated;
+                    company.OrgNodeCounts = data.OrgNodeCounts;
                     return true;
                 }
             });
