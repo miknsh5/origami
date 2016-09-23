@@ -156,7 +156,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         if (this.currentMode === ChartMode.build) {
             this.tree = d3.layout.tree().nodeSize([NODE_HEIGHT, NODE_WIDTH]);
         } else if (this.currentMode === ChartMode.report) {
-            this.tree = d3.layout.tree().nodeSize([NODE_WIDTH, NODE_HEIGHT]);
+            this.tree = d3.layout.tree().nodeSize([RIGHTLEFT_MARGIN, NODE_HEIGHT]);
             this.setNodeLabelVisiblity();
             this.root = this.selectedOrgNode || this.lastSelectedNode;
         } else {
@@ -669,7 +669,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             }
 
             this.links = this.tree.links(this.nodes);
-            source.x0 = source.x;
+            source.x0 = source.x || 0;
             source.y0 = source.y;
 
             // Normalize for fixed-depth.
@@ -710,8 +710,8 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 let transformString = "translate(" + source.y0 + "," + source.x0 + ")";
                 if (this.currentMode === ChartMode.report) {
                     transformString = "translate(" + source.x0 + "," + source.y0 + ")";
-                } else if (this.currentMode === ChartMode.explore) {
-                    transformString = "rotate(" + (source.x0 - RADIAL_DEPTH) + ")translate(" + source.y0 + ")";
+                } else if (this.currentMode === ChartMode.explore) {                    
+                        transformString = "rotate(" + (source.x0 - RADIAL_DEPTH) + ")translate(" + source.y0 + ")";                    
                 }
                 return transformString;
             })
@@ -971,7 +971,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 } else if (this.currentMode === ChartMode.report) {
                     return "translate(" + source.x + "," + source.y + ")";
                 } else {
-                    return "rotate(" + (source.x - RADIAL_DEPTH) + ")translate(" + source.y + ")";
+                    return "rotate(" + (source.x0 - RADIAL_DEPTH) + ")translate(" + source.y + ")";
                 }
             })
             .remove();
@@ -992,7 +992,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         let sourceCoords = { x: source.x0, y: source.y0 };
         let diagCoords = this.diagonal({ source: sourceCoords, target: sourceCoords });
 
-        let sourceCoords2 = { x: source.x, y: source.y };
+        let sourceCoords2 = { x: source.x || 0, y: source.y };
         let diagCoords2 = this.diagonal({ source: sourceCoords2, target: sourceCoords2 });
 
         // Update the links…
