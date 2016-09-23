@@ -195,12 +195,16 @@ export class ImportCsvFileComponent {
     private convertBaseModelToData(node): OrgNodeModel {
         let orgNode = new OrgNodeModel();
         if (node) {
-            orgNode.NodeID = node.UID;
+            orgNode.NodeID = parseInt(node.UID);
             orgNode.NodeFirstName = node.First_Name;
             orgNode.NodeLastName = node.Last_Name;
             orgNode.Description = node.Title;
-            orgNode.ParentNodeID = node.Parent;
-            if (Number.isNaN(orgNode.ParentNodeID) || (orgNode.ParentNodeID).toString().toLowerCase() === "null" || (orgNode.ParentNodeID).toString() === "") {
+            orgNode.ParentNodeID = parseInt(node.Parent) || null;
+            if (!orgNode.ParentNodeID || !orgNode.NodeID) {
+                if (!orgNode.NodeID) {
+                    let date = new Date();
+                    orgNode.NodeID = date.getTime();
+                }
                 this.unmappedNodesCount++;
                 orgNode.children = new Array<OrgNodeModel>();
                 this.defaultNode = orgNode;
