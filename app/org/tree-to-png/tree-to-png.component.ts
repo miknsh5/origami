@@ -28,23 +28,28 @@ export class TreeToPNGComponent {
             width = width > 1024 ? width : 1024;
             let height = (this.depth.length * 120);
             height = height > 768 ? height : 768;
+
             let viewPort = document.getElementsByClassName("svg-pan-zoom_viewport")[0];
             let mattrix = viewPort.getAttribute("transform");
             let svg = document.getElementsByTagName("svg")[0];
             let circles = svg.getElementsByTagName("circle");
-            for (let i = 0; i < circles.length; i++) {
-                circles[i].setAttribute("style", "filter: url('#drop-shadow')");
-            }
             let nodes = svg.getElementsByClassName("nodes")[0];
             let nodesTransform = nodes.getAttribute("transform");
 
+            // sets attributes to  svg for exporting
+            for (let i = 0; i < circles.length; i++) {
+                circles[i].setAttribute("style", "filter: url('#drop-shadow')");
+            }
             svg.setAttribute("style", "background-color:white");
             svg.setAttribute("width", width.toString());
             svg.setAttribute("height", height.toString());
             nodes.setAttribute("transform", "translate(" + (width / 2) + ", 95)");
             viewPort.setAttribute("transform", DEFAULT_MATTRIX);
 
+            // exports svg to png
             saveSvgAsPng.saveSvgAsPng(svg, this.orgName + DEFAULT_EXT);
+
+            // sets attributes to  svg for exporting
             svg.setAttribute("width", this.width);
             svg.setAttribute("height", this.height);
             nodes.setAttribute("transform", nodesTransform);
