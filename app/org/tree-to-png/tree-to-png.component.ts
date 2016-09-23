@@ -9,11 +9,11 @@ const DEFAULT_EXT = ".png";
 
 @Component({
     selector: "sg-origami-png",
-    templateUrl: "app/org/convertTreeToPNG/convertTreeToPNG.component.html",
-    styleUrls: ["app/org/convertTreeToPNG/convertTreeToPNG.component.css", "app/style.css"]
+    templateUrl: "app/org/tree-to-png/tree-to-png.component.html",
+    styleUrls: ["app/org/tree-to-png/tree-to-png.component.css", "app/style.css"]
 })
 
-export class ConvertTreeToPNGComponent {
+export class TreeToPNGComponent {
     @Input() orgName: any;
     @Input() selectedOrgNode: any;
     @Input() width: any;
@@ -24,27 +24,32 @@ export class ConvertTreeToPNGComponent {
         if (this.selectedOrgNode) {
             this.depth = [1];
             this.childCount(0, this.selectedOrgNode);
-            let width = d3.max(this.depth) * 210;
+            let width = d3.max(this.depth) * 240;
             width = width > 1024 ? width : 1024;
             let height = (this.depth.length * 120);
             height = height > 768 ? height : 768;
+
             let viewPort = document.getElementsByClassName("svg-pan-zoom_viewport")[0];
             let mattrix = viewPort.getAttribute("transform");
             let svg = document.getElementsByTagName("svg")[0];
             let circles = svg.getElementsByTagName("circle");
-            for (let i = 0; i < circles.length; i++) {
-                circles[i].setAttribute("style", "filter: url('#drop-shadow')");
-            }
             let nodes = svg.getElementsByClassName("nodes")[0];
             let nodesTransform = nodes.getAttribute("transform");
 
+            // sets attributes to  svg for exporting
+            for (let i = 0; i < circles.length; i++) {
+                circles[i].setAttribute("style", "filter: url('#drop-shadow')");
+            }
             svg.setAttribute("style", "background-color:white");
             svg.setAttribute("width", width.toString());
             svg.setAttribute("height", height.toString());
             nodes.setAttribute("transform", "translate(" + (width / 2) + ", 95)");
             viewPort.setAttribute("transform", DEFAULT_MATTRIX);
 
+            // exports svg to png
             saveSvgAsPng.saveSvgAsPng(svg, this.orgName + DEFAULT_EXT);
+
+            // sets attributes to  svg for exporting
             svg.setAttribute("width", this.width);
             svg.setAttribute("height", this.height);
             nodes.setAttribute("transform", nodesTransform);

@@ -1,10 +1,11 @@
 import { Component, Input, Output, EventEmitter, OnChanges, SimpleChange } from "@angular/core";
-import { Router } from "@angular/router-deprecated";
+import { Router } from "@angular/router";
 
 import { OrgCompanyModel, OrgGroupModel, OrgNodeModel, OrgService, OrgNodeStatus, OrgNodeBaseModel} from "../shared/index";
-import { DataHelper } from "../data-helper/data-helper";
+import { CSVConversionHelper } from "../shared/csv-helper";
 import { UserModel } from "../../Shared/index";
-import { ImportCsvFileComponent } from "../import-csv-file/import-csv-file.component";
+
+import { AuthService } from "../../login/index";
 
 declare let $: any;
 
@@ -12,8 +13,7 @@ declare let $: any;
     selector: "sg-menu-panel",
     templateUrl: "app/org/menu-panel/menu-panel.component.html",
     styleUrls: ["app/org/menu-panel/menu-panel.component.css"],
-    directives: [ImportCsvFileComponent],
-    providers: [DataHelper]
+    providers: [CSVConversionHelper]
 })
 
 export class MenuPanelComponent implements OnChanges {
@@ -34,7 +34,8 @@ export class MenuPanelComponent implements OnChanges {
     @Output() groupSelected = new EventEmitter<OrgGroupModel>();
     @Output() companySelected = new EventEmitter<OrgCompanyModel>();
 
-    constructor(private orgService: OrgService, private router: Router, private dataHelper: DataHelper) {
+    constructor(private orgService: OrgService, private router: Router,
+        private csvHelper: CSVConversionHelper, private auth: AuthService) {
         this.getAllCompanies();
         this.enableImport = false;
         this.isImport = false;
@@ -148,12 +149,6 @@ export class MenuPanelComponent implements OnChanges {
         $(".dropdown-button").dropdown({ constrain_width: false, alignment: "right" });
         $(".organization").dropdown({ constrain_width: false, belowOrigin: true, alignment: "left" });
         $(".group").dropdown({ constrain_width: false, belowOrigin: true, alignment: "left" });
-    }
-
-    private logout() {
-        localStorage.removeItem("profile");
-        localStorage.removeItem("id_token");
-        this.router.navigate(["/Login"]);
     }
 
     private onCompanySelection(data) {
@@ -410,6 +405,6 @@ export class MenuPanelComponent implements OnChanges {
     }
 
     private onClickDownloadTemplate() {
-        this.dataHelper.DownloadTemplate();
+        this.csvHelper.DownloadTemplate();
     }
 }

@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { OrgNodeBaseModel } from "../shared/index";
 
 @Injectable()
-export class DataHelper {
+export class CSVConversionHelper {
     convertDataToBaseModel(node): OrgNodeBaseModel {
         let orgNode = new OrgNodeBaseModel();
         if (node) {
