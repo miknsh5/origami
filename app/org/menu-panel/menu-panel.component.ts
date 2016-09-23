@@ -33,9 +33,10 @@ export class MenuPanelComponent implements OnChanges {
     @Output() orgNodes = new EventEmitter<any>();
     @Output() groupSelected = new EventEmitter<OrgGroupModel>();
     @Output() companySelected = new EventEmitter<OrgCompanyModel>();
+    @Output() isMenuEnable = new EventEmitter<boolean>();
 
     constructor(private orgService: OrgService, private router: Router,
-     private csvHelper: CSVConversionHelper, private auth: AuthService) {
+        private csvHelper: CSVConversionHelper, private auth: AuthService) {
         this.getAllCompanies();
         this.enableImport = false;
         this.isImport = false;
@@ -149,7 +150,7 @@ export class MenuPanelComponent implements OnChanges {
         $(".dropdown-button").dropdown({ constrain_width: false, alignment: "right" });
         $(".organization").dropdown({ constrain_width: false, belowOrigin: true, alignment: "left" });
         $(".group").dropdown({ constrain_width: false, belowOrigin: true, alignment: "left" });
-    }    
+    }
 
     private onCompanySelection(data) {
         if (data && data.CompanyID !== this.selectedCompany.CompanyID) {
@@ -179,6 +180,7 @@ export class MenuPanelComponent implements OnChanges {
     }
 
     private onAddOrSettingsClick(name) {
+        this.isMenuEnable.emit(true);
         if (name === "company") {
             this.companyName = this.selectedCompany.CompanyName;
             $("#companySettings").show();
@@ -195,6 +197,7 @@ export class MenuPanelComponent implements OnChanges {
     }
 
     private dismissPopup(name) {
+        this.isMenuEnable.emit(false);
         if (name === "company") {
             this.companyName = this.selectedCompany.CompanyName;
             $("#companySettings").hide();

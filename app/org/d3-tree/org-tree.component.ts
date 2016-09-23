@@ -76,6 +76,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     @Input() showDescriptionLabel: boolean;
     @Input() orgGroupID: number;
     @Input() CompanyID: number;
+    @Input() isMenuSettingsEnabled: boolean;
 
     @Output() selectNode = new EventEmitter<OrgNodeModel>();
     @Output() addNode = new EventEmitter<OrgNodeModel>();
@@ -221,6 +222,14 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 if (!this.root) {
                     this.addEmptyRootNode();
                     this.selectedOrgNode = this.root;
+                }
+            }
+
+            if(changes["isMenuSettingsEnabled"]){
+                if(this.isMenuSettingsEnabled){
+                    this.deselectNode();
+                }else{
+                    this.selectedOrgNode = this.lastSelectedNode;
                 }
             }
 
