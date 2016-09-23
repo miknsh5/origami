@@ -24,7 +24,7 @@ export class TreeToPNGComponent {
         if (this.selectedOrgNode) {
             this.depth = [1];
             this.childCount(0, this.selectedOrgNode);
-            let width = d3.max(this.depth) * 210;
+            let width = d3.max(this.depth) * 240;
             width = width > 1024 ? width : 1024;
             let height = (this.depth.length * 120);
             height = height > 768 ? height : 768;
