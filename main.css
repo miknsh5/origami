@@ -79,7 +79,8 @@
       cursor: pointer;
   }
   
-  .buildMode .selectedCircle {
+  .buildMode .selectedCircle,
+  .exploreMode .selectedCircle {
       fill: #0097FF;
   }
   

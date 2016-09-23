@@ -9,7 +9,7 @@
 <div class="modes-wrap ">
     <ul>
         <li [ngClass]="buildView" class="nav-build" (click)="changeViewModeNav(1)"><a> Build</a></li>
-        <li class="nav-explore inactive"><a>Explore</a></li>
+        <li [ngClass]="exploreView" class="nav-explore" (click)="changeViewModeNav(2)"><a>Explore</a></li>
         <li [ngClass]="reportView" class="nav-report" (click)="changeViewModeNav(3)"><a>Report</a> </li>
     </ul>
 </div>

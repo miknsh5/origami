@@ -29,6 +29,7 @@ const TRANSPARENT_COLOR = "transparent";
 const NODE_HEIGHT = 70;
 const NODE_WIDTH = 95;
 const DEPTH = 180;
+const RADIAL_DEPTH = 90;
 
 const DEFAULT_CIRCLE = "defaultCircle";
 const STAGED_CIRCLE = "stagedCircle";
@@ -158,6 +159,13 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             this.tree = d3.layout.tree().nodeSize([NODE_WIDTH, NODE_HEIGHT]);
             this.setNodeLabelVisiblity();
             this.root = this.selectedOrgNode || this.lastSelectedNode;
+        } else {
+            this.tree = d3.layout.cluster().size([360, RADIAL_DEPTH])
+                .separation(function (a, b) {
+                    return (a.parent === b.parent ? 1 : 2) / a.depth;
+                });
+            this.setNodeLabelVisiblity();
+            this.selectedOrgNode = this.root;
         }
 
         if (this.currentMode === ChartMode.build) {
@@ -165,10 +173,15 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 .projection(function (d) {
                     return [d.y, d.x];
                 });
-        } else {
+        } else if (this.currentMode === ChartMode.report) {
             this.diagonal = d3.svg.diagonal()
                 .projection(function (d) {
                     return [d.x, d.y];
+                });
+        } else {
+            this.diagonal = d3.svg.diagonal.radial()
+                .projection(function (d) {
+                    return [d.y, d.x / DEPTH * Math.PI];
                 });
         }
     }
@@ -188,7 +201,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     // TODO:- we should refactor this method to work depending on the kind of change that has taken place. 
     // It re-renders on all kinds of changes
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
-
         if (this.tree != null) {
             this.previousRoot = this.root;
             this.root = this.treeData[0];
@@ -216,7 +228,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 return;
             }
 
-            if (changes["currentMode"]) {
+            if (changes["currentMode"] || (changes["orgGroupID"] && this.currentMode === ChartMode.explore)) {
                 this.initializeTreeAsPerMode();
                 let node = this.selectedOrgNode;
                 if (!node && this.lastSelectedNode) {
@@ -240,17 +252,18 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             }
 
             let raiseSelectedEvent: boolean = true;
-
-            // We don't need to raise a selectednode change event if the only change happening is entering/leaving edit node
             if (changes["isAddOrEditModeEnabled"]) {
-                raiseSelectedEvent = false;
+                // We don't need to raise a selectednode change event if the only change happening is entering/leaving edit node
+                if (this.isAddOrEditModeEnabled)
+                    raiseSelectedEvent = false;
             }
 
             this.calculateLevelDepth();
             this.resizeLinesArrowsAndSvg();
-            if (this.currentMode === ChartMode.report) {
+            if (this.currentMode !== ChartMode.build) {
                 this.setNodeLabelVisiblity();
-                this.root = this.selectedOrgNode;
+                if (this.currentMode === ChartMode.report)
+                    this.root = this.selectedOrgNode;
             }
 
             if (this.selectedOrgNode != null) {
@@ -274,9 +287,11 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             }
 
             if (this.selectedOrgNode != null) {
-                this.render(this.root);
-                this.showUpdatePeerReporteeNode(this.selectedOrgNode);
-                this.centerNode(this.selectedOrgNode);
+                if (this.currentMode !== ChartMode.explore) {
+                    this.render(this.root);
+                    this.showUpdatePeerReporteeNode(this.selectedOrgNode);
+                    this.centerNode(this.selectedOrgNode);
+                }
                 if (this.isAddOrEditModeEnabled) {
                     this.hideAllArrows();
                 } else {
@@ -341,8 +356,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
             this.arrows.attr("transform", "translate(" + ((this.treeWidth / 2) - SIBLING_RADIUS * 1.35) + "," + ((this.treeHeight / 2) - SIBLING_RADIUS * 1.275) + ")");
             d3.select("#viewport").attr("transform", "");
-        }
-        else if (this.currentMode === ChartMode.report) {
+        } else {
             d3.select("path.vertical")
                 .attr("stroke", TRANSPARENT_COLOR);
             d3.select("path.horizontal")
@@ -356,6 +370,8 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                     return "buildMode";
                 else if (this.currentMode === ChartMode.report)
                     return "reportMode";
+                else
+                    return "exploreMode";
             });
 
         this.scrollToCenter();
@@ -371,7 +387,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                     document.documentElement.scrollTop = Math.abs(scrollposition);
                 }
             }
-        } else if (this.currentMode === ChartMode.report) {
+        } else {
             if (this.treeWidth > this.width) {
                 let scrollposition = this.treeWidth / 2;
                 scrollposition = scrollposition - (this.width / 2);
@@ -559,17 +575,26 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             y = source.x0;
             x = this.treeWidth / 2 - x;
             y = this.treeHeight / 2 - y;
-        }
-        else {
+        } else if (this.currentMode === ChartMode.report) {
             x = source.x0;
             y = source.y0;
             x = this.treeWidth / 2 - x;
             y = NODE_WIDTH;
+        } else {
+            x = source.x0;
+            y = source.y0;
+            x = this.treeWidth / 2;
+            y = this.treeHeight / 2;
         }
 
         d3.select("g.nodes").transition()
             .duration(DURATION)
-            .attr("transform", "translate(" + x + "," + y + ")");
+            .attr("transform", () => {
+                if (this.currentMode === ChartMode.explore) {
+                    return "translate(" + x + "," + y + ")";
+                }
+                return "translate(" + x + "," + y + ")";
+            });
 
         this.hideAllArrows();
 
@@ -650,8 +675,10 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             // Normalize for fixed-depth.
             if (this.currentMode === ChartMode.build) {
                 this.nodes.forEach(function (d) { d.y = d.depth * DEPTH; });
-            } else {
+            } else if (this.currentMode === ChartMode.report) {
                 this.nodes.forEach(function (d) { d.y = d.depth * NODE_WIDTH; });
+            } else {
+                this.nodes.forEach(function (d) { d.y = d.depth * RIGHTLEFT_MARGIN; });
             }
 
             this.renderOrUpdateNodes(source);
@@ -683,6 +710,8 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 let transformString = "translate(" + source.y0 + "," + source.x0 + ")";
                 if (this.currentMode === ChartMode.report) {
                     transformString = "translate(" + source.x0 + "," + source.y0 + ")";
+                } else if (this.currentMode === ChartMode.explore) {
+                    transformString = "rotate(" + (source.x0 - RADIAL_DEPTH) + ")translate(" + source.y0 + ")";
                 }
                 return transformString;
             })
@@ -699,19 +728,37 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             .attr("text-anchor", "middle")
             .style("fill-opacity", 1);
 
-        node.select("#abbr").text(function (d) {
-            if (d.IsGrandParent) { return ""; }
+        node.select("#abbr").text((d) => {
             if (d.IsStaging && d.NodeID === -1) { return "+"; }
-
             let fn = "", ln = "";
             if (d.NodeFirstName) { fn = d.NodeFirstName.slice(0, 1); }
             if (d.NodeLastName) { ln = d.NodeLastName.slice(0, 1); }
+            if (d.IsGrandParent) {
+                if (this.currentMode === ChartMode.explore) {
+                    return fn + ln;
+                } else {
+                    return "";
+                }
+            }
             return fn + ln;
         }).style("fill", function (d) {
             return d.IsStaging && d.NodeID === -1 ? "#0097FF" : "#FFFFFF";
-        }).style("font-size", function (d) {
+        }).style("font-size", (d) => {
+            if (this.currentMode === ChartMode.explore) {
+                return DEFAULT_FONTSIZE + "px";
+            }
             if (d.IsSelected || d.IsSibling) { return SIBLING_FONTSIZE + "px"; }
             else { return DEFAULT_FONTSIZE + "px"; }
+        }).attr("transform", (d) => {
+            let transformString = "rotate(0)";
+            if (this.currentMode === ChartMode.explore && d.ParentNodeID !== null) {
+                if (d.x >= RADIAL_DEPTH) {
+                    transformString = "rotate(" + -Math.abs(d.x - RADIAL_DEPTH) + ")";
+                } else {
+                    transformString = "rotate(" + Math.abs(d.x - RADIAL_DEPTH) + ")";
+                }
+            }
+            return transformString;
         });
 
         nodeEnter.append("g")
@@ -733,45 +780,90 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 name = d.NodeLastName;
             }
 
-            if (name.length > 15) {
-                if (this.currentMode === ChartMode.build) { return d.IsSelected || d.IsGrandParent ? "" : name.substring(0, 15) + "..."; }
-                else { return name.substring(0, 15) + "..."; }
-            }
-            else {
-                if (this.currentMode === ChartMode.build) { return d.IsSelected || d.IsGrandParent ? "" : name; }
-                else { return name; }
+            if (this.currentMode === ChartMode.explore) {
+                name = d.NodeFirstName;
             }
 
+            if (name.length > 15) {
+                if (this.currentMode === ChartMode.build) {
+                    return d.IsSelected || d.IsGrandParent ? "" : name.substring(0, 15) + "...";
+                } else {
+                    return name.substring(0, 15) + "...";
+                }
+            } else {
+                if (this.currentMode === ChartMode.build) {
+                    return d.IsSelected || d.IsGrandParent ? "" : name;
+                } else {
+                    return name;
+                }
+            }
         }).attr("text-anchor", (d) => {
             if (this.currentMode === ChartMode.build) { return "start"; }
-            else { return "middle"; }
+            else if (this.currentMode === ChartMode.report) { return "middle"; }
+            else {
+                if (d.NodeID === this.root.NodeID && this.currentMode === ChartMode.explore)
+                    return "start";
+                else
+                    return d.x < DEPTH ? "start" : "end";
+            }
+        }).attr("transform", (d) => {
+            if (this.currentMode === ChartMode.explore) {
+                if (d.NodeID === this.root.NodeID && this.currentMode === ChartMode.explore)
+                    return "rotate(0)";
+                else
+                    return d.x < DEPTH ? "rotate(0)" : "rotate(180)";
+            } else {
+                return "rotate(0)";
+            }
         });
 
         node.select("g.label text[data-id='description']").text((d) => {
-            if (d.Description > 15) {
-                if (this.currentMode === ChartMode.build) { return d.IsSelected || d.IsGrandParent ? "" : d.Description.substring(0, 15) + "..."; }
-                else { return d.Description.substring(0, 15) + "..."; }
+            if (d.Description.length > 15) {
+                if (this.currentMode === ChartMode.build) {
+                    return d.IsSelected || d.IsGrandParent ? "" : d.Description.substring(0, 15) + "...";
+                } else if (this.currentMode === ChartMode.explore) {
+                    return d.Description.substring(0, 15) + "...";
+                } else {
+                    return d.Description.substring(0, 15) + "...";
+                }
             } else {
                 if (this.currentMode === ChartMode.build) { return d.IsSelected || d.IsGrandParent ? "" : d.Description; }
+                else if (this.currentMode === ChartMode.explore) { return d.Description; }
                 else { return d.Description; }
             }
         }).attr("text-anchor", (d) => {
             if (this.currentMode === ChartMode.build) { return "start"; }
-            else { return "middle"; }
+            else if (this.currentMode === ChartMode.report) { return "middle"; }
+            else {
+                if (d.NodeID === this.root.NodeID && this.currentMode === ChartMode.explore)
+                    return "start";
+                else
+                    return d.x < DEPTH ? "start" : "end";
+            }
         }).attr("dy", (d) => {
             if (this.showDescriptionLabel && !this.showFirstNameLabel && !this.showLastNameLabel) {
                 return "0em";
             }
             else { return "1em"; }
+        }).attr("transform", (d) => {
+            if (this.currentMode === ChartMode.explore) {
+                if (d.NodeID === this.root.NodeID && this.currentMode === ChartMode.explore)
+                    return "rotate(0)";
+                else {
+                    return d.x < DEPTH ? "rotate(0)" : "rotate(180)";
+                }
+            } else {
+                return "rotate(0)";
+            }
         });
 
         if (this.currentMode === ChartMode.build) {
-            node.select("g.label ").attr("x", function (d) {
+            node.select("g.label").attr("x", function (d) {
                 if (d.IsParent === true || d.IsChild === true) { return PARENTCHILD_RADIUS + DEFAULT_MARGIN; }
                 else { return SIBLING_RADIUS + DEFAULT_MARGIN; }
             });
         } else {
-            node.select("g.label ").attr("y", 30);
+            node.select("g.label").attr("y", 30);
         }
 
         // used to get the label width of each node
@@ -786,9 +878,12 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                     margin = DEFAULT_MARGIN * 3;
                 }
                 return "translate(" + margin + ",0)";
-            } else {
+            } else if (this.currentMode === ChartMode.report) {
                 if (d.IsSelected) margin = DEFAULT_MARGIN * 5;
                 return "translate(0," + margin + ")";
+            } else {
+                margin = DEFAULT_MARGIN * 3;
+                return "translate(" + margin + ",0)";
             }
         });
 
@@ -816,6 +911,16 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
         node.select(CIRCLE).attr("class", (d) => {
             return d.IsSelected ? SELECTED_CIRCLE : DEFAULT_CIRCLE;
+        }).attr("transform", (d) => {
+            let transformString = "rotate(0)";
+            if (this.currentMode === ChartMode.explore && d.ParentNodeID !== null) {
+                if (d.x > RADIAL_DEPTH) {
+                    transformString = "rotate(" + -Math.abs(d.x - RADIAL_DEPTH) + ")";
+                } else {
+                    transformString = "rotate(" + Math.abs(d.x - RADIAL_DEPTH) + ")";
+                }
+            }
+            return transformString;
         });
 
         // Transition nodes to their new position.
@@ -824,20 +929,26 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             .attr("transform", (d) => {
                 if (this.currentMode === ChartMode.build) {
                     return "translate(" + d.y + "," + d.x + ")";
-                }
-                else {
+                } else if (this.currentMode === ChartMode.report) {
                     return "translate(" + d.x + "," + d.y + ")";
+                } else {
+                    if (d.ParentNodeID == null) {
+                        return "rotate(0)";
+                    }
+                    return "rotate(" + (d.x - RADIAL_DEPTH) + ")translate(" + d.y + ")";
                 }
             });
 
-
-
         nodeUpdate.select(CIRCLE)
-            .attr("r", function (d) {
-                if (d.IsSelected === true || d.IsSibling === true) { return SIBLING_RADIUS; }
-                else if (d.IsParent === true || d.IsChild === true) { return PARENTCHILD_RADIUS; }
-                else if (d.IsGrandParent === true) { return GRANDPARENT_RADIUS; }
-                else { return DEFAULT_RADIUS; }
+            .attr("r", (d) => {
+                if (this.currentMode !== ChartMode.explore) {
+                    if (d.IsSelected === true || d.IsSibling === true) { return SIBLING_RADIUS; }
+                    else if (d.IsParent === true || d.IsChild === true) { return PARENTCHILD_RADIUS; }
+                    else if (d.IsGrandParent === true) { return GRANDPARENT_RADIUS; }
+                    else { return DEFAULT_RADIUS; }
+                } else {
+                    return PARENTCHILD_RADIUS;
+                }
             })
             .attr("class", (d) => {
                 if (d.IsSelected && d.IsStaging && d.NodeID === -1) { return STAGED_CIRCLE; }
@@ -849,7 +960,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 return d.IsStaging && d.NodeID === -1 ? " " : "url(home#drop-shadow)";
             });
 
-        nodeUpdate.select("g.label ")
+        nodeUpdate.select("g.label")
             .style({ "fill-opacity": 1, "fill": "#979797" });
 
         let nodeExit = node.exit().transition().delay(100).
@@ -857,9 +968,10 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             .attr("transform", (d) => {
                 if (this.currentMode === ChartMode.build) {
                     return "translate(" + source.y + "," + source.x + ")";
-                }
-                else {
+                } else if (this.currentMode === ChartMode.report) {
                     return "translate(" + source.x + "," + source.y + ")";
+                } else {
+                    return "rotate(" + (source.x - RADIAL_DEPTH) + ")translate(" + source.y + ")";
                 }
             })
             .remove();
@@ -867,7 +979,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         nodeExit.select(CIRCLE)
             .attr("r", 1e-6);
 
-        nodeExit.select("g.label ")
+        nodeExit.select("g.label")
             .style("fill-opacity", 1e-6);
 
         node.each(function (d) {
@@ -901,12 +1013,43 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         link.transition()
             .duration(DURATION)
             .attr("d", this.diagonal);
-
+        let targetNode = null;
         link.style("stroke", (d) => {
             if (this.currentMode === ChartMode.report) {
                 return "rgba(204, 204, 204,0.5)";
-            }
-            else {
+            } else if (this.currentMode === ChartMode.explore) {
+                if (d.source.IsSelected) {
+                    return "#ccc";
+                } else {
+                    if (d.target.IsSelected) {
+                        return "#ccc";
+                    }
+                    if (d.target.children) {
+                        let node = null;
+                        d.target.children.forEach(element => {
+                            if (element.IsSelected) {
+                                node = element;
+                                if (element.parent) {
+                                    targetNode = element.parent;
+                                } else {
+                                    targetNode = element;
+                                }
+                            }
+                        });
+
+                        if (node) {
+                            return "#ccc";
+                        }
+                    }
+                    if (targetNode) {
+                        if (targetNode.parent && d.target.NodeID === targetNode.parent.NodeID) {
+                            targetNode = d.target;
+                            return "#ccc";
+                        }
+                    }
+                    return "none";
+                }
+            } else {
                 return (d.source.IsSelected ? "#ccc" : "none");
             }
         });
@@ -918,6 +1061,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 return diagCoords2;
             })
             .remove();
+
         link.each(function (d) {
             if (d.source.IsFakeRoot)
                 d3.select(this).remove();
@@ -1087,6 +1231,60 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 }
             }
         }
+        else if (this.currentMode === ChartMode.explore) {
+            // right arrow
+            if ((event as KeyboardEvent).keyCode === 39) {
+                let node = this.selectedOrgNode as d3.layout.cluster.Result;
+                console.log(node);
+                if (this.selectedOrgNode.children && this.selectedOrgNode.children.length > 0) {
+                    let node = this.selectedOrgNode.children[0];
+                    this.highlightSelectedNode(node);
+                    this.render(node);
+                }
+            }
+            // left arrow 
+            else if ((event as KeyboardEvent).keyCode === 37) {
+                let node = this.selectedOrgNode as d3.layout.cluster.Result;
+                if (node.parent != null) {
+                    let parentNode = node.parent;
+                    this.highlightSelectedNode(parentNode);
+                    this.render(parentNode);
+                }
+            }
+            // bottom arrow
+            else if ((event as KeyboardEvent).keyCode === 40) {
+                let node = this.selectedOrgNode as d3.layout.cluster.Result;
+                if (node.parent != null) {
+                    let siblings = node.parent.children;
+                    let index = siblings.indexOf(node);
+                    let youngerSibling;
+                    if (index < siblings.length - 1) {
+                        youngerSibling = siblings[index + 1];
+                    } else {
+                        youngerSibling = siblings[0];
+                    }
+                    this.highlightSelectedNode(youngerSibling);
+                    this.render(youngerSibling);
+                }
+            }
+            // top arrow
+            else if ((event as KeyboardEvent).keyCode === 38) {
+                let node = this.selectedOrgNode as d3.layout.cluster.Result;
+                if (node.parent != null) {
+                    let siblings = node.parent.children;
+                    let index = siblings.indexOf(node);
+                    let elderSibling;
+                    if (index > 0) {
+                        elderSibling = siblings[index - 1];
+
+                    } else {
+                        elderSibling = siblings[siblings.length - 1];
+                    }
+                    this.highlightSelectedNode(elderSibling);
+                    this.render(elderSibling);
+                }
+            }
+        }
         /*else {
             // esc
             if ((event as KeyboardEvent).keyCode === 27) {
@@ -1231,6 +1429,9 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             }
             this.expandCollapse(d);
             this.highlightAndCenterNode(d);
+        } else if (this.currentMode === ChartMode.explore) {
+            this.highlightSelectedNode(d);
+            this.render(d);
         }
     }
 
@@ -1354,7 +1555,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 }
             }
         }
-        if (this.currentMode === ChartMode.report) {
+        if (this.currentMode !== ChartMode.build) {
             node.Show = true;
         }
         return false;
