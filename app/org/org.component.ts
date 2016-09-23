@@ -91,9 +91,13 @@ export class OrgComponent implements OnDestroy {
                 if (this.svgPan) {
                     this.svgPan.disablePan();
                 }
-            } else if (viewMode === ChartMode.report) {
-                this.currentChartMode = ChartMode.report;
-                this.enableViewModesNav(ChartMode.report);
+            } else {
+                if (viewMode === ChartMode.report) {
+                    this.currentChartMode = ChartMode.report;
+                } else {
+                    this.currentChartMode = ChartMode.explore;
+                }
+                this.enableViewModesNav(this.currentChartMode);
                 this.enableLabels();
                 if (!this.svgPan) {
                     let elem = document.getElementsByTagName("svg")[0];
@@ -108,21 +112,6 @@ export class OrgComponent implements OnDestroy {
                     });
                 } else {
                     this.svgPan.enablePan();
-                }
-            } else {
-                this.currentChartMode = ChartMode.explore;
-                this.enableViewModesNav(ChartMode.explore);
-                this.enableLabels();
-                if (!this.svgPan) {
-                    let elem = document.getElementsByTagName("svg")[0];
-                    this.svgPan = SVGPan(elem, {
-                        enablePan: true,
-                        enableZoom: false,
-                        enableDrag: false,
-                        zoomScale: 0
-                    });
-                } else {
-                    this.svgPan.enablePan = true;
                 }
             }
         } else {
