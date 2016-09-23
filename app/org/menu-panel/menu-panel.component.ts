@@ -349,8 +349,8 @@ export class MenuPanelComponent implements OnChanges {
 
     private updateNewOrgGroup(OrgNodes) {
         this.setOrgGroupData(OrgNodes);
-        this.selectedCompany.OrgNodeCounts = this.selectedCompany.OrgNodeCounts + OrgNodes.OrgNodeCounts;
         this.selectedGroup.OrgNodeCounts = OrgNodes.OrgNodeCounts;
+        this.selectedCompany.OrgNodeCounts = this.selectedCompany.OrgNodeCounts + this.selectedGroup.OrgNodeCounts;
         this.groupSettingTitle = "Settings";
         this.isImport = false;
     }
