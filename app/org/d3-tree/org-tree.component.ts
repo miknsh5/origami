@@ -710,8 +710,8 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 let transformString = "translate(" + source.y0 + "," + source.x0 + ")";
                 if (this.currentMode === ChartMode.report) {
                     transformString = "translate(" + source.x0 + "," + source.y0 + ")";
-                } else if (this.currentMode === ChartMode.explore) {                    
-                        transformString = "rotate(" + (source.x0 - RADIAL_DEPTH) + ")translate(" + source.y0 + ")";                    
+                } else if (this.currentMode === ChartMode.explore) {
+                    transformString = "rotate(" + (source.x0 - RADIAL_DEPTH) + ")translate(" + source.y0 + ")";
                 }
                 return transformString;
             })

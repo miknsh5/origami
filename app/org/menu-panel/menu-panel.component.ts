@@ -35,7 +35,7 @@ export class MenuPanelComponent implements OnChanges {
     @Output() companySelected = new EventEmitter<OrgCompanyModel>();
 
     constructor(private orgService: OrgService, private router: Router,
-     private csvHelper: CSVConversionHelper, private auth: AuthService) {
+        private csvHelper: CSVConversionHelper, private auth: AuthService) {
         this.getAllCompanies();
         this.enableImport = false;
         this.isImport = false;
@@ -149,7 +149,7 @@ export class MenuPanelComponent implements OnChanges {
         $(".dropdown-button").dropdown({ constrain_width: false, alignment: "right" });
         $(".organization").dropdown({ constrain_width: false, belowOrigin: true, alignment: "left" });
         $(".group").dropdown({ constrain_width: false, belowOrigin: true, alignment: "left" });
-    }    
+    }
 
     private onCompanySelection(data) {
         if (data && data.CompanyID !== this.selectedCompany.CompanyID) {
