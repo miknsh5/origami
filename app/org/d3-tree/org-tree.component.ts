@@ -92,7 +92,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             .attr("width", this.treeWidth)
             .attr("height", this.treeHeight)
             .append("g")
-            .attr("id", "viewport");
+            .attr("class", "svg-pan-zoom_viewport");
 
         let verticalLine: [number, number][] = [[(this.treeWidth / 2), this.treeHeight], [(this.treeWidth / 2), 0]];
         let horizontalLine: [number, number][] = [[0, (this.treeHeight / 2)], [this.treeWidth, (this.treeHeight / 2)]];
