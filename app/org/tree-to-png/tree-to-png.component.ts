@@ -25,10 +25,16 @@ export class TreeToPNGComponent {
             this.depth = [1];
             this.childCount(0, this.selectedOrgNode);
             let width = d3.max(this.depth) * 210;
+            width = width > 1024 ? width : 1024;
             let height = (this.depth.length * 120);
-            let viewPort = document.getElementById("viewport");
+            height = height > 768 ? height : 768;
+            let viewPort = document.getElementsByClassName("svg-pan-zoom_viewport")[0];
             let mattrix = viewPort.getAttribute("transform");
             let svg = document.getElementsByTagName("svg")[0];
+            let circles = svg.getElementsByTagName("circle");
+            for (let i = 0; i < circles.length; i++) {
+                circles[i].setAttribute("style", "filter: url('#drop-shadow')");
+            }
             let nodes = svg.getElementsByClassName("nodes")[0];
             let nodesTransform = nodes.getAttribute("transform");
 
@@ -43,6 +49,9 @@ export class TreeToPNGComponent {
             svg.setAttribute("height", this.height);
             nodes.setAttribute("transform", nodesTransform);
             viewPort.setAttribute("transform", mattrix);
+            for (let i = 0; i < circles.length; i++) {
+                circles[i].setAttribute("style", "filter: url('home#drop-shadow')");
+            }
         }
     }
 

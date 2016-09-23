@@ -11,7 +11,7 @@ const MAX_WIDTH: number = 1366;
 
 const DEFAULT_OFFSET: number = 70;
 
-declare var SVGPan: any;
+declare var svgPanZoom: any;
 
 @Component({
     selector: "sg-origami-org",
@@ -80,7 +80,7 @@ export class OrgComponent implements OnDestroy {
                 this.currentChartMode = ChartMode.build;
                 this.enableViewModesNav(ChartMode.build);
                 if (this.svgPan) {
-                    this.svgPan.enablePan = false;
+                    this.svgPan.disablePan();
                 }
             } else if (viewMode === ChartMode.report) {
                 this.currentChartMode = ChartMode.report;
@@ -88,14 +88,17 @@ export class OrgComponent implements OnDestroy {
                 this.enableLabels();
                 if (!this.svgPan) {
                     let elem = document.getElementsByTagName("svg")[0];
-                    this.svgPan = SVGPan(elem, {
-                        enablePan: true,
-                        enableZoom: false,
-                        enableDrag: false,
-                        zoomScale: 0
+                    this.svgPan = svgPanZoom(elem, {
+                        viewportSelector: ".svg-pan-zoom_viewport",
+                        panEnabled: true,
+                        controlIconsEnabled: false,
+                        zoomEnabled: false,
+                        dblClickZoomEnabled: false,
+                        mouseWheelZoomEnabled: false,
+                        preventMouseEventsDefault: true
                     });
                 } else {
-                    this.svgPan.enablePan = true;
+                    this.svgPan.enablePan();
                 }
             } else {
                 this.currentChartMode = ChartMode.explore;
@@ -112,6 +115,10 @@ export class OrgComponent implements OnDestroy {
                 } else {
                     this.svgPan.enablePan = true;
                 }
+            }
+        } else {
+            if (this.svgPan) {
+                this.svgPan.enablePan = false;
             }
         }
     }
@@ -434,7 +441,7 @@ export class OrgComponent implements OnDestroy {
 
     ngOnDestroy() {
         if (this.svgPan) {
-            this.svgPan.removeHandlers();
+            this.svgPan.destroy();
         }
     }
 

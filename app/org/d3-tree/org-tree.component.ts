@@ -93,7 +93,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             .attr("width", this.treeWidth)
             .attr("height", this.treeHeight)
             .append("g")
-            .attr("id", "viewport");
+            .attr("class", "svg-pan-zoom_viewport");
 
         let verticalLine: [number, number][] = [[(this.treeWidth / 2), this.treeHeight], [(this.treeWidth / 2), 0]];
         let horizontalLine: [number, number][] = [[0, (this.treeHeight / 2)], [this.treeWidth, (this.treeHeight / 2)]];
@@ -228,7 +228,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 return;
             }
 
-            if (changes["currentMode"]) {
+            if (changes["currentMode"] || (changes["orgGroupID"] && this.currentMode === ChartMode.explore)) {
                 this.initializeTreeAsPerMode();
                 let node = this.selectedOrgNode;
                 if (!node && this.lastSelectedNode) {
@@ -781,7 +781,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             }
 
             if (this.currentMode === ChartMode.explore) {
-                return name = d.NodeFirstName;
+                name = d.NodeFirstName;
             }
 
             if (name.length > 15) {
@@ -818,7 +818,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         });
 
         node.select("g.label text[data-id='description']").text((d) => {
-            if (d.Description > 15) {
+            if (d.Description.length > 15) {
                 if (this.currentMode === ChartMode.build) {
                     return d.IsSelected || d.IsGrandParent ? "" : d.Description.substring(0, 15) + "...";
                 } else if (this.currentMode === ChartMode.explore) {
@@ -1067,11 +1067,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 d3.select(this).remove();
         });
     }
-
-    private compareParentNodeID(parentNode: OrgNodeModel, currentNode: OrgNodeModel): boolean {
-        return parentNode.NodeID === currentNode.NodeID;
-    }
-
 
     setPeerReporteeNode(nodeName, x, y, className) {
         let node = d3.select("g." + className);

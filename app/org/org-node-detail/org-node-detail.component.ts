@@ -58,6 +58,7 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
                     this.onSubmit();
                 } else {
                     this.onCancelEditClicked();
+                    alert("Please enter FirstName.");
                 }
             }
         }
@@ -116,9 +117,9 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
             if (!this.isNullOrEmpty(this.firstName.value)) {
                 this.isFormSubmitted = true;
                 this.editNodeDetails = new OrgNodeModel();
-                this.editNodeDetails.NodeFirstName = this.firstName.value;
-                this.editNodeDetails.NodeLastName = this.lastName.value;
-                this.editNodeDetails.Description = this.description.value;
+                this.editNodeDetails.NodeFirstName = (this.firstName.value).trim();
+                this.editNodeDetails.NodeLastName = (this.lastName.value).trim();
+                this.editNodeDetails.Description = (this.description.value).trim();
                 this.editNodeDetails.children = this.orgNode.children;
                 this.editNodeDetails.NodeID = this.orgNode.NodeID;
                 this.editNodeDetails.OrgGroupID = this.orgNode.OrgGroupID;
