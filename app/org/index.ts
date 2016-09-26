@@ -3,7 +3,7 @@ export * from "./shared/index";
 export * from "./side-menu-panel/index";
 export * from "./org-node-detail/index";
 export * from "./menu-panel/index";
-export * from "./d3-tree/index";
+export * from "./org-tree/index";
 export * from "./json-to-csv/index";
 export * from "./tree-to-png/index";
 export * from "./import-csv-file/index";
