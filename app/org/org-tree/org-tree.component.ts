@@ -999,6 +999,8 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         let link = this.svg.selectAll("path.link")
             .data(this.links, function (d) { return d.target.NodeID; });
 
+        let x = function (d) { return d.y * Math.cos((d.x - RADIAL_DEPTH) / DEPTH * Math.PI); };
+        let y = function (d) { return d.y * Math.sin((d.x - RADIAL_DEPTH) / DEPTH * Math.PI); };
         // Enter any new links at the parent"s previous position.
         link.enter().insert("path", "g")
             .attr("class", "link")
@@ -1006,13 +1008,25 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 return ("link" + d.source.NodeID + "-" + d.target.NodeID);
             })
             .attr("d", function (d) {
+                if (this.currentMode === ChartMode.explore) {
+                    return "M" + x(d.source) + "," + y(d.source) + "L" + x(d.target) + "," + y(d.target);
+                }
                 return diagCoords;
             });
 
         // Transition links to their new position.
-        link.transition()
-            .duration(DURATION)
-            .attr("d", this.diagonal);
+        if (this.currentMode === ChartMode.explore) {
+            link.transition()
+                .duration(DURATION)
+                .attr("d", function (d) {
+                    return "M" + x(d.source) + "," + y(d.source) + "L" + x(d.target) + "," + y(d.target);
+                });
+        } else {
+            link.transition()
+                .duration(DURATION)
+                .attr("d", this.diagonal);
+        }
+
         let targetNode = null;
         link.style("stroke", (d) => {
             if (this.currentMode === ChartMode.report) {
@@ -1235,7 +1249,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             // right arrow
             if ((event as KeyboardEvent).keyCode === 39) {
                 let node = this.selectedOrgNode as d3.layout.cluster.Result;
-                console.log(node);
                 if (this.selectedOrgNode.children && this.selectedOrgNode.children.length > 0) {
                     let node = this.selectedOrgNode.children[0];
                     this.highlightSelectedNode(node);
@@ -1293,7 +1306,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                     this.selectNode.emit(this.selectedOrgNode);
                 }
             }
-    
+     
             // top arrow
             if ((event as KeyboardEvent).keyCode === 38) {
                 let node = this.selectedOrgNode as d3.layout.tree.Node;
@@ -1337,7 +1350,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                     }
                 }
             }
-    
+     
         }*/
     }
 
