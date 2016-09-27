@@ -685,7 +685,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             } else if (this.currentMode === ChartMode.report) {
                 this.nodes.forEach(function (d) { d.y = d.depth * NODE_WIDTH; });
             } else {
-                this.nodes.forEach(function (d) { d.y = d.depth * RIGHTLEFT_MARGIN; });
+                this.nodes.forEach(function (d) { d.y = d.depth * (RADIAL_DEPTH + NODE_HEIGHT); });
             }
 
             this.renderOrUpdateNodes(source);
