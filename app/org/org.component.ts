@@ -44,6 +44,7 @@ export class OrgComponent implements OnDestroy {
     @Output() displayDescriptionLabel: boolean;
     @Output() isOrgNodeEmpty: boolean;
     @Output() currentOrgNodeStatus: OrgNodeStatus;
+    @Output() isMenuSettingsEnabled: boolean;
 
     constructor() {
         this.currentChartMode = ChartMode.build;
@@ -51,6 +52,7 @@ export class OrgComponent implements OnDestroy {
         this.svgWidth = this.getSvgWidth();
         this.svgHeight = this.getSvgHeight();
         this.currentOrgNodeStatus = OrgNodeStatus.None;
+        this.isMenuSettingsEnabled = false;
     }
 
     onResize(event) {
@@ -425,6 +427,14 @@ export class OrgComponent implements OnDestroy {
     onCompanySelected(data: any) {
         if (data) {
             this.companyName = data.CompanyName;
+        }
+    }
+
+    onMenuSettingsChange(data: boolean) {
+        if (data) {
+            this.isMenuSettingsEnabled = data;
+        } else {
+            this.isMenuSettingsEnabled = data;
         }
     }
 

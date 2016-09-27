@@ -12,6 +12,7 @@ import { OrgNodeModel, OrgService } from "../shared/index";
 export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
     @Input() selectedOrgNode: OrgNodeModel;
     @Input() isAddOrEditModeEnabled: boolean;
+    @Input() isMenuSettingsEnabled: boolean;
 
     @Output() deleteNode = new EventEmitter<OrgNodeModel>();
     @Output() updateMenuNode = new EventEmitter<OrgNodeModel>();
@@ -32,17 +33,19 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
     @HostListener("window:keydown", ["$event"])
     onKeyDown(event: any) {
         event.stopPropagation();
-        if ((event as KeyboardEvent).keyCode === 27) {
-            if (this.isAddOrEditModeEnabled) {
-                if (!this.orgNode.IsNewRoot && !this.orgNode.ParentNodeID && this.orgNode.NodeID === -1) {
-                    this.clearRootNodeDetails();
-                } else {
-                    if (this.orgNode.NodeID === -1) {
-                        this.deleteNode.emit(this.orgNode);
-                        this.setAddOrEditModeValue.emit(false);
+        if (!this.isMenuSettingsEnabled) {
+            if ((event as KeyboardEvent).keyCode === 27) {
+                if (this.isAddOrEditModeEnabled) {
+                    if (!this.orgNode.IsNewRoot && !this.orgNode.ParentNodeID && this.orgNode.NodeID === -1) {
+                        this.clearRootNodeDetails();
                     } else {
-                        this.setAddOrEditModeValue.emit(false);
-                        this.deleteNode.emit(null);
+                        if (this.orgNode.NodeID === -1) {
+                            this.deleteNode.emit(this.orgNode);
+                            this.setAddOrEditModeValue.emit(false);
+                        } else {
+                            this.setAddOrEditModeValue.emit(false);
+                            this.deleteNode.emit(null);
+                        }
                     }
                 }
             }
@@ -51,14 +54,16 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
 
     @HostListener("window:click", ["$event"])
     onClick(event: any) {
-        event.stopPropagation();
-        if (event.target.nodeName === "svg") {
-            if (this.firstName && this.lastName && this.description) {
-                if (this.firstName.value) {
-                    this.onSubmit();
-                } else {
-                    this.onCancelEditClicked();
-                    alert("Please enter FirstName.");
+        if (!this.isMenuSettingsEnabled) {
+            event.stopPropagation();
+            if (event.target.nodeName === "svg") {
+                if (this.firstName && this.lastName && this.description) {
+                    if (this.firstName.value) {
+                        this.onSubmit();
+                    } else {
+                        this.onCancelEditClicked();
+                        alert("Please enter FirstName.");
+                    }
                 }
             }
         }
@@ -67,9 +72,17 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
     constructor(private orgService: OrgService, private renderer: Renderer) { }
 
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
+        if (changes["isMenuSettingsEnabled"]) {
+            if (this.isAddOrEditModeEnabled && changes["isMenuSettingsEnabled"].currentValue) {
+                this.isInputFocused = false;
+            } else if (!changes["isMenuSettingsEnabled"].currentValue) {
+                this.isInputFocused = true;
+            }
+        }
+
         // detects isAddOrEditModeEnabled property has changed
         if (changes["isAddOrEditModeEnabled"]) {
-            if (changes["isAddOrEditModeEnabled"].currentValue) {
+            if (changes["isAddOrEditModeEnabled"].currentValue && !this.isMenuSettingsEnabled) {
                 this.isInputFocused = true;
             }
         }

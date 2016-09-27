@@ -33,6 +33,7 @@ export class MenuPanelComponent implements OnChanges {
     @Output() orgNodes = new EventEmitter<any>();
     @Output() groupSelected = new EventEmitter<OrgGroupModel>();
     @Output() companySelected = new EventEmitter<OrgCompanyModel>();
+    @Output() isMenuEnable = new EventEmitter<boolean>();
 
     constructor(private orgService: OrgService, private router: Router,
         private csvHelper: CSVConversionHelper, private auth: AuthService) {
@@ -179,6 +180,7 @@ export class MenuPanelComponent implements OnChanges {
     }
 
     private onAddOrSettingsClick(name) {
+        this.isMenuEnable.emit(true);
         if (name === "company") {
             this.companyName = this.selectedCompany.CompanyName;
             $("#companySettings").show();
@@ -195,6 +197,7 @@ export class MenuPanelComponent implements OnChanges {
     }
 
     private dismissPopup(name) {
+        this.isMenuEnable.emit(false);
         if (name === "company") {
             this.companyName = this.selectedCompany.CompanyName;
             $("#companySettings").hide();
@@ -276,15 +279,16 @@ export class MenuPanelComponent implements OnChanges {
     private setGroupData(data) {
         if (data) {
             let isDefault = this.selectedGroup.IsDefaultGroup;
+            let orgCount = this.selectedGroup.OrgNodeCounts;
             this.selectedGroup = data;
             this.selectedGroup.IsDefaultGroup = isDefault;
+            this.selectedGroup.OrgNodeCounts = orgCount;
             this.orgCompanyGroups.forEach(group => {
                 if (this.compareGroupID(group, data)) {
                     group.CompanyID = data.CompanyID;
                     group.GroupName = data.GroupName;
                     group.IsDefaultGroup = isDefault;
                     group.OrgGroupID = data.OrgGroupID;
-                    group.OrgNodeCounts = data.OrgNodeCounts;
                     return true;
                 }
             });
@@ -308,12 +312,13 @@ export class MenuPanelComponent implements OnChanges {
 
     private setCompanyData(data) {
         if (data) {
+            let orgCount = this.selectedCompany.OrgNodeCounts;
             this.selectedCompany.CompanyName = data.CompanyName;
+            this.selectedCompany.OrgNodeCounts = orgCount;
             this.orgCompanies.forEach(company => {
                 if (this.compareCompanyID(company, data)) {
                     company.CompanyName = data.CompanyName;
                     company.DateCreated = data.DateCreated;
-                    company.OrgNodeCounts = data.OrgNodeCounts;
                     return true;
                 }
             });

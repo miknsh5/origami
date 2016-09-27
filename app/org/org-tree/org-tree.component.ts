@@ -76,6 +76,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     @Input() showDescriptionLabel: boolean;
     @Input() orgGroupID: number;
     @Input() CompanyID: number;
+    @Input() isMenuSettingsEnabled: boolean;
 
     @Output() selectNode = new EventEmitter<OrgNodeModel>();
     @Output() addNode = new EventEmitter<OrgNodeModel>();
@@ -221,6 +222,12 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 if (!this.root) {
                     this.addEmptyRootNode();
                     this.selectedOrgNode = this.root;
+                }
+            }
+
+            if (changes["isMenuSettingsEnabled"]) {
+                if (this.isAddOrEditModeEnabled && this.selectedOrgNode.NodeID === -1) {
+                    return;
                 }
             }
 
@@ -1187,121 +1194,123 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     }
 
     keyDown(d, eve) {
-        let event = eve;
-        if (!this.selectedOrgNode || this.isAddOrEditModeEnabled) {
-            return;
-        }
-
-        if (this.selectedOrgNode.NodeID === -1) {
-            return;
-        }
-
-        if (this.currentMode === ChartMode.build) {
-            // esc
-            if ((event as KeyboardEvent).keyCode === 27) {
-                if (!this.isAddOrEditModeEnabled) {
-                    this.deselectNode();
-                    this.selectNode.emit(this.selectedOrgNode);
-                }
+        if (!this.isMenuSettingsEnabled) {
+            let event = eve;
+            if (!this.selectedOrgNode || this.isAddOrEditModeEnabled) {
+                return;
             }
 
-            // left arrow
-            if ((event as KeyboardEvent).keyCode === 37) {
-                let node = this.selectedOrgNode as d3.layout.tree.Node;
-                if (node.parent != null) {
-                    let parentNode = node.parent;
-                    this.highlightAndCenterNode(parentNode);
-                }
-                else {
-                    this.addNewRootNode(this.root);
-                }
+            if (this.selectedOrgNode.NodeID === -1) {
+                return;
             }
-            // right arrow
-            else if ((event as KeyboardEvent).keyCode === 39) {
-                if (this.selectedOrgNode.children && this.selectedOrgNode.children.length > 0) {
-                    let node = this.selectedOrgNode.children[0];
-                    this.highlightAndCenterNode(node);
-                } else {
-                    this.addNewNode(this.selectedOrgNode);
-                }
-            }
-            // top arrow
-            else if ((event as KeyboardEvent).keyCode === 38) {
-                let node = this.selectedOrgNode as d3.layout.tree.Node;
-                if (node.parent != null) {
-                    let siblings = node.parent.children;
-                    let index = siblings.indexOf(node);
-                    if (index > 0) {
-                        let elderSibling = siblings[index - 1];
-                        this.highlightAndCenterNode(elderSibling);
+
+            if (this.currentMode === ChartMode.build) {
+                // esc
+                if ((event as KeyboardEvent).keyCode === 27) {
+                    if (!this.isAddOrEditModeEnabled) {
+                        this.deselectNode();
+                        this.selectNode.emit(this.selectedOrgNode);
                     }
                 }
-            }
-            // bottom arrow
-            else if ((event as KeyboardEvent).keyCode === 40) {
-                let node = this.selectedOrgNode as d3.layout.tree.Node;
-                if (node.parent != null) {
-                    let siblings = node.parent.children;
-                    let index = siblings.indexOf(node);
-                    if (index < siblings.length - 1) {
-                        let youngerSibling = siblings[index + 1];
-                        this.highlightAndCenterNode(youngerSibling);
+
+                // left arrow
+                if ((event as KeyboardEvent).keyCode === 37) {
+                    let node = this.selectedOrgNode as d3.layout.tree.Node;
+                    if (node.parent != null) {
+                        let parentNode = node.parent;
+                        this.highlightAndCenterNode(parentNode);
+                    }
+                    else {
+                        this.addNewRootNode(this.root);
+                    }
+                }
+                // right arrow
+                else if ((event as KeyboardEvent).keyCode === 39) {
+                    if (this.selectedOrgNode.children && this.selectedOrgNode.children.length > 0) {
+                        let node = this.selectedOrgNode.children[0];
+                        this.highlightAndCenterNode(node);
                     } else {
-                        this.addNewNode(node.parent);
+                        this.addNewNode(this.selectedOrgNode);
+                    }
+                }
+                // top arrow
+                else if ((event as KeyboardEvent).keyCode === 38) {
+                    let node = this.selectedOrgNode as d3.layout.tree.Node;
+                    if (node.parent != null) {
+                        let siblings = node.parent.children;
+                        let index = siblings.indexOf(node);
+                        if (index > 0) {
+                            let elderSibling = siblings[index - 1];
+                            this.highlightAndCenterNode(elderSibling);
+                        }
+                    }
+                }
+                // bottom arrow
+                else if ((event as KeyboardEvent).keyCode === 40) {
+                    let node = this.selectedOrgNode as d3.layout.tree.Node;
+                    if (node.parent != null) {
+                        let siblings = node.parent.children;
+                        let index = siblings.indexOf(node);
+                        if (index < siblings.length - 1) {
+                            let youngerSibling = siblings[index + 1];
+                            this.highlightAndCenterNode(youngerSibling);
+                        } else {
+                            this.addNewNode(node.parent);
+                        }
                     }
                 }
             }
-        }
-        else if (this.currentMode === ChartMode.explore) {
-            // right arrow
-            if ((event as KeyboardEvent).keyCode === 39) {
-                let node = this.selectedOrgNode as d3.layout.cluster.Result;
-                if (this.selectedOrgNode.children && this.selectedOrgNode.children.length > 0) {
-                    let node = this.selectedOrgNode.children[0];
-                    this.highlightSelectedNode(node);
-                    this.render(node);
-                }
-            }
-            // left arrow 
-            else if ((event as KeyboardEvent).keyCode === 37) {
-                let node = this.selectedOrgNode as d3.layout.cluster.Result;
-                if (node.parent != null) {
-                    let parentNode = node.parent;
-                    this.highlightSelectedNode(parentNode);
-                    this.render(parentNode);
-                }
-            }
-            // bottom arrow
-            else if ((event as KeyboardEvent).keyCode === 40) {
-                let node = this.selectedOrgNode as d3.layout.cluster.Result;
-                if (node.parent != null) {
-                    let siblings = node.parent.children;
-                    let index = siblings.indexOf(node);
-                    let youngerSibling;
-                    if (index < siblings.length - 1) {
-                        youngerSibling = siblings[index + 1];
-                    } else {
-                        youngerSibling = siblings[0];
+            else if (this.currentMode === ChartMode.explore) {
+                // right arrow
+                if ((event as KeyboardEvent).keyCode === 39) {
+                    let node = this.selectedOrgNode as d3.layout.cluster.Result;
+                    if (this.selectedOrgNode.children && this.selectedOrgNode.children.length > 0) {
+                        let node = this.selectedOrgNode.children[0];
+                        this.highlightSelectedNode(node);
+                        this.render(node);
                     }
-                    this.highlightSelectedNode(youngerSibling);
-                    this.render(youngerSibling);
                 }
-            }
-            // top arrow
-            else if ((event as KeyboardEvent).keyCode === 38) {
-                let node = this.selectedOrgNode as d3.layout.cluster.Result;
-                if (node.parent != null) {
-                    let siblings = node.parent.children;
-                    let index = siblings.indexOf(node);
-                    let elderSibling;
-                    if (index > 0) {
-                        elderSibling = siblings[index - 1];
+                // left arrow 
+                else if ((event as KeyboardEvent).keyCode === 37) {
+                    let node = this.selectedOrgNode as d3.layout.cluster.Result;
+                    if (node.parent != null) {
+                        let parentNode = node.parent;
+                        this.highlightSelectedNode(parentNode);
+                        this.render(parentNode);
+                    }
+                }
+                // bottom arrow
+                else if ((event as KeyboardEvent).keyCode === 40) {
+                    let node = this.selectedOrgNode as d3.layout.cluster.Result;
+                    if (node.parent != null) {
+                        let siblings = node.parent.children;
+                        let index = siblings.indexOf(node);
+                        let youngerSibling;
+                        if (index < siblings.length - 1) {
+                            youngerSibling = siblings[index + 1];
+                        } else {
+                            youngerSibling = siblings[0];
+                        }
+                        this.highlightSelectedNode(youngerSibling);
+                        this.render(youngerSibling);
+                    }
+                }
+                // top arrow
+                else if ((event as KeyboardEvent).keyCode === 38) {
+                    let node = this.selectedOrgNode as d3.layout.cluster.Result;
+                    if (node.parent != null) {
+                        let siblings = node.parent.children;
+                        let index = siblings.indexOf(node);
+                        let elderSibling;
+                        if (index > 0) {
+                            elderSibling = siblings[index - 1];
 
-                    } else {
-                        elderSibling = siblings[siblings.length - 1];
+                        } else {
+                            elderSibling = siblings[siblings.length - 1];
+                        }
+                        this.highlightSelectedNode(elderSibling);
+                        this.render(elderSibling);
                     }
-                    this.highlightSelectedNode(elderSibling);
-                    this.render(elderSibling);
                 }
             }
         }
