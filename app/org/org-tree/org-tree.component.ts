@@ -225,6 +225,12 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 }
             }
 
+            if (changes["isMenuSettingsEnabled"]) {
+                if (this.isAddOrEditModeEnabled && this.selectedOrgNode.NodeID === -1) {
+                    return;
+                }
+            }
+
             if (changes["isAddOrEditModeEnabled"] && changes["isAddOrEditModeEnabled"].currentValue && !changes["treeData"]) {
                 return;
             }

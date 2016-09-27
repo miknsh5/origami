@@ -52,6 +52,7 @@ export class OrgComponent implements OnDestroy {
         this.svgWidth = this.getSvgWidth();
         this.svgHeight = this.getSvgHeight();
         this.currentOrgNodeStatus = OrgNodeStatus.None;
+        this.isMenuSettingsEnabled = false;
     }
 
     onResize(event) {
