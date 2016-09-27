@@ -697,6 +697,13 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     }
 
     renderOrUpdateNodes(source) {
+
+        if (this.currentMode === ChartMode.build) {
+            d3.select("g.svg-pan-zoom_viewport")
+                .transition()
+                .attr("transform", "translate(0)");
+        }
+
         let i: number = 0;
 
         // Update the nodes…
