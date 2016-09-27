@@ -225,6 +225,12 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 }
             }
 
+            if (changes["isMenuSettingsEnabled"]) {
+                if (this.isAddOrEditModeEnabled && this.selectedOrgNode.NodeID === -1) {
+                    return;
+                }
+            }
+
             if (changes["isAddOrEditModeEnabled"] && changes["isAddOrEditModeEnabled"].currentValue && !changes["treeData"]) {
                 return;
             }
@@ -698,6 +704,13 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     }
 
     renderOrUpdateNodes(source) {
+
+        if (this.currentMode === ChartMode.build) {
+            d3.select("g.svg-pan-zoom_viewport")
+                .transition()
+                .attr("transform", "translate(0)");
+        }
+
         let i: number = 0;
 
         // Update the nodes…
