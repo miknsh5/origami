@@ -54,14 +54,16 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
 
     @HostListener("window:click", ["$event"])
     onClick(event: any) {
-        event.stopPropagation();
-        if (event.target.nodeName === "svg") {
-            if (this.firstName && this.lastName && this.description) {
-                if (this.firstName.value) {
-                    this.onSubmit();
-                } else {
-                    this.onCancelEditClicked();
-                    alert("Please enter FirstName.");
+        if (!this.isMenuSettingsEnabled) {
+            event.stopPropagation();
+            if (event.target.nodeName === "svg") {
+                if (this.firstName && this.lastName && this.description) {
+                    if (this.firstName.value) {
+                        this.onSubmit();
+                    } else {
+                        this.onCancelEditClicked();
+                        alert("Please enter FirstName.");
+                    }
                 }
             }
         }
@@ -72,7 +74,7 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
         // detects isAddOrEditModeEnabled property has changed
         if (changes["isAddOrEditModeEnabled"]) {
-            if (changes["isAddOrEditModeEnabled"].currentValue) {
+            if (changes["isAddOrEditModeEnabled"].currentValue && !this.isMenuSettingsEnabled) {
                 this.isInputFocused = true;
             }
         }
