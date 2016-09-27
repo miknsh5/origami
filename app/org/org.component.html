@@ -22,6 +22,6 @@
 
 <div *ngIf="currentChartMode===1">
     <sg-org-node-detail #nodeDetail [selectedOrgNode]="selectedNode" [isAddOrEditModeEnabled]="detailAddOrEditMode" (deleteNode)="onNodeDeleted($event)" (updateNode)="onNodeUpdated($event)" (addNode)="onNodeAdded($event)" (setAddOrEditModeValue)="onAddOrEditModeValueSet($event)"
-        (chartStructureUpdated)="onChartUpdated($event)" (updateMenuNode)="onNodeTextChange($event)">
+        (chartStructureUpdated)="onChartUpdated($event)" (updateMenuNode)="onNodeTextChange($event)" [isMenuSettingsEnabled]="isMenuSettingsEnabled">
     </sg-org-node-detail>
 </div>

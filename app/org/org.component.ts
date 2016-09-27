@@ -431,7 +431,7 @@ export class OrgComponent implements OnDestroy {
 
     onMenuSettingsChange(data: boolean) {
         if (data) {
-            this.isMenuSettingsEnabled = data
+            this.isMenuSettingsEnabled = data;
         } else {
             this.isMenuSettingsEnabled = data;
         }

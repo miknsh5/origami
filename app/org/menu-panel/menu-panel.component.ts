@@ -311,12 +311,13 @@ export class MenuPanelComponent implements OnChanges {
 
     private setCompanyData(data) {
         if (data) {
+            let orgCount = this.selectedCompany.OrgNodeCounts;
             this.selectedCompany.CompanyName = data.CompanyName;
+            this.selectedCompany.OrgNodeCounts = orgCount;
             this.orgCompanies.forEach(company => {
                 if (this.compareCompanyID(company, data)) {
                     company.CompanyName = data.CompanyName;
                     company.DateCreated = data.DateCreated;
-                    company.OrgNodeCounts = data.OrgNodeCounts;
                     return true;
                 }
             });
