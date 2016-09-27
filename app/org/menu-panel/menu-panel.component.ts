@@ -279,15 +279,16 @@ export class MenuPanelComponent implements OnChanges {
     private setGroupData(data) {
         if (data) {
             let isDefault = this.selectedGroup.IsDefaultGroup;
+            let orgCount = this.selectedGroup.OrgNodeCounts;
             this.selectedGroup = data;
             this.selectedGroup.IsDefaultGroup = isDefault;
+            this.selectedGroup.OrgNodeCounts = orgCount;
             this.orgCompanyGroups.forEach(group => {
                 if (this.compareGroupID(group, data)) {
                     group.CompanyID = data.CompanyID;
                     group.GroupName = data.GroupName;
                     group.IsDefaultGroup = isDefault;
                     group.OrgGroupID = data.OrgGroupID;
-                    group.OrgNodeCounts = data.OrgNodeCounts;
                     return true;
                 }
             });
