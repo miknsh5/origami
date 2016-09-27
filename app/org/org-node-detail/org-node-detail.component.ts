@@ -62,7 +62,10 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
                         this.onSubmit();
                     } else {
                         this.onCancelEditClicked();
-                        alert("Please enter FirstName.");
+                        let node: any = this.selectedOrgNode;
+                        if (node.parent) {
+                            alert("Please enter FirstName.");
+                        }
                     }
                 }
             }
