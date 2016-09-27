@@ -12,7 +12,7 @@
         <li><a><i class="material-icons left">folder_shared</i>Account</a></li>
     </ul>
 
-    <ul id="companyDropdown" class="dropdown-content">
+    <ul id="companyDropdown" class="dropdown-content collection">
         <li (click)="onAddOrSettingsClick('company')">
             <a><i class="Small material-icons left">mode_edit</i><label class="lbl">Settings</label>
             </a>
@@ -22,22 +22,26 @@
         <label class="defaultlbl">Accounts</label>
         <li *ngFor="let company of orgCompanies" class="companyList" (click)="onCompanySelection(company)">
             <a *ngIf="company && company.IsDefaultCompany && company.CompanyID === selectedCompany.CompanyID" class="active">
-                {{company.CompanyName}}
-                <label class="lblCount right">{{company.OrgNodeCounts}}</label>
+                <i class="material-icons left">label</i>
+                <span>{{company.CompanyName}}</span>
+                <span class="right">{{company.OrgNodeCounts}}</span>
             </a>
             <a *ngIf="company && company.IsDefaultCompany && company.CompanyID !== selectedCompany.CompanyID">
-                {{company.CompanyName}}
-                <label class="lblCount right">{{company.OrgNodeCounts}}</label>
+                <i class="material-icons left">label_outline</i>
+                <span>{{company.CompanyName}}</span>
+                <span class="right">{{company.OrgNodeCounts}}</span>
             </a>
         </li>
         <li *ngFor="let company of orgCompanies" class="companyList" (click)="onCompanySelection(company)">
             <a *ngIf="company && !company.IsDefaultCompany && company.CompanyID === selectedCompany.CompanyID" class="active">
-                <label class="lbl icon"> {{company.CompanyName}}</label>
-                <label class="lblCount right">{{company.OrgNodeCounts}}</label>
+                <i class="material-icons left">label</i>
+                <span>{{company.CompanyName}}</span>
+                <span class="right">{{company.OrgNodeCounts}}</span>
             </a>
             <a *ngIf="company && !company.IsDefaultCompany && company.CompanyID !== selectedCompany.CompanyID">
-                <label class="lbl icon"> {{company.CompanyName}}</label>
-                <label class="lblCount right">{{company.OrgNodeCounts}}</label>
+                <i class="material-icons left">label_outline</i>
+                <span>{{company.CompanyName}}</span>
+                <span class="right">{{company.OrgNodeCounts}}</span>
             </a>
         </li>
         <li (click)="onAddOrSettingsClick('newCompany')"><a><i class="material-icons left">add</i><label class="lbl">Add New</label></a></li>
@@ -83,26 +87,26 @@
 
     <nav class="fixed">
         <div class="nav-wrapper">
-            <a href="#!" class="brand-logo">PEOPLE TREE</a>
+            <a href="/" class="brand-logo"><strong>PEOPLE</strong> TREE</a>
             <ul class="right">
                 <li *ngIf="selectedCompany">
                     <a class="dropdown-button organization" data-activates="companyDropdown">
                         <i class="material-icons left">label</i>
-                        <span class="hide-on-med-and-down">{{selectedCompany.CompanyName }}</span>
+                        <span class="hide-on-small-only">{{selectedCompany.CompanyName }}</span>
                         <i class="material-icons right">arrow_drop_down</i>
                     </a>
                 </li>
                 <li *ngIf="selectedGroup">
                     <a class="dropdown-button group" data-activates="groupDropdown">
                         <i class="material-icons left">apps</i>
-                        <span class="hide-on-med-and-down">{{selectedGroup.GroupName}}</span>
+                        <span class="hide-on-small-only">{{selectedGroup.GroupName}}</span>
                         <i class="material-icons right">arrow_drop_down</i>
                     </a>
                 </li>
                 <li *ngIf="userModel">
                     <a class="dropdown-button" data-activates="userDropdown">
                         <i class="material-icons left">person</i>
-                        <span class="userName hide-on-med-and-down">{{userModel.Name}}</span>
+                        <span class="userName hide-on-small-only">{{userModel.Name}}</span>
                         <i class="material-icons right">arrow_drop_down</i>
                     </a>
                 </li>

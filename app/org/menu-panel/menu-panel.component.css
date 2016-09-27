@@ -8,7 +8,7 @@
 }
 
 .auth-panel .nav-wrapper i.material-icons {
-    font-size: 1.4rem;
+    font-size: 1.2em;
 }
 
 hr {
@@ -34,8 +34,10 @@ nav a.button-collapse i {
 }
 
 nav .brand-logo {
-    padding: 0 20px;
-    color: #607d8b;
+    padding: 0 50px;
+    color: #333333;
+    font-size: 1.2em;
+    font-weight: 300;
 }
 
 nav ul a {
@@ -127,7 +129,7 @@ nav ul a i.left {
 
 .lbl {
     font-size: 0.98em;
-    color: #607d8b;
+    color: #777;
     cursor: pointer;
     display: inline-flex;
 }
@@ -167,23 +169,11 @@ nav ul a i.left {
 }
 
 #companyDropdown li.companyList a {
-    padding: 6px 7px 12px;
+    padding: 15px 7px;
 }
 
-#companyDropdown li.companyList a:before {
-    background-image: url('app/images/ic_label_outline_black_24dp_1x.png');
-    background-repeat: no-repeat;
-    display: inline-block;
-    background-position: 0;
-    width: 35px;
-    height: 17px;
-    content: "";
-    top: 4px;
-    position: relative;
-}
-
-#companyDropdown li.companyList a.active:before {
-    background-image: url('app/images/ic_label_black_24dp_1x.png');
+#companyDropdown li.companyList span.right {
+    margin-top: -2px;
 }
 
 
@@ -395,7 +385,6 @@ input {
     }
     nav .brand-logo {
         position: relative;
-        padding: 0 5px;
-        font-size: 1.5rem;
+        padding: 0 15px;
     }
 }

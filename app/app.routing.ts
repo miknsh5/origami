@@ -1,11 +1,7 @@
 import { Routes, RouterModule } from "@angular/router";
-
 import { AuthGuard } from "./login/index";
 
-// Layouts
 import { LoginComponent } from "./login/login.component";
-
-// Main view
 import { OrgComponent } from "./org/org.component";
 
 const appRoutes: Routes = [
