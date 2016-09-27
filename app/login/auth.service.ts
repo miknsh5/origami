@@ -1,21 +1,20 @@
-import { Injectable, NgZone } from '@angular/core';
-import { tokenNotExpired } from 'angular2-jwt';
-import { Router } from '@angular/router';
+import { Injectable, NgZone } from "@angular/core";
+import { tokenNotExpired } from "angular2-jwt";
+import { Router } from "@angular/router";
 
-import { UserModel } from "../shared/index"
+import { UserModel } from "../shared/index";
 
 declare var Auth0Lock: any;
 
 @Injectable()
 export class AuthService {
 
-  lock = new Auth0Lock("HraDY4gNnmBBSCP7vu7Z6BMO3mdjIAqn", "origami.auth0.com");
+    lock = new Auth0Lock("HraDY4gNnmBBSCP7vu7Z6BMO3mdjIAqn", "origami.auth0.com");
 
-  constructor(private router: Router, private zone: NgZone) {    
-  }
+    constructor(private router: Router, private zone: NgZone) { }
 
-  login() {
-      this.lock.show((err, profile, id_token) => {
+    login() {
+        this.lock.show((err, profile, id_token) => {
             if (err) {
                 throw new Error(err);
             }
@@ -38,22 +37,22 @@ export class AuthService {
             }
 
             localStorage.setItem("profile", JSON.stringify(user));
-            localStorage.setItem("id_token", id_token);  
-            this.zone.run(() => this.router.navigate(["home"])); 
+            localStorage.setItem("id_token", id_token);
+            this.zone.run(() => this.router.navigate(["home"]));
         });
-  }
+    }
 
-  logout() {
-    // To log out, just remove the token and profile
-    // from local storage
-    localStorage.removeItem('profile');
-    localStorage.removeItem('id_token');
+    logout() {
+        // To log out, just remove the token and profile
+        // from local storage
+        localStorage.removeItem("profile");
+        localStorage.removeItem("id_token");
 
-    // Send the user back to the Login after logout
-    this.router.navigateByUrl('/login');
-  }
+        // Send the user back to the Login after logout
+        this.router.navigateByUrl("/login");
+    }
 
-  loggedIn() {
-    return tokenNotExpired();
-  }
+    loggedIn() {
+        return tokenNotExpired();
+    }
 }
