@@ -167,7 +167,6 @@ export class MenuPanelComponent implements OnChanges {
     private onGroupSelection(data) {
         if (this.selectedGroup.OrgGroupID !== data.OrgGroupID) {
             this.selectedGroup.IsDefaultGroup = false;
-            this.setGroupData(this.selectedGroup);
         }
         if (data && data.OrgGroupID !== this.selectedGroup.OrgGroupID) {
             this.selectedGroup = data;
@@ -225,7 +224,11 @@ export class MenuPanelComponent implements OnChanges {
             group.OrgNodes = null;
 
             this.orgService.updateGroup(group)
-                .subscribe(data => this.setGroupData(data),
+                .subscribe(data => {
+                    if (data) {
+                        this.selectedGroup.GroupName = data.GroupName;
+                    }
+                },
                 err => this.orgService.logError(err));
         }
     }
@@ -268,7 +271,6 @@ export class MenuPanelComponent implements OnChanges {
     private setNewGroup(data) {
         if (data) {
             this.selectedGroup.IsDefaultGroup = false;
-            this.setGroupData(this.selectedGroup);
             this.selectedGroup = data;
             this.selectedGroup.IsDefaultGroup = true;
             this.orgCompanyGroups.push(this.selectedGroup);
@@ -276,24 +278,6 @@ export class MenuPanelComponent implements OnChanges {
         }
     }
 
-    private setGroupData(data) {
-        if (data) {
-            let isDefault = this.selectedGroup.IsDefaultGroup;
-            let orgCount = this.selectedGroup.OrgNodeCounts;
-            this.selectedGroup = data;
-            this.selectedGroup.IsDefaultGroup = isDefault;
-            this.selectedGroup.OrgNodeCounts = orgCount;
-            this.orgCompanyGroups.forEach(group => {
-                if (this.compareGroupID(group, data)) {
-                    group.CompanyID = data.CompanyID;
-                    group.GroupName = data.GroupName;
-                    group.IsDefaultGroup = isDefault;
-                    group.OrgGroupID = data.OrgGroupID;
-                    return true;
-                }
-            });
-        }
-    }
 
     private onCompanySave() {
         if (confirm("Are you sure?") === true) {
