@@ -1,3 +1,7 @@
 .confirmImport .btn {
     margin: 0px 10px;
 }
+
+.confirmImport h6 {
+    padding-bottom: 15px;
+}

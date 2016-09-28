@@ -31,7 +31,8 @@ export class ImportCsvFileComponent {
 
     @Input() selectedGroup: OrgGroupModel;
     @Output() newOrgNodes = new EventEmitter<OrgNodeModel>();
-  
+    @Output() isSettings: boolean;
+
     constructor(private orgService: OrgService, private csvHelper: CSVConversionHelper) {
         this.fileName = "";
         this.mappedNodesCount = 0;
@@ -77,6 +78,7 @@ export class ImportCsvFileComponent {
                     let isFileFormat = this.CSV2JSON(csvData);
                     $(this.$loadScreen).hide();
                     if (isFileFormat) {
+                        this.isSettings = false;
                         $(this.$confirmImport).show();
                     } else {
                         $(this.$templateScreen).show();

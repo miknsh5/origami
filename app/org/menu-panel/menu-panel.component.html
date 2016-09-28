@@ -127,7 +127,7 @@
         </div>
         <div class="divider"></div>
         <div class="groupBody">
-            <div *ngIf="!isImport">
+            <div *ngIf="!isImport" id="groupName">
                 <form (ngSubmit)="onGroupSave($event)">
                     <div class="company_groupDetails">
                         <i class="material-icons left">label_outline</i>
@@ -142,36 +142,41 @@
                     </div>
                 </form>
             </div>
-
-            <div *ngIf="enableImport && !isImport">
-                <div class="import">
-                    <div class="inlineblock titlewithdivider">
-                        <div class="divider"> </div>
-                        <label class="lbl">Import</label>
-                        <label class="modallbl"> Load resources from CSV or Excel file to populate the <label class="lblgroupname"> {{groupName}} </label> group.</label>
-                    </div>
-                </div>
-                <div>
-                    <button class="waves-effect waves-light btn" (click)="onClickOnImport()">
-                    <i class="material-icons">file_upload</i>Import</button>
-                </div>
-                <div class="template">
+            <div id="importAndTemplate">
+                <div *ngIf="enableImport && !isImport">
                     <div class="import">
                         <div class="inlineblock titlewithdivider">
                             <div class="divider"> </div>
-                            <label class="lbl">Export Template</label>
-
+                            <label class="lbl">Import</label>
+                            <label class="modallbl"> Load resources from CSV or Excel file to populate the <label class="lblgroupname"> {{groupName}} </label> group.</label>
                         </div>
-                        <div class="template">
-                            <button class="waves-effect waves-light btn" (click)="onClickDownloadTemplate()">
+                    </div>
+                    <div>
+                        <button class="waves-effect waves-light btn" (click)="onClickOnImport()">
+                    <i class="material-icons">file_upload</i>Import</button>
+                    </div>
+                    <div class="template">
+                        <div class="import">
+                            <div class="inlineblock titlewithdivider">
+                                <div class="divider"> </div>
+                                <label class="lbl">Export Template</label>
+
+                            </div>
+                            <div class="template">
+                                <button class="waves-effect waves-light btn" (click)="onClickDownloadTemplate()">
                              <i class="material-icons">file_download</i>Download</button>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div *ngIf="isImport">
-                <sg-org-import-csv-file (newOrgNodes)="updateNewOrgGroup($event)" [selectedGroup]="selectedGroup"></sg-org-import-csv-file>
+                <div *ngIf="isImport">
+                    <sg-org-import-csv-file (newOrgNodes)="updateNewOrgGroup($event)" [selectedGroup]="selectedGroup"></sg-org-import-csv-file>
+                </div>
+            </div>
+            <div id="groupDelete" class="center">
+                <sg-org-menu-confirm-button [isSettings]="isSettings" (onConfirmClick)="onGroupDeleteConfirm($event)" (onCancelClick)="onGroupDeleteCancel($event)">
+                </sg-org-menu-confirm-button>
             </div>
         </div>
 
@@ -202,17 +207,23 @@
         </div>
         <form (ngSubmit)="onCompanySave($event)">
             <div class="companyBody">
-                <div class="company_groupDetails" *ngIf="selectedCompany">
-                    <i class="material-icons left">label</i>
-                    <input required ngControl="existingCompanyName" #existingCompanyName="ngModel" [(ngModel)]="companyName" name="existingCompanyName" autocomplete="off" />
-                    <div>
-                        <label class="modaldefaultlabel"> Name Of Account </label>
+                <div id="companySetting">
+                    <div class="company_groupDetails" *ngIf="selectedCompany">
+                        <i class="material-icons left">label</i>
+                        <input required ngControl="existingCompanyName" #existingCompanyName="ngModel" [(ngModel)]="companyName" name="existingCompanyName" autocomplete="off" />
+                        <div>
+                            <label class="modaldefaultlabel"> Name Of Account </label>
+                        </div>
+                    </div>
+
+                    <div class="innerdiv">
+                        <button class="waves-effect waves-light btn"> 
+             <i class="material-icons">save</i>Save</button>
                     </div>
                 </div>
-
-                <div class="innerdiv">
-                    <button class="waves-effect waves-light btn"> 
-             <i class="material-icons">save</i>Save</button>
+                <div id="companyDelete" class="center">
+                    <sg-org-menu-confirm-button [isSettings]="isSettings" (onConfirmClick)="onCompanyDeleteConfirm($event)" (onCancelClick)="onCompanyDeleteCancel($event)">
+                    </sg-org-menu-confirm-button>
                 </div>
             </div>
         </form>

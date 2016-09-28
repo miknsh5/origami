@@ -27,6 +27,11 @@ export class MenuPanelComponent implements OnChanges {
     private groupSettingTitle: any;
     private isImport: boolean;
     private enableImport: boolean;
+    private $onCompanyDelete: any;
+    private $companyBody: any;
+    private $groupName: any;
+    private $importAndTemplate: any;
+    private $onGroupDelete: any;
 
     @Input() noNodeExsit: boolean;
     @Input() currentOrgNodeStatus: OrgNodeStatus;
@@ -34,6 +39,7 @@ export class MenuPanelComponent implements OnChanges {
     @Output() groupSelected = new EventEmitter<OrgGroupModel>();
     @Output() companySelected = new EventEmitter<OrgCompanyModel>();
     @Output() isMenuEnable = new EventEmitter<boolean>();
+    @Output() isSettings: boolean;
 
     constructor(private orgService: OrgService, private router: Router,
         private csvHelper: CSVConversionHelper, private auth: AuthService) {
@@ -41,6 +47,12 @@ export class MenuPanelComponent implements OnChanges {
         this.enableImport = false;
         this.isImport = false;
         this.groupSettingTitle = "Settings";
+        this.$onCompanyDelete = "#companyDelete";
+        this.$companyBody = "#companySetting";
+        this.$groupName = "#groupName";
+        this.$importAndTemplate = "#importAndTemplate";
+        this.$onGroupDelete = "#groupDelete";
+
     }
 
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
@@ -180,6 +192,7 @@ export class MenuPanelComponent implements OnChanges {
     }
 
     private onAddOrSettingsClick(name) {
+        this.isSettings = true;
         this.isMenuEnable.emit(true);
         if (name === "company") {
             this.companyName = this.selectedCompany.CompanyName;
@@ -197,6 +210,7 @@ export class MenuPanelComponent implements OnChanges {
     }
 
     private dismissPopup(name) {
+        this.isSettings = false;
         this.isMenuEnable.emit(false);
         if (name === "company") {
             this.companyName = this.selectedCompany.CompanyName;
@@ -216,18 +230,16 @@ export class MenuPanelComponent implements OnChanges {
     }
 
     private onGroupSave() {
-        if (confirm("Are you sure?") === true) {
-            let group = new OrgGroupModel();
-            group.CompanyID = this.selectedGroup.CompanyID;
-            group.IsDefaultGroup = this.selectedGroup.IsDefaultGroup;
-            group.OrgGroupID = this.selectedGroup.OrgGroupID;
-            group.GroupName = this.groupName.trim();
-            group.OrgNodes = null;
+        let group = new OrgGroupModel();
+        group.CompanyID = this.selectedGroup.CompanyID;
+        group.IsDefaultGroup = this.selectedGroup.IsDefaultGroup;
+        group.OrgGroupID = this.selectedGroup.OrgGroupID;
+        group.GroupName = this.groupName.trim();
+        group.OrgNodes = null;
 
-            this.orgService.updateGroup(group)
-                .subscribe(data => this.setGroupData(data),
-                err => this.orgService.logError(err));
-        }
+        this.orgService.updateGroup(group)
+            .subscribe(data => this.setGroupData(data),
+            err => this.orgService.logError(err));
     }
 
     private addNewGroup() {
@@ -296,18 +308,18 @@ export class MenuPanelComponent implements OnChanges {
     }
 
     private onCompanySave() {
-        if (confirm("Are you sure?") === true) {
-            let company = new OrgCompanyModel();
-            company.CompanyID = this.selectedCompany.CompanyID;
-            company.CompanyName = this.companyName.trim();
-            company.DateCreated = this.selectedCompany.DateCreated;
-            company.IsDefaultCompany = this.selectedCompany.IsDefaultCompany;
-            company.OrgGroups = null;
 
-            this.orgService.updateCompany(company)
-                .subscribe(data => this.setCompanyData(data),
-                err => this.orgService.logError(err));
-        }
+        let company = new OrgCompanyModel();
+        company.CompanyID = this.selectedCompany.CompanyID;
+        company.CompanyName = this.companyName.trim();
+        company.DateCreated = this.selectedCompany.DateCreated;
+        company.IsDefaultCompany = this.selectedCompany.IsDefaultCompany;
+        company.OrgGroups = null;
+
+        this.orgService.updateCompany(company)
+            .subscribe(data => this.setCompanyData(data),
+            err => this.orgService.logError(err));
+
     }
 
     private setCompanyData(data) {
@@ -356,11 +368,28 @@ export class MenuPanelComponent implements OnChanges {
     }
 
     private onDeleteCompany() {
-        if (confirm("Are you sure?") === true) {
+        $(this.$onCompanyDelete).show();
+        $(this.$companyBody).hide();
+        $("#deleteCompany").hide();
+    }
+
+    onCompanyDeleteConfirm(data) {
+        if (data) {
             let companyID = this.selectedCompany.CompanyID;
             this.orgService.deleteCompany(companyID)
                 .subscribe(data => this.deleteOrgCompany(data),
                 err => this.orgService.logError(err));
+            $(this.$onCompanyDelete).hide();
+            $("#deleteCompany").show();
+            $(this.$companyBody).show();
+        }
+    }
+
+    onCompanyDeleteCancel(data) {
+        if (data) {
+            $(this.$onCompanyDelete).hide();
+            $("#deleteCompany").show();
+            $(this.$companyBody).show();
         }
     }
 
@@ -382,11 +411,32 @@ export class MenuPanelComponent implements OnChanges {
     }
 
     private onDeleteGroup() {
-        if (confirm("Are you sure?") === true) {
+
+        $(this.$groupName).hide();
+        $(this.$importAndTemplate).hide();
+        $(this.$onGroupDelete).show();
+        $("#deleteGroup").hide();
+    }
+
+    onGroupDeleteConfirm(data: boolean) {
+        if (data) {
             let groupID = this.selectedGroup.OrgGroupID;
             this.orgService.deleteGroup(groupID)
                 .subscribe(data => this.deleteOrgGroup(data),
                 err => this.orgService.logError(err));
+        }
+        $(this.$groupName).show();
+        $(this.$importAndTemplate).show();
+        $("#deleteGroup").show();
+        $(this.$onGroupDelete).hide();
+    }
+
+    onGroupDeleteCancel(data: boolean) {
+        if (data) {
+            $(this.$groupName).show();
+            $(this.$importAndTemplate).show();
+            $("#deleteGroup").show();
+            $(this.$onGroupDelete).hide();
         }
     }
 

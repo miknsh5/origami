@@ -9,6 +9,8 @@ import { Component, Input, Output, EventEmitter } from "@angular/core";
 
 export class MenuConfirmButtonComponent {
 
+    @Input() isSettings: boolean;
+
     @Output() onConfirmClick = new EventEmitter<boolean>();
     @Output() onCancelClick = new EventEmitter<boolean>();
 
