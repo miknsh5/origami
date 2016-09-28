@@ -1,10 +1,11 @@
 import { Component, Input, Output, EventEmitter, OnChanges, SimpleChange } from "@angular/core";
-import { Router } from "@angular/router-deprecated";
+import { Router } from "@angular/router";
 
 import { OrgCompanyModel, OrgGroupModel, OrgNodeModel, OrgService, OrgNodeStatus, OrgNodeBaseModel} from "../shared/index";
-import { DataHelper } from "../data-helper/data-helper";
+import { CSVConversionHelper } from "../shared/csv-helper";
 import { UserModel } from "../../Shared/index";
-import { ImportCsvFileComponent } from "../import-csv-file/import-csv-file.component";
+
+import { AuthService } from "../../login/index";
 
 declare let $: any;
 
@@ -12,8 +13,7 @@ declare let $: any;
     selector: "sg-menu-panel",
     templateUrl: "app/org/menu-panel/menu-panel.component.html",
     styleUrls: ["app/org/menu-panel/menu-panel.component.css"],
-    directives: [ImportCsvFileComponent],
-    providers: [DataHelper]
+    providers: [CSVConversionHelper]
 })
 
 export class MenuPanelComponent implements OnChanges {
@@ -33,8 +33,10 @@ export class MenuPanelComponent implements OnChanges {
     @Output() orgNodes = new EventEmitter<any>();
     @Output() groupSelected = new EventEmitter<OrgGroupModel>();
     @Output() companySelected = new EventEmitter<OrgCompanyModel>();
+    @Output() isMenuEnable = new EventEmitter<boolean>();
 
-    constructor(private orgService: OrgService, private router: Router, private dataHelper: DataHelper) {
+    constructor(private orgService: OrgService, private router: Router,
+        private csvHelper: CSVConversionHelper, private auth: AuthService) {
         this.getAllCompanies();
         this.enableImport = false;
         this.isImport = false;
@@ -150,12 +152,6 @@ export class MenuPanelComponent implements OnChanges {
         $(".group").dropdown({ constrain_width: false, belowOrigin: true, alignment: "left" });
     }
 
-    private logout() {
-        localStorage.removeItem("profile");
-        localStorage.removeItem("id_token");
-        this.router.navigate(["/Login"]);
-    }
-
     private onCompanySelection(data) {
         if (data && data.CompanyID !== this.selectedCompany.CompanyID) {
             this.selectedCompany = data;
@@ -184,6 +180,7 @@ export class MenuPanelComponent implements OnChanges {
     }
 
     private onAddOrSettingsClick(name) {
+        this.isMenuEnable.emit(true);
         if (name === "company") {
             this.companyName = this.selectedCompany.CompanyName;
             $("#companySettings").show();
@@ -200,6 +197,7 @@ export class MenuPanelComponent implements OnChanges {
     }
 
     private dismissPopup(name) {
+        this.isMenuEnable.emit(false);
         if (name === "company") {
             this.companyName = this.selectedCompany.CompanyName;
             $("#companySettings").hide();
@@ -223,7 +221,7 @@ export class MenuPanelComponent implements OnChanges {
             group.CompanyID = this.selectedGroup.CompanyID;
             group.IsDefaultGroup = this.selectedGroup.IsDefaultGroup;
             group.OrgGroupID = this.selectedGroup.OrgGroupID;
-            group.GroupName = this.groupName;
+            group.GroupName = this.groupName.trim();
             group.OrgNodes = null;
 
             this.orgService.updateGroup(group)
@@ -236,7 +234,7 @@ export class MenuPanelComponent implements OnChanges {
         let group = new OrgGroupModel();
         let userID = this.userModel.UserID;
         group.CompanyID = this.selectedCompany.CompanyID;
-        group.GroupName = this.groupName;
+        group.GroupName = this.groupName.trim();
         group.OrgNodes = null;
 
         this.orgService.addGroup(group, userID)
@@ -249,7 +247,7 @@ export class MenuPanelComponent implements OnChanges {
     private addNewCompany() {
         let userID = this.userModel.UserID;
         let company = new OrgCompanyModel();
-        company.CompanyName = this.companyName;
+        company.CompanyName = this.companyName.trim();
         company.OrgGroups = null;
 
         this.orgService.addCompany(company, userID)
@@ -281,8 +279,10 @@ export class MenuPanelComponent implements OnChanges {
     private setGroupData(data) {
         if (data) {
             let isDefault = this.selectedGroup.IsDefaultGroup;
+            let orgCount = this.selectedGroup.OrgNodeCounts;
             this.selectedGroup = data;
             this.selectedGroup.IsDefaultGroup = isDefault;
+            this.selectedGroup.OrgNodeCounts = orgCount;
             this.orgCompanyGroups.forEach(group => {
                 if (this.compareGroupID(group, data)) {
                     group.CompanyID = data.CompanyID;
@@ -299,7 +299,7 @@ export class MenuPanelComponent implements OnChanges {
         if (confirm("Are you sure?") === true) {
             let company = new OrgCompanyModel();
             company.CompanyID = this.selectedCompany.CompanyID;
-            company.CompanyName = this.companyName;
+            company.CompanyName = this.companyName.trim();
             company.DateCreated = this.selectedCompany.DateCreated;
             company.IsDefaultCompany = this.selectedCompany.IsDefaultCompany;
             company.OrgGroups = null;
@@ -312,7 +312,9 @@ export class MenuPanelComponent implements OnChanges {
 
     private setCompanyData(data) {
         if (data) {
+            let orgCount = this.selectedCompany.OrgNodeCounts;
             this.selectedCompany.CompanyName = data.CompanyName;
+            this.selectedCompany.OrgNodeCounts = orgCount;
             this.orgCompanies.forEach(company => {
                 if (this.compareCompanyID(company, data)) {
                     company.CompanyName = data.CompanyName;
@@ -347,8 +349,8 @@ export class MenuPanelComponent implements OnChanges {
 
     private updateNewOrgGroup(OrgNodes) {
         this.setOrgGroupData(OrgNodes);
-        this.selectedCompany.OrgNodeCounts = this.selectedCompany.OrgNodeCounts + OrgNodes.OrgNodeCounts;
         this.selectedGroup.OrgNodeCounts = OrgNodes.OrgNodeCounts;
+        this.selectedCompany.OrgNodeCounts = this.selectedCompany.OrgNodeCounts + this.selectedGroup.OrgNodeCounts;
         this.groupSettingTitle = "Settings";
         this.isImport = false;
     }
@@ -408,6 +410,6 @@ export class MenuPanelComponent implements OnChanges {
     }
 
     private onClickDownloadTemplate() {
-        this.dataHelper.DownloadTemplate();
+        this.csvHelper.DownloadTemplate();
     }
 }

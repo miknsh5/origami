@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { OrgNodeBaseModel } from "../shared/index";
 
 @Injectable()
-export class DataHelper {
+export class CSVConversionHelper {
     convertDataToBaseModel(node): OrgNodeBaseModel {
         let orgNode = new OrgNodeBaseModel();
         if (node) {
@@ -41,7 +41,7 @@ export class DataHelper {
         // Now the little tricky part.
         // you can use either>> window.open(uri);
         // but this will not work in some browsers
-        // or you will not get the correct file extension    
+        // or you will not get the correct file extension
 
         // this trick will generate a temp <a /> tag
         let link: HTMLAnchorElement = document.createElement("a");
@@ -57,7 +57,7 @@ export class DataHelper {
     }
 
     DownloadTemplate() {
-        // If JSONData is not an object then JSON.parse will parse the JSON string in an Object       
+        // If JSONData is not an object then JSON.parse will parse the JSON string in an Object
         let orgNode = new OrgNodeBaseModel();
         let node = this.convertDataToBaseModel(orgNode);
         let CSV = "";

@@ -2,16 +2,12 @@ import { Component, Input, Output, OnChanges, SimpleChange, EventEmitter } from 
 
 import { OrgGroupModel, OrgNodeModel, ChartMode} from "../shared/index";
 
-import { ConvertJSONToCSVComponent } from "../convertJSONToCSV/index";
-import { ConvertTreeToPNGComponent } from "../convertTreeToPNG/index";
-
 declare let $: any;
 
 @Component({
     selector: "sg-side-menu-panel",
     templateUrl: "app/org/side-menu-panel/side-menu-panel.component.html",
-    styleUrls: ["app/org/side-menu-panel/side-menu-panel.component.css", "app/style.css"],
-    directives: [ConvertJSONToCSVComponent, ConvertTreeToPNGComponent],
+    styleUrls: ["app/org/side-menu-panel/side-menu-panel.component.css", "app/style.css"]
 })
 
 export class SideMenuComponent implements OnChanges {

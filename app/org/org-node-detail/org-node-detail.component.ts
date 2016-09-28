@@ -1,18 +1,18 @@
 import { Component, HostListener, Input, Output, EventEmitter, OnChanges, SimpleChange, AfterContentChecked, ElementRef, Renderer, ViewChild } from "@angular/core";
-import { FORM_DIRECTIVES, REACTIVE_FORM_DIRECTIVES, NgForm, NgControl  } from "@angular/forms";
+import { NgForm, NgControl  } from "@angular/forms";
 
 import { OrgNodeModel, OrgService } from "../shared/index";
 
 @Component({
     selector: "sg-org-node-detail",
     templateUrl: "app/org/org-node-detail/org-node-detail.component.html",
-    styleUrls: ["app/org/org-node-detail/org-node-detail.component.css", "app/style.css"],
-    directives: [FORM_DIRECTIVES, REACTIVE_FORM_DIRECTIVES]
+    styleUrls: ["app/org/org-node-detail/org-node-detail.component.css", "app/style.css"]
 })
 
 export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
     @Input() selectedOrgNode: OrgNodeModel;
     @Input() isAddOrEditModeEnabled: boolean;
+    @Input() isMenuSettingsEnabled: boolean;
 
     @Output() deleteNode = new EventEmitter<OrgNodeModel>();
     @Output() updateMenuNode = new EventEmitter<OrgNodeModel>();
@@ -33,17 +33,19 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
     @HostListener("window:keydown", ["$event"])
     onKeyDown(event: any) {
         event.stopPropagation();
-        if ((event as KeyboardEvent).keyCode === 27) {
-            if (this.isAddOrEditModeEnabled) {
-                if (!this.orgNode.IsNewRoot && !this.orgNode.ParentNodeID && this.orgNode.NodeID === -1) {
-                    this.clearRootNodeDetails();
-                } else {
-                    if (this.orgNode.NodeID === -1) {
-                        this.deleteNode.emit(this.orgNode);
-                        this.setAddOrEditModeValue.emit(false);
+        if (!this.isMenuSettingsEnabled) {
+            if ((event as KeyboardEvent).keyCode === 27) {
+                if (this.isAddOrEditModeEnabled) {
+                    if (!this.orgNode.IsNewRoot && !this.orgNode.ParentNodeID && this.orgNode.NodeID === -1) {
+                        this.clearRootNodeDetails();
                     } else {
-                        this.setAddOrEditModeValue.emit(false);
-                        this.deleteNode.emit(null);
+                        if (this.orgNode.NodeID === -1) {
+                            this.deleteNode.emit(this.orgNode);
+                            this.setAddOrEditModeValue.emit(false);
+                        } else {
+                            this.setAddOrEditModeValue.emit(false);
+                            this.deleteNode.emit(null);
+                        }
                     }
                 }
             }
@@ -52,13 +54,19 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
 
     @HostListener("window:click", ["$event"])
     onClick(event: any) {
-        event.stopPropagation();
-        if (event.target.nodeName === "svg") {
-            if (this.firstName && this.lastName && this.description) {
-                if (this.firstName.value) {
-                    this.onSubmit();
-                } else {
-                    this.onCancelEditClicked();
+        if (!this.isMenuSettingsEnabled) {
+            event.stopPropagation();
+            if (event.target.nodeName === "svg") {
+                if (this.firstName && this.lastName && this.description) {
+                    if (this.firstName.value) {
+                        this.onSubmit();
+                    } else {
+                        this.onCancelEditClicked();
+                        let node: any = this.selectedOrgNode;
+                        if (node.parent) {
+                            alert("Please enter FirstName.");
+                        }
+                    }
                 }
             }
         }
@@ -67,9 +75,17 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
     constructor(private orgService: OrgService, private renderer: Renderer) { }
 
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
+        if (changes["isMenuSettingsEnabled"]) {
+            if (this.isAddOrEditModeEnabled && changes["isMenuSettingsEnabled"].currentValue) {
+                this.isInputFocused = false;
+            } else if (!changes["isMenuSettingsEnabled"].currentValue) {
+                this.isInputFocused = true;
+            }
+        }
+
         // detects isAddOrEditModeEnabled property has changed
         if (changes["isAddOrEditModeEnabled"]) {
-            if (changes["isAddOrEditModeEnabled"].currentValue) {
+            if (changes["isAddOrEditModeEnabled"].currentValue && !this.isMenuSettingsEnabled) {
                 this.isInputFocused = true;
             }
         }
@@ -117,9 +133,9 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
             if (!this.isNullOrEmpty(this.firstName.value)) {
                 this.isFormSubmitted = true;
                 this.editNodeDetails = new OrgNodeModel();
-                this.editNodeDetails.NodeFirstName = this.firstName.value;
-                this.editNodeDetails.NodeLastName = this.lastName.value;
-                this.editNodeDetails.Description = this.description.value;
+                this.editNodeDetails.NodeFirstName = (this.firstName.value).trim();
+                this.editNodeDetails.NodeLastName = (this.lastName.value).trim();
+                this.editNodeDetails.Description = (this.description.value).trim();
                 this.editNodeDetails.children = this.orgNode.children;
                 this.editNodeDetails.NodeID = this.orgNode.NodeID;
                 this.editNodeDetails.OrgGroupID = this.orgNode.OrgGroupID;
@@ -294,4 +310,4 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
         this.editNodeDetails = null;
         this.isFormSubmitted = false;
     }
-}   
+}

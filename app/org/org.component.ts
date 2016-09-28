@@ -1,14 +1,7 @@
 import { Component, Output, EventEmitter, OnDestroy} from "@angular/core";
-import { HTTP_PROVIDERS } from "@angular/http";
-import { CanActivate } from "@angular/router-deprecated";
 import { tokenNotExpired } from "angular2-jwt";
 
-import { SideMenuComponent } from "./side-menu-panel/index";
-import { OrgNodeDetailComponent } from "./org-node-detail/index";
-import { MenuPanelComponent } from "./menu-panel/index";
-import { OrgTreeComponent } from "./d3-tree/index";
-
-import { OrgNodeModel, ChartMode, OrgCompanyModel, OrgGroupModel, OrgNodeStatus, OrgService} from "./shared/index";
+import { OrgNodeModel, ChartMode, OrgCompanyModel, OrgGroupModel, OrgNodeStatus } from "./shared/index";
 
 const MIN_HEIGHT: number = 320;
 const MAX_HEIGHT: number = 768;
@@ -22,10 +15,8 @@ declare var svgPanZoom: any;
 
 @Component({
     selector: "sg-origami-org",
-    directives: [OrgTreeComponent, OrgNodeDetailComponent, MenuPanelComponent, SideMenuComponent],
     templateUrl: "app/org/org.component.html",
-    styleUrls: ["app/org/org.component.css"],
-    providers: [OrgService, HTTP_PROVIDERS]
+    styleUrls: ["app/org/org.component.css"]
 })
 
 export class OrgComponent implements OnDestroy {
@@ -34,6 +25,7 @@ export class OrgComponent implements OnDestroy {
     svgHeight: number;
     buildView: any;
     reportView: any;
+    exploreView: any;
     buildViewText: any;
     reportViewText: any;
     svgPan: any;
@@ -52,6 +44,7 @@ export class OrgComponent implements OnDestroy {
     @Output() displayDescriptionLabel: boolean;
     @Output() isOrgNodeEmpty: boolean;
     @Output() currentOrgNodeStatus: OrgNodeStatus;
+    @Output() isMenuSettingsEnabled: boolean;
 
     constructor() {
         this.currentChartMode = ChartMode.build;
@@ -59,6 +52,7 @@ export class OrgComponent implements OnDestroy {
         this.svgWidth = this.getSvgWidth();
         this.svgHeight = this.getSvgHeight();
         this.currentOrgNodeStatus = OrgNodeStatus.None;
+        this.isMenuSettingsEnabled = false;
     }
 
     onResize(event) {
@@ -91,8 +85,12 @@ export class OrgComponent implements OnDestroy {
                     this.svgPan.disablePan();
                 }
             } else {
-                this.currentChartMode = ChartMode.report;
-                this.enableViewModesNav(ChartMode.report);
+                if (viewMode === ChartMode.report) {
+                    this.currentChartMode = ChartMode.report;
+                } else {
+                    this.currentChartMode = ChartMode.explore;
+                }
+                this.enableViewModesNav(this.currentChartMode);
                 this.enableLabels();
                 if (!this.svgPan) {
                     let elem = document.getElementsByTagName("svg")[0];
@@ -108,6 +106,10 @@ export class OrgComponent implements OnDestroy {
                 } else {
                     this.svgPan.enablePan();
                 }
+            }
+        } else {
+            if (this.svgPan) {
+                this.svgPan.enablePan = false;
             }
         }
     }
@@ -143,7 +145,6 @@ export class OrgComponent implements OnDestroy {
         if (addedNode.IsNewRoot) {
             this.orgNodes.splice(0, 1, addedNode);
             this.isOrgNodeEmpty = false;
-            this.currentOrgNodeStatus = OrgNodeStatus.Add;
         }
         else {
             this.addChildToSelectedOrgNode(addedNode, this.orgNodes[0]);
@@ -155,14 +156,14 @@ export class OrgComponent implements OnDestroy {
         this.isAddOrEditMode = true;
         this.detailAddOrEditMode = true;
         this.selectedNode = node;
-        this.disableViewModesNav(ChartMode.report);
+        this.disableViewAndExploreModesNav();
     }
 
     onAddOrEditModeValueSet(value: boolean) {
         this.isAddOrEditMode = value;
         this.detailAddOrEditMode = value;
         if (value) {
-            this.disableViewModesNav(ChartMode.report);
+            this.disableViewAndExploreModesNav();
         } else {
             this.enableViewModesNav(ChartMode.build);
         }
@@ -224,7 +225,7 @@ export class OrgComponent implements OnDestroy {
         this.orgGroup.OrgNodes = JSON.parse(JSON.stringify(this.orgNodes));
         this.treeJson = JSON.parse(JSON.stringify(this.orgNodes));
         if ((this.treeJson && this.treeJson.length === 0) || (this.selectedNode && this.selectedNode.NodeID === -1)) {
-            this.disableViewModesNav(ChartMode.report);
+            this.disableViewAndExploreModesNav();
         }
     }
 
@@ -262,7 +263,9 @@ export class OrgComponent implements OnDestroy {
             else {
                 this.deleteNodeFromArray(deleted, this.orgNodes);
             }
-            this.currentOrgNodeStatus = OrgNodeStatus.Delete;
+            if (deleted.NodeID !== -1) {
+                this.currentOrgNodeStatus = OrgNodeStatus.Delete;
+            }
         } else {
             let node = this.getNode(this.selectedNode.NodeID, this.orgNodes[0]);
             this.selectedNode = JSON.parse(JSON.stringify(node));
@@ -321,27 +324,30 @@ export class OrgComponent implements OnDestroy {
     }
 
     private enableViewModesNav(viewMode) {
-        if (viewMode === ChartMode.build) {
+        if (viewMode === ChartMode.explore) {
+            this.exploreView = "active";
+            this.reportView = "";
+            this.buildView = "";
+        } else if (viewMode === ChartMode.report) {
+            this.buildView = "";
+            this.exploreView = "";
+            this.reportView = "active";
+        } else {
             this.buildView = "active";
             this.reportView = "";
-        } else {
-            this.buildView = "";
-            this.reportView = "active";
+            this.exploreView = "";
         }
     }
 
-    private disableViewModesNav(viewMode) {
-        if (viewMode === ChartMode.build) {
-            this.buildView = "inactive";
-        } else {
-            this.reportView = "inactive";
-        }
+    disableViewAndExploreModesNav() {
+        this.reportView = "inactive";
+        this.exploreView = "inactive";
     }
 
     private getSvgHeight() {
         let height = window.innerHeight;
 
-        // applies min height 
+        // applies min height
         height = height < MIN_HEIGHT ? MIN_HEIGHT : height;
         // applies max height
         height = height > MAX_HEIGHT ? MAX_HEIGHT : height;
@@ -359,9 +365,9 @@ export class OrgComponent implements OnDestroy {
     private getSvgWidth() {
         let width = window.innerWidth;
 
-        // applies min width 
+        // applies min width
         width = width < MIN_WIDTH ? MIN_WIDTH : width;
-        // applies max width 
+        // applies max width
         width = width > MAX_WIDTH ? MAX_WIDTH : width;
 
         return width;
@@ -411,7 +417,7 @@ export class OrgComponent implements OnDestroy {
         if (this.groupID !== this.orgGroup.OrgGroupID)
             this.groupID = this.orgGroup.OrgGroupID;
         if (this.orgNodes && this.orgNodes.length === 0) {
-            this.disableViewModesNav(ChartMode.report);
+            this.disableViewAndExploreModesNav();
             this.currentChartMode = ChartMode.build;
         }
         this.enableViewModesNav(this.currentChartMode);
@@ -424,10 +430,18 @@ export class OrgComponent implements OnDestroy {
         }
     }
 
+    onMenuSettingsChange(data: boolean) {
+        if (data) {
+            this.isMenuSettingsEnabled = data;
+        } else {
+            this.isMenuSettingsEnabled = data;
+        }
+    }
+
     ngOnDestroy() {
         if (this.svgPan) {
             this.svgPan.destroy();
         }
     }
 
-}   
+}
