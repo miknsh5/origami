@@ -31,7 +31,7 @@ export class ImportCsvFileComponent {
 
     @Input() selectedGroup: OrgGroupModel;
     @Output() newOrgNodes = new EventEmitter<OrgNodeModel>();
-
+  
     constructor(private orgService: OrgService, private csvHelper: CSVConversionHelper) {
         this.fileName = "";
         this.mappedNodesCount = 0;
@@ -93,23 +93,25 @@ export class ImportCsvFileComponent {
         }
     }
 
-    onConfirm() {
-        if (this.unmappedNodesCount > 1) {
-            this.orgService.addGroupNodes(this.selectedGroup.OrgGroupID, this.json, null)
-                .subscribe(data => this.setOrgGroupData(data),
-                err => this.orgService.logError(err));
-        }
-        else {
-            this.orgService.addGroupNodes(this.selectedGroup.OrgGroupID, this.json, this.defaultNode.NodeID)
-                .subscribe(data => this.setOrgGroupData(data),
-                err => this.orgService.logError(err));
-        }
+    onConfirm(data: boolean) {
+        if (data) {
+            if (this.unmappedNodesCount > 1) {
+                this.orgService.addGroupNodes(this.selectedGroup.OrgGroupID, this.json, null)
+                    .subscribe(data => this.setOrgGroupData(data),
+                    err => this.orgService.logError(err));
+            }
+            else {
+                this.orgService.addGroupNodes(this.selectedGroup.OrgGroupID, this.json, this.defaultNode.NodeID)
+                    .subscribe(data => this.setOrgGroupData(data),
+                    err => this.orgService.logError(err));
+            }
 
-        $(this.$confirmImport).hide();
-        $(this.$loadScreen).show();
-        $("#cancelbtn").hide();
-        this.unmappedNodesCount = 0;
-        this.mappedNodesCount = 0;
+            $(this.$confirmImport).hide();
+            $(this.$loadScreen).show();
+            $("#cancelbtn").hide();
+            this.unmappedNodesCount = 0;
+            this.mappedNodesCount = 0;
+        }
     }
 
     private setOrgGroupData(data) {
@@ -117,25 +119,27 @@ export class ImportCsvFileComponent {
         this.newOrgNodes.emit(data);
     }
 
-    private onCancelImport(showConfirmDialog: boolean) {
-        if (showConfirmDialog === true) {
-            if (confirm("Are you sure?") === true) {
-                this.returnToImportDialog();
-            }
-        } else {
-            this.returnToImportDialog();
-        }
-    }
+    // private onCancelImport(showConfirmDialog: boolean) {
+    //     if (showConfirmDialog === true) {
+    //        if (confirm("Are you sure?") === true) {
+    //             this.returnToImportDialog();
+    //        }
+    //    } else {
+    //       this.returnToImportDialog();
+    //   }
+    // }
 
-    private returnToImportDialog() {
-        $(this.$importfile).show();
-        $(this.$templateScreen).hide();
-        $(this.$loadScreen).hide();
-        $(this.$confirmImport).hide();
-        $(this.$confirmParent).hide();
-        this.unmappedNodesCount = 0;
-        this.mappedNodesCount = 0;
-        this.hasMultipleParent = false;
+    private onCancelImport(data: boolean) {
+        if (data) {
+            $(this.$importfile).show();
+            $(this.$templateScreen).hide();
+            $(this.$loadScreen).hide();
+            $(this.$confirmImport).hide();
+            $(this.$confirmParent).hide();
+            this.unmappedNodesCount = 0;
+            this.mappedNodesCount = 0;
+            this.hasMultipleParent = false;
+        }
     }
 
     private CSVToArray(strData, strDelimiter): any {

@@ -33,7 +33,7 @@
         </label>
     </div>
     <div class="template">
-        <button class="waves-effect waves-light btn" (click)="onCancelImport(false)"><i class="material-icons">arrow_back</i>Back</button>
+        <button class="waves-effect waves-light btn" (click)="onCancelImport(true)"><i class="material-icons">arrow_back</i>Back</button>
         <button class="waves-effect waves-light btn" (click)="onClickDownloadTemplate()"><i class="material-icons">file_download</i>Download</button>
 
     </div>
@@ -76,7 +76,7 @@
         </div>
     </div>
     <div>
-        <button class="waves-effect waves-light btn" (click)="onCancelImport(true)"><i class="material-icons">arrow_back</i> Cancel</button>
-        <button class="waves-effect waves-light btn" (click)="onConfirm()"><i class="material-icons">arrow_forward</i>Confirm</button>
+        <sg-org-menu-confirm-button (onConfirmClick)="onConfirm($event)" (onCancelClick)="onCancelImport($event)">
+        </sg-org-menu-confirm-button>
     </div>
 </div>

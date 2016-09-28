@@ -7,3 +7,4 @@ export * from "./org-tree/index";
 export * from "./json-to-csv/index";
 export * from "./tree-to-png/index";
 export * from "./import-csv-file/index";
+export * from "./menu-confirm/index";
