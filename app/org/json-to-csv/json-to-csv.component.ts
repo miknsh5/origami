@@ -22,7 +22,7 @@ export class JsonToCSVComponent {
     }
 
     private JSONToCSVConvertor(jsonData, reportTitle, showLabel) {
-        // If JSONData is not an object then JSON.parse will parse the JSON string in an Object       
+        // If JSONData is not an object then JSON.parse will parse the JSON string in an Object
         let orgData = typeof jsonData !== "object" ? JSON.parse(jsonData) : jsonData;
         let orgNode = this.csvHelper.convertDataToBaseModel(orgData);
         let CSV = "";
