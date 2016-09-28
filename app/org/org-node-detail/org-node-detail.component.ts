@@ -310,4 +310,4 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
         this.editNodeDetails = null;
         this.isFormSubmitted = false;
     }
-}   
+}

@@ -347,7 +347,7 @@ export class OrgComponent implements OnDestroy {
     private getSvgHeight() {
         let height = window.innerHeight;
 
-        // applies min height 
+        // applies min height
         height = height < MIN_HEIGHT ? MIN_HEIGHT : height;
         // applies max height
         height = height > MAX_HEIGHT ? MAX_HEIGHT : height;
@@ -365,9 +365,9 @@ export class OrgComponent implements OnDestroy {
     private getSvgWidth() {
         let width = window.innerWidth;
 
-        // applies min width 
+        // applies min width
         width = width < MIN_WIDTH ? MIN_WIDTH : width;
-        // applies max width 
+        // applies max width
         width = width > MAX_WIDTH ? MAX_WIDTH : width;
 
         return width;
@@ -444,4 +444,4 @@ export class OrgComponent implements OnDestroy {
         }
     }
 
-}   
+}
