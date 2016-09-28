@@ -6,7 +6,7 @@ import { OrgNodeModel, OrgService } from "../shared/index";
 @Component({
     selector: "sg-org-node-detail",
     templateUrl: "app/org/org-node-detail/org-node-detail.component.html",
-    styleUrls: ["app/org/org-node-detail/org-node-detail.component.css", "app/style.css"]
+    styleUrls: ["app/org/org-node-detail/org-node-detail.component.css"]
 })
 
 export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {

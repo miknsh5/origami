@@ -6,7 +6,7 @@ import { CSVConversionHelper } from "../shared/csv-helper";
 @Component({
     selector: "sg-origami-csv",
     templateUrl: "app/org/json-to-csv/json-to-csv.component.html",
-    styleUrls: ["app/org/json-to-csv/json-to-csv.component.css", "app/style.css"],
+    styleUrls: ["app/org/json-to-csv/json-to-csv.component.css"],
     providers: [CSVConversionHelper]
 })
 
