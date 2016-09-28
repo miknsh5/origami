@@ -6,7 +6,7 @@ import { CSVConversionHelper } from "../shared/csv-helper";
 @Component({
     selector: "sg-origami-csv",
     templateUrl: "app/org/json-to-csv/json-to-csv.component.html",
-    styleUrls: ["app/org/json-to-csv/json-to-csv.component.css", "app/style.css"],
+    styleUrls: ["app/org/json-to-csv/json-to-csv.component.css"],
     providers: [CSVConversionHelper]
 })
 
@@ -22,7 +22,7 @@ export class JsonToCSVComponent {
     }
 
     private JSONToCSVConvertor(jsonData, reportTitle, showLabel) {
-        // If JSONData is not an object then JSON.parse will parse the JSON string in an Object       
+        // If JSONData is not an object then JSON.parse will parse the JSON string in an Object
         let orgData = typeof jsonData !== "object" ? JSON.parse(jsonData) : jsonData;
         let orgNode = this.csvHelper.convertDataToBaseModel(orgData);
         let CSV = "";

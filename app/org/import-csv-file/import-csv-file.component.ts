@@ -11,7 +11,7 @@ declare let $: any;
 @Component({
     selector: "sg-org-import-csv-file",
     templateUrl: "app/org/import-csv-file/import-csv-file.component.html",
-    styleUrls: ["app/org/import-csv-file/import-csv-file.component.css", "app/style.css", "app/org/menu-panel/menu-panel.component.css"],
+    styleUrls: ["app/org/import-csv-file/import-csv-file.component.css", "app/org/menu-panel/menu-panel.component.css"],
     providers: [CSVConversionHelper]
 })
 

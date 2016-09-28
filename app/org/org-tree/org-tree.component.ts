@@ -102,7 +102,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         // Creates and vertical line
         this.createLines(verticalLine, "vertical");
 
-        // Creates and horizontal line 
+        // Creates and horizontal line
         this.createLines(horizontalLine, "horizontal");
 
         this.svg.append("g")
@@ -199,7 +199,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         });
     }
 
-    // TODO:- we should refactor this method to work depending on the kind of change that has taken place. 
+    // TODO:- we should refactor this method to work depending on the kind of change that has taken place.
     // It re-renders on all kinds of changes
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
         if (this.tree != null) {
@@ -906,7 +906,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             .attr("points", LABEL_POINTS)
             .attr("data-id", "childIndicator");
 
-        // css class is applied on polygon if a node have child(s) and the polygon is transformed to the position given  
+        // css class is applied on polygon if a node have child(s) and the polygon is transformed to the position given
         node.select("polygon[data-id='childIndicator']").attr("fill", function (d) {
             if (d._children && d._children.length > 0 && !d.IsSelceted) {
                 return CHILD_ARROW_FILL;
@@ -1270,7 +1270,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                         this.render(node);
                     }
                 }
-                // left arrow 
+                // left arrow
                 else if ((event as KeyboardEvent).keyCode === 37) {
                     let node = this.selectedOrgNode as d3.layout.cluster.Result;
                     if (node.parent != null) {
@@ -1314,60 +1314,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 }
             }
         }
-        /*else {
-            // esc
-            if ((event as KeyboardEvent).keyCode === 27) {
-                if (!this.isAddOrEditModeEnabled) {
-                    this.deselectNode();
-                    this.selectNode.emit(this.selectedOrgNode);
-                }
-            }
-     
-            // top arrow
-            if ((event as KeyboardEvent).keyCode === 38) {
-                let node = this.selectedOrgNode as d3.layout.tree.Node;
-                if (node.parent != null) {
-                    let parentNode = node.parent;
-                    this.highlightAndCenterNode(parentNode);
-                }
-            }
-            // bottom arrow
-            else if ((event as KeyboardEvent).keyCode === 40) {
-                if (this.selectedOrgNode.children && this.selectedOrgNode.children.length > 0) {
-                    let node = this.selectedOrgNode.children[0];
-                    this.highlightAndCenterNode(node);
-                } else {
-                    //  this.addNewNode(this.selectedOrgNode);
-                }
-            }
-            // left arrow
-            else if ((event as KeyboardEvent).keyCode === 37) {
-                let node = this.selectedOrgNode as d3.layout.tree.Node;
-                if (node.parent != null) {
-                    let siblings = node.parent.children;
-                    let index = siblings.indexOf(node);
-                    if (index > 0) {
-                        let elderSibling = siblings[index - 1];
-                        this.highlightAndCenterNode(elderSibling);
-                    }
-                }
-            }
-            // right arrow
-            else if ((event as KeyboardEvent).keyCode === 39) {
-                let node = this.selectedOrgNode as d3.layout.tree.Node;
-                if (node.parent != null) {
-                    let siblings = node.parent.children;
-                    let index = siblings.indexOf(node);
-                    if (index < siblings.length - 1) {
-                        let youngerSibling = siblings[index + 1];
-                        this.highlightAndCenterNode(youngerSibling);
-                    } else {
-                        //   this.addNewNode(node.parent);
-                    }
-                }
-            }
-     
-        }*/
     }
 
     getNode(nodeID: number, rootNode: any) {

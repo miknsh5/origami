@@ -7,7 +7,7 @@ declare let $: any;
 @Component({
     selector: "sg-side-menu-panel",
     templateUrl: "app/org/side-menu-panel/side-menu-panel.component.html",
-    styleUrls: ["app/org/side-menu-panel/side-menu-panel.component.css", "app/style.css"]
+    styleUrls: ["app/org/side-menu-panel/side-menu-panel.component.css"]
 })
 
 export class SideMenuComponent implements OnChanges {
