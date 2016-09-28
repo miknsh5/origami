@@ -1,6 +1,10 @@
 import { Injectable } from "@angular/core";
 import { OrgNodeBaseModel } from "../shared/index";
 
+const DEFAULT_TEMPLATE_DATA = `1, Chris, Ingrao, CEO, null
+2, Ben, Parkison, VP Dining, 1
+3, Mike, Nash, VP Dancing, 1`;
+
 @Injectable()
 export class CSVConversionHelper {
     convertDataToBaseModel(node): OrgNodeBaseModel {
@@ -67,6 +71,7 @@ export class CSVConversionHelper {
             // append Label row with line break
             CSV += row + "\r\n";
         }
+        CSV += DEFAULT_TEMPLATE_DATA;
         this.downloadCSVFile("PeopleTree_Template", CSV);
     }
 }
