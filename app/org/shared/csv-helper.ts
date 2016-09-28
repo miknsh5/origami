@@ -1,9 +1,9 @@
 import { Injectable } from "@angular/core";
 import { OrgNodeBaseModel } from "../shared/index";
 
-const DEFAULT_TEMPLATE_DATA = `1, Chris, Ingrao, CEO, null
-2, Ben, Parkison, VP Dining, 1
-3, Mike, Nash, VP Dancing, 1`;
+const DEFAULT_TEMPLATE_DATA = `1,Chris,Ingrao,CEO,null
+2,Ben,Parkison,VP Dining, 1
+3,Mike,Nash,VP Dancing, 1`;
 
 @Injectable()
 export class CSVConversionHelper {
