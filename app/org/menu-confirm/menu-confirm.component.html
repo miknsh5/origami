@@ -1,7 +1,9 @@
 <div class="confirmImport">
     <div *ngIf="isSettings">
-        <h6> Are You sure? </h6>
+        <label> By clicking OK below you will delete the {{title}} <i>{{titleName}}</i> and all information within that {{title}}. </label>
     </div>
-    <button class="waves-effect waves-light btn" (click)="onCancel()"><i class="material-icons">arrow_back</i> Cancel</button>
-    <button class="waves-effect waves-light btn" (click)="onConfirm()"><i class="material-icons">arrow_forward</i>Confirm</button>
+    <div class="confirmbtns">
+        <button class="waves-effect waves-light btn" (click)="onCancel()"><i class="material-icons">arrow_back</i> Cancel</button>
+        <button class="waves-effect waves-light btn" (click)="onConfirm()"><i class="material-icons">arrow_forward</i>Confirm</button>
+    </div>
 </div>

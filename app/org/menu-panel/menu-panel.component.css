@@ -373,12 +373,12 @@ input {
 
 #companyDelete {
     display: none;
-    padding: 8em 3em;
+    padding: 7em 1.5em;
 }
 
 #groupDelete {
     display: none;
-    padding: 9.5em 3em;
+    padding: 8.5em 3em;
 }
 
 @media only screen and (max-width:992px) {

@@ -40,6 +40,8 @@ export class MenuPanelComponent implements OnChanges {
     @Output() companySelected = new EventEmitter<OrgCompanyModel>();
     @Output() isMenuEnable = new EventEmitter<boolean>();
     @Output() isSettings: boolean;
+    @Output() deleteTitle: string;
+    @Output() name: string;
 
     constructor(private orgService: OrgService, private router: Router,
         private csvHelper: CSVConversionHelper, private auth: AuthService) {
@@ -210,11 +212,20 @@ export class MenuPanelComponent implements OnChanges {
 
     private dismissPopup(name) {
         this.isSettings = false;
+        this.deleteTitle = "";
+        this.name = "";
         this.isMenuEnable.emit(false);
         if (name === "company") {
             this.companyName = this.selectedCompany.CompanyName;
+            $(this.$onCompanyDelete).hide();
+            $("#deleteCompany").show();
+            $(this.$companyBody).show();
             $("#companySettings").hide();
         } else if (name === "group") {
+            $(this.$groupName).show();
+            $(this.$importAndTemplate).show();
+            $("#deleteGroup").show();
+            $(this.$onGroupDelete).hide();
             this.groupName = this.selectedGroup.GroupName;
             $("#groupSettings").hide();
             this.isImport = false;
@@ -229,20 +240,20 @@ export class MenuPanelComponent implements OnChanges {
     }
 
     private onGroupSave() {
-            let group = new OrgGroupModel();
-            group.CompanyID = this.selectedGroup.CompanyID;
-            group.IsDefaultGroup = this.selectedGroup.IsDefaultGroup;
-            group.OrgGroupID = this.selectedGroup.OrgGroupID;
-            group.GroupName = this.groupName.trim();
-            group.OrgNodes = null;
+        let group = new OrgGroupModel();
+        group.CompanyID = this.selectedGroup.CompanyID;
+        group.IsDefaultGroup = this.selectedGroup.IsDefaultGroup;
+        group.OrgGroupID = this.selectedGroup.OrgGroupID;
+        group.GroupName = this.groupName.trim();
+        group.OrgNodes = null;
 
-            this.orgService.updateGroup(group)
-                .subscribe(data => {
-                    if (data) {
-                        this.selectedGroup.GroupName = data.GroupName;
-                    }
-                },
-                err => this.orgService.logError(err));
+        this.orgService.updateGroup(group)
+            .subscribe(data => {
+                if (data) {
+                    this.selectedGroup.GroupName = data.GroupName;
+                }
+            },
+            err => this.orgService.logError(err));
     }
 
     private addNewGroup() {
@@ -353,6 +364,8 @@ export class MenuPanelComponent implements OnChanges {
     }
 
     private onDeleteCompany() {
+        this.deleteTitle = "Company";
+        this.name = this.selectedCompany.CompanyName;
         $(this.$onCompanyDelete).show();
         $(this.$companyBody).hide();
         $("#deleteCompany").hide();
@@ -364,6 +377,8 @@ export class MenuPanelComponent implements OnChanges {
             this.orgService.deleteCompany(companyID)
                 .subscribe(data => this.deleteOrgCompany(data),
                 err => this.orgService.logError(err));
+            this.deleteTitle = "";
+            this.name = "";
             $(this.$onCompanyDelete).hide();
             $("#deleteCompany").show();
             $(this.$companyBody).show();
@@ -372,6 +387,8 @@ export class MenuPanelComponent implements OnChanges {
 
     onCompanyDeleteCancel(data) {
         if (data) {
+            this.deleteTitle = "";
+            this.name = "";
             $(this.$onCompanyDelete).hide();
             $("#deleteCompany").show();
             $(this.$companyBody).show();
@@ -396,7 +413,8 @@ export class MenuPanelComponent implements OnChanges {
     }
 
     private onDeleteGroup() {
-
+        this.deleteTitle = "Group";
+        this.name = this.selectedGroup.GroupName;
         $(this.$groupName).hide();
         $(this.$importAndTemplate).hide();
         $(this.$onGroupDelete).show();
@@ -410,6 +428,8 @@ export class MenuPanelComponent implements OnChanges {
                 .subscribe(data => this.deleteOrgGroup(data),
                 err => this.orgService.logError(err));
         }
+        this.deleteTitle = "";
+        this.name = "";
         $(this.$groupName).show();
         $(this.$importAndTemplate).show();
         $("#deleteGroup").show();
@@ -418,6 +438,8 @@ export class MenuPanelComponent implements OnChanges {
 
     onGroupDeleteCancel(data: boolean) {
         if (data) {
+            this.deleteTitle = "";
+            this.name = "";
             $(this.$groupName).show();
             $(this.$importAndTemplate).show();
             $("#deleteGroup").show();
