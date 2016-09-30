@@ -19,7 +19,7 @@ const MenuElement = {
     groupModal: "#groupSettingsModal",
     deleteGroup: "#deleteGroup",
     confirmGroupDelete: "#deleteGroupConfirm",
-}
+};
 
 @Component({
     selector: "sg-menu-panel",
