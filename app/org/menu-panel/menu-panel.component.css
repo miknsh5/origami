@@ -100,6 +100,7 @@ nav ul a i.left {
     font-size: 13px;
     display: block;
     line-height: 5px;
+    font-weight: 500;
 }
 
 .dropdown-content li>a>i {
@@ -130,13 +131,11 @@ nav ul a i.left {
 .lbl {
     font-size: 0.98em;
     color: #777;
-    cursor: pointer;
     display: inline-flex;
 }
 
 .lblResult {
     float: right;
-    cursor: pointer;
 }
 
 .defaultlbl {
@@ -149,7 +148,6 @@ nav ul a i.left {
 }
 
 .person {
-    cursor: pointer;
     color: #222222;
 }
 
@@ -164,7 +162,7 @@ nav ul a i.left {
 #companyDropdown li a.active,
 #groupDropdown li a.active {
     border-left: 0.18em solid #607d8b;
-    font-weight: 800;
+    font-weight: 800 !important;
     cursor: pointer;
 }
 
@@ -234,7 +232,7 @@ nav ul a i.left {
 }
 
 .modaltitle {
-    color: #cfd8dc !important;
+    color: #9e9e9e !important;
     display: block;
     height: 40px;
 }
@@ -252,7 +250,7 @@ nav ul a i.left {
 .modaltitle .title label {
     font-size: 1.15em;
     font-weight: 100;
-    color: #cfd8dc;
+    color: #9e9e9e;
 }
 
 .titlewithdivider .divider {
@@ -268,17 +266,15 @@ nav ul a i.left {
 }
 
 .modaldefaultlabel {
-    color: #cfd8dc !important;
-    font-size: 0.5rem;
-    cursor: pointer;
+    color: #607d8b !important;
+    font-size: 0.6rem;
     display: block;
     padding-left: 40px;
 }
 
 .modallbl {
     color: #111;
-    font-size: 0.5rem;
-    cursor: pointer;
+    font-size: 0.6rem;
     padding-left: 55px;
     display: block;
 }
@@ -326,8 +322,7 @@ input {
 
 .lblgroupname {
     color: #111;
-    font-size: 0.5rem;
-    cursor: pointer;
+    font-size: 0.6rem;
     font-weight: 800;
 }
 
@@ -369,6 +364,12 @@ input {
 #groupDropdown .lblCount {
     padding-top: 0.5px;
     font-weight: normal;
+}
+
+#deleteGroupConfirm,
+#deleteCompanyConfirm {
+    display: none;
+    padding: 8em 2em;
 }
 
 @media only screen and (max-width:992px) {

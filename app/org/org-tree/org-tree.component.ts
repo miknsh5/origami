@@ -1,5 +1,5 @@
 import * as angular from "@angular/core";
-import {Component, Input, Output, Directive, EventEmitter, Attribute, OnChanges, DoCheck, ElementRef, OnInit, SimpleChange} from "@angular/core";
+import {Component, HostListener, Input, Output, Directive, EventEmitter, Attribute, OnChanges, DoCheck, ElementRef, OnInit, SimpleChange} from "@angular/core";
 import { Inject } from "@angular/core";
 
 import * as d3 from "d3";
@@ -134,8 +134,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         this.resizeLinesArrowsAndSvg();
         this.centerNode(this.root);
 
-        document.addEventListener("keydown", (ev: KeyboardEvent) => this.keyDown(this.selectedOrgNode, ev), false);
-        document.addEventListener("click", (ev: MouseEvent) => this.bodyClicked(this.selectedOrgNode, ev), false);
     }
 
     childCount(level, node) {
@@ -225,7 +223,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 }
             }
 
-            if (changes["isMenuSettingsEnabled"]) {
+            if (changes["isMenuSettingsEnabled"] && !changes["treeData"]) {
                 if (this.isAddOrEditModeEnabled && this.selectedOrgNode.NodeID === -1) {
                     return;
                 }
@@ -1169,7 +1167,8 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         }
     }
 
-    bodyClicked(d, event) {
+    @HostListener("window:click", ["$event"])
+    bodyClicked(event: any) {
         // event.stopPropagation();
         if (this.currentMode === ChartMode.build) {
             if (event.target.nodeName === "svg") {
@@ -1193,9 +1192,9 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         }
     }
 
-    keyDown(d, eve) {
+    @HostListener("document:keydown", ["$event"])
+    keyDown(event: any) {
         if (!this.isMenuSettingsEnabled) {
-            let event = eve;
             if (!this.selectedOrgNode || this.isAddOrEditModeEnabled) {
                 return;
             }

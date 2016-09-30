@@ -1,0 +1,19 @@
+.confirmImport .btn {
+    margin: 0px 10px;
+}
+
+.confirmImport p {
+    color: #666;
+    text-align: center;
+    font-size: 0.9em;
+    font-weight: 500;
+    margin: 0;
+}
+
+.confirmImport p strong {
+    color: #607d8b;
+}
+
+.confirmImport .confirmbtns {
+    padding-top: 10px;
+}
