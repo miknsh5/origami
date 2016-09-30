@@ -112,6 +112,9 @@ export class MenuPanelComponent implements OnChanges {
                     this.setSelectedGroup(this.selectedCompany.OrgGroups);
                 }
                 this.companySelected.emit(this.selectedCompany);
+            } else {
+                this.companyName = "My Organization";
+                this.addNewCompany();
             }
         }
     }
@@ -133,6 +136,9 @@ export class MenuPanelComponent implements OnChanges {
                     this.selectedGroup = this.orgCompanyGroups[0];
                     this.getAllNodes(this.selectedGroup.OrgGroupID);
                 }
+            } else {
+                this.groupName = "My Group";
+                this.addNewGroup();
             }
         }
     }
