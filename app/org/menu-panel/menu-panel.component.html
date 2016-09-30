@@ -174,7 +174,7 @@
                 </div>
             </div>
             <div id="deleteGroupConfirm" class="center">
-                <sg-org-menu-confirm-button [titleName]="name" [deleteTitle]="deleteTitle" (onConfirmClick)="onGroupDeleteConfirm($event)" (onCancelClick)="onGroupDeleteCancel($event)">
+                <sg-org-menu-confirm-button [hideMessage]="false" [titleName]="name" [deleteTitle]="deleteTitle" (onConfirmClick)="onGroupDeleteConfirm($event)" (onCancelClick)="onGroupDeleteCancel($event)">
                 </sg-org-menu-confirm-button>
             </div>
         </div>
@@ -219,7 +219,7 @@
                     </div>
                 </div>
                 <div id="deleteCompanyConfirm" class="center">
-                    <sg-org-menu-confirm-button [titleName]="name" [deleteTitle]="deleteTitle" (onConfirmClick)="onCompanyDeleteConfirm($event)" (onCancelClick)="onCompanyDeleteCancel($event)">
+                    <sg-org-menu-confirm-button [hideMessage]="false" [titleName]="name" [deleteTitle]="deleteTitle" (onConfirmClick)="onCompanyDeleteConfirm($event)" (onCancelClick)="onCompanyDeleteCancel($event)">
                     </sg-org-menu-confirm-button>
                 </div>
             </div>

@@ -1,5 +1,5 @@
 <div class="confirmImport">
-    <div>
+    <div *ngIf="!hideMessage">
         <p> By clicking OK below you will delete the {{deleteTitle}} <strong><i>{{titleName}}</i></strong> and all information within that {{deleteTitle}}. </p>
     </div>
     <div class="confirmbtns">
