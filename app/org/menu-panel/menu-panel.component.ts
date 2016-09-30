@@ -9,7 +9,7 @@ import { AuthService } from "../../login/index";
 
 declare let $: any;
 
-const ElementsName = {
+const MenuElement = {
     companyModal: "#companySettingsModal",
     companyBody: "#companySetting",
     groupName: "#groupName",
@@ -197,10 +197,10 @@ export class MenuPanelComponent implements OnChanges {
         this.isMenuEnable.emit(true);
         if (name === "company") {
             this.companyName = this.selectedCompany.CompanyName;
-            this.showElements(ElementsName.companyModal);
+            this.showElements(MenuElement.companyModal);
         } else if (name === "group") {
             this.groupName = this.selectedGroup.GroupName;
-            this.showElements(ElementsName.groupModal);
+            this.showElements(MenuElement.groupModal);
         } else if (name === "newGroup") {
             this.groupName = "";
             this.showElements("#addNewGroup");
@@ -216,11 +216,11 @@ export class MenuPanelComponent implements OnChanges {
         this.isMenuEnable.emit(false);
         if (name === "company") {
             this.companyName = this.selectedCompany.CompanyName;
-            this.hideElements([ElementsName.confirmCompanyDelete, ElementsName.companyModal]);
-            this.showElements([ElementsName.companyBody, ElementsName.deleteCompany]);
+            this.hideElements([MenuElement.confirmCompanyDelete, MenuElement.companyModal]);
+            this.showElements([MenuElement.companyBody, MenuElement.deleteCompany]);
         } else if (name === "group") {
-            this.showElements([ElementsName.groupName, ElementsName.importTemplate, ElementsName.deleteGroup]);
-            this.hideElements([ElementsName.groupModal, ElementsName.confirmGroupDelete]);
+            this.showElements([MenuElement.groupName, MenuElement.importTemplate, MenuElement.deleteGroup]);
+            this.hideElements([MenuElement.groupModal, MenuElement.confirmGroupDelete]);
             this.groupName = this.selectedGroup.GroupName;
             this.isImport = false;
             this.groupSettingTitle = "Settings";
@@ -360,8 +360,8 @@ export class MenuPanelComponent implements OnChanges {
     private onDeleteCompany() {
         this.deleteTitle = "Company";
         this.name = this.selectedCompany.CompanyName;
-        this.showElements(ElementsName.confirmCompanyDelete);
-        this.hideElements([ElementsName.companyBody, ElementsName.deleteCompany]);
+        this.showElements(MenuElement.confirmCompanyDelete);
+        this.hideElements([MenuElement.companyBody, MenuElement.deleteCompany]);
     }
 
     onCompanyDeleteConfirm(data) {
@@ -372,8 +372,8 @@ export class MenuPanelComponent implements OnChanges {
                 err => this.orgService.logError(err));
             this.deleteTitle = "";
             this.name = "";
-            this.hideElements(ElementsName.confirmCompanyDelete);
-            this.showElements([ElementsName.deleteCompany, ElementsName.companyBody]);
+            this.hideElements(MenuElement.confirmCompanyDelete);
+            this.showElements([MenuElement.deleteCompany, MenuElement.companyBody]);
         }
     }
 
@@ -381,8 +381,8 @@ export class MenuPanelComponent implements OnChanges {
         if (data) {
             this.deleteTitle = "";
             this.name = "";
-            this.hideElements(ElementsName.confirmCompanyDelete);
-            this.showElements([ElementsName.deleteCompany, ElementsName.companyBody]);
+            this.hideElements(MenuElement.confirmCompanyDelete);
+            this.showElements([MenuElement.deleteCompany, MenuElement.companyBody]);
         }
     }
 
@@ -406,8 +406,8 @@ export class MenuPanelComponent implements OnChanges {
     private onDeleteGroup() {
         this.deleteTitle = "Group";
         this.name = this.selectedGroup.GroupName;
-        this.hideElements([ElementsName.groupName, ElementsName.importTemplate, ElementsName.deleteGroup]);
-        this.showElements(ElementsName.confirmGroupDelete);
+        this.hideElements([MenuElement.groupName, MenuElement.importTemplate, MenuElement.deleteGroup]);
+        this.showElements(MenuElement.confirmGroupDelete);
     }
 
     onGroupDeleteConfirm(data: boolean) {
@@ -419,16 +419,16 @@ export class MenuPanelComponent implements OnChanges {
         }
         this.deleteTitle = "";
         this.name = "";
-        this.showElements([ElementsName.groupName, ElementsName.importTemplate, ElementsName.deleteGroup]);
-        this.hideElements(ElementsName.confirmGroupDelete);
+        this.showElements([MenuElement.groupName, MenuElement.importTemplate, MenuElement.deleteGroup]);
+        this.hideElements(MenuElement.confirmGroupDelete);
     }
 
     onGroupDeleteCancel(data: boolean) {
         if (data) {
             this.deleteTitle = "";
             this.name = "";
-            this.showElements([ElementsName.groupName, ElementsName.importTemplate, ElementsName.deleteGroup]);
-            this.hideElements(ElementsName.confirmGroupDelete);
+            this.showElements([MenuElement.groupName, MenuElement.importTemplate, MenuElement.deleteGroup]);
+            this.hideElements(MenuElement.confirmGroupDelete);
         }
     }
 
