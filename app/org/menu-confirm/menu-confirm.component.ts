@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnChanges, SimpleChange } from "@angular/core";
+import { Component, Input, Output, EventEmitter } from "@angular/core";
 
 
 @Component({
@@ -7,25 +7,14 @@ import { Component, Input, Output, EventEmitter, OnChanges, SimpleChange } from 
     styleUrls: ["app/org/menu-confirm/menu-confirm.component.css", "app/style.css", "app/org/menu-panel/menu-panel.component.css"]
 })
 
-export class MenuConfirmButtonComponent implements OnChanges {
-
+export class MenuConfirmButtonComponent {
     private title: any;
-    private titleName: any;
     @Input() isSettings: boolean;
     @Input() deleteTitle: string;
-    @Input() name: string;
+    @Input() titleName: string;
 
     @Output() onConfirmClick = new EventEmitter<boolean>();
     @Output() onCancelClick = new EventEmitter<boolean>();
-
-    ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
-        if (changes["deleteTitle"]) {
-            this.title = this.deleteTitle;
-        }
-        if (changes["name"]) {
-            this.titleName = this.name;
-        }
-    }
 
     onConfirm() {
         this.onConfirmClick.emit(true);

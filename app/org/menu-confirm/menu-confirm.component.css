@@ -2,11 +2,13 @@
     margin: 0px 10px;
 }
 
-.confirmImport label {
+.confirmImport p {
     color: #666;
-    font-size: 0.78rem;
-    font-weight: 600;
-    word-wrap: normal;
+    text-align: center;
+}
+
+.confirmImport p strong {
+    color: #607d8b;
 }
 
 .confirmImport .confirmbtns {

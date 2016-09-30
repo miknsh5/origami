@@ -14,7 +14,7 @@
 
     <ul id="companyDropdown" class="dropdown-content collection">
         <li (click)="onAddOrSettingsClick('company')">
-            <a><i class="Small material-icons left">mode_edit</i><label class="lbl">Settings</label>
+            <a><i class="Small material-icons left">mode_edit</i><span class="lbl">Settings</span>
             </a>
         </li>
         <li class="divider"></li>
@@ -44,13 +44,13 @@
                 <span class="right">{{company.OrgNodeCounts}}</span>
             </a>
         </li>
-        <li (click)="onAddOrSettingsClick('newCompany')"><a><i class="material-icons left">add</i><label class="lbl">Add New</label></a></li>
+        <li (click)="onAddOrSettingsClick('newCompany')"><a><i class="material-icons left">add</i><span class="lbl">Add New</span></a></li>
     </ul>
 
     <ul id="groupDropdown" class="dropdown-content">
         <li (click)="onAddOrSettingsClick('group')">
             <a>
-                <i class="Small material-icons left">mode_edit</i><label class="lbl ">Settings</label>
+                <i class="Small material-icons left">mode_edit</i><span class="lbl ">Settings</span>
             </a>
         </li>
         <li class="divider"></li>
@@ -59,13 +59,13 @@
         <li *ngFor="let group of orgCompanyGroups" (click)="onGroupSelection(group)">
             <a *ngIf="group && group.IsDefaultGroup && group.OrgGroupID === selectedGroup.OrgGroupID" class="active">
                 <i class="material-icons left">apps</i>
-                <label class="lbl active">{{group.GroupName}} </label>
-                <label class="lblCount right">{{group.OrgNodeCounts}}</label>
+                <span class="lbl active">{{group.GroupName}} </span>
+                <span class="lblCount right">{{group.OrgNodeCounts}}</span>
             </a>
             <a *ngIf=" group && group.IsDefaultGroup && group.OrgGroupID !== selectedGroup.OrgGroupID">
                 <i class="material-icons left">apps</i>
-                <label class="lbl active">{{group.GroupName}} </label>
-                <label class="lblCount right">{{group.OrgNodeCounts}}</label>
+                <span class="lbl active">{{group.GroupName}} </span>
+                <span class="lblCount right">{{group.OrgNodeCounts}}</span>
             </a>
         </li>
         <li class="divider"></li>
@@ -73,16 +73,16 @@
         <li *ngFor="let group of orgCompanyGroups" (click)="onGroupSelection(group)">
             <a *ngIf=" group && !group.IsDefaultGroup && group.OrgGroupID === selectedGroup.OrgGroupID" class="active">
                 <i class="material-icons left ">apps</i>
-                <label class="lbl">{{group.GroupName}}</label>
-                <label class="lblCount right">{{group.OrgNodeCounts}}</label>
+                <span class="lbl">{{group.GroupName}}</span>
+                <span class="lblCount right">{{group.OrgNodeCounts}}</span>
             </a>
             <a *ngIf=" group && !group.IsDefaultGroup && group.OrgGroupID !== selectedGroup.OrgGroupID">
                 <i class="material-icons left ">apps</i>
-                <label class="lbl">{{group.GroupName}}</label>
-                <label class="lblCount right">{{group.OrgNodeCounts}}</label>
+                <span class="lbl">{{group.GroupName}}</span>
+                <span class="lblCount right">{{group.OrgNodeCounts}}</span>
             </a>
         </li>
-        <li><a (click)="onAddOrSettingsClick('newGroup')"><i class="material-icons left">add</i><label class="lbl">Add New</label></a></li>
+        <li><a (click)="onAddOrSettingsClick('newGroup')"><i class="material-icons left">add</i><span class="lbl">Add New</span></a></li>
     </ul>
 
     <nav class="fixed">
@@ -116,7 +116,7 @@
 </div>
 
 <!--modal for group setting-->
-<div id="groupSettings" class="modal">
+<div id="groupSettingsModal" class="modal">
     <div class="modal-content">
         <div class="modaltitle">
             <div class="title">
@@ -148,7 +148,7 @@
                         <div class="inlineblock titlewithdivider">
                             <div class="divider"> </div>
                             <label class="lbl">Import</label>
-                            <label class="modallbl"> Load resources from CSV or Excel file to populate the <label class="lblgroupname"> {{groupName}} </label> group.</label>
+                            <label class="modallbl"> Load resources from CSV or Excel file to populate the <span class="lblgroupname"> {{groupName}} </span> group.</label>
                         </div>
                     </div>
                     <div>
@@ -160,7 +160,6 @@
                             <div class="inlineblock titlewithdivider">
                                 <div class="divider"> </div>
                                 <label class="lbl">Export Template</label>
-
                             </div>
                             <div class="template">
                                 <button class="waves-effect waves-light btn" (click)="onClickDownloadTemplate()">
@@ -174,8 +173,8 @@
                     <sg-org-import-csv-file (newOrgNodes)="updateNewOrgGroup($event)" [selectedGroup]="selectedGroup"></sg-org-import-csv-file>
                 </div>
             </div>
-            <div id="groupDelete" class="center">
-                <sg-org-menu-confirm-button [isSettings]="isSettings" [name]="name" [deleteTitle]="deleteTitle" (onConfirmClick)="onGroupDeleteConfirm($event)" (onCancelClick)="onGroupDeleteCancel($event)">
+            <div id="deleteGroupConfirm" class="center">
+                <sg-org-menu-confirm-button [isSettings]="isSettings" [titleName]="name" [deleteTitle]="deleteTitle" (onConfirmClick)="onGroupDeleteConfirm($event)" (onCancelClick)="onGroupDeleteCancel($event)">
                 </sg-org-menu-confirm-button>
             </div>
         </div>
@@ -190,7 +189,7 @@
 
 <!--modal for company setting-->
 
-<div id="companySettings" class="modal">
+<div id="companySettingsModal" class="modal">
     <div class="modal-content">
         <div class="modaltitle">
             <div class="title">
@@ -201,8 +200,8 @@
         </div>
         <div class="companySettings">
             <div class="inlineblock titlewithdivider">
-                <div class="divider">
-                </div><label class="lbl">Settings</label>
+                <div class="divider"> </div>
+                <label class="lbl">Settings</label>
             </div>
         </div>
         <form (ngSubmit)="onCompanySave($event)">
@@ -215,14 +214,12 @@
                             <label class="modaldefaultlabel"> Name Of Account </label>
                         </div>
                     </div>
-
                     <div class="innerdiv">
-                        <button class="waves-effect waves-light btn"> 
-             <i class="material-icons">save</i>Save</button>
+                        <button class="waves-effect waves-light btn"><i class="material-icons">save</i>Save</button>
                     </div>
                 </div>
-                <div id="companyDelete" class="center">
-                    <sg-org-menu-confirm-button [isSettings]="isSettings" [name]="name" [deleteTitle]="deleteTitle" (onConfirmClick)="onCompanyDeleteConfirm($event)" (onCancelClick)="onCompanyDeleteCancel($event)">
+                <div id="deleteCompanyConfirm" class="center">
+                    <sg-org-menu-confirm-button [isSettings]="isSettings" [titleName]="name" [deleteTitle]="deleteTitle" (onConfirmClick)="onCompanyDeleteConfirm($event)" (onCancelClick)="onCompanyDeleteCancel($event)">
                     </sg-org-menu-confirm-button>
                 </div>
             </div>

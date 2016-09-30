@@ -130,13 +130,11 @@ nav ul a i.left {
 .lbl {
     font-size: 0.98em;
     color: #777;
-    cursor: pointer;
     display: inline-flex;
 }
 
 .lblResult {
     float: right;
-    cursor: pointer;
 }
 
 .defaultlbl {
@@ -149,7 +147,6 @@ nav ul a i.left {
 }
 
 .person {
-    cursor: pointer;
     color: #222222;
 }
 
@@ -270,7 +267,6 @@ nav ul a i.left {
 .modaldefaultlabel {
     color: #cfd8dc !important;
     font-size: 0.5rem;
-    cursor: pointer;
     display: block;
     padding-left: 40px;
 }
@@ -278,7 +274,6 @@ nav ul a i.left {
 .modallbl {
     color: #111;
     font-size: 0.5rem;
-    cursor: pointer;
     padding-left: 55px;
     display: block;
 }
@@ -327,7 +322,6 @@ input {
 .lblgroupname {
     color: #111;
     font-size: 0.5rem;
-    cursor: pointer;
     font-weight: 800;
 }
 
@@ -371,14 +365,10 @@ input {
     font-weight: normal;
 }
 
-#companyDelete {
+#deleteGroupConfirm,
+#deleteCompanyConfirm {
     display: none;
-    padding: 7em 1.5em;
-}
-
-#groupDelete {
-    display: none;
-    padding: 8.5em 3em;
+    padding: 8em 2em;
 }
 
 @media only screen and (max-width:992px) {
