@@ -59,26 +59,26 @@
         <li *ngFor="let group of orgCompanyGroups" (click)="onGroupSelection(group)">
             <a *ngIf="group && group.IsDefaultGroup && group.OrgGroupID === selectedGroup.OrgGroupID" class="active">
                 <i class="material-icons left">apps</i>
-                <span class="lbl active">{{group.GroupName}} </span>
+                <span class="active">{{group.GroupName}} </span>
                 <span class="lblCount right">{{group.OrgNodeCounts}}</span>
             </a>
-            <a *ngIf=" group && group.IsDefaultGroup && group.OrgGroupID !== selectedGroup.OrgGroupID">
+            <a *ngIf="group && group.IsDefaultGroup && group.OrgGroupID !== selectedGroup.OrgGroupID">
                 <i class="material-icons left">apps</i>
-                <span class="lbl active">{{group.GroupName}} </span>
+                <span class="active">{{group.GroupName}} </span>
                 <span class="lblCount right">{{group.OrgNodeCounts}}</span>
             </a>
         </li>
         <li class="divider"></li>
         <label class="defaultlbl">Custom Groups</label>
         <li *ngFor="let group of orgCompanyGroups" (click)="onGroupSelection(group)">
-            <a *ngIf=" group && !group.IsDefaultGroup && group.OrgGroupID === selectedGroup.OrgGroupID" class="active">
+            <a *ngIf="group && !group.IsDefaultGroup && group.OrgGroupID === selectedGroup.OrgGroupID" class="active">
                 <i class="material-icons left ">apps</i>
-                <span class="lbl">{{group.GroupName}}</span>
+                <span>{{group.GroupName}}</span>
                 <span class="lblCount right">{{group.OrgNodeCounts}}</span>
             </a>
-            <a *ngIf=" group && !group.IsDefaultGroup && group.OrgGroupID !== selectedGroup.OrgGroupID">
+            <a *ngIf="group && !group.IsDefaultGroup && group.OrgGroupID !== selectedGroup.OrgGroupID">
                 <i class="material-icons left ">apps</i>
-                <span class="lbl">{{group.GroupName}}</span>
+                <span>{{group.GroupName}}</span>
                 <span class="lblCount right">{{group.OrgNodeCounts}}</span>
             </a>
         </li>
@@ -174,7 +174,7 @@
                 </div>
             </div>
             <div id="deleteGroupConfirm" class="center">
-                <sg-org-menu-confirm-button [isSettings]="isSettings" [titleName]="name" [deleteTitle]="deleteTitle" (onConfirmClick)="onGroupDeleteConfirm($event)" (onCancelClick)="onGroupDeleteCancel($event)">
+                <sg-org-menu-confirm-button [titleName]="name" [deleteTitle]="deleteTitle" (onConfirmClick)="onGroupDeleteConfirm($event)" (onCancelClick)="onGroupDeleteCancel($event)">
                 </sg-org-menu-confirm-button>
             </div>
         </div>
@@ -219,7 +219,7 @@
                     </div>
                 </div>
                 <div id="deleteCompanyConfirm" class="center">
-                    <sg-org-menu-confirm-button [isSettings]="isSettings" [titleName]="name" [deleteTitle]="deleteTitle" (onConfirmClick)="onCompanyDeleteConfirm($event)" (onCancelClick)="onCompanyDeleteCancel($event)">
+                    <sg-org-menu-confirm-button [titleName]="name" [deleteTitle]="deleteTitle" (onConfirmClick)="onCompanyDeleteConfirm($event)" (onCancelClick)="onCompanyDeleteCancel($event)">
                     </sg-org-menu-confirm-button>
                 </div>
             </div>

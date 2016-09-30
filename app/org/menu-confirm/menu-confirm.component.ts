@@ -9,7 +9,6 @@ import { Component, Input, Output, EventEmitter } from "@angular/core";
 
 export class MenuConfirmButtonComponent {
     private title: any;
-    @Input() isSettings: boolean;
     @Input() deleteTitle: string;
     @Input() titleName: string;
 

@@ -47,7 +47,6 @@ export class MenuPanelComponent implements OnChanges {
     @Output() groupSelected = new EventEmitter<OrgGroupModel>();
     @Output() companySelected = new EventEmitter<OrgCompanyModel>();
     @Output() isMenuEnable = new EventEmitter<boolean>();
-    @Output() isSettings: boolean;
     @Output() deleteTitle: string;
     @Output() name: string;
 
@@ -195,7 +194,6 @@ export class MenuPanelComponent implements OnChanges {
     }
 
     private onAddOrSettingsClick(name) {
-        this.isSettings = true;
         this.isMenuEnable.emit(true);
         if (name === "company") {
             this.companyName = this.selectedCompany.CompanyName;
@@ -213,7 +211,6 @@ export class MenuPanelComponent implements OnChanges {
     }
 
     private dismissPopup(name) {
-        this.isSettings = false;
         this.deleteTitle = "";
         this.name = "";
         this.isMenuEnable.emit(false);

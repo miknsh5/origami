@@ -31,7 +31,6 @@ export class ImportCsvFileComponent {
 
     @Input() selectedGroup: OrgGroupModel;
     @Output() newOrgNodes = new EventEmitter<OrgNodeModel>();
-    @Output() isSettings: boolean;
 
     constructor(private orgService: OrgService, private csvHelper: CSVConversionHelper) {
         this.fileName = "";
@@ -78,7 +77,6 @@ export class ImportCsvFileComponent {
                     let isFileFormat = this.CSV2JSON(csvData);
                     $(this.$loadScreen).hide();
                     if (isFileFormat) {
-                        this.isSettings = false;
                         $(this.$confirmImport).show();
                     } else {
                         $(this.$templateScreen).show();
@@ -120,16 +118,6 @@ export class ImportCsvFileComponent {
         $("#groupSettings").hide();
         this.newOrgNodes.emit(data);
     }
-
-    // private onCancelImport(showConfirmDialog: boolean) {
-    //     if (showConfirmDialog === true) {
-    //        if (confirm("Are you sure?") === true) {
-    //             this.returnToImportDialog();
-    //        }
-    //    } else {
-    //       this.returnToImportDialog();
-    //   }
-    // }
 
     private onCancelImport(data: boolean) {
         if (data) {
