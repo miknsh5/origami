@@ -3,12 +3,14 @@
 :root {
     --azure: #0097ff;
     --black-50: rgba(0, 0, 0, 0.5);
+    --black-80: rgba(0, 0, 0, 0.5);
     --silver: #cfd8dc;
     --blue-grey: #607d8b;
     --black: #222222;
     --warm-grey-two: #727272;
     --warm-grey: #979797;
     --greyish: #b6b6b6;
+    --dim-grey: #696969;
     --white: #fafafa;
     --nice-blue: #1565c0;
     --slate: #455a64;
@@ -55,7 +57,9 @@ input:placeholder-shown {
 
 node circle {
     -webkit-box-shadow: 0 0 40px rgba(0, 0, 0, 0.8);
+    --webkit-box-shadow: 0 0 40px var(--black-80);
     box-shadow: 0 0 40px rgba(0, 0, 0, 0.8);
+    box-shadow: 0 0 40px var(--black-80);
     stroke: none;
 }
 
@@ -65,11 +69,13 @@ node circle {
     font-weight: bold;
     text-align: center;
     color: #ffffff;
+    color: var(--white-text);
     text-transform: capitalize;
 }
 
 .node text#abbr {
-    fill: #FFF;
+    fill: #ffffff;
+    fill: var(--white-text);
     text-transform: uppercase;
 }
 
@@ -81,6 +87,7 @@ node circle {
     font-size: 13px;
     font-weight: bold;
     fill: #979797;
+    fill: var(--warm-grey);
     white-space: pre;
     text-overflow: ellipsis;
 }
@@ -93,6 +100,7 @@ node circle {
 .link {
     fill: none;
     stroke: #979797;
+    stroke: var(--warm-grey);
     stroke-width: 1px;
 }
 
@@ -114,7 +122,8 @@ node circle {
     text-align: right;
     padding: 3px;
     margin: 5px;
-    color: white;
+    color: #ffffff;
+    color: var(--white-text);
     box-shadow: 2px 2px 2px #666;
 }
 
@@ -129,10 +138,12 @@ node circle {
 .buildMode .selectedCircle,
 .exploreMode .selectedCircle {
     fill: #0097FF;
+    fill: var(--azure);
 }
 
 .reportMode .selectedCircle {
     fill: #ffffff;
+    fill: var(--white-text);
     stroke-width: 1px;
     stroke: rgba(0, 0, 0, 0.1);
 }
@@ -142,8 +153,10 @@ node circle {
 }
 
 .stagedCircle {
-    fill: #FFFFFF;
+    fill: #ffffff;
+    fill: var(--white-text);
     stroke: #0097FF;
+    stroke: var(--azure);
     stroke-width: 2;
 }
 
@@ -153,6 +166,7 @@ node circle {
 
 .new-peer_reportee-circle {
     fill: #FAFAFA;
+    fill: var(--white);
     stroke: #CFD8dC;
     stroke-width: 1;
     stroke-dasharray: 2, 2;
@@ -162,6 +176,7 @@ node circle {
 .new-peer_reportee-innerText {
     font-size: .75em;
     fill: #B6B6B6;
+    fill: var(--greyish);
     text-anchor: middle;
     fill-opacity: 1;
     cursor: pointer;
@@ -170,6 +185,7 @@ node circle {
 .new-peer_reportee-outerText {
     font-size: 0.62em;
     fill: #CFD8dC;
+    fill: var(--silver);
     text-anchor: middle;
     fill-opacity: 1;
 }
@@ -207,32 +223,182 @@ path.horizontal {
 
  ::-webkit-scrollbar-thumb {
     background: #e1e1e1;
-    border: 0px none #666666;
+    border: 0px none #696969;
+    border: 0px none var(--dim-grey);
     border-radius: 50px;
 }
 
  ::-webkit-scrollbar-thumb:hover {
-    background: #666666;
+    background: #696969;
+    background: var(--dim-grey);
 }
 
  ::-webkit-scrollbar-thumb:active {
-    background: #666666;
+    background: #696969;
+    background: var(--dim-grey);
 }
 
  ::-webkit-scrollbar-track {
-    background: #666666;
-    border: 0px none #666666;
+    background: #696969;
+    background: var(--dim-grey);
+    border: 0px none #696969;
+    border: 0px none var(--dim-grey);
     border-radius: 50px;
 }
 
  ::-webkit-scrollbar-track:hover {
     background: #ffffff;
+    background: var(--white-text);
 }
 
  ::-webkit-scrollbar-track:active {
     background: #ffffff;
+    background: var(--white-text);
 }
 
  ::-webkit-scrollbar-corner {
     background: transparent;
+}
+
+.loader,
+.loader__figure {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    -moz-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    -o-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+}
+
+.loader {
+    overflow: visible;
+    padding-top: 2em;
+    height: 0;
+    width: 2em;
+}
+
+.loader__figure {
+    height: 0;
+    width: 0;
+    box-sizing: border-box;
+    border: 0 solid #0097FF;
+    border: 0 solid var(--azure);
+    border-radius: 50%;
+    -webkit-animation: loader-figure 1.15s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
+    -moz-animation: loader-figure 1.15s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
+    animation: loader-figure 1.15s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+
+.loader__label {
+    float: left;
+    margin-left: 50%;
+    -webkit-transform: translateX(-50%);
+    -moz-transform: translateX(-50%);
+    -ms-transform: translateX(-50%);
+    -o-transform: translateX(-50%);
+    transform: translateX(-50%);
+    margin: 0.5em 0 0 50%;
+    font-size: 0.875em;
+    letter-spacing: 0.1em;
+    line-height: 1.5em;
+    color: #80cbff;
+    white-space: nowrap;
+    -webkit-animation: loader-label 1.15s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
+    -moz-animation: loader-label 1.15s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
+    animation: loader-label 1.15s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+
+@-webkit-keyframes loader-figure {
+    0% {
+        height: 0;
+        width: 0;
+    }
+    30% {
+        height: 2em;
+        width: 2em;
+        border-width: 1em;
+        opacity: 1;
+    }
+    100% {
+        height: 2em;
+        width: 2em;
+        border-width: 0;
+        opacity: 0;
+    }
+}
+
+@-moz-keyframes loader-figure {
+    0% {
+        height: 0;
+        width: 0;
+    }
+    30% {
+        height: 2em;
+        width: 2em;
+        border-width: 1em;
+        opacity: 1;
+    }
+    100% {
+        height: 2em;
+        width: 2em;
+        border-width: 0;
+        opacity: 0;
+    }
+}
+
+@keyframes loader-figure {
+    0% {
+        height: 0;
+        width: 0;
+    }
+    30% {
+        height: 2em;
+        width: 2em;
+        border-width: 1em;
+        opacity: 1;
+    }
+    100% {
+        height: 2em;
+        width: 2em;
+        border-width: 0;
+        opacity: 0;
+    }
+}
+
+@-webkit-keyframes loader-label {
+    0% {
+        opacity: 0.35;
+    }
+    30% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0.35;
+    }
+}
+
+@-moz-keyframes loader-label {
+    0% {
+        opacity: 0.35;
+    }
+    30% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0.35;
+    }
+}
+
+@keyframes loader-label {
+    0% {
+        opacity: 0.35;
+    }
+    30% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0.35;
+    }
 }
