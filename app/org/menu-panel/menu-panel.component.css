@@ -366,6 +366,11 @@ input {
     font-weight: normal;
 }
 
+#companySettingsModal,
+#addNewCompany {
+    margin: 120px;
+}
+
 #deleteGroupConfirm,
 #deleteCompanyConfirm {
     display: none;
