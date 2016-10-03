@@ -24,6 +24,12 @@
 
 /*@import url(https://fonts.googleapis.com/css?family=Roboto+Slab:400,700);*/
 
+html,
+body {
+    background-color: #fafafa;
+    background-color: var(--white);
+}
+
 .h-1 {
     font-family: Roboto, sans-serif;
     font-size: 18px;
@@ -162,12 +168,14 @@ node circle {
 
 .defaultCircle {
     fill: #CFD8DC;
+    fill: var(--silver);
 }
 
 .new-peer_reportee-circle {
     fill: #FAFAFA;
     fill: var(--white);
     stroke: #CFD8dC;
+    stroke: var(--silver);
     stroke-width: 1;
     stroke-dasharray: 2, 2;
     cursor: pointer;

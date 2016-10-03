@@ -30,6 +30,7 @@ const NODE_HEIGHT = 70;
 const NODE_WIDTH = 95;
 const DEPTH = 180;
 const RADIAL_DEPTH = 90;
+const RADIAL_VALUE = 360;
 
 const DEFAULT_CIRCLE = "defaultCircle";
 const STAGED_CIRCLE = "stagedCircle";
@@ -154,30 +155,25 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     initializeTreeAsPerMode() {
         if (this.currentMode === ChartMode.build) {
             this.tree = d3.layout.tree().nodeSize([NODE_HEIGHT, NODE_WIDTH]);
-        } else if (this.currentMode === ChartMode.report) {
-            this.tree = d3.layout.tree().nodeSize([RIGHTLEFT_MARGIN, NODE_HEIGHT]);
-            this.setNodeLabelVisiblity();
-            this.root = this.selectedOrgNode || this.lastSelectedNode;
-        } else {
-            this.tree = d3.layout.cluster().size([360, RADIAL_DEPTH])
-                .separation(function (a, b) {
-                    return (a.parent === b.parent ? 1 : 2) / a.depth;
-                });
-            this.setNodeLabelVisiblity();
-            this.selectedOrgNode = this.root;
-        }
-
-        if (this.currentMode === ChartMode.build) {
             this.diagonal = d3.svg.diagonal()
                 .projection(function (d) {
                     return [d.y, d.x];
                 });
         } else if (this.currentMode === ChartMode.report) {
+            this.tree = d3.layout.tree().nodeSize([RIGHTLEFT_MARGIN, NODE_HEIGHT]);
+            this.setNodeLabelVisiblity();
+            this.root = this.selectedOrgNode || this.lastSelectedNode;
             this.diagonal = d3.svg.diagonal()
                 .projection(function (d) {
                     return [d.x, d.y];
                 });
         } else {
+            this.tree = d3.layout.tree().size([RADIAL_VALUE, RADIAL_VALUE])
+                .separation(function (a, b) {
+                    return (a.parent === b.parent ? RADIAL_VALUE : DEPTH) / a.depth;
+                });
+            this.setNodeLabelVisiblity();
+            this.selectedOrgNode = this.root;
             this.diagonal = d3.svg.diagonal.radial()
                 .projection(function (d) {
                     return [d.y, d.x / DEPTH * Math.PI];
@@ -690,6 +686,8 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
             this.renderOrUpdateLinks(source);
 
+            this.renderCircles(source);
+
             // Stash the old positions for transition.
             this.nodes.forEach(function (d) {
                 d.x0 = d.x;
@@ -699,6 +697,15 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             this.showUpdatePeerReporteeNode(source);
         }
         this.resizeLinesArrowsAndSvg();
+    }
+
+    transformNode(x, y) {
+        let angle = (x - 90) / 180 * Math.PI, radius = y;
+        return [radius * Math.cos(angle), radius * Math.sin(angle)];
+    }
+
+    renderCircles(source) {
+
     }
 
     renderOrUpdateNodes(source) {
@@ -723,7 +730,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 if (this.currentMode === ChartMode.report) {
                     transformString = "translate(" + source.x0 + "," + source.y0 + ")";
                 } else if (this.currentMode === ChartMode.explore) {
-                    transformString = "rotate(" + (source.x0 - RADIAL_DEPTH) + ")translate(" + source.y0 + ")";
+                    transformString = "translate(" + this.transformNode(source.x0, source.y0) + ")";
                 }
                 return transformString;
             })
@@ -983,7 +990,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 } else if (this.currentMode === ChartMode.report) {
                     return "translate(" + source.x + "," + source.y + ")";
                 } else {
-                    return "rotate(" + (source.x0 - RADIAL_DEPTH) + ")translate(" + source.y + ")";
+                    return "translate(" + this.transformNode(source.x0, source.y0) + ")";
                 }
             })
             .remove();
