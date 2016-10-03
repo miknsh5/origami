@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnChanges, SimpleChange } from "@angular/core";
+import { Component, Input, Output, EventEmitter, OnChanges, SimpleChange, Renderer } from "@angular/core";
 import { Router } from "@angular/router";
 
 import { OrgCompanyModel, OrgGroupModel, OrgNodeModel, OrgService, OrgNodeStatus, OrgNodeBaseModel} from "../shared/index";
@@ -57,7 +57,7 @@ export class MenuPanelComponent implements OnChanges {
     @Output() deleteTitle: string;
     @Output() name: string;
 
-    constructor(private orgService: OrgService, private router: Router,
+    constructor(private orgService: OrgService, private router: Router, private renderer: Renderer,
         private csvHelper: CSVConversionHelper, private auth: AuthService) {
         this.getAllCompanies();
         this.enableImport = false;
@@ -209,10 +209,12 @@ export class MenuPanelComponent implements OnChanges {
 
     private onAddOrSettingsClick(name) {
         this.isMenuEnable.emit(true);
+        let element = null;
         if (name === "company") {
             this.companyName = this.selectedCompany.CompanyName;
             this.showElements([MenuElement.companyModal, MenuElement.companySettingsModal]);
             this.hideElements([MenuElement.addNewCompany, MenuElement.confirmCompanyDelete, MenuElement.companyDeleteLoader]);
+            element = document.querySelector("input[name=existingCompanyName]");
         } else if (name === "group") {
             this.groupSelectedMode = "Settings";
             this.groupSettingTitle = "Settings";
@@ -220,6 +222,7 @@ export class MenuPanelComponent implements OnChanges {
             this.groupName = this.selectedGroup.GroupName;
             this.showElements([MenuElement.groupModal, MenuElement.deleteGroup]);
             this.hideElements([MenuElement.confirmGroupDelete, MenuElement.groupDeleteLoader]);
+            element = document.querySelector("input[name=existingGroupName]");
         } else if (name === "newGroup") {
             this.groupSelectedMode = "AddNewGroup";
             this.groupSettingTitle = "Add New Group";
@@ -227,11 +230,14 @@ export class MenuPanelComponent implements OnChanges {
             this.isImportDisabled = true;
             this.showElements([MenuElement.groupModal, MenuElement.importTemplate]);
             this.hideElements([MenuElement.deleteGroup, MenuElement.groupDeleteLoader]);
+            element = document.querySelector("input[name=existingGroupName]");
         } else if (name === "newCompany") {
-            this.companyName = "";
-            this.showElements([MenuElement.companyModal, MenuElement.addNewCompany, MenuElement.companyDeleteLoader]);
-            this.hideElements(MenuElement.companySettingsModal);
+            this.companyName = "Company " + (this.orgCompanies.length + 1);
+            this.showElements([MenuElement.companyModal, MenuElement.addNewCompany]);
+            this.hideElements([MenuElement.companySettingsModal, MenuElement.companyDeleteLoader]);
+            element = document.querySelector("input[name=newCompanyName]");
         }
+        this.renderer.invokeElementMethod(element, "focus", []);
     }
 
     private dismissPopup(name) {
