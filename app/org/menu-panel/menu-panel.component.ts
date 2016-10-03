@@ -299,6 +299,8 @@ export class MenuPanelComponent implements OnChanges {
                 this.setNewCompany(data);
             },
             err => this.orgService.logError(err));
+        this.hideElements(MenuElement.addNewCompany);
+        this.showElements(MenuElement.companySettingsModal);
     }
 
     private setNewCompany(data) {
@@ -332,7 +334,6 @@ export class MenuPanelComponent implements OnChanges {
         this.orgService.updateCompany(company)
             .subscribe(data => this.setCompanyData(data),
             err => this.orgService.logError(err));
-
     }
 
     private setCompanyData(data) {
