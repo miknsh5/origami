@@ -11,7 +11,7 @@ export class MenuConfirmButtonComponent {
     private title: any;
     @Input() deleteTitle: string;
     @Input() titleName: string;
-     @Input() hideMessage: boolean;
+    @Input() hideMessage: boolean;
 
     @Output() onConfirmClick = new EventEmitter<boolean>();
     @Output() onCancelClick = new EventEmitter<boolean>();
