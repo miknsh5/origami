@@ -487,7 +487,9 @@ export class MenuPanelComponent implements OnChanges {
     }
 
     private onClickDownloadTemplate() {
-        this.csvHelper.DownloadTemplate();
+        if (!this.isImportDisabled) {
+            this.csvHelper.DownloadTemplate();
+        }
     }
 
     private showElements(element: any) {
