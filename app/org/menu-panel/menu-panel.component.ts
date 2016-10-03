@@ -22,6 +22,8 @@ const MenuElement = {
     confirmGroupDelete: "#deleteGroupConfirm",
     groupSaveOrEdit: "#groupSaveOrEdit",
     addNewCompany: "#addNewCompany",
+    companyDeleteLoader: "#companyDeleteLoader",
+    groupDeleteLoader: "#groupDeleteLoader"
 };
 
 @Component({
@@ -210,24 +212,24 @@ export class MenuPanelComponent implements OnChanges {
         if (name === "company") {
             this.companyName = this.selectedCompany.CompanyName;
             this.showElements([MenuElement.companyModal, MenuElement.companySettingsModal]);
-            this.hideElements([MenuElement.addNewCompany, MenuElement.confirmCompanyDelete]);
+            this.hideElements([MenuElement.addNewCompany, MenuElement.confirmCompanyDelete, MenuElement.companyDeleteLoader]);
         } else if (name === "group") {
             this.groupSelectedMode = "Settings";
             this.groupSettingTitle = "Settings";
             this.isImportDisabled = false;
             this.groupName = this.selectedGroup.GroupName;
             this.showElements([MenuElement.groupModal, MenuElement.deleteGroup]);
-            this.hideElements(MenuElement.confirmGroupDelete);
+            this.hideElements([MenuElement.confirmGroupDelete, MenuElement.groupDeleteLoader]);
         } else if (name === "newGroup") {
             this.groupSelectedMode = "AddNewGroup";
             this.groupSettingTitle = "Add New Group";
             this.groupName = "Group " + (this.selectedCompany.OrgGroups.length + 1);
             this.isImportDisabled = true;
             this.showElements([MenuElement.groupModal, MenuElement.importTemplate]);
-            this.hideElements(MenuElement.deleteGroup);
+            this.hideElements([MenuElement.deleteGroup, MenuElement.groupDeleteLoader]);
         } else if (name === "newCompany") {
             this.companyName = "";
-            this.showElements([MenuElement.companyModal, MenuElement.addNewCompany]);
+            this.showElements([MenuElement.companyModal, MenuElement.addNewCompany, MenuElement.companyDeleteLoader]);
             this.hideElements(MenuElement.companySettingsModal);
         }
     }
@@ -323,7 +325,6 @@ export class MenuPanelComponent implements OnChanges {
 
 
     private onCompanySave() {
-
         let company = new OrgCompanyModel();
         company.CompanyID = this.selectedCompany.CompanyID;
         company.CompanyName = this.companyName.trim();
@@ -387,7 +388,7 @@ export class MenuPanelComponent implements OnChanges {
         this.isImport = false;
     }
 
-    private onDeleteCompany() {
+    private onDeleteCompanyClicked() {
         this.deleteTitle = "Company";
         this.name = this.selectedCompany.CompanyName;
         this.showElements(MenuElement.confirmCompanyDelete);
@@ -398,12 +399,14 @@ export class MenuPanelComponent implements OnChanges {
         if (data) {
             let companyID = this.selectedCompany.CompanyID;
             this.orgService.deleteCompany(companyID)
-                .subscribe(data => this.deleteOrgCompany(data),
-                err => this.orgService.logError(err));
+                .subscribe(data => this.companyDeletion(data),
+                err => this.orgService.logError(err),
+                () => { $(MenuElement.companySettingsModal + " .close").show(); });
             this.deleteTitle = "";
             this.name = "";
-            this.hideElements(MenuElement.confirmCompanyDelete);
-            this.showElements([MenuElement.deleteCompany, MenuElement.companyBody]);
+
+            this.hideElements([MenuElement.confirmCompanyDelete, MenuElement.companySettingsModal + " .close"]);
+            this.showElements(MenuElement.groupDeleteLoader);
         }
     }
 
@@ -416,7 +419,7 @@ export class MenuPanelComponent implements OnChanges {
         }
     }
 
-    private deleteOrgCompany(data) {
+    private companyDeletion(data) {
         if (data) {
             this.orgCompanies.forEach((company, index) => {
                 if (this.compareCompanyID(company, this.selectedCompany)) {
@@ -433,7 +436,7 @@ export class MenuPanelComponent implements OnChanges {
         }
     }
 
-    private onDeleteGroup() {
+    private onDeleteGroupClicked() {
         this.deleteTitle = "Group";
         this.name = this.selectedGroup.GroupName;
         this.hideElements([MenuElement.groupName, MenuElement.importTemplate, MenuElement.deleteGroup, MenuElement.groupSaveOrEdit]);
@@ -444,13 +447,14 @@ export class MenuPanelComponent implements OnChanges {
         if (data) {
             let groupID = this.selectedGroup.OrgGroupID;
             this.orgService.deleteGroup(groupID)
-                .subscribe(data => this.deleteOrgGroup(data),
-                err => this.orgService.logError(err));
+                .subscribe(data => this.groupDeletion(data),
+                err => this.orgService.logError(err),
+                () => { $(MenuElement.groupModal + " .close").show(); });
         }
         this.deleteTitle = "";
         this.name = "";
-        this.showElements([MenuElement.groupName, MenuElement.importTemplate, MenuElement.deleteGroup, MenuElement.groupSaveOrEdit]);
-        this.hideElements(MenuElement.confirmGroupDelete);
+        this.hideElements([MenuElement.confirmGroupDelete, MenuElement.groupModal + " .close"]);
+        this.showElements(MenuElement.groupDeleteLoader);
     }
 
     onGroupDeleteCancel(data: boolean) {
@@ -462,7 +466,7 @@ export class MenuPanelComponent implements OnChanges {
         }
     }
 
-    private deleteOrgGroup(data) {
+    private groupDeletion(data) {
         if (data) {
             this.selectedCompany.OrgNodeCounts = this.selectedCompany.OrgNodeCounts - this.selectedGroup.OrgNodeCounts;
             this.selectedCompany.OrgGroups.forEach((group, index) => {

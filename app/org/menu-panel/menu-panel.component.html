@@ -178,11 +178,19 @@
                 <sg-org-menu-confirm-button [hideMessage]="false" [titleName]="name" [deleteTitle]="deleteTitle" (onConfirmClick)="onGroupDeleteConfirm($event)" (onCancelClick)="onGroupDeleteCancel($event)">
                 </sg-org-menu-confirm-button>
             </div>
+            <div id="groupDeleteLoader" class="loadscreen center">
+                <div>
+                    <img src="/app/images/loading.gif" alt="Please wait...">
+                    <label class="lblLoad"> Deleting Please wait...</label></div>
+                <div>
+                    <label class="lblLoad">(This may take a minute)</label>
+                </div>
+            </div>
         </div>
 
         <div class="divider"></div>
         <div class="delete" id="deleteGroup">
-            <button *ngIf="!isImport" class="waves-effect waves-light btn" (click)="onDeleteGroup()">
+            <button *ngIf="!isImport" class="waves-effect waves-light btn" (click)="onDeleteGroupClicked()">
             <i class="material-icons">delete</i>Delete</button>
         </div>
     </div>
@@ -223,11 +231,19 @@
                         <sg-org-menu-confirm-button [hideMessage]="false" [titleName]="name" [deleteTitle]="deleteTitle" (onConfirmClick)="onCompanyDeleteConfirm($event)" (onCancelClick)="onCompanyDeleteCancel($event)">
                         </sg-org-menu-confirm-button>
                     </div>
+                    <div id="companyDeleteLoader" class="loadscreen center">
+                        <div>
+                            <img src="/app/images/loading.gif" alt="Please wait...">
+                            <label class="lblLoad"> Deleting Please wait...</label></div>
+                        <div>
+                            <label class="lblLoad">(This may take a minute)</label>
+                        </div>
+                    </div>
                 </div>
             </form>
             <div class="divider"></div>
             <div class="delete" id="deleteCompany">
-                <button class="waves-effect waves-light btn" (click)="onDeleteCompany()">
+                <button class="waves-effect waves-light btn" (click)="onDeleteCompanyClicked()">
             <i class="material-icons">delete</i>Delete</button>
             </div>
         </div>

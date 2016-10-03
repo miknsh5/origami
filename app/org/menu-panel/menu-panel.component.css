@@ -377,6 +377,16 @@ input {
     padding: 8em 2em;
 }
 
+.loadscreen {
+    display: none;
+    padding: 8em 3em;
+    font-size: 0.9rem;
+}
+
+.loadscreen img {
+    width: 100%;
+}
+
 @media only screen and (max-width:992px) {
     nav .brand-logo {
         left: 0%;

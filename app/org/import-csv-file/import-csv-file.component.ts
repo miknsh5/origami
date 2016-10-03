@@ -98,17 +98,20 @@ export class ImportCsvFileComponent {
             if (this.unmappedNodesCount > 1) {
                 this.orgService.addGroupNodes(this.selectedGroup.OrgGroupID, this.json, null)
                     .subscribe(data => this.setOrgGroupData(data),
-                    err => this.orgService.logError(err));
+                    err => this.orgService.logError(err),
+                    () => { $(".close").show(); });
             }
             else {
                 this.orgService.addGroupNodes(this.selectedGroup.OrgGroupID, this.json, this.defaultNode.NodeID)
                     .subscribe(data => this.setOrgGroupData(data),
-                    err => this.orgService.logError(err));
+                    err => this.orgService.logError(err),
+                    () => { $(".close").show(); });
             }
 
             $(this.$confirmImport).hide();
             $(this.$loadScreen).show();
             $("#cancelbtn").hide();
+            $(".close").hide();
             this.unmappedNodesCount = 0;
             this.mappedNodesCount = 0;
         }
