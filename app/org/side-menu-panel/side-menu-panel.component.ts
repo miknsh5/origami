@@ -17,6 +17,8 @@ export class SideMenuComponent implements OnChanges {
     totalReportees: any;
     depth: any;
     private tabs: any;
+    private $publishData: any;
+    private $exportData: any;
 
     @Input() currentMode: ChartMode;
     @Input() orgChart: OrgGroupModel;
@@ -29,6 +31,11 @@ export class SideMenuComponent implements OnChanges {
     @Output() showFirstNameLabel = new EventEmitter<boolean>();
     @Output() showLastNameLabel = new EventEmitter<boolean>();
     @Output() showDescriptionLabel = new EventEmitter<boolean>();
+
+    constructor() {
+        this.$exportData = "#exportData";
+        this.$publishData = "#publishData";
+    }
 
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
         if (changes["selectedOrgNode"]) {
@@ -61,6 +68,8 @@ export class SideMenuComponent implements OnChanges {
         this.isCollapsed = true;
         $("#menuPanel").width("100%");
         $(".sideNav.fixed").width("240px");
+        $(this.$publishData).hide();
+        $(this.$exportData).show();
     }
 
     closePanel() {
@@ -117,6 +126,18 @@ export class SideMenuComponent implements OnChanges {
                 this.tabs = $("ul.tabs").tabs();
             }
         }, 500);
+    }
+
+    OnPublish() {
+        console.log("PUBLISH");
+        $(this.$exportData).hide();
+        $(this.$publishData).show();
+    }
+
+    OnExport() {
+        console.log("Export");
+        $(this.$exportData).show();
+        $(this.$publishData).hide();
     }
 
 }

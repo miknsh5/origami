@@ -199,10 +199,9 @@ a {
 
 .active {
     color: #fff;
-    background-color: #455a64;
+    background-color: #607d8b;
     height: 41px;
     cursor: pointer;
-    border-top: 3px solid #607d8b;
 }
 
 .tabs .tab a {
@@ -213,10 +212,12 @@ a {
     text-overflow: ellipsis;
     overflow: hidden;
     transition: color .28s ease;
+    border-top: 3px solid #607d8b;
 }
 
 .tabs .tab {
     line-height: normal;
     text-transform: none;
     height: inherit;
+    cursor: pointer;
 }
