@@ -1,13 +1,11 @@
 import { Component, Input, Output, EventEmitter, OnChanges, SimpleChange, Renderer } from "@angular/core";
 import { Router } from "@angular/router";
 
-import { OrgCompanyModel, OrgGroupModel, OrgNodeModel, OrgService, OrgNodeStatus, OrgNodeBaseModel} from "../shared/index";
+import { OrgCompanyModel, OrgGroupModel, OrgNodeModel, OrgService, OrgNodeStatus, OrgNodeBaseModel, DomElementHelper} from "../shared/index";
 import { CSVConversionHelper } from "../shared/csv-helper";
 import { UserModel } from "../../Shared/index";
 
 import { AuthService } from "../../login/index";
-
-declare let $: any;
 
 const MenuElement = {
     companyModal: "#companyModal",
@@ -58,7 +56,7 @@ export class MenuPanelComponent implements OnChanges {
     @Output() name: string;
 
     constructor(private orgService: OrgService, private router: Router, private renderer: Renderer,
-        private csvHelper: CSVConversionHelper, private auth: AuthService) {
+        private csvHelper: CSVConversionHelper, private auth: AuthService, private domHelper: DomElementHelper) {
         this.getAllCompanies();
         this.enableImport = false;
         this.isImport = false;
@@ -176,9 +174,9 @@ export class MenuPanelComponent implements OnChanges {
     }
 
     private enableDropDowns() {
-        $(".dropdown-button").dropdown({ constrain_width: false, alignment: "right" });
-        $(".organization").dropdown({ constrain_width: false, belowOrigin: true, alignment: "left" });
-        $(".group").dropdown({ constrain_width: false, belowOrigin: true, alignment: "left" });
+        this.domHelper.initDropDown(".dropdown-button", { constrain_width: false, alignment: "right" });
+        this.domHelper.initDropDown(".organization", { constrain_width: false, belowOrigin: true, alignment: "left" });
+        this.domHelper.initDropDown(".group", { constrain_width: false, belowOrigin: true, alignment: "left" });
     }
 
     private onCompanySelection(data) {
@@ -212,29 +210,29 @@ export class MenuPanelComponent implements OnChanges {
         let element = null;
         if (name === "company") {
             this.companyName = this.selectedCompany.CompanyName;
-            this.showElements([MenuElement.companyModal, MenuElement.companySettingsModal]);
-            this.hideElements([MenuElement.addNewCompany, MenuElement.confirmCompanyDelete, MenuElement.companyDeleteLoader]);
+            this.domHelper.showElements([MenuElement.companyModal, MenuElement.companySettingsModal]);
+            this.domHelper.hideElements([MenuElement.addNewCompany, MenuElement.confirmCompanyDelete, MenuElement.companyDeleteLoader]);
             element = document.querySelector("input[name=existingCompanyName]");
         } else if (name === "group") {
             this.groupSelectedMode = "Settings";
             this.groupSettingTitle = "Settings";
             this.isImportDisabled = false;
             this.groupName = this.selectedGroup.GroupName;
-            this.showElements([MenuElement.groupModal, MenuElement.deleteGroup]);
-            this.hideElements([MenuElement.confirmGroupDelete, MenuElement.groupDeleteLoader]);
+            this.domHelper.showElements([MenuElement.groupModal, MenuElement.deleteGroup]);
+            this.domHelper.hideElements([MenuElement.confirmGroupDelete, MenuElement.groupDeleteLoader]);
             element = document.querySelector("input[name=existingGroupName]");
         } else if (name === "newGroup") {
             this.groupSelectedMode = "AddNewGroup";
             this.groupSettingTitle = "Add New Group";
             this.groupName = "Group " + (this.selectedCompany.OrgGroups.length + 1);
             this.isImportDisabled = true;
-            this.showElements([MenuElement.groupModal, MenuElement.importTemplate]);
-            this.hideElements([MenuElement.deleteGroup, MenuElement.groupDeleteLoader]);
+            this.domHelper.showElements([MenuElement.groupModal, MenuElement.importTemplate]);
+            this.domHelper.hideElements([MenuElement.deleteGroup, MenuElement.groupDeleteLoader]);
             element = document.querySelector("input[name=existingGroupName]");
         } else if (name === "newCompany") {
             this.companyName = "Company " + (this.orgCompanies.length + 1);
-            this.showElements([MenuElement.companyModal, MenuElement.addNewCompany]);
-            this.hideElements([MenuElement.companySettingsModal, MenuElement.companyDeleteLoader]);
+            this.domHelper.showElements([MenuElement.companyModal, MenuElement.addNewCompany]);
+            this.domHelper.hideElements([MenuElement.companySettingsModal, MenuElement.companyDeleteLoader]);
             element = document.querySelector("input[name=newCompanyName]");
         }
         this.renderer.invokeElementMethod(element, "focus", []);
@@ -246,11 +244,11 @@ export class MenuPanelComponent implements OnChanges {
         this.isMenuEnable.emit(false);
         if (name === "company") {
             this.companyName = this.selectedCompany.CompanyName;
-            this.hideElements([MenuElement.confirmCompanyDelete, MenuElement.companyModal, MenuElement.companySettingsModal]);
-            this.showElements([MenuElement.companyBody, MenuElement.deleteCompany]);
+            this.domHelper.hideElements([MenuElement.confirmCompanyDelete, MenuElement.companyModal, MenuElement.companySettingsModal]);
+            this.domHelper.showElements([MenuElement.companyBody, MenuElement.deleteCompany]);
         } else if (name === "group") {
-            this.showElements([MenuElement.groupName, MenuElement.importTemplate, MenuElement.deleteGroup, MenuElement.groupSaveOrEdit]);
-            this.hideElements([MenuElement.groupModal, MenuElement.confirmGroupDelete]);
+            this.domHelper.showElements([MenuElement.groupName, MenuElement.importTemplate, MenuElement.deleteGroup, MenuElement.groupSaveOrEdit]);
+            this.domHelper.hideElements([MenuElement.groupModal, MenuElement.confirmGroupDelete]);
             this.groupName = this.selectedGroup.GroupName;
             this.isImport = false;
             this.groupSettingTitle = "";
@@ -259,7 +257,7 @@ export class MenuPanelComponent implements OnChanges {
             this.isImportDisabled = true;
         } else if (name === "newCompany") {
             this.companyName = "";
-            this.hideElements([MenuElement.companyModal, MenuElement.addNewCompany]);
+            this.domHelper.hideElements([MenuElement.companyModal, MenuElement.addNewCompany]);
         }
     }
 
@@ -307,8 +305,8 @@ export class MenuPanelComponent implements OnChanges {
                 this.setNewCompany(data);
             },
             err => this.orgService.logError(err));
-        this.hideElements(MenuElement.addNewCompany);
-        this.showElements(MenuElement.companySettingsModal);
+        this.domHelper.hideElements(MenuElement.addNewCompany);
+        this.domHelper.showElements(MenuElement.companySettingsModal);
     }
 
     private setNewCompany(data) {
@@ -379,14 +377,14 @@ export class MenuPanelComponent implements OnChanges {
         if (!this.isImportDisabled) {
             this.groupSettingTitle = "Import";
             this.isImport = true;
-            this.hideElements(MenuElement.groupSaveOrEdit);
+            this.domHelper.hideElements(MenuElement.groupSaveOrEdit);
         }
     }
 
     private updateNewOrgGroup(OrgNodes) {
         this.isMenuEnable.emit(false);
-        this.showElements(MenuElement.groupSaveOrEdit);
-        this.hideElements(MenuElement.groupModal);
+        this.domHelper.showElements(MenuElement.groupSaveOrEdit);
+        this.domHelper.hideElements(MenuElement.groupModal);
         this.setOrgGroupData(OrgNodes);
         this.selectedGroup.OrgNodeCounts = OrgNodes.OrgNodeCounts;
         this.selectedCompany.OrgNodeCounts = this.selectedCompany.OrgNodeCounts + this.selectedGroup.OrgNodeCounts;
@@ -397,8 +395,8 @@ export class MenuPanelComponent implements OnChanges {
     private onDeleteCompanyClicked() {
         this.deleteTitle = "Company";
         this.name = this.selectedCompany.CompanyName;
-        this.showElements(MenuElement.confirmCompanyDelete);
-        this.hideElements([MenuElement.companyBody, MenuElement.deleteCompany]);
+        this.domHelper.showElements(MenuElement.confirmCompanyDelete);
+        this.domHelper.hideElements([MenuElement.companyBody, MenuElement.deleteCompany]);
     }
 
     onCompanyDeleteConfirm(data) {
@@ -407,12 +405,12 @@ export class MenuPanelComponent implements OnChanges {
             this.orgService.deleteCompany(companyID)
                 .subscribe(data => this.companyDeletion(data),
                 err => this.orgService.logError(err),
-                () => { $(MenuElement.companySettingsModal + " .close").show(); });
+                () => { this.domHelper.showElements(MenuElement.companySettingsModal + " .close"); });
             this.deleteTitle = "";
             this.name = "";
 
-            this.hideElements([MenuElement.confirmCompanyDelete, MenuElement.companySettingsModal + " .close"]);
-            this.showElements(MenuElement.companyDeleteLoader);
+            this.domHelper.hideElements([MenuElement.confirmCompanyDelete, MenuElement.companySettingsModal + " .close"]);
+            this.domHelper.showElements(MenuElement.companyDeleteLoader);
         }
     }
 
@@ -420,8 +418,8 @@ export class MenuPanelComponent implements OnChanges {
         if (data) {
             this.deleteTitle = "";
             this.name = "";
-            this.hideElements(MenuElement.confirmCompanyDelete);
-            this.showElements([MenuElement.deleteCompany, MenuElement.companyBody]);
+            this.domHelper.hideElements(MenuElement.confirmCompanyDelete);
+            this.domHelper.showElements([MenuElement.deleteCompany, MenuElement.companyBody]);
         }
     }
 
@@ -445,8 +443,8 @@ export class MenuPanelComponent implements OnChanges {
     private onDeleteGroupClicked() {
         this.deleteTitle = "Group";
         this.name = this.selectedGroup.GroupName;
-        this.hideElements([MenuElement.groupName, MenuElement.importTemplate, MenuElement.deleteGroup, MenuElement.groupSaveOrEdit]);
-        this.showElements(MenuElement.confirmGroupDelete);
+        this.domHelper.hideElements([MenuElement.groupName, MenuElement.importTemplate, MenuElement.deleteGroup, MenuElement.groupSaveOrEdit]);
+        this.domHelper.showElements(MenuElement.confirmGroupDelete);
     }
 
     onGroupDeleteConfirm(data: boolean) {
@@ -455,20 +453,20 @@ export class MenuPanelComponent implements OnChanges {
             this.orgService.deleteGroup(groupID)
                 .subscribe(data => this.groupDeletion(data),
                 err => this.orgService.logError(err),
-                () => { $(MenuElement.groupModal + " .close").show(); });
+                () => { this.domHelper.showElements(MenuElement.groupModal + " .close"); });
         }
         this.deleteTitle = "";
         this.name = "";
-        this.hideElements([MenuElement.confirmGroupDelete, MenuElement.groupModal + " .close"]);
-        this.showElements(MenuElement.groupDeleteLoader);
+        this.domHelper.hideElements([MenuElement.confirmGroupDelete, MenuElement.groupModal + " .close"]);
+        this.domHelper.showElements(MenuElement.groupDeleteLoader);
     }
 
     onGroupDeleteCancel(data: boolean) {
         if (data) {
             this.deleteTitle = "";
             this.name = "";
-            this.showElements([MenuElement.groupName, MenuElement.importTemplate, MenuElement.deleteGroup, MenuElement.groupSaveOrEdit]);
-            this.hideElements(MenuElement.confirmGroupDelete);
+            this.domHelper.showElements([MenuElement.groupName, MenuElement.importTemplate, MenuElement.deleteGroup, MenuElement.groupSaveOrEdit]);
+            this.domHelper.hideElements(MenuElement.confirmGroupDelete);
         }
     }
 
@@ -498,19 +496,4 @@ export class MenuPanelComponent implements OnChanges {
         }
     }
 
-    private showElements(element: any) {
-        if (typeof element === "string") {
-            $(element).show();
-        } else {
-            $(element.join(", ")).show();
-        }
-    }
-
-    private hideElements(element: any) {
-        if (typeof element === "string") {
-            $(element).hide();
-        } else {
-            $(element.join(", ")).hide();
-        }
-    }
 }

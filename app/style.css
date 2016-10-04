@@ -8,11 +8,13 @@
     --blue-grey: #607d8b;
     --black: #222222;
     --warm-grey-two: #727272;
+    --warm-grey-three: #757575;
     --warm-grey: #979797;
     --greyish: #b6b6b6;
     --dim-grey: #696969;
     --white: #fafafa;
     --nice-blue: #1565c0;
+    --steelblue: #4682B4;
     --slate: #455a64;
     --white-text: #ffffff;
 }
@@ -22,7 +24,7 @@
 
 @import url(https://fonts.googleapis.com/css?family=Roboto:400,500,700,300);
 
-/*@import url(https://fonts.googleapis.com/css?family=Roboto+Slab:400,700);*/
+/* Main Styles */
 
 html,
 body {
@@ -110,29 +112,6 @@ node circle {
     stroke-width: 1px;
 }
 
-.chart {
-    background: #eee;
-    padding: 3px;
-}
-
-.chart div {
-    width: 0;
-    transition: all 1s ease-out;
-    -moz-transition: all 1s ease-out;
-    -webkit-transition: all 1s ease-out;
-}
-
-.chart div {
-    font: 0.75em sans-serif;
-    background-color: steelblue;
-    text-align: right;
-    padding: 3px;
-    margin: 5px;
-    color: #ffffff;
-    color: var(--white-text);
-    box-shadow: 2px 2px 2px #666;
-}
-
 .title {
     font-family: Arial, Helvetica, sans-serif;
 }
@@ -183,7 +162,7 @@ node circle {
 
 .new-peer_reportee-innerText {
     font-size: .75em;
-    fill: #B6B6B6;
+    fill: #b6b6b6;
     fill: var(--greyish);
     text-anchor: middle;
     fill-opacity: 1;
@@ -214,70 +193,6 @@ path.horizontal {
 
 .tabs .indicator {
     background-color: transparent !important;
-}
-
-
-/* Let's get this party started */
-
- ::-webkit-scrollbar {
-    width: 7px;
-    height: 7px;
-}
-
- ::-webkit-scrollbar-button {
-    width: 0px;
-    height: 0px;
-}
-
- ::-webkit-scrollbar-thumb {
-    background: #e1e1e1;
-    border: 0px none #696969;
-    border: 0px none var(--dim-grey);
-    border-radius: 50px;
-}
-
- ::-webkit-scrollbar-thumb:hover {
-    background: #696969;
-    background: var(--dim-grey);
-}
-
- ::-webkit-scrollbar-thumb:active {
-    background: #696969;
-    background: var(--dim-grey);
-}
-
- ::-webkit-scrollbar-track {
-    background: #696969;
-    background: var(--dim-grey);
-    border: 0px none #696969;
-    border: 0px none var(--dim-grey);
-    border-radius: 50px;
-}
-
- ::-webkit-scrollbar-track:hover {
-    background: #ffffff;
-    background: var(--white-text);
-}
-
- ::-webkit-scrollbar-track:active {
-    background: #ffffff;
-    background: var(--white-text);
-}
-
- ::-webkit-scrollbar-corner {
-    background: transparent;
-}
-
-.loader,
-.loader__figure {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    -webkit-transform: translate(-50%, -50%);
-    -moz-transform: translate(-50%, -50%);
-    -ms-transform: translate(-50%, -50%);
-    -o-transform: translate(-50%, -50%);
-    transform: translate(-50%, -50%);
 }
 
 .loader {
@@ -409,4 +324,68 @@ path.horizontal {
     100% {
         opacity: 0.35;
     }
+}
+
+
+/* Scroll bar */
+
+ ::-webkit-scrollbar {
+    width: 7px;
+    height: 7px;
+}
+
+ ::-webkit-scrollbar-button {
+    width: 0px;
+    height: 0px;
+}
+
+ ::-webkit-scrollbar-thumb {
+    background: #e1e1e1;
+    border: 0px none #696969;
+    border: 0px none var(--dim-grey);
+    border-radius: 50px;
+}
+
+ ::-webkit-scrollbar-thumb:hover {
+    background: #696969;
+    background: var(--dim-grey);
+}
+
+ ::-webkit-scrollbar-thumb:active {
+    background: #696969;
+    background: var(--dim-grey);
+}
+
+ ::-webkit-scrollbar-track {
+    background: #696969;
+    background: var(--dim-grey);
+    border: 0px none #696969;
+    border: 0px none var(--dim-grey);
+    border-radius: 50px;
+}
+
+ ::-webkit-scrollbar-track:hover {
+    background: #ffffff;
+    background: var(--white-text);
+}
+
+ ::-webkit-scrollbar-track:active {
+    background: #ffffff;
+    background: var(--white-text);
+}
+
+ ::-webkit-scrollbar-corner {
+    background: transparent;
+}
+
+.loader,
+.loader__figure {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    -moz-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    -o-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
 }
