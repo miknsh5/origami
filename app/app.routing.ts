@@ -6,11 +6,6 @@ import { OrgComponent } from "./org/org.component";
 
 const appRoutes: Routes = [
     {
-        path: "",
-        redirectTo: "/login",
-        pathMatch: "full",
-    },
-    {
         path: "login",
         component: LoginComponent
     },
@@ -21,6 +16,15 @@ const appRoutes: Routes = [
         data: {
             title: "PeopleTree"
         }
+    },
+    {
+        path: "",
+        redirectTo: "/login",
+        pathMatch: "full",
+    },
+    {
+        path: "**",
+        redirectTo: "/login",
     }
 ];
 
