@@ -16,6 +16,7 @@ export class SideMenuComponent implements OnChanges {
     directReportees: any;
     totalReportees: any;
     depth: any;
+    private isFeedbackOpen: boolean;
     private tabs: any;
     private $publishData: any;
     private $exportData: any;
@@ -35,6 +36,7 @@ export class SideMenuComponent implements OnChanges {
     constructor() {
         this.$exportData = "#exportData";
         this.$publishData = "#publishData";
+        this.isFeedbackOpen = false;
     }
 
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
@@ -129,15 +131,23 @@ export class SideMenuComponent implements OnChanges {
     }
 
     OnPublish() {
-        console.log("PUBLISH");
         $(this.$exportData).hide();
         $(this.$publishData).show();
     }
 
     OnExport() {
-        console.log("Export");
         $(this.$exportData).show();
         $(this.$publishData).hide();
+    }
+
+    openFeedBackPanel() {
+        this.isFeedbackOpen = true;
+        $("#feedbackPanel").height("200px");
+    }
+
+    closeFeedBackPanel() {
+        this.isFeedbackOpen = false;
+        $("#feedbackPanel").height("30px");
     }
 
 }

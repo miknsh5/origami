@@ -60,6 +60,18 @@
                     </div>
                 </div>
             </div>
+            <div id="feedbackPanel">
+                <div class="feedbackPanel">
+                    <div *ngIf="!isFeedbackOpen" class="feedbackTitle" (click)="openFeedBackPanel()"> <i class="material-icons">keyboard_arrow_up</i> <span>FeedBack</span></div>
+                    <div *ngIf="isFeedbackOpen" class="feedbackTitle" (click)="closeFeedBackPanel()"> <i class="material-icons">close</i> <span>FeedBack</span></div>
+                    <div class="divider"></div>
+                    <div class="input-field col s9">
+                        <textarea id="feedbacktxt"></textarea>
+                    </div>
+                    <button class="waves-effect waves-light btn" (click)="openPanel()"> 
+                      <i class="material-icons left">send</i>SEND</button>
+                </div>
+            </div>
         </div>
     </div>
 </div>
