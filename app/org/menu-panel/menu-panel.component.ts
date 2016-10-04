@@ -412,7 +412,7 @@ export class MenuPanelComponent implements OnChanges {
             this.name = "";
 
             this.hideElements([MenuElement.confirmCompanyDelete, MenuElement.companySettingsModal + " .close"]);
-            this.showElements(MenuElement.groupDeleteLoader);
+            this.showElements(MenuElement.companyDeleteLoader);
         }
     }
 

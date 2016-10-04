@@ -261,6 +261,7 @@ export class ImportCsvFileComponent {
                 this.hasMultipleParent = false;
                 this.unmappedNodesCount = this.unmappedNodesCount - 1;
             }
+            this.mappedNodesCount += 1;
             this.json = JSON.stringify(this.rootNode);
             this.json = this.json.replace(/},/g, "},\r\n");
             this.json = JSON.parse(this.json);
