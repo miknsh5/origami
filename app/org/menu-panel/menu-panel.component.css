@@ -15,12 +15,14 @@ hr {
     width: 100%;
     height: 1px;
     background-color: #cfd8dc;
+    background-color: var(--silver);
     border: none;
     margin: 0;
 }
 
 nav {
-    background-color: #fff;
+    background-color: #ffffff;
+    background-color: var(--white-text);
 }
 
 nav,
@@ -42,6 +44,7 @@ nav .brand-logo {
 
 nav ul a {
     color: #607d8b;
+    color: var(--blue-grey);
 }
 
 nav ul a i.right,
@@ -86,6 +89,7 @@ nav ul a i.left {
 
 .caption {
     color: #757575;
+    color: var(--warm-grey-three);
     font-size: 11px;
     white-space: nowrap;
     z-index: 1;
@@ -130,7 +134,8 @@ nav ul a i.left {
 
 .lbl {
     font-size: 0.98em;
-    color: #777;
+    color: #727272;
+    color: var(--warm-grey-two);
     display: inline-flex;
 }
 
@@ -147,14 +152,6 @@ nav ul a i.left {
     display: table;
 }
 
-.person {
-    color: #222222;
-}
-
-.person:hover {
-    color: #029BFF;
-}
-
 .fixed {
     position: fixed;
 }
@@ -162,6 +159,7 @@ nav ul a i.left {
 #companyDropdown li a.active,
 #groupDropdown li a.active {
     border-left: 0.18em solid #607d8b;
+    border-left: 0.18em solid var(--blue-grey);
     font-weight: 800 !important;
     cursor: pointer;
 }
@@ -187,8 +185,7 @@ nav ul a i.left {
     height: 100%;
     max-height: 100%;
     overflow: auto;
-    background-color: rgb(0, 0, 0);
-    background-color: rgba(0, 0, 0, 0.4);
+    background-color: rgba(0, 0, 0, 0.2);
 }
 
 
@@ -211,7 +208,10 @@ nav ul a i.left {
 
 .close {
     float: right;
+    color: #ffffff;
+    color: var(--white-text);
     background-color: #607d8b;
+    background-color: var(--blue-grey);
     border: none;
     height: 30px;
     width: 30px;
@@ -229,10 +229,12 @@ nav ul a i.left {
 .company_groupDetails i,
 .company_groupDetails input {
     color: #607d8b;
+    color: var(--blue-grey);
 }
 
 .modaltitle {
-    color: #9e9e9e !important;
+    color: #979797 !important;
+    color: var(--warm-grey) !important;
     display: block;
     height: 40px;
 }
@@ -250,7 +252,8 @@ nav ul a i.left {
 .modaltitle .title label {
     font-size: 1.15em;
     font-weight: 100;
-    color: #9e9e9e;
+    color: #979797;
+    color: var(--warm-grey);
 }
 
 .titlewithdivider .divider {
@@ -263,10 +266,12 @@ nav ul a i.left {
 .titlewithdivider .lbl {
     display: inline-block;
     color: #607d8b;
+    color: var(--blue-grey);
 }
 
 .modaldefaultlabel {
     color: #607d8b !important;
+    color: var(--blue-grey)!important;
     font-size: 0.6rem;
     display: block;
     padding-left: 40px;
@@ -287,6 +292,7 @@ input {
 
 .btn.waves-effect {
     background-color: #0097FF;
+    background-color: var(--azure);
     padding: 5px 0.9rem;
     font-size: 0.75rem;
     border-radius: 0px;
@@ -314,6 +320,7 @@ input {
 .company_newGroup i,
 .company_newGroup input {
     color: #607d8b;
+    color: var(--blue-grey);
 }
 
 .import {
@@ -344,7 +351,8 @@ input {
 }
 
 .delete .btn.waves-effect {
-    background-color: #fff;
+    background-color: #ffffff;
+    background-color: var(--white-text);
     color: #D0021B;
     font-weight: bolder;
     margin: 0px;

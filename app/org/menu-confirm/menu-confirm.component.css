@@ -12,6 +12,7 @@
 
 .confirmImport p strong {
     color: #607d8b;
+    color: var(--blue-grey);
 }
 
 .confirmImport .confirmbtns {
