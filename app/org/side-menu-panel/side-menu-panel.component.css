@@ -266,19 +266,19 @@ a {
     float: right;
     top: 3px;
     right: 15px;
-    padding-right: 6px !important;
+    padding: 1px 15px 0px 5px!important;
 }
 
 #feedbackPanel .waves-effect {
     background-color: #0097FF;
-    font-size: 1.11rem;
+    font-size: 0.98rem;
     border-radius: 0px;
     height: 30px;
-    line-height: 32px;
+    line-height: 30px;
 }
 
 #feedbackPanel .btn i {
-    font-size: 0.9rem;
+    font-size: 1.3rem;
     line-height: 25px;
 }
 

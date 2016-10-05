@@ -145,7 +145,7 @@ export class SideMenuComponent implements OnChanges {
     openFeedBackPanel() {
         this.isFeedbackOpen = true;
         this.feedbackDescriptionText = "";
-        $("#feedbackPanel").height("200px");
+        $("#feedbackPanel").height("220px");
     }
 
     closeFeedBackPanel() {
