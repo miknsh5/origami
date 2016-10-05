@@ -108,8 +108,8 @@ IF EXIST "%DEPLOYMENT_TARGET%\package.json" (
 :: 4. Compile TypeScript
 echo Transpiling TypeScript in %DEPLOYMENT_TARGET%...
 pushd "%DEPLOYMENT_TARGET%"
-  IF NOT EXIST webpack(
-    call npm install webpack -g
+  IF NOT DEFINED webpack(
+    call :ExecuteCmd !NPM_CMD! install webpack -g
   )  
   call :ExecuteCmd webpack -p 
   IF !ERRORLEVEL! NEQ 0 goto error
