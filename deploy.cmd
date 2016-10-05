@@ -101,19 +101,14 @@ call :SelectNodeVersion
 IF EXIST "%DEPLOYMENT_TARGET%\package.json" (
   pushd "%DEPLOYMENT_TARGET%"
   call :ExecuteCmd !NPM_CMD! install --production
-  echo Installing Webpack
-  call npm install webpack -g
   IF !ERRORLEVEL! NEQ 0 goto error
   popd
 )
 
-:: 4. Bundle TypeScript
-IF EXIST "%DEPLOYMENT_TARGET%\webpack.config.js" (
-  pushd "%DEPLOYMENT_TARGET%"
-  call webpack -p
-  if !ERRORLEVEL! NEQ 0 goto error
-  popd
-)
+:: 4. Compile TypeScript
+echo Transpiling TypeScript in %DEPLOYMENT_TARGET%...
+call :ExecuteCmd node %DEPLOYMENT_TARGET%\node_modules\typescript\bin\tsc -p "%DEPLOYMENT_TARGET%"
+
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 :: Post deployment stub

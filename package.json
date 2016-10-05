@@ -2,7 +2,7 @@
     "name": "angular2-origami",
     "version": "1.0.0",
     "scripts": {
-        "start": "webpack-dev-server --progress --colors --watch --port 3000",
+        "start": "concurrently \"npm run build\" \"webpack-dev-server --progress --colors --watch --port 3000\" ",
         "postinstall": "typings install",
         "build": "webpack -p",
         "typings": "typings",
@@ -33,6 +33,7 @@
     "devDependencies": {
         "ts-loader": "0.8.2",
         "codelyzer": "0.0.26",
+        "concurrently": "^2.2.0",
         "tslint": "^3.10.2",
         "webpack": "1.13.0",
         "webpack-dev-server": "1.14.1"
