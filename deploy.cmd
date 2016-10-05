@@ -107,7 +107,10 @@ IF EXIST "%DEPLOYMENT_TARGET%\package.json" (
 
 :: 4. Compile TypeScript
 echo Transpiling TypeScript in %DEPLOYMENT_TARGET%...
-call :ExecuteCmd node %DEPLOYMENT_TARGET%\node_modules\.bin\webpack -p "%DEPLOYMENT_TARGET%"
+pushd "%DEPLOYMENT_TARGET%"
+  call :ExecuteCmd webpack -p 
+  IF !ERRORLEVEL! NEQ 0 goto error
+popd
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
