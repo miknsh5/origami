@@ -223,6 +223,10 @@ a {
     cursor: pointer;
 }
 
+.tabControl {
+    z-index: 0;
+}
+
 #feedbackPanel {
     position: fixed;
     bottom: 0px;
