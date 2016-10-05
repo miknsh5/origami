@@ -233,12 +233,13 @@ a {
     height: 30px;
     background-color: #607D8B;
     transition: 0.5s;
-    color: #fff;
+    color: #DFE5E7;
     z-index: 1;
 }
 
 #feedbackPanel span {
-    margin-left: 10px;
+    vertical-align: 4px;
+    margin-left: 10px
 }
 
 #feedbackPanel .feedbackPanel {
@@ -265,18 +266,26 @@ a {
     float: right;
     top: 3px;
     right: 15px;
-    padding: 0px 10px !important;
+    padding-right: 6px !important;
 }
 
 #feedbackPanel .waves-effect {
     background-color: #0097FF;
-    font-size: 0.7rem;
+    font-size: 1.11rem;
     border-radius: 0px;
     height: 30px;
+    line-height: 32px;
 }
 
 #feedbackPanel .btn i {
     font-size: 0.9rem;
-    line-height: inherit;
-    margin-right: 8px;
+    line-height: 25px;
+}
+
+#feedbackPanel i {
+    font-size: 1.3rem;
+    line-height: 1.53em;
+    margin-left: 8px;
+    margin-top: 3px;
+    color: #FBFBFC;
 }

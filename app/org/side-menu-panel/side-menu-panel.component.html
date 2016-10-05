@@ -62,8 +62,8 @@
             </div>
             <div id="feedbackPanel">
                 <div class="feedbackPanel">
-                    <div *ngIf="!isFeedbackOpen" class="feedbackTitle" (click)="openFeedBackPanel()"> <i class="material-icons">keyboard_arrow_up</i> <span>FeedBack</span></div>
-                    <div *ngIf="isFeedbackOpen" class="feedbackTitle" (click)="closeFeedBackPanel()"> <i class="material-icons">close</i> <span>FeedBack</span></div>
+                    <div *ngIf="!isFeedbackOpen" class="feedbackTitle" (click)="openFeedBackPanel()"> <i class="material-icons">keyboard_arrow_up</i> <span>Feedback</span></div>
+                    <div *ngIf="isFeedbackOpen" class="feedbackTitle" (click)="closeFeedBackPanel()"> <i class="material-icons">close</i> <span>Feedback</span></div>
                     <div class="divider"></div>
                     <div class="input-field col s9">
                         <textarea placeholder="Share you feedback! Feature requests? Bugs? Compliments? Constructive criticism?" rows="15" cols="50" id="feedbacktxt" style="resize: none;" [(ngModel)]="feedbackDescriptionText" autocomplete="off"></textarea>
