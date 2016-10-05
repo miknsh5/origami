@@ -2,42 +2,36 @@
 <html>
 
 <head>
-    <script>document.write('<base href="' + document.location + '" />');</script>
+    <script>
+        document.write('<base href="' + document.location + '" />');
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
-    <title>Origami</title>
-
-    <!-- Auth0 Lock script and AngularJS module -->
-    <script src="//cdn.auth0.com/js/lock-8.2.min.js"></script>
+    <title>PeopleTree</title>
 
     <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:400,700,300">
-    <link rel="stylesheet" href="main.css">
     <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="app/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/css/materialize.min.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
-    <!-- Polyfill(s) for older browsers -->
-    <script src="node_modules/core-js/client/shim.min.js"></script>
-    <script src="node_modules/zone.js/dist/zone.js"></script>
-    <script src="node_modules/reflect-metadata/Reflect.js"></script>
-    <script src="node_modules/systemjs/dist/system.src.js"></script>
-
-    <!-- Compiled and minified JavaScript -->
-    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/js/materialize.js"></script>
-    <script src="svg-pan-zoom.js"></script>
-
-    <!-- Configure(s) SystemJS -->
-    <script src="systemjs.config.js"></script>
-    <script>
-        System.import('app').catch(function(err) {
-            console.error(err);
-        });
-    </script>
+    <!-- Auth0 Lock script and AngularJS module -->
+    <script src="//cdn.auth0.com/js/lock-8.2.min.js"></script>
 </head>
 
 <body>
-    <sg-origami> Loading... </sg-origami>
+    <sg-origami>
+        <div class="loader">
+            <div class="loader__figure"></div>
+            <p class="loader__label">Thinking</p>
+        </div>
+    </sg-origami>
 </body>
+
+<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/js/materialize.js"></script>
+<script src="dist/vendor.bundle.js"></script>
+<script src="dist/app.bundle.js"></script>
+<script type="text/javascript" src="svg-pan-zoom.js"></script>
 
 </html>

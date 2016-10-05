@@ -1,64 +1,8 @@
-.node {
-    cursor: pointer;
-}
-
-.node circle {
-    fill: #fff;
-    stroke: steelblue;
-    stroke-width: 1.5px;
-}
-
-.node text {
-    font: 10px sans-serif;
-}
-
-.link {
-    fill: none;
-    stroke: #ccc;
-    stroke-width: 1.5px;
-}
-
-.chart {
-    background: #eee;
-    padding: 3px;
-}
-
-.chart div {
-    width: 0;
-    transition: all 1s ease-out;
-    -moz-transition: all 1s ease-out;
-    -webkit-transition: all 1s ease-out;
-}
-
-.chart div {
-    font: 10px sans-serif;
-    background-color: steelblue;
-    text-align: right;
-    padding: 3px;
-    margin: 5px;
-    color: white;
-    box-shadow: 2px 2px 2px #666;
-}
-
-.title {
-    font-family: Arial, Helvetica, sans-serif;
-}
-
-.title {
-    cursor: pointer;
-    color: #222222;
-    font-style: italic;
-}
-
 .main-canvas {
     width: 100%;
     overflow-x: auto;
     position: absolute;
     z-index: -2;
-}
-
-.main-canvas h1 {
-    margin-top: 0;
 }
 
 .modes-wrap {
@@ -68,20 +12,14 @@
     left: 30px
 }
 
-.modes-wrap li:first-child {
-    margin: 0 5px 5px 0;
-}
-
 .modes-wrap li {
     width: 50px;
     height: 50px;
     object-fit: contain;
     background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100%;
     cursor: pointer;
-}
-
-.modes-wrap li.inactive {
-    cursor: default;
 }
 
 .modes-wrap li.nav-build {
@@ -108,18 +46,18 @@
     background-image: url("app/images/nav-report-active.png");
 }
 
-.modes-wrap li > a {
+.modes-wrap li>a {
     width: 28px;
     line-height: 43px;
-    font-family: HelveticaNeue;
+    font-family: Roboto, HelveticaNeue;
     font-size: 12px;
     font-weight: 400;
     color: #607d8b;
-    margin: 55px;
+    margin-left: 55px;
 }
 
-.modes-wrap li.inactive > a {
-    color: #cfd8dc;
+.modes-wrap li.active>a {
+    font-weight: 800;
 }
 
 @media only screen and (max-width:600px) {

@@ -14,7 +14,7 @@
 
     <ul id="companyDropdown" class="dropdown-content collection">
         <li (click)="onAddOrSettingsClick('company')">
-            <a><i class="Small material-icons left">mode_edit</i><label class="lbl">Settings</label>
+            <a><i class="Small material-icons left">mode_edit</i><span class="lbl">Settings</span>
             </a>
         </li>
         <li class="divider"></li>
@@ -44,13 +44,13 @@
                 <span class="right">{{company.OrgNodeCounts}}</span>
             </a>
         </li>
-        <li (click)="onAddOrSettingsClick('newCompany')"><a><i class="material-icons left">add</i><label class="lbl">Add New</label></a></li>
+        <li (click)="onAddOrSettingsClick('newCompany')"><a><i class="material-icons left">add</i><span class="lbl">Add New</span></a></li>
     </ul>
 
     <ul id="groupDropdown" class="dropdown-content">
         <li (click)="onAddOrSettingsClick('group')">
             <a>
-                <i class="Small material-icons left">mode_edit</i><label class="lbl ">Settings</label>
+                <i class="Small material-icons left">mode_edit</i><span class="lbl ">Settings</span>
             </a>
         </li>
         <li class="divider"></li>
@@ -59,30 +59,30 @@
         <li *ngFor="let group of orgCompanyGroups" (click)="onGroupSelection(group)">
             <a *ngIf="group && group.IsDefaultGroup && group.OrgGroupID === selectedGroup.OrgGroupID" class="active">
                 <i class="material-icons left">apps</i>
-                <label class="lbl active">{{group.GroupName}} </label>
-                <label class="lblCount right">{{group.OrgNodeCounts}}</label>
+                <span class="active">{{group.GroupName}} </span>
+                <span class="lblCount right">{{group.OrgNodeCounts}}</span>
             </a>
-            <a *ngIf=" group && group.IsDefaultGroup && group.OrgGroupID !== selectedGroup.OrgGroupID">
+            <a *ngIf="group && group.IsDefaultGroup && group.OrgGroupID !== selectedGroup.OrgGroupID">
                 <i class="material-icons left">apps</i>
-                <label class="lbl active">{{group.GroupName}} </label>
-                <label class="lblCount right">{{group.OrgNodeCounts}}</label>
+                <span class="active">{{group.GroupName}} </span>
+                <span class="lblCount right">{{group.OrgNodeCounts}}</span>
             </a>
         </li>
         <li class="divider"></li>
         <label class="defaultlbl">Custom Groups</label>
         <li *ngFor="let group of orgCompanyGroups" (click)="onGroupSelection(group)">
-            <a *ngIf=" group && !group.IsDefaultGroup && group.OrgGroupID === selectedGroup.OrgGroupID" class="active">
+            <a *ngIf="group && !group.IsDefaultGroup && group.OrgGroupID === selectedGroup.OrgGroupID" class="active">
                 <i class="material-icons left ">apps</i>
-                <label class="lbl">{{group.GroupName}}</label>
-                <label class="lblCount right">{{group.OrgNodeCounts}}</label>
+                <span>{{group.GroupName}}</span>
+                <span class="lblCount right">{{group.OrgNodeCounts}}</span>
             </a>
-            <a *ngIf=" group && !group.IsDefaultGroup && group.OrgGroupID !== selectedGroup.OrgGroupID">
+            <a *ngIf="group && !group.IsDefaultGroup && group.OrgGroupID !== selectedGroup.OrgGroupID">
                 <i class="material-icons left ">apps</i>
-                <label class="lbl">{{group.GroupName}}</label>
-                <label class="lblCount right">{{group.OrgNodeCounts}}</label>
+                <span>{{group.GroupName}}</span>
+                <span class="lblCount right">{{group.OrgNodeCounts}}</span>
             </a>
         </li>
-        <li><a (click)="onAddOrSettingsClick('newGroup')"><i class="material-icons left">add</i><label class="lbl">Add New</label></a></li>
+        <li><a (click)="onAddOrSettingsClick('newGroup')"><i class="material-icons left">add</i><span class="lbl">Add New</span></a></li>
     </ul>
 
     <nav class="fixed">
@@ -115,8 +115,9 @@
     </nav>
 </div>
 
-<!--modal for group setting-->
-<div id="groupSettings" class="modal">
+<!--modal for group settings and New Group-->
+
+<div id="groupSettingsModal" class="modal">
     <div class="modal-content">
         <div class="modaltitle">
             <div class="title">
@@ -127,7 +128,7 @@
         </div>
         <div class="divider"></div>
         <div class="groupBody">
-            <div *ngIf="!isImport">
+            <div id="groupSaveOrEdit">
                 <form (ngSubmit)="onGroupSave($event)">
                     <div class="company_groupDetails">
                         <i class="material-icons left">label_outline</i>
@@ -142,143 +143,138 @@
                     </div>
                 </form>
             </div>
-
-            <div *ngIf="enableImport && !isImport">
-                <div class="import">
-                    <div class="inlineblock titlewithdivider">
-                        <div class="divider"> </div>
-                        <label class="lbl">Import</label>
-                        <label class="modallbl"> Load resources from CSV or Excel file to populate the <label class="lblgroupname"> {{groupName}} </label> group.</label>
-                    </div>
-                </div>
-                <div>
-                    <button class="waves-effect waves-light btn" (click)="onClickOnImport()">
-                    <i class="material-icons">file_upload</i>Import</button>
-                </div>
-                <div class="template">
+            <div id="importAndTemplate">
+                <div *ngIf="(enableImport && !isImport) || groupSettingTitle=== 'Add New Group'">
                     <div class="import">
                         <div class="inlineblock titlewithdivider">
                             <div class="divider"> </div>
-                            <label class="lbl">Export Template</label>
-
+                            <label class="lbl">Import</label>
+                            <label class="modallbl"> Load resources from CSV or Excel file to populate the <label class="lblgroupname"> {{groupName}} </label> group.</label>
                         </div>
-                        <div class="template">
-                            <button class="waves-effect waves-light btn" (click)="onClickDownloadTemplate()">
+                    </div>
+                    <div>
+                        <button class="waves-effect waves-light btn" [ngClass]='{disabled: isImportDisabled}' (click)="onClickOnImport()">
+                    <i class="material-icons">file_upload</i>Import</button>
+                    </div>
+                    <div class="template">
+                        <div class="import">
+                            <div class="inlineblock titlewithdivider">
+                                <div class="divider"> </div>
+                                <label class="lbl">Export Template</label>
+                            </div>
+                            <div class="template">
+                                <button class="waves-effect waves-light btn" [ngClass]='{disabled: isImportDisabled}' (click)="onClickDownloadTemplate()">
                              <i class="material-icons">file_download</i>Download</button>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div *ngIf="isImport">
-                <sg-org-import-csv-file (newOrgNodes)="updateNewOrgGroup($event)" [selectedGroup]="selectedGroup"></sg-org-import-csv-file>
+                <div *ngIf="isImport">
+                    <sg-org-import-csv-file (newOrgNodes)="updateNewOrgGroup($event)" [selectedGroup]="selectedGroup"></sg-org-import-csv-file>
+                </div>
+            </div>
+            <div id="deleteGroupConfirm" class="center">
+                <sg-org-menu-confirm-button [hideMessage]="false" [titleName]="name" [deleteTitle]="deleteTitle" (onConfirmClick)="onGroupDeleteConfirm($event)" (onCancelClick)="onGroupDeleteCancel($event)">
+                </sg-org-menu-confirm-button>
+            </div>
+            <div id="groupDeleteLoader" class="loadscreen center">
+                <div>
+                    <img src="/app/images/loading.gif" alt="Please wait...">
+                    <label class="lblLoad"> Deleting Please wait...</label></div>
+                <div>
+                    <label class="lblLoad">(This may take a minute)</label>
+                </div>
             </div>
         </div>
 
         <div class="divider"></div>
         <div class="delete" id="deleteGroup">
-            <button *ngIf="!isImport" class="waves-effect waves-light btn" (click)="onDeleteGroup()">
+            <button *ngIf="!isImport" class="waves-effect waves-light btn" (click)="onDeleteGroupClicked()">
             <i class="material-icons">delete</i>Delete</button>
         </div>
     </div>
 </div>
 
-<!--modal for company setting-->
+<!--modal for company settings and Add new company-->
+<div id="companyModal" class="modal">
+    <div id="companySettingsModal">
+        <div class="modal-content">
+            <div class="modaltitle">
+                <div class="title">
+                    <i class="Small material-icons left">mode_edit</i>
+                    <label>EDIT</label>
+                </div>
+                <div class="close" (click)="dismissPopup('company')"><i class="material-icons">clear</i></div>
+            </div>
+            <div class="companySettings">
+                <div class="inlineblock titlewithdivider">
+                    <div class="divider"> </div>
+                    <label class="lbl">Settings</label>
+                </div>
+            </div>
+            <form (ngSubmit)="onCompanySave($event)">
+                <div class="companyBody">
+                    <div id="companySetting">
+                        <div class="company_groupDetails" *ngIf="selectedCompany">
+                            <i class="material-icons left">label</i>
+                            <input required ngControl="existingCompanyName" #existingCompanyName="ngModel" [(ngModel)]="companyName" name="existingCompanyName" autocomplete="off" />
+                            <div>
+                                <label class="modaldefaultlabel"> Name Of Account </label>
+                            </div>
+                        </div>
+                        <div class="innerdiv">
+                            <button class="waves-effect waves-light btn"><i class="material-icons">save</i>Save</button>
+                        </div>
+                    </div>
+                    <div id="deleteCompanyConfirm" class="center">
+                        <sg-org-menu-confirm-button [hideMessage]="false" [titleName]="name" [deleteTitle]="deleteTitle" (onConfirmClick)="onCompanyDeleteConfirm($event)" (onCancelClick)="onCompanyDeleteCancel($event)">
+                        </sg-org-menu-confirm-button>
+                    </div>
+                    <div id="companyDeleteLoader" class="loadscreen center">
+                        <div>
+                            <img src="/app/images/loading.gif" alt="Please wait...">
+                            <label class="lblLoad"> Deleting Please wait...</label></div>
+                        <div>
+                            <label class="lblLoad">(This may take a minute)</label>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div class="divider"></div>
+            <div class="delete" id="deleteCompany">
+                <button class="waves-effect waves-light btn" (click)="onDeleteCompanyClicked()">
+            <i class="material-icons">delete</i>Delete</button>
+            </div>
+        </div>
+    </div>
 
-<div id="companySettings" class="modal">
-    <div class="modal-content">
-        <div class="modaltitle">
-            <div class="title">
-                <i class="Small material-icons left">mode_edit</i>
-                <label>EDIT</label>
+    <!--Add new Company-->
+    <div id="addNewCompany">
+        <div class="modal-content">
+            <div class="modaltitle">
+                <div class="title">
+                    <i class="Small material-icons left">mode_edit</i>
+                    <label>Add New Company</label>
+                </div>
+                <div class="close" (click)="dismissPopup('newCompany')"><i class="material-icons">clear</i></div>
             </div>
-            <div class="close" (click)="dismissPopup('company')"><i class="material-icons">clear</i></div>
-        </div>
-        <div class="companySettings">
-            <div class="inlineblock titlewithdivider">
-                <div class="divider">
-                </div><label class="lbl">Settings</label>
-            </div>
-        </div>
-        <form (ngSubmit)="onCompanySave($event)">
-            <div class="companyBody">
-                <div class="company_groupDetails" *ngIf="selectedCompany">
-                    <i class="material-icons left">label</i>
-                    <input required ngControl="existingCompanyName" #existingCompanyName="ngModel" [(ngModel)]="companyName" name="existingCompanyName" autocomplete="off" />
+
+            <div class="divider "></div>
+
+            <form (ngSubmit)="addNewCompany($event)">
+                <div class="company_newGroup">
+                    <i class="material-icons left">label_outline</i>
+                    <input required ngControl="newCompanyName" #newCompanyName="ngModel" [(ngModel)]="companyName" name="newCompanyName" autocomplete="off" />
                     <div>
-                        <label class="modaldefaultlabel"> Name Of Account </label>
+                        <label class="modaldefaultlabel"> Name Of Company </label>
                     </div>
                 </div>
 
                 <div class="innerdiv">
-                    <button class="waves-effect waves-light btn"> 
-             <i class="material-icons">save</i>Save</button>
+                    <button class="waves-effect waves-light btn"> <i class="material-icons">save</i>Save</button>
                 </div>
-            </div>
-        </form>
-        <div class="divider"></div>
-        <div class="delete" id="deleteCompany">
-            <button class="waves-effect waves-light btn" (click)="onDeleteCompany()">
-            <i class="material-icons">delete</i>Delete</button>
+            </form>
         </div>
-    </div>
-</div>
-
-<!--Add New Group-->
-<div id="addNewGroup" class="modal">
-    <div class="modal-content">
-        <div class="modaltitle">
-            <div class="title">
-                <i class="Small material-icons left">mode_edit</i>
-                <label>Add New Group</label>
-            </div>
-            <div class="close" (click)="dismissPopup('newGroup')"><i class="material-icons">clear</i></div>
-        </div>
-
-        <div class="divider"></div>
-
-        <form (ngSubmit)="addNewGroup($event)">
-            <div class="company_newGroup">
-                <i class="material-icons left">label_outline</i>
-                <input required ngControl="addNewGroupName" #addNewGroupName="ngModel" [(ngModel)]="groupName" name="addNewGroupName" autocomplete="off" />
-                <div>
-                    <label class="modaldefaultlabel"> Name Of Group </label>
-                </div>
-            </div>
-
-            <div class="innerdiv">
-                <button class="waves-effect waves-light btn"> 
-             <i class="material-icons">save</i>Save</button>
-            </div>
-        </form>
-    </div>
-</div>
-
-<!--Add new Company-->
-<div id="addNewCompany" class="modal">
-    <div class="modal-content">
-        <div class="modaltitle">
-            <div class="title">
-                <i class="Small material-icons left">mode_edit</i>
-                <label>Add New Company</label>
-            </div>
-            <div class="close" (click)="dismissPopup('newCompany')"><i class="material-icons">clear</i></div>
-        </div>
-
-        <div class="divider"></div>
-
-        <form (ngSubmit)="addNewCompany($event)">
-            <div class="company_newGroup">
-                <i class="material-icons left">label_outline</i>
-                <input required ngControl="newCompanyName" #newCompanyName="ngModel" [(ngModel)]="companyName" name="newCompanyName" autocomplete="off" />
-                <div>
-                    <label class="modaldefaultlabel"> Name Of Company </label>
-                </div>
-            </div>
-
-            <div class="innerdiv">
-                <button class="waves-effect waves-light btn"> <i class="material-icons">save</i>Save</button>
-            </div>
-        </form>
     </div>
 </div>

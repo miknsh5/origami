@@ -109,7 +109,7 @@ export class OrgComponent implements OnDestroy {
             }
         } else {
             if (this.svgPan) {
-                this.svgPan.enablePan = false;
+                this.svgPan.disablePan();
             }
         }
     }
@@ -145,6 +145,7 @@ export class OrgComponent implements OnDestroy {
         if (addedNode.IsNewRoot) {
             this.orgNodes.splice(0, 1, addedNode);
             this.isOrgNodeEmpty = false;
+            this.currentOrgNodeStatus = OrgNodeStatus.Add;
         }
         else {
             this.addChildToSelectedOrgNode(addedNode, this.orgNodes[0]);
@@ -259,6 +260,7 @@ export class OrgComponent implements OnDestroy {
                 let oldRoot = deleted.children[0];
                 oldRoot.ParentNodeID = null;
                 this.orgNodes.splice(0, 1, oldRoot);
+                this.currentOrgNodeStatus = OrgNodeStatus.Delete;
             }
             else {
                 this.deleteNodeFromArray(deleted, this.orgNodes);

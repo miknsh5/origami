@@ -10,7 +10,7 @@ const DEFAULT_EXT = ".png";
 @Component({
     selector: "sg-origami-png",
     templateUrl: "app/org/tree-to-png/tree-to-png.component.html",
-    styleUrls: ["app/org/tree-to-png/tree-to-png.component.css", "app/style.css"]
+    styleUrls: ["app/org/tree-to-png/tree-to-png.component.css"]
 })
 
 export class TreeToPNGComponent {

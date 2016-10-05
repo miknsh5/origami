@@ -52,7 +52,6 @@
 #importFile .modallbl {
     color: #111;
     font-size: 0.8rem;
-    cursor: pointer;
     padding: 15px 45px;
     display: block;
 }
@@ -60,7 +59,6 @@
 #importFile .lblgroupname {
     color: #111;
     font-size: 0.8rem;
-    cursor: pointer;
     font-weight: 800;
 }
 
@@ -125,10 +123,6 @@
     font-size: 0.6rem !important;
     font-style: italic;
     margin-top: 0px;
-}
-
-.confirmImport .btn {
-    margin: 0px 10px;
 }
 
 .confirmImport hr {

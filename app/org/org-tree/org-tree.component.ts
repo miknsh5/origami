@@ -1,5 +1,5 @@
 import * as angular from "@angular/core";
-import {Component, Input, Output, Directive, EventEmitter, Attribute, OnChanges, DoCheck, ElementRef, OnInit, SimpleChange} from "@angular/core";
+import {Component, HostListener, Input, Output, Directive, EventEmitter, Attribute, OnChanges, DoCheck, ElementRef, OnInit, SimpleChange} from "@angular/core";
 import { Inject } from "@angular/core";
 
 import * as d3 from "d3";
@@ -30,6 +30,7 @@ const NODE_HEIGHT = 70;
 const NODE_WIDTH = 95;
 const DEPTH = 180;
 const RADIAL_DEPTH = 90;
+const RADIAL_VALUE = 360;
 
 const DEFAULT_CIRCLE = "defaultCircle";
 const STAGED_CIRCLE = "stagedCircle";
@@ -134,8 +135,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         this.resizeLinesArrowsAndSvg();
         this.centerNode(this.root);
 
-        document.addEventListener("keydown", (ev: KeyboardEvent) => this.keyDown(this.selectedOrgNode, ev), false);
-        document.addEventListener("click", (ev: MouseEvent) => this.bodyClicked(this.selectedOrgNode, ev), false);
     }
 
     childCount(level, node) {
@@ -156,30 +155,25 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     initializeTreeAsPerMode() {
         if (this.currentMode === ChartMode.build) {
             this.tree = d3.layout.tree().nodeSize([NODE_HEIGHT, NODE_WIDTH]);
-        } else if (this.currentMode === ChartMode.report) {
-            this.tree = d3.layout.tree().nodeSize([RIGHTLEFT_MARGIN, NODE_HEIGHT]);
-            this.setNodeLabelVisiblity();
-            this.root = this.selectedOrgNode || this.lastSelectedNode;
-        } else {
-            this.tree = d3.layout.cluster().size([360, RADIAL_DEPTH])
-                .separation(function (a, b) {
-                    return (a.parent === b.parent ? 1 : 2) / a.depth;
-                });
-            this.setNodeLabelVisiblity();
-            this.selectedOrgNode = this.root;
-        }
-
-        if (this.currentMode === ChartMode.build) {
             this.diagonal = d3.svg.diagonal()
                 .projection(function (d) {
                     return [d.y, d.x];
                 });
         } else if (this.currentMode === ChartMode.report) {
+            this.tree = d3.layout.tree().nodeSize([RIGHTLEFT_MARGIN, NODE_HEIGHT]);
+            this.setNodeLabelVisiblity();
+            this.root = this.selectedOrgNode || this.lastSelectedNode;
             this.diagonal = d3.svg.diagonal()
                 .projection(function (d) {
                     return [d.x, d.y];
                 });
         } else {
+            this.tree = d3.layout.tree().size([RADIAL_VALUE, RADIAL_VALUE])
+                .separation(function (a, b) {
+                    return (a.parent === b.parent ? RADIAL_VALUE : DEPTH) / a.depth;
+                });
+            this.setNodeLabelVisiblity();
+            this.selectedOrgNode = this.root;
             this.diagonal = d3.svg.diagonal.radial()
                 .projection(function (d) {
                     return [d.y, d.x / DEPTH * Math.PI];
@@ -225,7 +219,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 }
             }
 
-            if (changes["isMenuSettingsEnabled"]) {
+            if (changes["isMenuSettingsEnabled"] && !changes["treeData"]) {
                 if (this.isAddOrEditModeEnabled && this.selectedOrgNode.NodeID === -1) {
                     return;
                 }
@@ -692,6 +686,8 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
             this.renderOrUpdateLinks(source);
 
+            this.renderCircles(source);
+
             // Stash the old positions for transition.
             this.nodes.forEach(function (d) {
                 d.x0 = d.x;
@@ -701,6 +697,15 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             this.showUpdatePeerReporteeNode(source);
         }
         this.resizeLinesArrowsAndSvg();
+    }
+
+    transformNode(x, y) {
+        let angle = (x - 90) / 180 * Math.PI, radius = y;
+        return [radius * Math.cos(angle), radius * Math.sin(angle)];
+    }
+
+    renderCircles(source) {
+
     }
 
     renderOrUpdateNodes(source) {
@@ -725,7 +730,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 if (this.currentMode === ChartMode.report) {
                     transformString = "translate(" + source.x0 + "," + source.y0 + ")";
                 } else if (this.currentMode === ChartMode.explore) {
-                    transformString = "rotate(" + (source.x0 - RADIAL_DEPTH) + ")translate(" + source.y0 + ")";
+                    transformString = "translate(" + this.transformNode(source.x0, source.y0) + ")";
                 }
                 return transformString;
             })
@@ -767,9 +772,9 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             let transformString = "rotate(0)";
             if (this.currentMode === ChartMode.explore && d.ParentNodeID !== null) {
                 if (d.x >= RADIAL_DEPTH) {
-                    transformString = "rotate(" + -Math.abs(d.x - RADIAL_DEPTH) + ")";
+                    transformString = "rotate(" + -Math.abs((d.x || 0) - RADIAL_DEPTH) + ")";
                 } else {
-                    transformString = "rotate(" + Math.abs(d.x - RADIAL_DEPTH) + ")";
+                    transformString = "rotate(" + Math.abs((d.x || 0) - RADIAL_DEPTH) + ")";
                 }
             }
             return transformString;
@@ -818,14 +823,14 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 if (d.NodeID === this.root.NodeID && this.currentMode === ChartMode.explore)
                     return "start";
                 else
-                    return d.x < DEPTH ? "start" : "end";
+                    return Number.isNaN(d.x) || d.x < DEPTH ? "start" : "end";
             }
         }).attr("transform", (d) => {
             if (this.currentMode === ChartMode.explore) {
                 if (d.NodeID === this.root.NodeID && this.currentMode === ChartMode.explore)
                     return "rotate(0)";
                 else
-                    return d.x < DEPTH ? "rotate(0)" : "rotate(180)";
+                    return Number.isNaN(d.x) || d.x < DEPTH ? "rotate(0)" : "rotate(180)";
             } else {
                 return "rotate(0)";
             }
@@ -852,7 +857,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 if (d.NodeID === this.root.NodeID && this.currentMode === ChartMode.explore)
                     return "start";
                 else
-                    return d.x < DEPTH ? "start" : "end";
+                    return Number.isNaN(d.x) || d.x < DEPTH ? "start" : "end";
             }
         }).attr("dy", (d) => {
             if (this.showDescriptionLabel && !this.showFirstNameLabel && !this.showLastNameLabel) {
@@ -864,7 +869,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 if (d.NodeID === this.root.NodeID && this.currentMode === ChartMode.explore)
                     return "rotate(0)";
                 else {
-                    return d.x < DEPTH ? "rotate(0)" : "rotate(180)";
+                    return Number.isNaN(d.x) || d.x < DEPTH ? "rotate(0)" : "rotate(180)";
                 }
             } else {
                 return "rotate(0)";
@@ -929,9 +934,9 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             let transformString = "rotate(0)";
             if (this.currentMode === ChartMode.explore && d.ParentNodeID !== null) {
                 if (d.x > RADIAL_DEPTH) {
-                    transformString = "rotate(" + -Math.abs(d.x - RADIAL_DEPTH) + ")";
+                    transformString = "rotate(" + -Math.abs((d.x || 0) - RADIAL_DEPTH) + ")";
                 } else {
-                    transformString = "rotate(" + Math.abs(d.x - RADIAL_DEPTH) + ")";
+                    transformString = "rotate(" + Math.abs((d.x || 0) - RADIAL_DEPTH) + ")";
                 }
             }
             return transformString;
@@ -949,7 +954,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                     if (d.ParentNodeID == null) {
                         return "rotate(0)";
                     }
-                    return "rotate(" + (d.x - RADIAL_DEPTH) + ")translate(" + d.y + ")";
+                    return "rotate(" + ((d.x || 0) - RADIAL_DEPTH) + ")translate(" + d.y + ")";
                 }
             });
 
@@ -985,7 +990,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 } else if (this.currentMode === ChartMode.report) {
                     return "translate(" + source.x + "," + source.y + ")";
                 } else {
-                    return "rotate(" + (source.x0 - RADIAL_DEPTH) + ")translate(" + source.y + ")";
+                    return "translate(" + this.transformNode(source.x0, source.y0) + ")";
                 }
             })
             .remove();
@@ -1013,8 +1018,8 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         let link = this.svg.selectAll("path.link")
             .data(this.links, function (d) { return d.target.NodeID; });
 
-        let x = function (d) { return d.y * Math.cos((d.x - RADIAL_DEPTH) / DEPTH * Math.PI); };
-        let y = function (d) { return d.y * Math.sin((d.x - RADIAL_DEPTH) / DEPTH * Math.PI); };
+        let x = function (d) { return d.y * Math.cos(((d.x || 0) - RADIAL_DEPTH) / DEPTH * Math.PI); };
+        let y = function (d) { return d.y * Math.sin(((d.x || 0) - RADIAL_DEPTH) / DEPTH * Math.PI); };
         // Enter any new links at the parent"s previous position.
         link.enter().insert("path", "g")
             .attr("class", "link")
@@ -1169,7 +1174,8 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         }
     }
 
-    bodyClicked(d, event) {
+    @HostListener("window:click", ["$event"])
+    bodyClicked(event: any) {
         // event.stopPropagation();
         if (this.currentMode === ChartMode.build) {
             if (event.target.nodeName === "svg") {
@@ -1193,9 +1199,9 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         }
     }
 
-    keyDown(d, eve) {
+    @HostListener("document:keydown", ["$event"])
+    keyDown(event: any) {
         if (!this.isMenuSettingsEnabled) {
-            let event = eve;
             if (!this.selectedOrgNode || this.isAddOrEditModeEnabled) {
                 return;
             }

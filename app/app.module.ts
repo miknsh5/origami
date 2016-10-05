@@ -9,7 +9,8 @@ import { routing } from "./app.routing";
 import { AppComponent } from "./app.component";
 
 import { OrgComponent, OrgNodeDetailComponent, OrgTreeComponent, MenuPanelComponent,
-  SideMenuComponent, OrgService, JsonToCSVComponent, TreeToPNGComponent, ImportCsvFileComponent } from "./org/index";
+  SideMenuComponent, OrgService, JsonToCSVComponent, TreeToPNGComponent,
+  ImportCsvFileComponent, MenuConfirmButtonComponent, DomElementHelper } from "./org/index";
 
 import { LoginComponent, AuthGuard, AuthService } from "./login/index";
 
@@ -30,13 +31,15 @@ import { LoginComponent, AuthGuard, AuthService } from "./login/index";
     SideMenuComponent,
     JsonToCSVComponent,
     TreeToPNGComponent,
-    ImportCsvFileComponent
+    ImportCsvFileComponent,
+    MenuConfirmButtonComponent
   ],
   providers: [
     AUTH_PROVIDERS,
     AuthGuard,
     AuthService,
-    OrgService
+    OrgService,
+    DomElementHelper
   ],
   bootstrap: [AppComponent]
 })

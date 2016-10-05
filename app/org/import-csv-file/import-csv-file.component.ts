@@ -1,17 +1,23 @@
 import { Component, Input, Output, EventEmitter } from "@angular/core";
 
-import { OrgGroupModel, OrgNodeModel, OrgService } from "../shared/index";
+import { OrgGroupModel, OrgNodeModel, OrgService, DomElementHelper } from "../shared/index";
 import { CSVConversionHelper } from "../shared/csv-helper";
 
 const DEFAULT_EXTENSION: string = ".csv";
 const DEFAULT_HEADERSTRING: string = "UID,First Name,Last Name,Title,Parent,";
-
-declare let $: any;
+const ImportElementName = {
+    importfile: "#importFile",
+    loadScreen: "#loadScreen",
+    confirmImport: "#confirmImport",
+    templateScreen: "#templateScreen",
+    confirmParent: "#confirmParent",
+    closeClass: ".close"
+};
 
 @Component({
     selector: "sg-org-import-csv-file",
     templateUrl: "app/org/import-csv-file/import-csv-file.component.html",
-    styleUrls: ["app/org/import-csv-file/import-csv-file.component.css", "app/style.css", "app/org/menu-panel/menu-panel.component.css"],
+    styleUrls: ["app/org/import-csv-file/import-csv-file.component.css", "app/org/menu-panel/menu-panel.component.css"],
     providers: [CSVConversionHelper]
 })
 
@@ -22,25 +28,15 @@ export class ImportCsvFileComponent {
     private defaultNode: any;
     private mappedNodesCount: any;
     private unmappedNodesCount: any;
-    private $importfile: any;
-    private $loadScreen: any;
-    private $confirmImport: any;
-    private $templateScreen: any;
-    private $confirmParent: any;
     private hasMultipleParent: boolean;
 
     @Input() selectedGroup: OrgGroupModel;
     @Output() newOrgNodes = new EventEmitter<OrgNodeModel>();
 
-    constructor(private orgService: OrgService, private csvHelper: CSVConversionHelper) {
+    constructor(private orgService: OrgService, private csvHelper: CSVConversionHelper, private domHelper: DomElementHelper) {
         this.fileName = "";
         this.mappedNodesCount = 0;
         this.unmappedNodesCount = 0;
-        this.$importfile = "#importFile";
-        this.$loadScreen = "#loadScreen";
-        this.$confirmImport = "#confirmImport";
-        this.$templateScreen = "#templateScreen";
-        this.$confirmParent = "#confirmParent";
         this.hasMultipleParent = false;
         this.defaultNode = new OrgNodeModel();
     }
@@ -62,11 +58,11 @@ export class ImportCsvFileComponent {
     private onImport(event) {
         let files = (event.srcElement || event.target).files[0];
         if (files) {
-            this.defaultNode = new OrgNodeModel();
-            $(this.$importfile).hide();
-            $(this.$loadScreen).show();
+            this.domHelper.hideElements(ImportElementName.importfile);
+            this.domHelper.showElements(ImportElementName.loadScreen);
             this.fileName = files.name;
             let isFileCorrect = this.checkFileExtension(this.fileName);
+            this.defaultNode = new OrgNodeModel();
             if (isFileCorrect) {
                 let data = null;
                 let file = files;
@@ -75,67 +71,58 @@ export class ImportCsvFileComponent {
                 reader.onload = (event) => {
                     let csvData = event.target["result"];
                     let isFileFormat = this.CSV2JSON(csvData);
-                    $(this.$loadScreen).hide();
+                    this.domHelper.hideElements(ImportElementName.loadScreen);
                     if (isFileFormat) {
-                        $(this.$confirmImport).show();
+                        this.domHelper.showElements(ImportElementName.confirmImport);
                     } else {
-                        $(this.$templateScreen).show();
+                        this.domHelper.showElements(ImportElementName.templateScreen);
                     }
                 };
                 reader.onerror = function () {
                     alert("Unable to read " + file.fileName);
                 };
             } else {
-                $(this.$loadScreen).hide();
-                $(this.$templateScreen).show();
+                this.domHelper.hideElements(ImportElementName.loadScreen);
+                this.domHelper.showElements(ImportElementName.templateScreen);
             }
-
         }
     }
 
-    onConfirm() {
-        if (this.unmappedNodesCount > 1) {
-            this.orgService.addGroupNodes(this.selectedGroup.OrgGroupID, this.json, null)
-                .subscribe(data => this.setOrgGroupData(data),
-                err => this.orgService.logError(err));
+    onConfirm(data: boolean) {
+        if (data) {
+            if (this.unmappedNodesCount > 1) {
+                this.orgService.addGroupNodes(this.selectedGroup.OrgGroupID, this.json, null)
+                    .subscribe(data => this.setOrgGroupData(data),
+                    err => this.orgService.logError(err),
+                    () => { this.domHelper.showElements(ImportElementName.closeClass); });
+            }
+            else {
+                this.orgService.addGroupNodes(this.selectedGroup.OrgGroupID, this.json, this.defaultNode.NodeID)
+                    .subscribe(data => this.setOrgGroupData(data),
+                    err => this.orgService.logError(err),
+                    () => { this.domHelper.showElements(ImportElementName.closeClass); });
+            }
+            this.domHelper.hideElements([ImportElementName.confirmImport, ImportElementName.closeClass, "#cancelbtn"]);
+            this.domHelper.showElements(ImportElementName.loadScreen);
+            this.unmappedNodesCount = 0;
+            this.mappedNodesCount = 0;
         }
-        else {
-            this.orgService.addGroupNodes(this.selectedGroup.OrgGroupID, this.json, this.defaultNode.NodeID)
-                .subscribe(data => this.setOrgGroupData(data),
-                err => this.orgService.logError(err));
-        }
-
-        $(this.$confirmImport).hide();
-        $(this.$loadScreen).show();
-        $("#cancelbtn").hide();
-        this.unmappedNodesCount = 0;
-        this.mappedNodesCount = 0;
     }
 
     private setOrgGroupData(data) {
-        $("#groupSettings").hide();
+        this.domHelper.hideElements("#groupSettings");
         this.newOrgNodes.emit(data);
     }
 
-    private onCancelImport(showConfirmDialog: boolean) {
-        if (showConfirmDialog === true) {
-            if (confirm("Are you sure?") === true) {
-                this.returnToImportDialog();
-            }
-        } else {
-            this.returnToImportDialog();
-        }
-    }
+    private onCancelImport(data: boolean) {
+        if (data) {
+            this.domHelper.showElements(ImportElementName.importfile);
+            this.domHelper.hideElements([ImportElementName.templateScreen, ImportElementName.loadScreen, ImportElementName.confirmImport, ImportElementName.confirmParent]);
 
-    private returnToImportDialog() {
-        $(this.$importfile).show();
-        $(this.$templateScreen).hide();
-        $(this.$loadScreen).hide();
-        $(this.$confirmImport).hide();
-        $(this.$confirmParent).hide();
-        this.unmappedNodesCount = 0;
-        this.mappedNodesCount = 0;
-        this.hasMultipleParent = false;
+            this.unmappedNodesCount = 0;
+            this.mappedNodesCount = 0;
+            this.hasMultipleParent = false;
+        }
     }
 
     private CSVToArray(strData, strDelimiter): any {
@@ -264,6 +251,7 @@ export class ImportCsvFileComponent {
                 this.hasMultipleParent = false;
                 this.unmappedNodesCount = this.unmappedNodesCount - 1;
             }
+            this.mappedNodesCount += 1;
             this.json = JSON.stringify(this.rootNode);
             this.json = this.json.replace(/},/g, "},\r\n");
             this.json = JSON.parse(this.json);
