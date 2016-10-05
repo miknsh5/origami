@@ -101,6 +101,7 @@ call :SelectNodeVersion
 IF EXIST "%DEPLOYMENT_TARGET%\package.json" (
   pushd "%DEPLOYMENT_TARGET%"
   call :ExecuteCmd !NPM_CMD! install --production
+  call :ExecuteCmd !NPM_CMD! install webpack -g
   IF !ERRORLEVEL! NEQ 0 goto error
   popd
 )
@@ -108,9 +109,6 @@ IF EXIST "%DEPLOYMENT_TARGET%\package.json" (
 :: 4. Compile TypeScript
 echo Transpiling TypeScript in %DEPLOYMENT_TARGET%...
 pushd "%DEPLOYMENT_TARGET%"
-  IF NOT DEFINED webpack(
-    call :ExecuteCmd !NPM_CMD! install webpack -g
-  )  
   call :ExecuteCmd webpack -p 
   IF !ERRORLEVEL! NEQ 0 goto error
 popd
