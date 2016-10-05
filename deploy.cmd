@@ -105,11 +105,11 @@ IF EXIST "%DEPLOYMENT_TARGET%\package.json" (
   popd
 )
 
-:: 4. Compile TypeScript
+:: 4. Bundle TypeScript
 IF EXIST "%DEPLOYMENT_TARGET%\webpack.config.js"(
   pushd "%DEPLOYMENT_TARGET%"
   echo "Building web site using webpack"
-  call :ExecuteCmd !NPM_CMD! build
+  call :ExecuteCmd ".\node_modules\.bin\webpack.cmd"
   if !ERRORLEVEL! NEQ 0 goto error
   popd
 )
