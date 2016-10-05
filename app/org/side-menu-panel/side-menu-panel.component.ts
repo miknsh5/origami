@@ -77,6 +77,7 @@ export class SideMenuComponent implements OnChanges {
 
     closePanel() {
         this.isCollapsed = false;
+        this.closeFeedBackPanel();
         $("#menuPanel").width("3px");
         $(".sideNav.fixed").width("0px");
     }
