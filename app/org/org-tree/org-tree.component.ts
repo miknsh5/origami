@@ -772,9 +772,9 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             let transformString = "rotate(0)";
             if (this.currentMode === ChartMode.explore && d.ParentNodeID !== null) {
                 if (d.x >= RADIAL_DEPTH) {
-                    transformString = "rotate(" + -Math.abs(d.x - RADIAL_DEPTH) + ")";
+                    transformString = "rotate(" + -Math.abs((d.x || 0) - RADIAL_DEPTH) + ")";
                 } else {
-                    transformString = "rotate(" + Math.abs(d.x - RADIAL_DEPTH) + ")";
+                    transformString = "rotate(" + Math.abs((d.x || 0) - RADIAL_DEPTH) + ")";
                 }
             }
             return transformString;
@@ -823,14 +823,14 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 if (d.NodeID === this.root.NodeID && this.currentMode === ChartMode.explore)
                     return "start";
                 else
-                    return d.x < DEPTH ? "start" : "end";
+                    return Number.isNaN(d.x) || d.x < DEPTH ? "start" : "end";
             }
         }).attr("transform", (d) => {
             if (this.currentMode === ChartMode.explore) {
                 if (d.NodeID === this.root.NodeID && this.currentMode === ChartMode.explore)
                     return "rotate(0)";
                 else
-                    return d.x < DEPTH ? "rotate(0)" : "rotate(180)";
+                    return Number.isNaN(d.x) || d.x < DEPTH ? "rotate(0)" : "rotate(180)";
             } else {
                 return "rotate(0)";
             }
@@ -857,7 +857,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 if (d.NodeID === this.root.NodeID && this.currentMode === ChartMode.explore)
                     return "start";
                 else
-                    return d.x < DEPTH ? "start" : "end";
+                    return Number.isNaN(d.x) || d.x < DEPTH ? "start" : "end";
             }
         }).attr("dy", (d) => {
             if (this.showDescriptionLabel && !this.showFirstNameLabel && !this.showLastNameLabel) {
@@ -869,7 +869,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 if (d.NodeID === this.root.NodeID && this.currentMode === ChartMode.explore)
                     return "rotate(0)";
                 else {
-                    return d.x < DEPTH ? "rotate(0)" : "rotate(180)";
+                    return Number.isNaN(d.x) || d.x < DEPTH ? "rotate(0)" : "rotate(180)";
                 }
             } else {
                 return "rotate(0)";
@@ -934,9 +934,9 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             let transformString = "rotate(0)";
             if (this.currentMode === ChartMode.explore && d.ParentNodeID !== null) {
                 if (d.x > RADIAL_DEPTH) {
-                    transformString = "rotate(" + -Math.abs(d.x - RADIAL_DEPTH) + ")";
+                    transformString = "rotate(" + -Math.abs((d.x || 0) - RADIAL_DEPTH) + ")";
                 } else {
-                    transformString = "rotate(" + Math.abs(d.x - RADIAL_DEPTH) + ")";
+                    transformString = "rotate(" + Math.abs((d.x || 0) - RADIAL_DEPTH) + ")";
                 }
             }
             return transformString;
@@ -954,7 +954,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                     if (d.ParentNodeID == null) {
                         return "rotate(0)";
                     }
-                    return "rotate(" + (d.x - RADIAL_DEPTH) + ")translate(" + d.y + ")";
+                    return "rotate(" + ((d.x || 0) - RADIAL_DEPTH) + ")translate(" + d.y + ")";
                 }
             });
 
@@ -1018,8 +1018,8 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         let link = this.svg.selectAll("path.link")
             .data(this.links, function (d) { return d.target.NodeID; });
 
-        let x = function (d) { return d.y * Math.cos((d.x - RADIAL_DEPTH) / DEPTH * Math.PI); };
-        let y = function (d) { return d.y * Math.sin((d.x - RADIAL_DEPTH) / DEPTH * Math.PI); };
+        let x = function (d) { return d.y * Math.cos(((d.x || 0) - RADIAL_DEPTH) / DEPTH * Math.PI); };
+        let y = function (d) { return d.y * Math.sin(((d.x || 0) - RADIAL_DEPTH) / DEPTH * Math.PI); };
         // Enter any new links at the parent"s previous position.
         link.enter().insert("path", "g")
             .attr("class", "link")

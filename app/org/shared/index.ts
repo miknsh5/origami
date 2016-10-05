@@ -4,4 +4,5 @@ export * from "./models/orgcompany.model";
 export * from "./models/orggroup.model";
 export * from "./models/orgnode.base.model";
 export * from "./models/orgnode.model";
+export * from "./dom-element-helper";
 export * from "./org.service";

@@ -109,7 +109,7 @@ export class OrgComponent implements OnDestroy {
             }
         } else {
             if (this.svgPan) {
-                this.svgPan.enablePan = false;
+                this.svgPan.disablePan();
             }
         }
     }
