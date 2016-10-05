@@ -20,6 +20,7 @@ export class SideMenuComponent implements OnChanges {
     private tabs: any;
     private $publishData: any;
     private $exportData: any;
+    private feedbackDescriptionText: any;
 
     @Input() currentMode: ChartMode;
     @Input() orgChart: OrgGroupModel;
@@ -142,12 +143,18 @@ export class SideMenuComponent implements OnChanges {
 
     openFeedBackPanel() {
         this.isFeedbackOpen = true;
+        this.feedbackDescriptionText = "";
         $("#feedbackPanel").height("200px");
     }
 
     closeFeedBackPanel() {
         this.isFeedbackOpen = false;
+        this.feedbackDescriptionText = "";
         $("#feedbackPanel").height("30px");
+    }
+    private onFeedbackSend() {
+        console.log(this.feedbackDescriptionText);
+        // this.feedbackDescriptionText = "";
     }
 
 }

@@ -66,9 +66,10 @@
                     <div *ngIf="isFeedbackOpen" class="feedbackTitle" (click)="closeFeedBackPanel()"> <i class="material-icons">close</i> <span>FeedBack</span></div>
                     <div class="divider"></div>
                     <div class="input-field col s9">
-                        <textarea id="feedbacktxt"></textarea>
+                        <textarea placeholder="Share you feedback! Feature requests? Bugs? Compliments? Constructive criticism?" rows="15" cols="50" id="feedbacktxt" style="resize: none;" [(ngModel)]="feedbackDescriptionText" autocomplete="off"></textarea>
+
                     </div>
-                    <button class="waves-effect waves-light btn" (click)="openPanel()"> 
+                    <button class="waves-effect waves-light btn" (click)="onFeedbackSend()"> 
                       <i class="material-icons left">send</i>SEND</button>
                 </div>
             </div>
