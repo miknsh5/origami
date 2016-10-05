@@ -4,7 +4,7 @@
     "scripts": {
         "start": "webpack-dev-server --progress --colors --watch --port 3000",
         "postinstall": "typings install",
-        "build": "webpack",
+        "build": "webpack -p",
         "typings": "typings",
         "tslint": "tslint -c tslint.json app/**/*.ts"
     },
