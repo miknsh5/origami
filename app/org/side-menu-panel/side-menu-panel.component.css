@@ -230,7 +230,7 @@ a {
     background-color: #607D8B;
     transition: 0.5s;
     color: #fff;
-    z-index: 1px !important;
+    z-index: 1;
 }
 
 #feedbackPanel span {
