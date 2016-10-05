@@ -2,7 +2,7 @@
     "name": "angular2-origami",
     "version": "1.0.0",
     "scripts": {
-        "start": "webpack-dev-server --port 3000",
+        "start": "webpack-dev-server --progress --colors --watch --port 3000",
         "postinstall": "typings install",
         "build": "webpack",
         "typings": "typings",

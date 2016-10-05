@@ -6,21 +6,18 @@ import { OrgComponent } from "./org/org.component";
 
 const appRoutes: Routes = [
     {
+        path: "",
+        redirectTo: "/login",
+        pathMatch: "full",
+    },
+    {
         path: "login",
         component: LoginComponent
     },
     {
         path: "home",
         component: OrgComponent,
-        canActivate: [AuthGuard],
-        data: {
-            title: "PeopleTree"
-        }
-    },
-    {
-        path: "",
-        redirectTo: "/login",
-        pathMatch: "full",
+        canActivate: [AuthGuard]
     },
     {
         path: "**",
