@@ -113,6 +113,7 @@ call :ExecuteCmd node %DEPLOYMENT_TARGET%\node_modules\typescript\bin\tsc -p "%D
 
 :: Post deployment stub
 IF DEFINED POST_DEPLOYMENT_ACTION call "%POST_DEPLOYMENT_ACTION%"
+call :ExecuteCmd !NPM_CMD! build
 IF !ERRORLEVEL! NEQ 0 goto error
 
 goto end
