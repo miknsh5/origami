@@ -128,7 +128,6 @@ node circle {
 
 .reportMode .selectedCircle {
     fill: #ffffff;
-    fill: var(--white-text);
     stroke-width: 1px;
     stroke: rgba(0, 0, 0, 0.1);
 }
@@ -147,7 +146,6 @@ node circle {
 
 .defaultCircle {
     fill: #CFD8DC;
-    fill: var(--silver);
 }
 
 .new-peer_reportee-circle {
