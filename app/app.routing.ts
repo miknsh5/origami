@@ -17,10 +17,11 @@ const appRoutes: Routes = [
     {
         path: "home",
         component: OrgComponent,
-        canActivate: [AuthGuard],
-        data: {
-            title: "PeopleTree"
-        }
+        canActivate: [AuthGuard]
+    },
+    {
+        path: "**",
+        redirectTo: "/login",
     }
 ];
 
