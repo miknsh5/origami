@@ -4,6 +4,9 @@ import { OrgGroupModel, OrgNodeModel, ChartMode} from "../shared/index";
 
 declare let $: any;
 
+const DEFAULT_FEEDBACK_OPENICON = `keyboard_arrow_up`;
+const DEFAULT_FEEDBACK_CLOSEICON = `close`;
+
 @Component({
     selector: "sg-side-menu-panel",
     templateUrl: "app/org/side-menu-panel/side-menu-panel.component.html",
@@ -59,8 +62,8 @@ export class SideMenuComponent implements OnChanges {
                     });
                 }
             } else if (!this.selectedOrgNode && this.isCollapsed) {
-                if (this.feedbackIconLabel === "close") {
-                    this.feedbackIconLabel = "keyboard_arrow_up";
+                if (this.feedbackIconLabel === DEFAULT_FEEDBACK_CLOSEICON) {
+                    this.feedbackIconLabel = DEFAULT_FEEDBACK_OPENICON;
                 }
                 this.closePanel();
                 this.isCollapsed = true;
@@ -150,12 +153,12 @@ export class SideMenuComponent implements OnChanges {
     }
 
     openOrCloseFeedBackPanel() {
-        if (this.feedbackIconLabel === "keyboard_arrow_up") {
+        if (this.feedbackIconLabel === DEFAULT_FEEDBACK_OPENICON) {
             this.isFeedbackOpen = true;
-            this.feedbackIconLabel = "close";
+            this.feedbackIconLabel = DEFAULT_FEEDBACK_CLOSEICON;
             $("#feedbackPanel").height("220px");
-        } else if (this.feedbackIconLabel === "close") {
-            this.feedbackIconLabel = "keyboard_arrow_up";
+        } else if (this.feedbackIconLabel === DEFAULT_FEEDBACK_CLOSEICON) {
+            this.feedbackIconLabel = DEFAULT_FEEDBACK_OPENICON;
             this.feedbackDescriptionText = "";
             $("#feedbackPanel").height("30px");
             this.isFeedbackOpen = false;
