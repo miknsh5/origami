@@ -21,6 +21,7 @@ export class SideMenuComponent implements OnChanges {
     private $publishData: any;
     private $exportData: any;
     private feedbackDescriptionText: any;
+    private feedbackIconLabel: any;
 
     @Input() currentMode: ChartMode;
     @Input() orgChart: OrgGroupModel;
@@ -37,6 +38,7 @@ export class SideMenuComponent implements OnChanges {
     constructor() {
         this.$exportData = "#exportData";
         this.$publishData = "#publishData";
+        this.feedbackIconLabel = "keyboard_arrow_up";
         this.isFeedbackOpen = false;
     }
 
@@ -57,6 +59,9 @@ export class SideMenuComponent implements OnChanges {
                     });
                 }
             } else if (!this.selectedOrgNode && this.isCollapsed) {
+                if (this.feedbackIconLabel === "close") {
+                    this.feedbackIconLabel = "keyboard_arrow_up";
+                }
                 this.closePanel();
                 this.isCollapsed = true;
             }
@@ -77,7 +82,9 @@ export class SideMenuComponent implements OnChanges {
 
     closePanel() {
         this.isCollapsed = false;
-        this.closeFeedBackPanel();
+        if (!this.feedbackDescriptionText && this.isFeedbackOpen) {
+            this.openOrCloseFeedBackPanel();
+        }
         $("#menuPanel").width("3px");
         $(".sideNav.fixed").width("0px");
     }
@@ -142,20 +149,20 @@ export class SideMenuComponent implements OnChanges {
         $(this.$publishData).hide();
     }
 
-    openFeedBackPanel() {
-        this.isFeedbackOpen = true;
-        this.feedbackDescriptionText = "";
-        $("#feedbackPanel").height("220px");
-    }
-
-    closeFeedBackPanel() {
-        this.isFeedbackOpen = false;
-        this.feedbackDescriptionText = "";
-        $("#feedbackPanel").height("30px");
+    openOrCloseFeedBackPanel() {
+        if (this.feedbackIconLabel === "keyboard_arrow_up") {
+            this.isFeedbackOpen = true;
+            this.feedbackIconLabel = "close";
+            $("#feedbackPanel").height("220px");
+        } else if (this.feedbackIconLabel === "close") {
+            this.feedbackIconLabel = "keyboard_arrow_up";
+            this.feedbackDescriptionText = "";
+            $("#feedbackPanel").height("30px");
+            this.isFeedbackOpen = false;
+        }
     }
     private onFeedbackSend() {
-        console.log(this.feedbackDescriptionText);
-        // this.feedbackDescriptionText = "";
+        this.feedbackDescriptionText = "";
     }
 
 }
