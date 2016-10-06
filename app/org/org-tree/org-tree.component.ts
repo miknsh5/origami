@@ -18,7 +18,7 @@ const DEFAULT_STD_DEVIATION = 1;
 
 const PEER_TEXT = "Peer";
 const REPORTEE_TEXT = "Direct Report";
-const NODE_DEFAULT_DISTANCE = 112;
+const NODE_DEFAULT_DISTANCE = 122;
 
 const LABEL_POINTS = "18 5 18 -5 21 0";
 const ARROW_POINTS = "55 33 55 21 59 27";
@@ -805,13 +805,13 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
             if (name.length > 15) {
                 if (this.currentMode === ChartMode.build) {
-                    return d.IsSelected || d.IsGrandParent ? "" : name.substring(0, 15) + "...";
+                    return  d.IsGrandParent ? "" : name.substring(0, 15) + "...";
                 } else {
                     return name.substring(0, 15) + "...";
                 }
             } else {
                 if (this.currentMode === ChartMode.build) {
-                    return d.IsSelected || d.IsGrandParent ? "" : name;
+                    return d.IsGrandParent ? "" : name;
                 } else {
                     return name;
                 }
@@ -839,14 +839,14 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         node.select("g.label text[data-id='description']").text((d) => {
             if (d.Description.length > 15) {
                 if (this.currentMode === ChartMode.build) {
-                    return d.IsSelected || d.IsGrandParent ? "" : d.Description.substring(0, 15) + "...";
+                    return d.IsGrandParent ? "" : d.Description.substring(0, 15) + "...";
                 } else if (this.currentMode === ChartMode.explore) {
                     return d.Description.substring(0, 15) + "...";
                 } else {
                     return d.Description.substring(0, 15) + "...";
                 }
             } else {
-                if (this.currentMode === ChartMode.build) { return d.IsSelected || d.IsGrandParent ? "" : d.Description; }
+                if (this.currentMode === ChartMode.build) { return d.IsGrandParent ? "" : d.Description; }
                 else if (this.currentMode === ChartMode.explore) { return d.Description; }
                 else { return d.Description; }
             }
@@ -1145,7 +1145,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                     }
 
                     if (!this.selectedOrgNode.children) {
-                        let y = source.y + NODE_DEFAULT_DISTANCE;
+                        let y = source.y + NODE_DEFAULT_DISTANCE + (NODE_WIDTH/2);
                         this.setPeerReporteeNode(REPORTEE_TEXT, source.x, y, "directReporteeNode");
                     } else {
                         d3.select("g.directReporteeNode").remove();
