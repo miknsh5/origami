@@ -45,10 +45,9 @@ export class ImportCsvFileComponent {
         if (fileName) {
             if (DEFAULT_EXTENSION === fileName.substr((fileName.length - 4), fileName.length)) {
                 return true;
-            } else {
-                return false;
             }
         }
+        return false;
     }
 
     private onClickDownloadTemplate() {
@@ -211,56 +210,68 @@ export class ImportCsvFileComponent {
             if (DEFAULT_HEADERSTRING === headerString) {
                 return true;
             }
-            else {
-                return false;
-            }
         }
+        return false;
     }
 
     private CSV2JSON(csv): boolean {
         this.rootNode = [];
         let array = this.CSVToArray(csv, ",");
-        if (this.checkFileFormat(array[0])) {
-            let objArray = [];
-            for (let i = 1; i < array.length; i++) {
-                objArray[i - 1] = {};
-                for (let k = 0; k <= array.length; k++) {
-                    let key = array[0][k];
-                    if (key === "First Name") {
-                        key = key.replace(" ", "_");
-                    }
-                    if (key === "Last Name") {
-                        key = key.replace(" ", "_");
-                    }
-                    objArray[i - 1][key] = array[i][k];
-                }
-            }
-
-            objArray.forEach((node) => {
-                if (node.UID !== "") {
-                    this.rootNode.push(this.convertBaseModelToData(node));
-                }
-            });
-
-            if (this.unmappedNodesCount > 1) {
-                this.hasMultipleParent = true;
-                this.rootNode.forEach((node) => {
-                    node.ParentNodeID = null;
-                });
+        let doesTitleExist: boolean;
+        let index: any;
+        for (let i = 0; i < array.length; i++) {
+            let title = array[i][0];
+            if (title === "UID") {
+                index = i;
+                doesTitleExist = true;
+                break;
             } else {
-                this.hasMultipleParent = false;
-                this.unmappedNodesCount = this.unmappedNodesCount - 1;
+                doesTitleExist = false;
             }
-            this.mappedNodesCount += 1;
-            this.json = JSON.stringify(this.rootNode);
-            this.json = this.json.replace(/},/g, "},\r\n");
-            this.json = JSON.parse(this.json);
-            if (this.json && this.json.length === 0) {
-                return false;
-            }
-            return true;
-        } else {
-            return false;
         }
+
+        if (doesTitleExist) {
+            if (this.checkFileFormat(array[index])) {
+                let objArray = [];
+                for (let i = index + 1; i < array.length; i++) {
+                    objArray[i] = {};
+                    for (let k = 0; k <= array.length; k++) {
+                        let key = array[index][k];
+                        if (key === "First Name") {
+                            key = key.replace(" ", "_");
+                        }
+                        if (key === "Last Name") {
+                            key = key.replace(" ", "_");
+                        }
+                        objArray[i][key] = array[i][k];
+                    }
+                }
+
+                objArray.forEach((node) => {
+                    if (node.UID !== "") {
+                        this.rootNode.push(this.convertBaseModelToData(node));
+                    }
+                });
+
+                if (this.unmappedNodesCount > 1) {
+                    this.hasMultipleParent = true;
+                    this.rootNode.forEach((node) => {
+                        node.ParentNodeID = null;
+                    });
+                } else {
+                    this.hasMultipleParent = false;
+                    this.unmappedNodesCount = this.unmappedNodesCount - 1;
+                }
+                this.mappedNodesCount += 1;
+                this.json = JSON.stringify(this.rootNode);
+                this.json = this.json.replace(/},/g, "},\r\n");
+                this.json = JSON.parse(this.json);
+                if (this.json && this.json.length === 0) {
+                    return false;
+                }
+                return true;
+            }
+        }
+        return false;
     }
 }
