@@ -56,7 +56,7 @@
 }
 
 .edit-icon {
-    background-image: url("app/images/btn-edit-details.png");
+    background-image: url("assets/images/btn-edit-details.png");
     background-repeat: no-repeat;
     border: none;
     position: absolute;
@@ -67,7 +67,7 @@
 }
 
 .save-icon {
-    background-image: url("app/images/btn-save-details.png");
+    background-image: url("assets/images/btn-save-details.png");
     background-repeat: no-repeat;
     border: none;
     position: absolute;
@@ -78,7 +78,7 @@
 }
 
 .close-icon {
-    background-image: url("app/images/btn-delete-node.png");
+    background-image: url("assets/images/btn-delete-node.png");
     background-repeat: no-repeat;
     border: none;
     position: absolute;
@@ -89,7 +89,7 @@
 }
 
 .delete-icon {
-    background-image: url("app/images/btn-delete.png");
+    background-image: url("assets/images/btn-delete.png");
     background-repeat: no-repeat;
     border: none;
     position: absolute;
