@@ -28,8 +28,11 @@
 </div>
 <div id="templateScreen" class="templateScreen center">
     <div>
-        <label>
-           The file you tried to upload wasn't formatted correctly. Please download the template and try again.
+        <label *ngIf="hasMultipleParent">
+             The file you tried to upload has multiple root nodes. Please download the template and try again. 
+        </label>
+        <label *ngIf="!hasMultipleParent">
+           The file you tried to upload was not formatted correctly. Please download the template and try again.
         </label>
     </div>
     <div class="template">
@@ -44,9 +47,6 @@
             <h6> File : <b>{{fileName}}</b></h6>
         </div>
         <hr/>
-        <div class="center divspacing" *ngIf="hasMultipleParent">
-            <h6> Uploaded file has multiple root nodes continue to save data without any relationship. </h6>
-        </div>
         <div *ngIf="!hasMultipleParent">
             <div class="col s9 divspacing">
                 <h6>Import Resource Count: </h6>

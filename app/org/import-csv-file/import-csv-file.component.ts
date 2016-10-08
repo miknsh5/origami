@@ -194,9 +194,8 @@ export class ImportCsvFileComponent {
                 this.unmappedNodesCount++;
                 orgNode.children = new Array<OrgNodeModel>();
                 this.defaultNode = orgNode;
-            } else {
-                this.mappedNodesCount++;
             }
+            this.mappedNodesCount++;
         }
         return orgNode;
     }
@@ -255,14 +254,12 @@ export class ImportCsvFileComponent {
 
                 if (this.unmappedNodesCount > 1) {
                     this.hasMultipleParent = true;
-                    this.rootNode.forEach((node) => {
-                        node.ParentNodeID = null;
-                    });
+                   return false;
                 } else {
                     this.hasMultipleParent = false;
                     this.unmappedNodesCount = this.unmappedNodesCount - 1;
                 }
-                this.mappedNodesCount += 1;
+
                 this.json = JSON.stringify(this.rootNode);
                 this.json = this.json.replace(/},/g, "},\r\n");
                 this.json = JSON.parse(this.json);
