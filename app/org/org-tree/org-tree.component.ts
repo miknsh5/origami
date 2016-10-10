@@ -804,13 +804,13 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
             if (name.length > 15) {
                 if (this.currentMode === ChartMode.build) {
-                    return  d.IsGrandParent ? "" : name.substring(0, 15) + "...";
+                    return name.substring(0, 15) + "...";
                 } else {
                     return name.substring(0, 15) + "...";
                 }
             } else {
                 if (this.currentMode === ChartMode.build) {
-                    return d.IsGrandParent ? "" : name;
+                    return name;
                 } else {
                     return name;
                 }
@@ -838,14 +838,14 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         node.select("g.label text[data-id='description']").text((d) => {
             if (d.Description.length > 15) {
                 if (this.currentMode === ChartMode.build) {
-                    return d.IsGrandParent ? "" : d.Description.substring(0, 15) + "...";
+                    return d.Description.substring(0, 15) + "...";
                 } else if (this.currentMode === ChartMode.explore) {
                     return d.Description.substring(0, 15) + "...";
                 } else {
                     return d.Description.substring(0, 15) + "...";
                 }
             } else {
-                if (this.currentMode === ChartMode.build) { return d.IsGrandParent ? "" : d.Description; }
+                if (this.currentMode === ChartMode.build) { d.Description; }
                 else if (this.currentMode === ChartMode.explore) { return d.Description; }
                 else { return d.Description; }
             }
@@ -1529,7 +1529,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                         let nodeID = (selectedTreeNode.parent as OrgNodeModel).ParentNodeID;
                         if (nodeID === node.NodeID) {
                             node.IsGrandParent = true;
-                            node.Show = true;
                         }
                     }
                 }
