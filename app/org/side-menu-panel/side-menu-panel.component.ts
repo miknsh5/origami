@@ -1,18 +1,22 @@
 import { Component, Input, Output, OnChanges, SimpleChange, EventEmitter } from "@angular/core";
 
-import { OrgGroupModel, OrgNodeModel, ChartMode, FeedBackEmailService, UserFeedBack} from "../shared/index";
+import { OrgGroupModel, OrgNodeModel, ChartMode, OrgService, UserFeedBack, DomElementHelper} from "../shared/index";
 import { UserModel } from "../../Shared/index";
 
 declare let $: any;
 
-const DEFAULT_FEEDBACK_OPENICON = `keyboard_arrow_up`;
-const DEFAULT_FEEDBACK_CLOSEICON = `close`;
+const FEEDBACK_ICON_OPEN = `keyboard_arrow_up`;
+const FEEDBACK_ICON_CLOSE = `close`;
+
+const MenuElement = {
+    exportData: "#exportData",
+    publishData: "#publishData"
+};
 
 @Component({
     selector: "sg-side-menu-panel",
     templateUrl: "app/org/side-menu-panel/side-menu-panel.component.html",
-    styleUrls: ["app/org/side-menu-panel/side-menu-panel.component.css"],
-    providers: [FeedBackEmailService]
+    styleUrls: ["app/org/side-menu-panel/side-menu-panel.component.css"]
 })
 
 export class SideMenuComponent implements OnChanges {
@@ -24,8 +28,6 @@ export class SideMenuComponent implements OnChanges {
     private userModel: UserModel;
     private isFeedbackOpen: boolean;
     private tabs: any;
-    private $publishData: any;
-    private $exportData: any;
     private feedbackDescriptionText: any;
     private feedbackIconLabel: any;
     private feedback: UserFeedBack;
@@ -42,9 +44,8 @@ export class SideMenuComponent implements OnChanges {
     @Output() showLastNameLabel = new EventEmitter<boolean>();
     @Output() showDescriptionLabel = new EventEmitter<boolean>();
 
-    constructor(private feedbackEmailSevice: FeedBackEmailService) {
-        this.$exportData = "#exportData";
-        this.$publishData = "#publishData";
+    constructor(private orgSevice: OrgService, private domHelper: DomElementHelper) {
+
         this.feedbackIconLabel = "keyboard_arrow_up";
         this.isFeedbackOpen = false;
     }
@@ -66,8 +67,8 @@ export class SideMenuComponent implements OnChanges {
                     });
                 }
             } else if (!this.selectedOrgNode && this.isCollapsed) {
-                if (this.feedbackIconLabel === DEFAULT_FEEDBACK_CLOSEICON) {
-                    this.feedbackIconLabel = DEFAULT_FEEDBACK_OPENICON;
+                if (this.feedbackIconLabel === FEEDBACK_ICON_CLOSE) {
+                    this.feedbackIconLabel = FEEDBACK_ICON_OPEN;
                 }
                 this.closePanel();
                 this.isCollapsed = true;
@@ -83,8 +84,8 @@ export class SideMenuComponent implements OnChanges {
         this.isCollapsed = true;
         $("#menuPanel").width("100%");
         $(".sideNav.fixed").width("240px");
-        $(this.$publishData).hide();
-        $(this.$exportData).show();
+        this.domHelper.hideElements(MenuElement.publishData);
+        this.domHelper.showElements(MenuElement.exportData);
     }
 
     closePanel() {
@@ -147,22 +148,23 @@ export class SideMenuComponent implements OnChanges {
     }
 
     OnPublish() {
-        $(this.$exportData).hide();
-        $(this.$publishData).show();
+        this.domHelper.hideElements(MenuElement.exportData);
+        this.domHelper.showElements(MenuElement.publishData);
     }
 
     OnExport() {
-        $(this.$exportData).show();
-        $(this.$publishData).hide();
+        this.domHelper.showElements(MenuElement.exportData);
+        this.domHelper.hideElements(MenuElement.publishData);
+
     }
 
     openOrCloseFeedBackPanel() {
-        if (this.feedbackIconLabel === DEFAULT_FEEDBACK_OPENICON) {
+        if (this.feedbackIconLabel === FEEDBACK_ICON_OPEN) {
             this.isFeedbackOpen = true;
-            this.feedbackIconLabel = DEFAULT_FEEDBACK_CLOSEICON;
+            this.feedbackIconLabel = FEEDBACK_ICON_CLOSE;
             $("#feedbackPanel").height("220px");
-        } else if (this.feedbackIconLabel === DEFAULT_FEEDBACK_CLOSEICON) {
-            this.feedbackIconLabel = DEFAULT_FEEDBACK_OPENICON;
+        } else if (this.feedbackIconLabel === FEEDBACK_ICON_CLOSE) {
+            this.feedbackIconLabel = FEEDBACK_ICON_OPEN;
             this.feedbackDescriptionText = "";
             $("#feedbackPanel").height("30px");
             this.isFeedbackOpen = false;
@@ -180,9 +182,9 @@ export class SideMenuComponent implements OnChanges {
             }
             this.feedback.Description = this.feedbackDescriptionText;
 
-            this.feedbackEmailSevice.sendFeedback(this.feedback)
+            this.orgSevice.sendFeedback(this.feedback)
                 .subscribe(data => { this.feedbackDescriptionText = ""; },
-                err => this.feedbackEmailSevice.logError(err));
+                err => this.orgSevice.logError(err));
         }
     }
 }
