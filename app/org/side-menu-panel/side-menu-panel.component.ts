@@ -1,6 +1,7 @@
 import { Component, Input, Output, OnChanges, SimpleChange, EventEmitter } from "@angular/core";
 
-import { OrgGroupModel, OrgNodeModel, ChartMode} from "../shared/index";
+import { OrgGroupModel, OrgNodeModel, ChartMode, FeedBackEmailService, UserFeedBack} from "../shared/index";
+import { UserModel } from "../../Shared/index";
 
 declare let $: any;
 
@@ -10,7 +11,8 @@ const DEFAULT_FEEDBACK_CLOSEICON = `close`;
 @Component({
     selector: "sg-side-menu-panel",
     templateUrl: "app/org/side-menu-panel/side-menu-panel.component.html",
-    styleUrls: ["app/org/side-menu-panel/side-menu-panel.component.css"]
+    styleUrls: ["app/org/side-menu-panel/side-menu-panel.component.css"],
+    providers: [FeedBackEmailService]
 })
 
 export class SideMenuComponent implements OnChanges {
@@ -19,12 +21,14 @@ export class SideMenuComponent implements OnChanges {
     directReportees: any;
     totalReportees: any;
     depth: any;
+    private userModel: UserModel;
     private isFeedbackOpen: boolean;
     private tabs: any;
     private $publishData: any;
     private $exportData: any;
     private feedbackDescriptionText: any;
     private feedbackIconLabel: any;
+    private feedback: UserFeedBack;
 
     @Input() currentMode: ChartMode;
     @Input() orgChart: OrgGroupModel;
@@ -38,7 +42,7 @@ export class SideMenuComponent implements OnChanges {
     @Output() showLastNameLabel = new EventEmitter<boolean>();
     @Output() showDescriptionLabel = new EventEmitter<boolean>();
 
-    constructor() {
+    constructor(private feedbackEmailSevice: FeedBackEmailService) {
         this.$exportData = "#exportData";
         this.$publishData = "#publishData";
         this.feedbackIconLabel = "keyboard_arrow_up";
@@ -165,7 +169,20 @@ export class SideMenuComponent implements OnChanges {
         }
     }
     private onFeedbackSend() {
-        this.feedbackDescriptionText = "";
-    }
+        if (this.feedbackDescriptionText) {
+            this.feedback = new UserFeedBack();
+            let profile = localStorage.getItem("profile");
+            if (profile) {
+                this.userModel = JSON.parse(profile);
+                this.feedback.UserEmailID = this.userModel.Email;
+                this.feedback.UserID = this.userModel.UserID;
+                this.feedback.UserName = this.userModel.Name;
+            }
+            this.feedback.Description = this.feedbackDescriptionText;
 
+            this.feedbackEmailSevice.sendFeedback(this.feedback)
+                .subscribe(data => { this.feedbackDescriptionText = ""; },
+                err => this.feedbackEmailSevice.logError(err));
+        }
+    }
 }
