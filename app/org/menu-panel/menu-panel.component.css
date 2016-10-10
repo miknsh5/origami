@@ -396,10 +396,7 @@ input {
     width: 100%;
 }
 
-#deleteGroup .btn {
-    box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0), 0 0px 0px 0 rgba(0, 0, 0, 0);
-}
-
+#deleteGroup .btn,
 #deleteCompany .btn {
     box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0), 0 0px 0px 0 rgba(0, 0, 0, 0);
 }
