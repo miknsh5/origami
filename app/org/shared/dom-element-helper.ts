@@ -25,4 +25,17 @@ export class DomElementHelper {
         $(elementName).dropdown(options);
     }
 
+    setElementWidth(elementName: string, width: any) {
+        $(elementName).width(width);
+    }
+
+    setElementHeight(elementName: string, height: any) {
+        $(elementName).height(height);
+    }
+
+    initTabControl() {
+        setTimeout(() => {
+            $("ul.tabs").tabs();
+        }, 500);
+    }
 }
