@@ -25,4 +25,11 @@ export class DomElementHelper {
         $(elementName).dropdown(options);
     }
 
+    setWidth(elementName: string, width: any) {
+        $(elementName).width(width);
+    }
+
+    setHeight(elementName: string, height: any) {
+        $(elementName).height(height);
+    }
 }

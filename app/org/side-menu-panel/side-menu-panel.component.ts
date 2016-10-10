@@ -10,7 +10,10 @@ const FEEDBACK_ICON_CLOSE = `close`;
 
 const MenuElement = {
     exportData: "#exportData",
-    publishData: "#publishData"
+    publishData: "#publishData",
+    menuPanel: "#menuPanel",
+    sideNavfixed: ".sideNav.fixed",
+    feedbackPanel: "#feedbackPanel"
 };
 
 @Component({
@@ -46,7 +49,7 @@ export class SideMenuComponent implements OnChanges {
 
     constructor(private orgSevice: OrgService, private domHelper: DomElementHelper) {
 
-        this.feedbackIconLabel = "keyboard_arrow_up";
+        this.feedbackIconLabel = FEEDBACK_ICON_OPEN;
         this.isFeedbackOpen = false;
     }
 
@@ -82,8 +85,8 @@ export class SideMenuComponent implements OnChanges {
 
     openPanel() {
         this.isCollapsed = true;
-        $("#menuPanel").width("100%");
-        $(".sideNav.fixed").width("240px");
+        this.domHelper.setWidth(MenuElement.menuPanel, "100%");
+        this.domHelper.setWidth(MenuElement.sideNavfixed, "240px");
         this.domHelper.hideElements(MenuElement.publishData);
         this.domHelper.showElements(MenuElement.exportData);
     }
@@ -93,8 +96,8 @@ export class SideMenuComponent implements OnChanges {
         if (!this.feedbackDescriptionText && this.isFeedbackOpen) {
             this.openOrCloseFeedBackPanel();
         }
-        $("#menuPanel").width("3px");
-        $(".sideNav.fixed").width("0px");
+        this.domHelper.setWidth(MenuElement.menuPanel, "3px");
+        this.domHelper.setWidth(MenuElement.sideNavfixed, "0px");
     }
 
     private childCount(level, node) {
@@ -162,11 +165,11 @@ export class SideMenuComponent implements OnChanges {
         if (this.feedbackIconLabel === FEEDBACK_ICON_OPEN) {
             this.isFeedbackOpen = true;
             this.feedbackIconLabel = FEEDBACK_ICON_CLOSE;
-            $("#feedbackPanel").height("220px");
+            this.domHelper.setHeight(MenuElement.feedbackPanel, "220px");          
         } else if (this.feedbackIconLabel === FEEDBACK_ICON_CLOSE) {
             this.feedbackIconLabel = FEEDBACK_ICON_OPEN;
             this.feedbackDescriptionText = "";
-            $("#feedbackPanel").height("30px");
+            this.domHelper.setHeight(MenuElement.feedbackPanel, "30px");
             this.isFeedbackOpen = false;
         }
     }
