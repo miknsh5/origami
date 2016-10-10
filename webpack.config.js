@@ -1,5 +1,6 @@
 const path = require('path')
 var webpack = require('webpack')
+var CleanWebpackPlugin = require('clean-webpack-plugin')
 
 module.exports = {
     entry: {
@@ -28,6 +29,7 @@ module.exports = {
         ]
     },
     plugins: [
-        new webpack.optimize.CommonsChunkPlugin( /* chunkName= */ 'vendor', /* filename= */ './dist/vendor.bundle.js')
+        new webpack.optimize.CommonsChunkPlugin( /* chunkName= */ 'vendor', /* filename= */ './dist/vendor.bundle.js'),
+        new CleanWebpackPlugin(['dist', 'build'], { root: __dirname, verbose: true, dry: false, exclude: [] })
     ]
 }
