@@ -1,6 +1,6 @@
 export class UserFeedBack {
-    UserID: any;
-    UserName: any;
-    UserEmailID: any;
-    Description: any;
+    UserID: string;
+    UserName: string;
+    UserEmailID: string;
+    Description: string;
 }
