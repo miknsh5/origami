@@ -23,6 +23,7 @@ hr {
 nav {
     background-color: #ffffff;
     background-color: var(--white-text);
+    z-index: 1;
 }
 
 nav,
@@ -154,6 +155,7 @@ nav ul a i.left {
 
 .fixed {
     position: fixed;
+    z-index: 1;
 }
 
 #companyDropdown li a.active,

@@ -328,7 +328,7 @@ path.horizontal {
 /* Scroll bar */
 
  ::-webkit-scrollbar {
-    width: 7px;
+    width: 2px;
     height: 7px;
 }
 

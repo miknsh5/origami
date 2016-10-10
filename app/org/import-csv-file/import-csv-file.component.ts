@@ -124,11 +124,11 @@ export class ImportCsvFileComponent {
         }
     }
 
-    private CSVToArray(strData, strDelimiter): any {
+    private CSVToArray(strData): any {
         let strMatchedValue = "";
         // Check to see if the delimiter is defined. If not,
         // then default to comma.
-        strDelimiter = (strDelimiter || ",");
+        let strDelimiter = ",";
         // Create a regular expression to parse the CSV values.
         let objPattern = new RegExp((
             // Delimiters.
@@ -215,7 +215,7 @@ export class ImportCsvFileComponent {
 
     private CSV2JSON(csv): boolean {
         this.rootNode = [];
-        let array = this.CSVToArray(csv, ",");
+        let array = this.CSVToArray(csv);
         let doesTitleExist: boolean;
         let index: any;
         for (let i = 0; i < array.length; i++) {
@@ -254,7 +254,7 @@ export class ImportCsvFileComponent {
 
                 if (this.unmappedNodesCount > 1) {
                     this.hasMultipleParent = true;
-                   return false;
+                    return false;
                 } else {
                     this.hasMultipleParent = false;
                     this.unmappedNodesCount = this.unmappedNodesCount - 1;

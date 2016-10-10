@@ -133,7 +133,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         this.calculateLevelDepth();
         this.resizeLinesArrowsAndSvg();
         this.centerNode(this.root);
-
     }
 
     childCount(level, node) {

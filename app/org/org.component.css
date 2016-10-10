@@ -1,14 +1,12 @@
 .main-canvas {
+    float: left;
     width: 100%;
     overflow-x: auto;
-    position: absolute;
-    z-index: -2;
 }
 
 .modes-wrap {
-    min-width: 25px;
-    position: fixed;
-    top: 50px;
+    width: 100px;
+    position: absolute;
     left: 30px
 }
 

@@ -3,8 +3,7 @@
     right: 0;
     top: 55px;
     height: 100%;
-    width: 0px;
-    z-index: -1;
+    width: 0;
     transition: 0.5s;
     font-size: 13px;
     max-width: 240px;
@@ -224,7 +223,7 @@ ul.tabs .tab {
     min-height: 35px;
     height: 0;
     background-color: #607D8B;
-    transition: 0.7s;
+    transition: 0.5s;
     color: #DFE5E7;
     z-index: 1;
     font-size: 14px;
