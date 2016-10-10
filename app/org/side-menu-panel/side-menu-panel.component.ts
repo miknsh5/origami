@@ -30,9 +30,8 @@ export class SideMenuComponent implements OnChanges {
     depth: any;
     private userModel: UserModel;
     private isFeedbackOpen: boolean;
-    private tabs: any;
     private feedbackDescriptionText: any;
-    private feedbackIconLabel: any;
+    private feedbackIcon: any;
     private feedback: UserFeedBack;
 
     @Input() currentMode: ChartMode;
@@ -49,7 +48,7 @@ export class SideMenuComponent implements OnChanges {
 
     constructor(private orgSevice: OrgService, private domHelper: DomElementHelper) {
 
-        this.feedbackIconLabel = FEEDBACK_ICON_OPEN;
+        this.feedbackIcon = FEEDBACK_ICON_OPEN;
         this.isFeedbackOpen = false;
     }
 
@@ -70,8 +69,8 @@ export class SideMenuComponent implements OnChanges {
                     });
                 }
             } else if (!this.selectedOrgNode && this.isCollapsed) {
-                if (this.feedbackIconLabel === FEEDBACK_ICON_CLOSE) {
-                    this.feedbackIconLabel = FEEDBACK_ICON_OPEN;
+                if (this.feedbackIcon === FEEDBACK_ICON_CLOSE) {
+                    this.feedbackIcon = FEEDBACK_ICON_OPEN;
                 }
                 this.closePanel();
                 this.isCollapsed = true;
@@ -85,8 +84,8 @@ export class SideMenuComponent implements OnChanges {
 
     openPanel() {
         this.isCollapsed = true;
-        this.domHelper.setWidth(MenuElement.menuPanel, "100%");
-        this.domHelper.setWidth(MenuElement.sideNavfixed, "240px");
+        this.domHelper.setElementWidth(MenuElement.menuPanel, "100%");
+        this.domHelper.setElementWidth(MenuElement.sideNavfixed, "100%");
         this.domHelper.hideElements(MenuElement.publishData);
         this.domHelper.showElements(MenuElement.exportData);
     }
@@ -96,8 +95,8 @@ export class SideMenuComponent implements OnChanges {
         if (!this.feedbackDescriptionText && this.isFeedbackOpen) {
             this.openOrCloseFeedBackPanel();
         }
-        this.domHelper.setWidth(MenuElement.menuPanel, "3px");
-        this.domHelper.setWidth(MenuElement.sideNavfixed, "0px");
+        this.domHelper.setElementWidth(MenuElement.menuPanel, "3px");
+        this.domHelper.setElementWidth(MenuElement.sideNavfixed, 0);
     }
 
     private childCount(level, node) {
@@ -143,11 +142,7 @@ export class SideMenuComponent implements OnChanges {
     }
 
     private enableTabControl() {
-        setTimeout(() => {
-            if (!this.tabs) {
-                this.tabs = $("ul.tabs").tabs();
-            }
-        }, 500);
+        this.domHelper.initTabControl();
     }
 
     OnPublish() {
@@ -158,18 +153,17 @@ export class SideMenuComponent implements OnChanges {
     OnExport() {
         this.domHelper.showElements(MenuElement.exportData);
         this.domHelper.hideElements(MenuElement.publishData);
-
     }
 
     openOrCloseFeedBackPanel() {
-        if (this.feedbackIconLabel === FEEDBACK_ICON_OPEN) {
+        if (this.feedbackIcon === FEEDBACK_ICON_OPEN) {
             this.isFeedbackOpen = true;
-            this.feedbackIconLabel = FEEDBACK_ICON_CLOSE;
-            this.domHelper.setHeight(MenuElement.feedbackPanel, "220px");          
-        } else if (this.feedbackIconLabel === FEEDBACK_ICON_CLOSE) {
-            this.feedbackIconLabel = FEEDBACK_ICON_OPEN;
+            this.feedbackIcon = FEEDBACK_ICON_CLOSE;
+            this.domHelper.setElementHeight(MenuElement.feedbackPanel, "220px");
+        } else if (this.feedbackIcon === FEEDBACK_ICON_CLOSE) {
+            this.feedbackIcon = FEEDBACK_ICON_OPEN;
             this.feedbackDescriptionText = "";
-            this.domHelper.setHeight(MenuElement.feedbackPanel, "30px");
+            this.domHelper.setElementHeight(MenuElement.feedbackPanel, 0);
             this.isFeedbackOpen = false;
         }
     }

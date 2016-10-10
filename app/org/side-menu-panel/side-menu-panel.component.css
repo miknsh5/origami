@@ -7,6 +7,7 @@
     z-index: -1;
     transition: 0.5s;
     font-size: 13px;
+    max-width: 240px;
 }
 
 .sideNav i {
@@ -163,28 +164,10 @@
     padding-top: 250px;
 }
 
-.tabControl {
-    margin-top: 150px;
-}
-
-.tabs .tab.disabled {
-    background-color: #607d8b;
-    background-color: var(--blue-grey);
-    cursor: default;
-}
-
 .disabled a {
     text-align: center;
     padding-top: 5px;
     opacity: 0.5;
-}
-
-ul.tabs {
-    background-color: transparent;
-    height: 25px;
-    cursor: default;
-    width: 240px !important;
-    font-size: 0.8rem;
 }
 
 a {
@@ -192,7 +175,20 @@ a {
     padding-top: 3px;
 }
 
-.active {
+.tabControl {
+    margin-top: 150px;
+    z-index: 0;
+}
+
+ul.tabs {
+    background-color: transparent;
+    height: 25px;
+    cursor: default;
+    font-size: 0.8rem;
+    overflow: hidden;
+}
+
+ul.tabs .tab a.active {
     color: #fff;
     background-color: #455a64;
     background-color: var(--slate);
@@ -202,7 +198,7 @@ a {
     border-top: 3px solid var(--blue-grey);
 }
 
-.tabs .tab a {
+ul.tabs .tab a {
     color: #ffffff;
     color: var(--white-text);
     display: block;
@@ -214,7 +210,7 @@ a {
     border-top: 3px solid #607d8b;
 }
 
-.tabs .tab {
+ul.tabs .tab {
     background-color: #607d8b;
     line-height: normal;
     text-transform: none;
@@ -222,31 +218,24 @@ a {
     cursor: pointer;
 }
 
-.tabControl {
-    z-index: 0;
-}
-
 #feedbackPanel {
     position: fixed;
     bottom: 0px;
-    height: 30px;
+    min-height: 35px;
+    height: 0;
     background-color: #607D8B;
     transition: 0.7s;
     color: #DFE5E7;
     z-index: 1;
-}
-
-#feedbackPanel span {
-    vertical-align: 4px;
-    margin-left: 10px;
+    font-size: 14px;
 }
 
 #feedbackPanel .feedbackTitle {
     cursor: pointer;
 }
 
-#feedbackPanel .feedbackPanel {
-    width: 240px;
+#feedbackPanel .feedbackTitle span {
+    vertical-align: super;
 }
 
 #feedbackPanel textarea {
@@ -254,26 +243,25 @@ a {
     border: 1px solid #536D79;
     border-radius: 10px;
     width: 90%;
-    height: 7rem;
+    height: 8rem;
     margin: 0px 10px;
+    resize: none;
+    padding: 10px;
 }
 
 #feedbackPanel .divider {
-    height: 1px;
-    overflow: hidden;
-    background-color: #818D94;
-    width: inherit;
+    background-color: #8B8E90;
 }
 
 #feedbackPanel button {
-    float: right;
-    top: 3px;
+    top: 5px;
     right: 15px;
     padding: 1px 15px 0px 5px!important;
 }
 
 #feedbackPanel .waves-effect {
     background-color: #0097FF;
+    background-color: var(--azure);
     font-size: 0.98rem;
     border-radius: 0px;
     height: 30px;
@@ -281,14 +269,12 @@ a {
 }
 
 #feedbackPanel .btn i {
-    font-size: 1.3rem;
-    line-height: 25px;
+    margin-top: 0;
 }
 
 #feedbackPanel i {
     font-size: 1.3rem;
     line-height: 1.53em;
-    margin-left: 8px;
-    margin-top: 3px;
+    margin: 3px 8px;
     color: #FBFBFC;
 }

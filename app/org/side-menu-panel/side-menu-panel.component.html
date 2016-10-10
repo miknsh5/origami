@@ -62,14 +62,13 @@
             </div>
             <div id="feedbackPanel">
                 <div class="feedbackPanel">
-                    <div class="feedbackTitle" (click)="openOrCloseFeedBackPanel()"> <i class="material-icons">{{feedbackIconLabel}}</i> <span>Feedback</span></div>
+                    <div class="feedbackTitle" (click)="openOrCloseFeedBackPanel()"> <i class="material-icons">{{feedbackIcon}}</i> <span>Feedback</span></div>
 
                     <div class="divider"></div>
                     <div class="input-field col s9">
-                        <textarea placeholder="Share you feedback! Feature requests? Bugs? Compliments? Constructive criticism?" rows="15" cols="50" id="feedbacktxt" style="resize: none;" [(ngModel)]="feedbackDescriptionText" autocomplete="off"></textarea>
-
+                        <textarea placeholder="Share you feedback! Feature requests? Bugs? Compliments? Constructive criticism?" cols="50" id="feedbacktxt" [(ngModel)]="feedbackDescriptionText" autocomplete="off"></textarea>
                     </div>
-                    <button class="waves-effect waves-light btn" (click)="onFeedbackSend()"> 
+                    <button class="waves-effect waves-light btn right" (click)="onFeedbackSend()"> 
                       <i class="material-icons left">send</i>SEND</button>
                 </div>
             </div>
