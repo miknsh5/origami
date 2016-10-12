@@ -124,11 +124,11 @@ export class ImportCsvFileComponent {
         }
     }
 
-    private CSVToArray(strData, strDelimiter): any {
+    private CSVToArray(strData): any {
         let strMatchedValue = "";
         // Check to see if the delimiter is defined. If not,
         // then default to comma.
-        strDelimiter = (strDelimiter || ",");
+        let strDelimiter = ",";
         // Create a regular expression to parse the CSV values.
         let objPattern = new RegExp((
             // Delimiters.
@@ -194,9 +194,8 @@ export class ImportCsvFileComponent {
                 this.unmappedNodesCount++;
                 orgNode.children = new Array<OrgNodeModel>();
                 this.defaultNode = orgNode;
-            } else {
-                this.mappedNodesCount++;
             }
+            this.mappedNodesCount++;
         }
         return orgNode;
     }
@@ -216,7 +215,7 @@ export class ImportCsvFileComponent {
 
     private CSV2JSON(csv): boolean {
         this.rootNode = [];
-        let array = this.CSVToArray(csv, ",");
+        let array = this.CSVToArray(csv);
         let doesTitleExist: boolean;
         let index: any;
         for (let i = 0; i < array.length; i++) {
@@ -255,14 +254,12 @@ export class ImportCsvFileComponent {
 
                 if (this.unmappedNodesCount > 1) {
                     this.hasMultipleParent = true;
-                    this.rootNode.forEach((node) => {
-                        node.ParentNodeID = null;
-                    });
+                    return false;
                 } else {
                     this.hasMultipleParent = false;
                     this.unmappedNodesCount = this.unmappedNodesCount - 1;
                 }
-                this.mappedNodesCount += 1;
+
                 this.json = JSON.stringify(this.rootNode);
                 this.json = this.json.replace(/},/g, "},\r\n");
                 this.json = JSON.parse(this.json);

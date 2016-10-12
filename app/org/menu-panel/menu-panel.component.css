@@ -23,6 +23,7 @@ hr {
 nav {
     background-color: #ffffff;
     background-color: var(--white-text);
+    z-index: 1;
 }
 
 nav,
@@ -154,6 +155,7 @@ nav ul a i.left {
 
 .fixed {
     position: fixed;
+    z-index: 1;
 }
 
 #companyDropdown li a.active,
@@ -185,7 +187,7 @@ nav ul a i.left {
     height: 100%;
     max-height: 100%;
     overflow: auto;
-    background-color: rgba(0, 0, 0, 0.2);
+    background-color: rgba(255, 255, 255, 0.5);
 }
 
 
@@ -201,7 +203,7 @@ nav ul a i.left {
     top: 18.5%;
     margin: 10px auto;
     position: relative;
-    box-shadow: 0px 5px 5px 3px rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+    box-shadow: 0px 2px 2px 3px rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
 }
 
 
@@ -394,6 +396,11 @@ input {
 
 .loadscreen img {
     width: 100%;
+}
+
+#deleteGroup .btn,
+#deleteCompany .btn {
+    box-shadow: none;
 }
 
 @media only screen and (max-width:992px) {

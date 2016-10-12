@@ -145,6 +145,13 @@ export class OrgService {
             .map(res => res.json());
     }
 
+    sendFeedback(userFeedback) {
+        let feedbackUrl = "api/email/SendFeedback";
+        let url = this.origamiUrl + feedbackUrl;
+        return this.http.post(url, userFeedback, { headers: this.headers })
+            .map(node => node.json());
+    }
+
     logError(err: any) {
         console.error(err);
     }
