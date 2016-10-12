@@ -3,18 +3,20 @@ var webpack = require('webpack')
 var CleanWebpackPlugin = require('clean-webpack-plugin')
 
 module.exports = {
+    devtool: 'source-map',
     entry: {
         'vendor': './app/vendor',
         'app': './app/main'
     },
     output: {
         path: __dirname,
-        filename: './dist/[name].bundle.js'
+        filename: './dist/[name].bundle.js',
+        sourceMapFilename: './dist/[name].map',
+        chunkFilename: './dist/[id].chunk.js'
     },
     resolve: {
-        extensions: ['', '.ts', '.js']
+        extensions: ['.ts', '.js', '.css', '.html']
     },
-    devtool: 'source-map',
     module: {
         loaders: [{
                 test: /\.ts/,
@@ -29,7 +31,8 @@ module.exports = {
         ]
     },
     plugins: [
+        new webpack.optimize.OccurenceOrderPlugin(true),
         new webpack.optimize.CommonsChunkPlugin( /* chunkName= */ 'vendor', /* filename= */ './dist/vendor.bundle.js'),
-        new CleanWebpackPlugin(['dist', 'build'], { root: __dirname, verbose: true, dry: false, exclude: [] })
+        new CleanWebpackPlugin(['dist'], { root: __dirname, verbose: true, dry: false, exclude: [] })
     ]
 }
