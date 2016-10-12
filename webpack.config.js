@@ -15,7 +15,7 @@ module.exports = {
         chunkFilename: './dist/[id].chunk.js'
     },
     resolve: {
-        extensions: ['.ts', '.js', '.css', '.html']
+        extensions: ['', '.ts', '.js', '.css', '.html']
     },
     module: {
         loaders: [{
@@ -33,6 +33,6 @@ module.exports = {
     plugins: [
         new webpack.optimize.OccurenceOrderPlugin(true),
         new webpack.optimize.CommonsChunkPlugin( /* chunkName= */ 'vendor', /* filename= */ './dist/vendor.bundle.js'),
-        new CleanWebpackPlugin(['dist'], { root: __dirname, verbose: true, dry: false, exclude: [] })
+        new CleanWebpackPlugin(['dist'], { root: __dirname, verbose: true, dry: false, exclude: [/node_modules/] })
     ]
 }
