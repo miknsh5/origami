@@ -8,7 +8,7 @@ const appRoutes: Routes = [
     {
         path: "",
         redirectTo: "/login",
-        pathMatch: "full",
+        pathMatch: "full"
     },
     {
         path: "login",
@@ -21,8 +21,12 @@ const appRoutes: Routes = [
     },
     {
         path: "**",
-        redirectTo: "/login",
+        redirectTo: "/login"
     }
+];
+
+export const appRoutingProviders: any[] = [
+    AuthGuard
 ];
 
 export const routing = RouterModule.forRoot(appRoutes);
