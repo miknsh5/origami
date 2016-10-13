@@ -14,29 +14,44 @@
 
 .smart-bar-wrap .input-field input[type=text] {
     margin: 0px 20px;
-    border: transparent;
+    border: #58727F;
     background: #58727F;
     height: 2rem;
-    width: 89.5%;
-    padding: 0 15px;
+    width: 93.5%;
     border-radius: 10px;
     box-shadow: 0 1px 0 0 #58727F;
 }
 
 ::-webkit-input-placeholder {
     color: #879AA3;
+    padding: 0 15px;
 }
 
 :-moz-placeholder {
     /* Firefox 18- */
     color: #879AA3;
+    padding: 0 15px;
 }
 
 ::-moz-placeholder {
     /* Firefox 19+ */
     color: #879AA3;
+    padding: 0 15px;
 }
 
 :-ms-input-placeholder {
     color: #879AA3;
+    padding: 0 15px;
+}
+
+@media only screen and (max-width: 760px) and (min-width: 400px) {
+    .smart-bar-wrap .input-field input[type=text] {
+        width: 87.5%;
+    }
+}
+
+@media only screen and (max-width: 1024px) and (min-width: 760px) {
+    .smart-bar-wrap .input-field input[type=text] {
+        width: 90.5%;
+    }
 }
