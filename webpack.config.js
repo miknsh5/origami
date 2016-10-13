@@ -1,35 +1,34 @@
-const path = require('path')
-var webpack = require('webpack')
-var CleanWebpackPlugin = require('clean-webpack-plugin')
+var webpack = require('webpack'),
+    path = require('path'),
+    CleanWebpackPlugin = require('clean-webpack-plugin')
 
 module.exports = {
+    devtool: 'source-map',
     entry: {
         'vendor': './app/vendor',
         'app': './app/main'
     },
-    output: {
-        path: __dirname,
-        filename: './dist/[name].bundle.js'
-    },
     resolve: {
         extensions: ['', '.ts', '.js']
     },
-    devtool: 'source-map',
+    output: {
+        path: __dirname,
+        filename: './build/[name].bundle.js'
+    },
     module: {
-        loaders: [{
-                test: /\.ts/,
-                loaders: ['ts-loader'],
-                exclude: /node_modules/
-            },
-            {
-                test: /\.css/,
-                loaders: ['style', 'css'],
-                exclude: /node_modules/
-            }
+        preLoaders: [
+            { test: /\.js$/, loader: 'source-map-loader', exclude: /node_modules/ }
+        ],
+        loaders: [
+            { test: /\.ts$/, loader: 'awesome-typescript-loader', exclude: /node_modules/ },
+            { test: /\.(html|css)$/, loader: 'raw-loader' }
         ]
     },
     plugins: [
-        new webpack.optimize.CommonsChunkPlugin( /* chunkName= */ 'vendor', /* filename= */ './dist/vendor.bundle.js'),
-        new CleanWebpackPlugin(['dist', 'build'], { root: __dirname, verbose: true, dry: false, exclude: [] })
-    ]
+        new webpack.optimize.OccurenceOrderPlugin(true),
+        new CleanWebpackPlugin(['build'], { root: __dirname, verbose: true, dry: false, exclude: [/node_modules/] })
+    ],
+    devServer: {
+        historyApiFallback: true
+    }
 }
