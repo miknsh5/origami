@@ -6,7 +6,7 @@
         "experimentalDecorators": true,
         "sourceMap": true,
         "suppressImplicitAnyIndexErrors": true,
-        "outDir": "build"
+        "outDir": "dist"
     },
     "compileOnSave": false,
     "buildOnSave": false,

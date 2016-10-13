@@ -13,7 +13,7 @@ module.exports = {
     },
     output: {
         path: __dirname,
-        filename: './build/[name].bundle.js'
+        filename: './dist/[name].bundle.js'
     },
     module: {
         preLoaders: [
@@ -26,7 +26,8 @@ module.exports = {
     },
     plugins: [
         new webpack.optimize.OccurenceOrderPlugin(true),
-        new CleanWebpackPlugin(['build'], { root: __dirname, verbose: true, dry: false, exclude: [/node_modules/] })
+        new webpack.optimize.CommonsChunkPlugin( /* chunkName= */ 'vendor', /* filename= */ './dist/vendor.bundle.js'),
+        new CleanWebpackPlugin(['build', 'dist'], { root: __dirname, verbose: true, dry: false, exclude: [/node_modules/] })
     ],
     devServer: {
         historyApiFallback: true
