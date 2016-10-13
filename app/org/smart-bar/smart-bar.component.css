@@ -1,0 +1,42 @@
+.smart-bar-wrap {
+    height: 55px;
+    position: fixed;
+    background-color: #607D8B;
+    bottom: 15px;
+    left: 0;
+    right: 0;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
+    min-width: 240px;
+    max-width: 720px;
+    margin: 0 auto;
+    width: 50%;
+}
+
+.smart-bar-wrap .input-field input[type=text] {
+    margin: 0px 20px;
+    border: transparent;
+    background: #58727F;
+    height: 2rem;
+    width: 89.5%;
+    padding: 0 15px;
+    border-radius: 10px;
+    box-shadow: 0 1px 0 0 #58727F;
+}
+
+::-webkit-input-placeholder {
+    color: #879AA3;
+}
+
+:-moz-placeholder {
+    /* Firefox 18- */
+    color: #879AA3;
+}
+
+::-moz-placeholder {
+    /* Firefox 19+ */
+    color: #879AA3;
+}
+
+:-ms-input-placeholder {
+    color: #879AA3;
+}

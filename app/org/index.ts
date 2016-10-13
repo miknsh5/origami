@@ -8,3 +8,4 @@ export * from "./json-to-csv/index";
 export * from "./tree-to-png/index";
 export * from "./import-csv-file/index";
 export * from "./menu-confirm/index";
+export * from "./smart-bar/index";
