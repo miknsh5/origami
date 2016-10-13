@@ -1,10 +1,8 @@
-<!Doctype html>
+<!DOCTYPE html>
 <html>
 
 <head>
-    <script>
-        document.write('<base href="' + document.location + '" />');
-    </script>
+    <base href="/">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
     <title>PeopleTree</title>
@@ -15,8 +13,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/css/materialize.min.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
-    <!-- Auth0 Lock script and AngularJS module -->
-    <script src="//cdn.auth0.com/js/lock-8.2.min.js"></script>
 </head>
 
 <body>
@@ -27,11 +23,18 @@
         </div>
     </sg-origami>
 </body>
+<!-- Auth0 Lock script and AngularJS module -->
+<script src="//cdn.auth0.com/js/lock-8.2.min.js"></script>
 
+<!-- Jquery & Materialize -->
 <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/js/materialize.js"></script>
+
+<!-- Main Modules -->
 <script src="dist/vendor.bundle.js"></script>
 <script src="dist/app.bundle.js"></script>
-<script type="text/javascript" src="svg-pan-zoom.js"></script>
+
+<!-- Svg-Pan-Zoom Modules -->
+<script type="text/javascript" src="assets/svg-pan-zoom.js"></script>
 
 </html>

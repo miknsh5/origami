@@ -4,7 +4,7 @@ import { Headers, RequestOptions } from "@angular/http";
 
 @Injectable()
 export class OrgService {
-    private origamiUrl = "//origamiapi.azurewebsites.net/";
+    private origamiUrl = "//origamistageapi.azurewebsites.net/";
     private getCompaniesUrl = "api/Org/GetCompaniesForUser";
     private getUrl = "api/Org/GetNodesForGroup?orgGroupID=";
     private updateGroupUrl = "api/Org/UpdateGroup";
@@ -143,6 +143,13 @@ export class OrgService {
         let url = this.origamiUrl + this.deleteComapnyUrl + companyID;
         return this.http.delete(url, options)
             .map(res => res.json());
+    }
+
+    sendFeedback(userFeedback) {
+        let feedbackUrl = "api/email/SendFeedback";
+        let url = this.origamiUrl + feedbackUrl;
+        return this.http.post(url, userFeedback, { headers: this.headers })
+            .map(node => node.json());
     }
 
     logError(err: any) {

@@ -1,14 +1,12 @@
 .main-canvas {
+    float: left;
     width: 100%;
     overflow-x: auto;
-    position: absolute;
-    z-index: -2;
 }
 
 .modes-wrap {
-    min-width: 25px;
-    position: fixed;
-    top: 50px;
+    width: 100px;
+    position: absolute;
     left: 30px
 }
 
@@ -23,27 +21,27 @@
 }
 
 .modes-wrap li.nav-build {
-    background-image: url("app/images/nav-build.png");
+    background-image: url("/assets/images/nav-build.png");
 }
 
 .modes-wrap li.nav-build.active {
-    background-image: url("app/images/nav-build-active.png");
+    background-image: url("/assets/images/nav-build-active.png");
 }
 
 .modes-wrap li.nav-explore {
-    background-image: url("app/images/nav-explore.png");
+    background-image: url("/assets/images/nav-explore.png");
 }
 
 .modes-wrap li.nav-explore.active {
-    background-image: url("app/images/nav-explore-active.png");
+    background-image: url("/assets/images/nav-explore-active.png");
 }
 
 .modes-wrap li.nav-report {
-    background-image: url("app/images/nav-report.png");
+    background-image: url("/assets/images/nav-report.png");
 }
 
 .modes-wrap li.nav-report.active {
-    background-image: url("app/images/nav-report-active.png");
+    background-image: url("/assets/images/nav-report-active.png");
 }
 
 .modes-wrap li>a {

@@ -229,7 +229,7 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
         this.orgService.addRootNode(node)
             .subscribe(data => this.emitChartUpdatedNotification(data),
             error => this.handleError(error),
-            () => console.log("Node Added Complete"));
+            () => console.log("Added new parent."));
     }
 
     private addNewNode(node: OrgNodeModel) {
@@ -239,7 +239,7 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
         this.orgService.addNode(node)
             .subscribe(data => this.emitAddNodeNotification(data),
             error => this.handleError(error),
-            () => console.log("Node Added Complete"));
+            () => console.log("Added new node."));
     }
 
     private onCancelEditClicked() {
@@ -262,7 +262,7 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
         this.orgService.updateNode(node)
             .subscribe(data => this.emitUpdateNodeNotification(data),
             error => this.handleError(error),
-            () => console.log("Node Updated Complete"));
+            () => console.log("Updated node."));
     }
 
     private onEditNodeClicked() {
@@ -279,7 +279,7 @@ export class OrgNodeDetailComponent implements OnChanges, AfterContentChecked {
                 this.orgService.deleteNode(this.orgNode.NodeID)
                     .subscribe(data => this.emitDeleteNodeNotification(data),
                     error => this.handleError(error),
-                    () => console.log("Node Deleted Complete"));
+                    () => console.log("Deleted node."));
             }
         }
     }

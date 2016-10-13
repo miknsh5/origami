@@ -1,8 +1,6 @@
 // Core
 import { Component } from "@angular/core";
-
-import { LoginComponent } from "./login/login.component";
-import { OrgComponent } from "./org/index";
+import "rxjs/add/operator/map";
 
 @Component({
     selector: "sg-origami",

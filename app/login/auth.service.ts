@@ -3,13 +3,14 @@ import { tokenNotExpired } from "angular2-jwt";
 import { Router } from "@angular/router";
 
 import { UserModel } from "../shared/index";
+import { myConfig } from "./auth.config";
 
 declare var Auth0Lock: any;
 
 @Injectable()
 export class AuthService {
 
-    lock = new Auth0Lock("HraDY4gNnmBBSCP7vu7Z6BMO3mdjIAqn", "origami.auth0.com");
+    lock = new Auth0Lock(myConfig.clientID, myConfig.domain);
 
     constructor(private router: Router, private zone: NgZone) { }
 
@@ -52,7 +53,7 @@ export class AuthService {
         this.router.navigateByUrl("/login");
     }
 
-    loggedIn() {
+    authenticated() {
         return tokenNotExpired();
     }
 }

@@ -1,8 +1,20 @@
 import { Component, Input, Output, OnChanges, SimpleChange, EventEmitter } from "@angular/core";
 
-import { OrgGroupModel, OrgNodeModel, ChartMode} from "../shared/index";
+import { OrgGroupModel, OrgNodeModel, ChartMode, OrgService, UserFeedBack, DomElementHelper} from "../shared/index";
+import { UserModel } from "../../Shared/index";
 
 declare let $: any;
+
+const FEEDBACK_ICON_OPEN = `keyboard_arrow_up`;
+const FEEDBACK_ICON_CLOSE = `close`;
+
+const MenuElement = {
+    exportData: "#exportData",
+    publishData: "#publishData",
+    menuPanel: "#menuPanel",
+    sideNavfixed: ".sideNav.fixed",
+    feedbackPanel: "#feedbackPanel"
+};
 
 @Component({
     selector: "sg-side-menu-panel",
@@ -16,7 +28,11 @@ export class SideMenuComponent implements OnChanges {
     directReportees: any;
     totalReportees: any;
     depth: any;
-    private tabs: any;
+    private userModel: UserModel;
+    private isFeedbackOpen: boolean;
+    private feedbackDescriptionText: any;
+    private feedbackIcon: any;
+    private feedback: UserFeedBack;
 
     @Input() currentMode: ChartMode;
     @Input() orgChart: OrgGroupModel;
@@ -29,6 +45,12 @@ export class SideMenuComponent implements OnChanges {
     @Output() showFirstNameLabel = new EventEmitter<boolean>();
     @Output() showLastNameLabel = new EventEmitter<boolean>();
     @Output() showDescriptionLabel = new EventEmitter<boolean>();
+
+    constructor(private orgSevice: OrgService, private domHelper: DomElementHelper) {
+
+        this.feedbackIcon = FEEDBACK_ICON_OPEN;
+        this.isFeedbackOpen = false;
+    }
 
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
         if (changes["selectedOrgNode"]) {
@@ -47,6 +69,9 @@ export class SideMenuComponent implements OnChanges {
                     });
                 }
             } else if (!this.selectedOrgNode && this.isCollapsed) {
+                if (this.feedbackIcon === FEEDBACK_ICON_CLOSE) {
+                    this.feedbackIcon = FEEDBACK_ICON_OPEN;
+                }
                 this.closePanel();
                 this.isCollapsed = true;
             }
@@ -59,14 +84,19 @@ export class SideMenuComponent implements OnChanges {
 
     openPanel() {
         this.isCollapsed = true;
-        $("#menuPanel").width("100%");
-        $(".sideNav.fixed").width("240px");
+        this.domHelper.setElementWidth(MenuElement.menuPanel, "100%");
+        this.domHelper.setElementWidth(MenuElement.sideNavfixed, "100%");
+        this.domHelper.hideElements(MenuElement.publishData);
+        this.domHelper.showElements(MenuElement.exportData);
     }
 
     closePanel() {
         this.isCollapsed = false;
-        $("#menuPanel").width("3px");
-        $(".sideNav.fixed").width("0px");
+        if (!this.feedbackDescriptionText && this.isFeedbackOpen) {
+            this.openOrCloseFeedBackPanel();
+        }
+        this.domHelper.setElementWidth(MenuElement.menuPanel, "3px");
+        this.domHelper.setElementWidth(MenuElement.sideNavfixed, 0);
     }
 
     private childCount(level, node) {
@@ -112,11 +142,46 @@ export class SideMenuComponent implements OnChanges {
     }
 
     private enableTabControl() {
-        setTimeout(() => {
-            if (!this.tabs) {
-                this.tabs = $("ul.tabs").tabs();
-            }
-        }, 500);
+        this.domHelper.initTabControl();
     }
 
+    OnPublish() {
+        this.domHelper.hideElements(MenuElement.exportData);
+        this.domHelper.showElements(MenuElement.publishData);
+    }
+
+    OnExport() {
+        this.domHelper.showElements(MenuElement.exportData);
+        this.domHelper.hideElements(MenuElement.publishData);
+    }
+
+    openOrCloseFeedBackPanel() {
+        if (this.feedbackIcon === FEEDBACK_ICON_OPEN) {
+            this.isFeedbackOpen = true;
+            this.feedbackIcon = FEEDBACK_ICON_CLOSE;
+            this.domHelper.setElementHeight(MenuElement.feedbackPanel, "220px");
+        } else if (this.feedbackIcon === FEEDBACK_ICON_CLOSE) {
+            this.feedbackIcon = FEEDBACK_ICON_OPEN;
+            this.feedbackDescriptionText = "";
+            this.domHelper.setElementHeight(MenuElement.feedbackPanel, 0);
+            this.isFeedbackOpen = false;
+        }
+    }
+    private onFeedbackSend() {
+        if (this.feedbackDescriptionText) {
+            this.feedback = new UserFeedBack();
+            let profile = localStorage.getItem("profile");
+            if (profile) {
+                this.userModel = JSON.parse(profile);
+                this.feedback.UserEmailID = this.userModel.Email;
+                this.feedback.UserID = this.userModel.UserID;
+                this.feedback.UserName = this.userModel.Name;
+            }
+            this.feedback.Description = this.feedbackDescriptionText;
+
+            this.orgSevice.sendFeedback(this.feedback)
+                .subscribe(data => { this.feedbackDescriptionText = ""; },
+                err => this.orgSevice.logError(err));
+        }
+    }
 }

@@ -13,8 +13,8 @@ export class LoginComponent implements OnInit {
     constructor(private auth: AuthService, private router: Router) { }
 
     ngOnInit() {
-        if (this.auth.loggedIn()) {
-            this.router.navigateByUrl("/home");
+        if (this.auth.authenticated()) {
+            this.router.navigate(["home"]);
         } else {
             this.auth.login();
         }

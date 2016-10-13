@@ -155,7 +155,7 @@ export class MenuPanelComponent implements OnChanges {
             this.orgService.getOrgNodes(groupID)
                 .subscribe(data => this.setOrgGroupData(data),
                 err => this.orgService.logError(err),
-                () => console.log("Random Quote Complete"));
+                () => console.log("Fetched all nodes."));
         }
     }
 
