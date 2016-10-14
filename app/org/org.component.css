@@ -5,7 +5,7 @@
 }
 
 .modes-wrap {
-    width: 100px;
+    width: 140px;
     position: absolute;
     left: 30px
 }
@@ -45,13 +45,14 @@
 }
 
 .modes-wrap li>a {
-    width: 28px;
+    width: 80px;
     line-height: 43px;
     font-family: Roboto, HelveticaNeue;
     font-size: 12px;
     font-weight: 400;
     color: #607d8b;
     margin-left: 55px;
+    display: block;
 }
 
 .modes-wrap li.active>a {
