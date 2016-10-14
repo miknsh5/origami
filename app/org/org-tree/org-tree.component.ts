@@ -1,9 +1,9 @@
 import * as angular from "@angular/core";
-import {Component, HostListener, Input, Output, Directive, EventEmitter, Attribute, OnChanges, DoCheck, ElementRef, OnInit, SimpleChange} from "@angular/core";
+import { Component, HostListener, Input, Output, Directive, EventEmitter, Attribute, OnChanges, DoCheck, ElementRef, OnInit, SimpleChange } from "@angular/core";
 import { Inject } from "@angular/core";
 
 import * as d3 from "d3";
-import { OrgNodeModel, OrgService, ChartMode} from "../shared/index";
+import { OrgNodeModel, OrgService, ChartMode } from "../shared/index";
 
 const DURATION = 250;
 const TOPBOTTOM_MARGIN = 20;
@@ -498,9 +498,9 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
     createArrows() {
         let arrowsData = [{ "points": ARROW_POINTS, "transform": "", "id": "right" },
-            { "points": ARROW_POINTS, "transform": "translate(58, 55) rotate(-180)", "id": "left" },
-            { "points": ARROW_POINTS, "transform": "translate(2,58) rotate(-90)", "id": "top" },
-            { "points": ARROW_POINTS, "transform": "translate(56, -2) rotate(90)", "id": "bottom" }];
+        { "points": ARROW_POINTS, "transform": "translate(58, 55) rotate(-180)", "id": "left" },
+        { "points": ARROW_POINTS, "transform": "translate(2,58) rotate(-90)", "id": "top" },
+        { "points": ARROW_POINTS, "transform": "translate(56, -2) rotate(90)", "id": "bottom" }];
 
         let arrows = this.arrows;
         arrowsData.forEach(function (data) {
@@ -742,8 +742,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         nodeEnter.append(TEXT)
             .attr("id", "abbr")
             .attr("dy", ".4em")
-            .attr("text-anchor", "middle")
-            .style("fill-opacity", 1);
+            .attr("text-anchor", "middle");
 
         node.select("#abbr").text((d) => {
             if (d.IsStaging && d.NodeID === -1) { return "+"; }
@@ -776,7 +775,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 }
             }
             return transformString;
-        });
+        }).style("visibility", "visible");
 
         nodeEnter.append("g")
             .attr("class", "label");
@@ -961,7 +960,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 if (this.currentMode !== ChartMode.explore) {
                     if (d.IsSelected === true || d.IsSibling === true) { return SIBLING_RADIUS; }
                     else if (d.IsParent === true || d.IsChild === true) { return PARENTCHILD_RADIUS; }
-                    else if (d.IsGrandParent === true) { return GRANDPARENT_RADIUS; }
                     else { return DEFAULT_RADIUS; }
                 } else {
                     return PARENTCHILD_RADIUS;
@@ -978,7 +976,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             });
 
         nodeUpdate.select("g.label")
-            .style({ "fill-opacity": 1, "fill": "#979797" });
+            .style({ "visibility": "visible", "fill": "#979797" });
 
         let nodeExit = node.exit().transition().delay(100).
             duration(DURATION)
@@ -996,8 +994,11 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         nodeExit.select(CIRCLE)
             .attr("r", 1e-6);
 
+        nodeExit.select("#abbr")
+            .style("visibility", "hidden");
+
         nodeExit.select("g.label")
-            .style("fill-opacity", 1e-6);
+            .style("visibility", "hidden");
 
         node.each(function (d) {
             if (d.IsFakeRoot)
@@ -1524,12 +1525,12 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                     if (!selectedTreeNode.parent) {
                         selectedTreeNode.parent = this.getNode(this.selectedOrgNode.ParentNodeID, this.root);
                     }
-                    if (selectedTreeNode.parent.parent) {
-                        let nodeID = (selectedTreeNode.parent as OrgNodeModel).ParentNodeID;
-                        if (nodeID === node.NodeID) {
-                            node.IsGrandParent = true;
-                        }
-                    }
+                    // if (selectedTreeNode.parent.parent) {
+                    //     let nodeID = (selectedTreeNode.parent as OrgNodeModel).ParentNodeID;
+                    //     if (nodeID === node.NodeID) {
+                    //         node.IsGrandParent = true;
+                    //     }
+                    // }
                 }
             }
         }

@@ -28,8 +28,8 @@
 
 html,
 body {
-    background-color: #fafafa;
-    background-color: var(--white);
+    background-color: #ffffff;
+    background-color: var(--white-text);
 }
 
 .h-1 {
@@ -221,7 +221,7 @@ path.horizontal {
     -o-transform: translateX(-50%);
     transform: translateX(-50%);
     margin: 0.5em 0 0 50%;
-    font-size: 0.875em;
+    font-size: 1.25em;
     letter-spacing: 0.1em;
     line-height: 1.5em;
     color: #80cbff;
