@@ -1,7 +1,17 @@
 <div class="smart-bar-wrap">
     <form>
         <div center class="input-field">
-            <input id="SearchOrAdd" type="text" required placeholder="Search, Build, Edit">
+            <input id="SearchOrAdd" type="text" required placeholder="Search, Build, Edit" ngControl="searchOrAddName" #searchOrAddName="ngModel" name="searchOrAddName" (keyup)="onInputName($event)" [(ngModel)]="searchOrAdd" autocomplete="on">
         </div>
     </form>
+    <div *ngIf="isTyping" class="search">
+        <ul>
+            <li> Find </li>
+            <li class="header">Find by {{searchOrAdd}}</li>
+            <li *ngFor="let data of treedata">
+                {{data.NodeName}}
+            </li>
+
+        </ul>
+    </div>
 </div>

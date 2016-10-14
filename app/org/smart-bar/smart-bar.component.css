@@ -22,6 +22,23 @@
     box-shadow: 0 1px 0 0 #58727F;
 }
 
+.smart-bar-wrap .search {
+    bottom: 220px;
+    position: absolute;
+    width: 150px;
+    height: 75px;
+    max-height: 73px;
+    background: #FFFFFF;
+}
+
+.smart-bar-wrap .search .header {
+    background: #E5E5E5;
+}
+
+.smart-bar-wrap .search ul {
+    border: 1px solid #F1F1F1;
+}
+
 ::-webkit-input-placeholder {
     color: #879AA3;
     padding: 0 15px;
