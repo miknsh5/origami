@@ -21,7 +21,7 @@ module.exports = {
         ],
         loaders: [
             { test: /\.ts$/, loader: 'awesome-typescript-loader', exclude: /node_modules/ },
-            { test: /\.(html|css)$/, loader: 'raw-loader' }
+            { test: /\.(html|css|png|gif)$/, loader: 'raw-loader' }
         ]
     },
     plugins: [
