@@ -9,7 +9,7 @@ module.exports = {
         'app': './app/main'
     },
     resolve: {
-        extensions: ['', '.ts', '.js']
+        extensions: ['', '.ts', '.js', '.png', '.gif']
     },
     output: {
         path: __dirname,
