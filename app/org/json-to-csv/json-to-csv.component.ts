@@ -1,5 +1,5 @@
 import * as angular from "@angular/core";
-import {Component, Input} from "@angular/core";
+import { Component, Input } from "@angular/core";
 
 import { CSVConversionHelper } from "../shared/csv-helper";
 

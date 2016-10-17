@@ -12,40 +12,45 @@ import { OrgNodeModel, OrgSearchModel, OrgService } from "../shared/index";
 export class SamrtBarComponent implements OnChanges {
     isTyping: boolean;
     searchOrAdd: any;
-    treedata: OrgSearchModel[];
+    orgSearchData: OrgSearchModel[];
 
     @Input() treeJson: any;
 
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
         if (changes["treeJson"]) {
             if (this.treeJson) {
-                this.treedata = new Array<OrgSearchModel>();
-                this.treeJson.forEach((element: OrgNodeModel, index) => {
-                    let data = new OrgSearchModel();
-                    data.NodeId = element.NodeID;
-                    data.NodeName = element.NodeFirstName + element.NodeLastName;
-                    data.NodeTitle = element.Description;
-                    this.treedata[index] = (data);
-                    if (element.children) {
-                        element.children.forEach((child: OrgNodeModel, i) => {
-                            let childData = new OrgSearchModel();
-                            childData.NodeId = child.NodeID;
-                            childData.NodeName = child.NodeFirstName + child.NodeLastName;
-                            childData.NodeTitle = child.Description;
-                            this.treedata[i + index] = (childData);
-                        });
-                    }
-                });
+                this.orgSearchData = new Array<any>();
+                this.convertToFlatData(this.treeJson);
+                console.log(this.orgSearchData);
             }
         }
     }
+
+    convertToFlatData(inputArray, ischild?: boolean) {
+        ischild = ischild || false;
+        let index = 0, length = inputArray.length;
+        for (index = 0; index < length; index++) {
+            let searchModel = new OrgSearchModel();
+            searchModel.NodeID = inputArray[index].NodeID;
+            searchModel.Title = inputArray[index].Description;
+            searchModel.Name = inputArray[index].NodeFirstName + " " + inputArray[index].NodeLastName;
+
+            this.orgSearchData.push(searchModel);
+
+            if (inputArray[index].children && typeof inputArray[index].children === typeof []) {
+                this.convertToFlatData(inputArray[index].children, true);
+            }
+        }
+        if (ischild === false) {
+            return;
+        }
+    };
+
     private onInputName() {
         if (this.searchOrAdd) {
             this.isTyping = true;
         } else {
             this.isTyping = false;
         }
-
     }
-
 }

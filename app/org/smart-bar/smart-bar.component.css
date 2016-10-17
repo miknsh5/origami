@@ -2,73 +2,56 @@
     height: 55px;
     position: fixed;
     background-color: #607D8B;
+    background-color: var(--blue-grey);
     bottom: 15px;
     left: 0;
     right: 0;
     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
+    box-shadow: 0 2px 4px 0 var(--black-50);
     min-width: 240px;
     max-width: 720px;
     margin: 0 auto;
     width: 50%;
 }
 
-.smart-bar-wrap .input-field input[type=text] {
-    margin: 0px 20px;
+.smart-bar-wrap input[type=text] {
+    padding: 0 2%;
+    margin: 0px 3%;
     border: #58727F;
-    background: #58727F;
+    background-color: #58727F;
     height: 2rem;
-    width: 93.5%;
+    width: 90%;
     border-radius: 10px;
     box-shadow: 0 1px 0 0 #58727F;
+    color: #ffffff;
+    color: var(--white-text);
 }
 
 .smart-bar-wrap .search {
-    bottom: 220px;
+    bottom: 65px;
     position: absolute;
-    width: 150px;
-    height: 75px;
-    max-height: 73px;
-    background: #FFFFFF;
+    height: auto;
+    max-height: 150px;
+    min-width: 240px;
+    background-color: #fafafa;
+    background-color: var(--white)
 }
 
 .smart-bar-wrap .search .header {
-    background: #E5E5E5;
+    background-color: #cfd8dc;
+    background-color: var(--silver);
 }
 
 .smart-bar-wrap .search ul {
-    border: 1px solid #F1F1F1;
+    border: 1px solid #cfd8dc;
+    border: 1px solid var(--silver);
+    margin: 0;
+    padding: 0 5px;
 }
 
-::-webkit-input-placeholder {
+::-webkit-input-placeholder,
+ :-moz-placeholder,
+ ::-moz-placeholder,
+ :-ms-input-placeholder {
     color: #879AA3;
-    padding: 0 15px;
-}
-
-:-moz-placeholder {
-    /* Firefox 18- */
-    color: #879AA3;
-    padding: 0 15px;
-}
-
-::-moz-placeholder {
-    /* Firefox 19+ */
-    color: #879AA3;
-    padding: 0 15px;
-}
-
-:-ms-input-placeholder {
-    color: #879AA3;
-    padding: 0 15px;
-}
-
-@media only screen and (max-width: 760px) and (min-width: 400px) {
-    .smart-bar-wrap .input-field input[type=text] {
-        width: 87.5%;
-    }
-}
-
-@media only screen and (max-width: 1024px) and (min-width: 760px) {
-    .smart-bar-wrap .input-field input[type=text] {
-        width: 90.5%;
-    }
 }

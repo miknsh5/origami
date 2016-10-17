@@ -11,7 +11,7 @@
             <button class="waves-effect waves-light btn" (click)="onImport()">
                 <i class="material-icons">file_upload</i>Browse
             </button>
-            <input type="file" (change)="onImport($event)" accept=".csv" />
+            <input type="file" (click)="onImportClick($event)" (change)="onImportChange($event)" accept=".csv" />
         </span>
     </div>
 </div>

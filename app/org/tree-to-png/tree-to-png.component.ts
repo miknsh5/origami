@@ -1,5 +1,5 @@
 import * as angular from "@angular/core";
-import {Component, Input} from "@angular/core";
+import { Component, Input } from "@angular/core";
 
 import * as d3 from "d3";
 import * as saveSvgAsPng from "save-svg-as-png";

@@ -1,6 +1,6 @@
 import { Component, Input, Output, OnChanges, SimpleChange, EventEmitter } from "@angular/core";
 
-import { OrgGroupModel, OrgNodeModel, ChartMode, OrgService, UserFeedBack, DomElementHelper} from "../shared/index";
+import { OrgGroupModel, OrgNodeModel, ChartMode, OrgService, UserFeedBack, DomElementHelper } from "../shared/index";
 import { UserModel } from "../../Shared/index";
 
 declare let $: any;
@@ -84,8 +84,8 @@ export class SideMenuComponent implements OnChanges {
 
     openPanel() {
         this.isCollapsed = true;
-        this.domHelper.setElementWidth(MenuElement.menuPanel, "100%");
-        this.domHelper.setElementWidth(MenuElement.sideNavfixed, "100%");
+        this.domHelper.setWidth(MenuElement.menuPanel, "100%");
+        this.domHelper.setWidth(MenuElement.sideNavfixed, "100%");
         this.domHelper.hideElements(MenuElement.publishData);
         this.domHelper.showElements(MenuElement.exportData);
     }
@@ -95,8 +95,8 @@ export class SideMenuComponent implements OnChanges {
         if (!this.feedbackDescriptionText && this.isFeedbackOpen) {
             this.openOrCloseFeedBackPanel();
         }
-        this.domHelper.setElementWidth(MenuElement.menuPanel, "3px");
-        this.domHelper.setElementWidth(MenuElement.sideNavfixed, 0);
+        this.domHelper.setWidth(MenuElement.menuPanel, "3px");
+        this.domHelper.setWidth(MenuElement.sideNavfixed, 0);
     }
 
     private childCount(level, node) {
@@ -159,14 +159,15 @@ export class SideMenuComponent implements OnChanges {
         if (this.feedbackIcon === FEEDBACK_ICON_OPEN) {
             this.isFeedbackOpen = true;
             this.feedbackIcon = FEEDBACK_ICON_CLOSE;
-            this.domHelper.setElementHeight(MenuElement.feedbackPanel, "220px");
+            this.domHelper.setHeight(MenuElement.feedbackPanel, "220px");
         } else if (this.feedbackIcon === FEEDBACK_ICON_CLOSE) {
             this.feedbackIcon = FEEDBACK_ICON_OPEN;
             this.feedbackDescriptionText = "";
-            this.domHelper.setElementHeight(MenuElement.feedbackPanel, 0);
+            this.domHelper.setHeight(MenuElement.feedbackPanel, 0);
             this.isFeedbackOpen = false;
         }
     }
+
     private onFeedbackSend() {
         if (this.feedbackDescriptionText) {
             this.feedback = new UserFeedBack();

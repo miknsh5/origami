@@ -8,10 +8,9 @@
         <ul>
             <li> Find </li>
             <li class="header">Find by {{searchOrAdd}}</li>
-            <li *ngFor="let data of treedata">
-                {{data.NodeName}}
+            <li *ngFor="let data of orgTreeData">
+                {{data.NodeFirstName}} {{data.NodeLastName}}
             </li>
-
         </ul>
     </div>
 </div>

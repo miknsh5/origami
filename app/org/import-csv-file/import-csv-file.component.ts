@@ -54,7 +54,11 @@ export class ImportCsvFileComponent {
         this.csvHelper.DownloadTemplate();
     }
 
-    private onImport(event) {
+    private onImportClick(event) {
+        (event.srcElement || event.target).value = null;
+    }
+
+    private onImportChange(event) {
         let files = (event.srcElement || event.target).files[0];
         if (files) {
             this.domHelper.hideElements(ImportElementName.importfile);

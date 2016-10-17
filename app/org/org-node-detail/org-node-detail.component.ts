@@ -1,5 +1,5 @@
 import { Component, HostListener, Input, Output, EventEmitter, OnChanges, SimpleChange, AfterContentChecked, ElementRef, Renderer, ViewChild } from "@angular/core";
-import { NgForm, NgControl  } from "@angular/forms";
+import { NgForm, NgControl } from "@angular/forms";
 
 import { OrgNodeModel, OrgService } from "../shared/index";
 

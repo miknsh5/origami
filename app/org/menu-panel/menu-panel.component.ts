@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter, OnChanges, SimpleChange, Renderer } from "@angular/core";
 import { Router } from "@angular/router";
 
-import { OrgCompanyModel, OrgGroupModel, OrgNodeModel, OrgService, OrgNodeStatus, OrgNodeBaseModel, DomElementHelper} from "../shared/index";
+import { OrgCompanyModel, OrgGroupModel, OrgNodeModel, OrgService, OrgNodeStatus, OrgNodeBaseModel, DomElementHelper } from "../shared/index";
 import { CSVConversionHelper } from "../shared/csv-helper";
 import { UserModel } from "../../Shared/index";
 
@@ -375,9 +375,9 @@ export class MenuPanelComponent implements OnChanges {
 
     private onClickOnImport() {
         if (!this.isImportDisabled) {
+            this.domHelper.hideElements(MenuElement.groupSaveOrEdit);
             this.groupSettingTitle = "Import";
             this.isImport = true;
-            this.domHelper.hideElements(MenuElement.groupSaveOrEdit);
         }
     }
 

@@ -1,13 +1,10 @@
 import { Component, Output, EventEmitter, OnDestroy, HostListener } from "@angular/core";
 import { tokenNotExpired } from "angular2-jwt";
 
-import { OrgNodeModel, ChartMode, OrgCompanyModel, OrgGroupModel, OrgNodeStatus } from "./shared/index";
+import { OrgNodeModel, ChartMode, OrgCompanyModel, OrgGroupModel, OrgNodeStatus, DomElementHelper } from "./shared/index";
 
-const MIN_HEIGHT: number = 320;
-const MAX_HEIGHT: number = 768;
-
-const MIN_WIDTH: number = 420;
-const MAX_WIDTH: number = 1366;
+const MIN_HEIGHT: number = 420;
+const MIN_WIDTH: number = 640;
 
 const DEFAULT_OFFSET: number = 70;
 
@@ -46,7 +43,7 @@ export class OrgComponent implements OnDestroy {
     @Output() currentOrgNodeStatus: OrgNodeStatus;
     @Output() isMenuSettingsEnabled: boolean;
 
-    constructor() {
+    constructor(public domHelper: DomElementHelper) {
         this.currentChartMode = ChartMode.build;
         this.enableLabels();
         this.svgWidth = this.getSvgWidth();
@@ -77,12 +74,15 @@ export class OrgComponent implements OnDestroy {
     enableFirstNameLabel(data) {
         this.displayFirstNameLabel = data;
     }
+
     enableLastNameLabel(data) {
         this.displayLastNameLabel = data;
     }
+
     enableDescriptionLabel(data) {
         this.displayDescriptionLabel = data;
     }
+
     enableLabels() {
         this.displayFirstNameLabel = true;
         this.displayLastNameLabel = true;
@@ -361,12 +361,11 @@ export class OrgComponent implements OnDestroy {
     }
 
     private getSvgHeight() {
+
         let height = window.innerHeight;
 
         // applies min height
         height = height < MIN_HEIGHT ? MIN_HEIGHT : height;
-        // applies max height
-        height = height > MAX_HEIGHT ? MAX_HEIGHT : height;
 
         // temporarily applied wiil be removed after standard and organization mode added
         if (this.svgWidth < 993 && height > MIN_HEIGHT) {
@@ -383,8 +382,6 @@ export class OrgComponent implements OnDestroy {
 
         // applies min width
         width = width < MIN_WIDTH ? MIN_WIDTH : width;
-        // applies max width
-        width = width > MAX_WIDTH ? MAX_WIDTH : width;
 
         return width;
     }
