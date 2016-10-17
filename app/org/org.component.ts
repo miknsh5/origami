@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter, OnDestroy} from "@angular/core";
+import { Component, Output, EventEmitter, OnDestroy, HostListener } from "@angular/core";
 import { tokenNotExpired } from "angular2-jwt";
 
 import { OrgNodeModel, ChartMode, OrgCompanyModel, OrgGroupModel, OrgNodeStatus } from "./shared/index";
@@ -53,6 +53,20 @@ export class OrgComponent implements OnDestroy {
         this.svgHeight = this.getSvgHeight();
         this.currentOrgNodeStatus = OrgNodeStatus.None;
         this.isMenuSettingsEnabled = false;
+    }
+
+    @HostListener("window:keydown", ["$event"])
+    onKeyDown(event: any) {
+        if ((event.metaKey || event.ctrlKey) && event.keyCode === "1".charCodeAt(0)) {
+            event.preventDefault();
+            this.changeViewModeNav(ChartMode.build);
+        } else if ((event.metaKey || event.ctrlKey) && event.keyCode === "2".charCodeAt(0)) {
+            event.preventDefault();
+            this.changeViewModeNav(ChartMode.explore);
+        } else if ((event.metaKey || event.ctrlKey) && event.keyCode === "3".charCodeAt(0)) {
+            event.preventDefault();
+            this.changeViewModeNav(ChartMode.report);
+        }
     }
 
     onResize(event) {
