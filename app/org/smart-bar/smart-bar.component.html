@@ -1,15 +1,25 @@
 <div class="smart-bar-wrap">
     <form>
         <div center class="input-field">
-            <input id="SearchOrAdd" type="text" required placeholder="Search, Build, Edit" ngControl="searchOrAddName" #searchOrAddName="ngModel" name="searchOrAddName" (keyup)="onInputName($event)" [(ngModel)]="searchOrAdd" autocomplete="on">
+            <input id="add_search" type="text" required placeholder="Search, Build, Edit" name="searchOrAddTerm" (keyup)="onInputName($event)" [(ngModel)]="searchOrAddTerm" autocomplete="off">
         </div>
     </form>
-    <div *ngIf="isTyping" class="search">
-        <ul>
-            <li> Find </li>
-            <li class="header">Find by {{searchOrAdd}}</li>
-            <li *ngFor="let data of orgTreeData">
-                {{data.NodeFirstName}} {{data.NodeLastName}}
+    <div *ngIf="searchInProgress" class="search">
+        <ul id="searchSelection">
+            <li style="font-size: 65%;">Find</li>
+            <li class="header">BY NAME</li>
+            <li *ngFor="let data of nameSearchResults" class="nameSearch">
+                <i class="material-icons ">search</i> {{data.Name}} <span class="title "> {{data.Title}}</span>
+            </li>
+            <li *ngIf="nameSearchResults.length===0 ">
+                <i class="material-icons ">search</i> No Results
+            </li>
+            <li class="header ">BY TITLE</li>
+            <li *ngFor="let data of titleSearchResult " class="titleSearch ">
+                <i class="material-icons ">search</i> {{data.Name}} <i class="material-icons right ">keyboard_arrow_right</i> <span class="badge right "> {{data.Count}}</span>
+            </li>
+            <li *ngIf="titleSearchResult.length===0 ">
+                <i class="material-icons ">search</i> No Results
             </li>
         </ul>
     </div>
