@@ -277,3 +277,14 @@ ul.tabs .tab {
     margin: 3px 8px;
     color: #FBFBFC;
 }
+
+#publishData {
+    display: none;
+    text-align: center;
+    margin-top: 15px;
+}
+
+#publishData .title {
+    color: #B6B6B6;
+    font-size: 1.278em;
+}

@@ -1,6 +1,6 @@
 import { Component, Input, Output, OnChanges, SimpleChange, EventEmitter } from "@angular/core";
 
-import { OrgGroupModel, OrgNodeModel, ChartMode, OrgService, UserFeedBack, DomElementHelper} from "../shared/index";
+import { OrgGroupModel, OrgNodeModel, ChartMode, OrgService, UserFeedBack, DomElementHelper } from "../shared/index";
 import { UserModel } from "../../Shared/index";
 
 declare let $: any;
@@ -55,7 +55,12 @@ export class SideMenuComponent implements OnChanges {
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
         if (changes["selectedOrgNode"]) {
             if (this.selectedOrgNode) {
-                if (this.isCollapsed) {
+                if (this.selectedOrgNode && this.selectedOrgNode.NodeID === -1) {
+                    this.closePanel();
+                } else {
+                    this.openPanel();
+                }
+                if (this.isCollapsed && this.selectedOrgNode.NodeID !== -1) {
                     this.openPanel();
                 }
                 this.selectedNode = this.selectedOrgNode;
