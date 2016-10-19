@@ -398,6 +398,11 @@ input {
     width: 100%;
 }
 
+#export {
+    margin-top: -34px;
+    margin-left: -155px;
+}
+
 #deleteGroup .btn,
 #deleteCompany .btn {
     box-shadow: none;
