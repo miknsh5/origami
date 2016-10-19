@@ -103,12 +103,20 @@ export class SamrtBarComponent implements OnChanges {
         }
     }
 
+    private onNodeSleect(event: any, data: OrgSearchModel) {
+        if (data) {
+            $("#searchSelection").find("li.active").removeClass("active");
+            $(event.target).parent().addClass("active");
+            let node = this.getNode(data.NodeID, this.treeJson[0]);
+        }
+    }
+
     private searchList() {
         this.nameSearchResults = new Array<OrgSearchModel>();
         this.titleSearchResult = new Array();
         setTimeout(() => {
             this.orgSearchData.forEach((data, index) => {
-                if (data.Name.includes(this.searchOrAddTerm)) {
+                if (data.Name.toLowerCase().search(this.searchOrAddTerm.toLowerCase()) > -1) {
                     this.nameSearchResults.push(data);
                 }
             });
@@ -131,5 +139,22 @@ export class SamrtBarComponent implements OnChanges {
                 }, 100);
             }
         }, 100);
+    }
+
+    private getNode(nodeID: number, rootNode: any) {
+        if (rootNode.NodeID === nodeID) {
+            return rootNode;
+        } else {
+            let nodes = rootNode.children ? rootNode.children : rootNode._children;
+            if (nodes) {
+                let node;
+                for (let i = 0; i < nodes.length; i++) {
+                    if (!node) {
+                        node = this.getNode(nodeID, nodes[i]);
+                    }
+                };
+                return node;
+            }
+        }
     }
 }

@@ -1,5 +1,5 @@
 export class OrgSearchModel {
     NodeID: number;
-    Name: any;
-    Title: any;
+    Name: string;
+    Title: string;
 }
