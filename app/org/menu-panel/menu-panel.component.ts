@@ -21,7 +21,9 @@ const MenuElement = {
     groupSaveOrEdit: "#groupSaveOrEdit",
     addNewCompany: "#addNewCompany",
     companyDeleteLoader: "#companyDeleteLoader",
-    groupDeleteLoader: "#groupDeleteLoader"
+    groupDeleteLoader: "#groupDeleteLoader",
+    exportData: "#exportData",
+    downloadTemplate: "#downloadTemplate"
 };
 
 @Component({
@@ -41,7 +43,6 @@ export class MenuPanelComponent implements OnChanges {
     private companyName: any;
     private groupSettingTitle: any;
     private isImport: boolean;
-    private enableImport: boolean;
     private groupSelectedMode: any;
     private isImportDisabled: boolean;
 
@@ -58,7 +59,8 @@ export class MenuPanelComponent implements OnChanges {
     constructor(private orgService: OrgService, private router: Router, private renderer: Renderer,
         private csvHelper: CSVConversionHelper, private auth: AuthService, private domHelper: DomElementHelper) {
         this.getAllCompanies();
-        this.enableImport = false;
+        this.domHelper.showElements(MenuElement.exportData);
+        this.domHelper.hideElements(MenuElement.downloadTemplate);
         this.isImport = false;
         this.groupSettingTitle = "Settings";
     }
@@ -72,7 +74,8 @@ export class MenuPanelComponent implements OnChanges {
                 this.selectedCompany.OrgNodeCounts = this.selectedCompany.OrgNodeCounts - 1;
                 this.selectedGroup.OrgNodeCounts = this.selectedGroup.OrgNodeCounts - 1;
                 if (this.selectedGroup.OrgNodeCounts === 0) {
-                    this.enableImport = true;
+                    this.domHelper.showElements(MenuElement.downloadTemplate);
+                    this.domHelper.hideElements(MenuElement.exportData);
                 }
             } else {
                 return;
@@ -81,9 +84,12 @@ export class MenuPanelComponent implements OnChanges {
 
         if (changes["noNodeExsit"]) {
             if (changes["noNodeExsit"].currentValue) {
-                this.enableImport = true;
+                this.domHelper.showElements(MenuElement.downloadTemplate);
+                this.domHelper.hideElements(MenuElement.exportData);
             } else {
-                this.enableImport = false;
+                this.domHelper.showElements(MenuElement.exportData);
+                this.domHelper.hideElements(MenuElement.downloadTemplate);
+
             }
         }
     }
@@ -162,9 +168,11 @@ export class MenuPanelComponent implements OnChanges {
     private setOrgGroupData(data: any) {
         if (data) {
             if (data.OrgNodes && data.OrgNodes.length === 0) {
-                this.enableImport = true;
+                this.domHelper.showElements(MenuElement.downloadTemplate);
+                this.domHelper.hideElements(MenuElement.exportData);
             } else {
-                this.enableImport = false;
+                this.domHelper.showElements(MenuElement.exportData);
+                this.domHelper.hideElements(MenuElement.downloadTemplate);
             }
             this.selectedGroup.OrgNodes = data.OrgNodes;
             this.selectedGroup.IsDefaultGroup = true;
@@ -220,14 +228,20 @@ export class MenuPanelComponent implements OnChanges {
             this.groupName = this.selectedGroup.GroupName;
             this.domHelper.showElements([MenuElement.groupModal, MenuElement.deleteGroup]);
             this.domHelper.hideElements([MenuElement.confirmGroupDelete, MenuElement.groupDeleteLoader]);
-            element = document.querySelector("input[name=existingGroupName]");
+            if (this.selectedGroup && this.selectedGroup.OrgNodes.length === 0) {
+                this.domHelper.showElements(MenuElement.downloadTemplate);
+                this.domHelper.hideElements(MenuElement.exportData);
+            } else {
+                this.domHelper.showElements(MenuElement.exportData);
+                this.domHelper.hideElements(MenuElement.downloadTemplate);
+            } element = document.querySelector("input[name=existingGroupName]");
         } else if (name === "newGroup") {
             this.groupSelectedMode = "AddNewGroup";
             this.groupSettingTitle = "Add New Group";
             this.groupName = "Group " + (this.selectedCompany.OrgGroups.length + 1);
             this.isImportDisabled = true;
-            this.domHelper.showElements([MenuElement.groupModal, MenuElement.importTemplate]);
-            this.domHelper.hideElements([MenuElement.deleteGroup, MenuElement.groupDeleteLoader]);
+            this.domHelper.showElements([MenuElement.groupModal, MenuElement.importTemplate, MenuElement.downloadTemplate]);
+            this.domHelper.hideElements([MenuElement.deleteGroup, MenuElement.groupDeleteLoader, MenuElement.exportData]);
             element = document.querySelector("input[name=existingGroupName]");
         } else if (name === "newCompany") {
             this.companyName = "Company " + (this.orgCompanies.length + 1);
@@ -382,6 +396,7 @@ export class MenuPanelComponent implements OnChanges {
     }
 
     private updateNewOrgGroup(OrgNodes) {
+        this.selectedCompany.OrgNodeCounts = this.selectedCompany.OrgNodeCounts - this.selectedGroup.OrgNodeCounts;
         this.isMenuEnable.emit(false);
         this.domHelper.showElements(MenuElement.groupSaveOrEdit);
         this.domHelper.hideElements(MenuElement.groupModal);
