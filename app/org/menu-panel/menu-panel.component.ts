@@ -396,6 +396,7 @@ export class MenuPanelComponent implements OnChanges {
     }
 
     private updateNewOrgGroup(OrgNodes) {
+        this.selectedCompany.OrgNodeCounts = this.selectedCompany.OrgNodeCounts - this.selectedGroup.OrgNodeCounts;
         this.isMenuEnable.emit(false);
         this.domHelper.showElements(MenuElement.groupSaveOrEdit);
         this.domHelper.hideElements(MenuElement.groupModal);
