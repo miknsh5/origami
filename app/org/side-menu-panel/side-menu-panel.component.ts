@@ -9,7 +9,7 @@ const FEEDBACK_ICON_OPEN = `keyboard_arrow_up`;
 const FEEDBACK_ICON_CLOSE = `close`;
 
 const MenuElement = {
-    exportData: "#exportData",
+    sidePanelExportData: "#sidePanelExportData",
     publishData: "#publishData",
     menuPanel: "#menuPanel",
     sideNavfixed: ".sideNav.fixed",
@@ -24,6 +24,7 @@ const MenuElement = {
 
 export class SideMenuComponent implements OnChanges {
     isCollapsed: boolean;
+    isClosed: boolean;
     selectedNode: OrgNodeModel;
     directReportees: any;
     totalReportees: any;
@@ -47,15 +48,34 @@ export class SideMenuComponent implements OnChanges {
     @Output() showDescriptionLabel = new EventEmitter<boolean>();
 
     constructor(private orgSevice: OrgService, private domHelper: DomElementHelper) {
-
         this.feedbackIcon = FEEDBACK_ICON_OPEN;
         this.isFeedbackOpen = false;
+        this.isClosed = false;
     }
 
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
+        if (changes["orgChart"]) {
+            if (changes["orgChart"].currentValue) {
+                this.isClosed = false;
+                this.openPanel();
+            } else {
+                this.isClosed = true;
+                this.closePanel();
+            }
+        }
+
+        if (changes["isAddOrEditModeEnabled"] && !changes["isAddOrEditModeEnabled"].currentValue) {
+            if (this.selectedOrgNode && this.selectedOrgNode.NodeID === -1) {
+                this.isClosed = false;
+                this.openPanel();
+            }
+        }
+
         if (changes["selectedOrgNode"]) {
             if (this.selectedOrgNode) {
-                if (this.isCollapsed) {
+                if (this.selectedOrgNode.NodeID === -1) {
+                    this.closePanel();
+                } else if ((this.isCollapsed || !this.isClosed)) {
                     this.openPanel();
                 }
                 this.selectedNode = this.selectedOrgNode;
@@ -68,7 +88,7 @@ export class SideMenuComponent implements OnChanges {
                         this.totalReportees += d;
                     });
                 }
-            } else if (!this.selectedOrgNode && this.isCollapsed) {
+            } else if (this.isCollapsed) {
                 if (this.feedbackIcon === FEEDBACK_ICON_CLOSE) {
                     this.feedbackIcon = FEEDBACK_ICON_OPEN;
                 }
@@ -84,14 +104,16 @@ export class SideMenuComponent implements OnChanges {
 
     openPanel() {
         this.isCollapsed = true;
+        this.isClosed = false;
         this.domHelper.setWidth(MenuElement.menuPanel, "100%");
         this.domHelper.setWidth(MenuElement.sideNavfixed, "100%");
         this.domHelper.hideElements(MenuElement.publishData);
-        this.domHelper.showElements(MenuElement.exportData);
+        this.domHelper.showElements(MenuElement.sidePanelExportData);
     }
 
     closePanel() {
         this.isCollapsed = false;
+        this.isClosed = true;
         if (!this.feedbackDescriptionText && this.isFeedbackOpen) {
             this.openOrCloseFeedBackPanel();
         }
@@ -146,12 +168,12 @@ export class SideMenuComponent implements OnChanges {
     }
 
     OnPublish() {
-        this.domHelper.hideElements(MenuElement.exportData);
+        this.domHelper.hideElements(MenuElement.sidePanelExportData);
         this.domHelper.showElements(MenuElement.publishData);
     }
 
     OnExport() {
-        this.domHelper.showElements(MenuElement.exportData);
+        this.domHelper.showElements(MenuElement.sidePanelExportData);
         this.domHelper.hideElements(MenuElement.publishData);
     }
 
