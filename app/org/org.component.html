@@ -16,7 +16,7 @@
 
 <div class="main-canvas" *ngIf="orgGroup" (window:resize)="onResize($event)">
     <sg-org-tree [treeData]="treeJson" [width]="svgWidth" [height]="svgHeight" [currentMode]="currentChartMode" [isAddOrEditModeEnabled]="isAddOrEditMode" (selectNode)="onNodeSelected($event)" (switchToAddMode)="onSwitchedToAddMode($event)" [showFirstNameLabel]="displayFirstNameLabel"
-        [showLastNameLabel]="displayLastNameLabel" [showDescriptionLabel]="displayDescriptionLabel" [orgGroupID]="groupID" [CompanyID]="companyID" [isMenuSettingsEnabled]="isMenuSettingsEnabled">
+        [showLastNameLabel]="displayLastNameLabel" [showDescriptionLabel]="displayDescriptionLabel" [orgGroupID]="groupID" [CompanyID]="companyID" [isMenuSettingsEnabled]="isMenuSettingsEnabled" [searchNode]="searchedNode">
     </sg-org-tree>
 </div>
 
@@ -25,7 +25,7 @@
         (chartStructureUpdated)="onChartUpdated($event)" (updateMenuNode)="onNodeTextChange($event)" [isMenuSettingsEnabled]="isMenuSettingsEnabled">
     </sg-org-node-detail>-->
     <div>
-        <sg-org-smart-bar [treeJson]="treeJson">
+        <sg-org-smart-bar [treeJson]="treeJson" (nodeSearched)="onNodeSearched($event)" [selectedOrgNode]="selectedNode">
         </sg-org-smart-bar>
     </div>
 </div>

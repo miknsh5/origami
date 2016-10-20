@@ -8,8 +8,8 @@
         <ul id="searchSelection">
             <li style="font-size: 65%; padding: 2px 10px;">Find</li>
             <li class="header">BY NAME</li>
-            <li *ngFor="let nameData of nameSearchResults" class="nameSearch">
-                <a (click)="onNodeSleect($event,nameData)">
+            <li *ngFor="let nameData of nameSearchResults" class="nameSearch" (click)="onNodeSleect($event,nameData)">
+                <a>
                     <i class="material-icons ">search</i> {{nameData.Name}} <span class="title "> {{nameData.Title}}</span>
                 </a>
             </li>

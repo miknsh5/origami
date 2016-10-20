@@ -42,6 +42,7 @@ export class OrgComponent implements OnDestroy {
     @Output() isOrgNodeEmpty: boolean;
     @Output() currentOrgNodeStatus: OrgNodeStatus;
     @Output() isMenuSettingsEnabled: boolean;
+    @Output() searchedNode: OrgNodeModel;
 
     constructor(public domHelper: DomElementHelper) {
         this.currentChartMode = ChartMode.build;
@@ -449,6 +450,10 @@ export class OrgComponent implements OnDestroy {
         } else {
             this.isMenuSettingsEnabled = data;
         }
+    }
+
+    onNodeSearched(data: OrgNodeModel) {
+        this.searchedNode = data;
     }
 
     ngOnDestroy() {
