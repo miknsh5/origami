@@ -42,6 +42,36 @@
     position: absolute;
     right: 0;
     z-index: 0;
+    width: 27px;
+    /*width: 36.1px;
+    height: 28px;*/
+}
+
+.sideNav .menuButton:before {
+    right: 100%;
+    top: 50%;
+    border: solid transparent;
+    content: " ";
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+    border-color: rgba(96, 125, 139, 0);
+    border-right-color: #607D8B;
+    border-width: 14px;
+    margin-top: -14px;
+    border-right: 13px #607d8b;
+    border-right-style: solid;
+}
+
+.sideNav .menuButton button {
+    color: #fff;
+    background: #607D8B;
+    border: none;
+    font-weight: bold;
+    position: relative;
+    width: 28px;
+    height: 28px;
 }
 
 .sideNav #menuPanel {
