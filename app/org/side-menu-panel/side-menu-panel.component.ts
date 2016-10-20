@@ -9,7 +9,7 @@ const FEEDBACK_ICON_OPEN = `keyboard_arrow_up`;
 const FEEDBACK_ICON_CLOSE = `close`;
 
 const MenuElement = {
-    exportData: "#exportData",
+    sidePanelExportData: "#sidePanelExportData",
     publishData: "#publishData",
     menuPanel: "#menuPanel",
     sideNavfixed: ".sideNav.fixed",
@@ -104,7 +104,7 @@ export class SideMenuComponent implements OnChanges {
         this.domHelper.setElementWidth(MenuElement.menuPanel, "100%");
         this.domHelper.setElementWidth(MenuElement.sideNavfixed, "100%");
         this.domHelper.hideElements(MenuElement.publishData);
-        this.domHelper.showElements(MenuElement.exportData);
+        this.domHelper.showElements(MenuElement.sidePanelExportData);
     }
 
     closePanel() {
@@ -164,12 +164,12 @@ export class SideMenuComponent implements OnChanges {
     }
 
     OnPublish() {
-        this.domHelper.hideElements(MenuElement.exportData);
+        this.domHelper.hideElements(MenuElement.sidePanelExportData);
         this.domHelper.showElements(MenuElement.publishData);
     }
 
     OnExport() {
-        this.domHelper.showElements(MenuElement.exportData);
+        this.domHelper.showElements(MenuElement.sidePanelExportData);
         this.domHelper.hideElements(MenuElement.publishData);
     }
 
