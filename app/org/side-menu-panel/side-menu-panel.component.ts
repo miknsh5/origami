@@ -24,6 +24,7 @@ const MenuElement = {
 
 export class SideMenuComponent implements OnChanges {
     isCollapsed: boolean;
+    isClosed: boolean;
     selectedNode: OrgNodeModel;
     directReportees: any;
     totalReportees: any;
@@ -50,14 +51,24 @@ export class SideMenuComponent implements OnChanges {
 
         this.feedbackIcon = FEEDBACK_ICON_OPEN;
         this.isFeedbackOpen = false;
+        this.isClosed = false;
     }
 
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
+        if (changes["orgChart"]) {
+            this.isClosed = false;
+            this.openPanel();
+        }
+        if (changes["isAddOrEditModeEnabled"] && !changes["isAddOrEditModeEnabled"].currentValue) {
+            this.isClosed = false;
+            this.openPanel();
+        }
+
         if (changes["selectedOrgNode"]) {
             if (this.selectedOrgNode) {
                 if (this.selectedOrgNode && this.selectedOrgNode.NodeID === -1) {
                     this.closePanel();
-                } else {
+                } else if (!this.isClosed && this.selectedOrgNode.NodeID !== -1) {
                     this.openPanel();
                 }
                 if (this.isCollapsed && this.selectedOrgNode.NodeID !== -1) {
@@ -89,6 +100,7 @@ export class SideMenuComponent implements OnChanges {
 
     openPanel() {
         this.isCollapsed = true;
+        this.isClosed = false;
         this.domHelper.setElementWidth(MenuElement.menuPanel, "100%");
         this.domHelper.setElementWidth(MenuElement.sideNavfixed, "100%");
         this.domHelper.hideElements(MenuElement.publishData);
@@ -97,6 +109,7 @@ export class SideMenuComponent implements OnChanges {
 
     closePanel() {
         this.isCollapsed = false;
+        this.isClosed = true;
         if (!this.feedbackDescriptionText && this.isFeedbackOpen) {
             this.openOrCloseFeedBackPanel();
         }
