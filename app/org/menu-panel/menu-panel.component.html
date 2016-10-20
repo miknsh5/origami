@@ -144,7 +144,7 @@
                 </form>
             </div>
             <div id="importAndTemplate">
-                <div *ngIf="(enableImport && !isImport) || groupSettingTitle=== 'Add New Group'">
+                <div *ngIf="(!isImport) || groupSettingTitle=== 'Add New Group'">
                     <div class="import">
                         <div class="inlineblock titlewithdivider">
                             <div class="divider"> </div>
@@ -156,7 +156,7 @@
                         <button class="waves-effect waves-light btn" [ngClass]='{disabled: isImportDisabled}' (click)="onClickOnImport()">
                     <i class="material-icons">file_upload</i>Import</button>
                     </div>
-                    <div class="template">
+                    <div class="template" id="downloadTemplate">
                         <div class="import">
                             <div class="inlineblock titlewithdivider">
                                 <div class="divider"> </div>
@@ -165,6 +165,17 @@
                             <div class="template">
                                 <button class="waves-effect waves-light btn" [ngClass]='{disabled: isImportDisabled}' (click)="onClickDownloadTemplate()">
                              <i class="material-icons">file_download</i>Download</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="template" id="exportData">
+                        <div class="import">
+                            <div class="inlineblock titlewithdivider">
+                                <div class="divider"> </div>
+                                <label class="lbl">Export</label>
+                            </div>
+                            <div class="template" id="export" *ngIf="selectedCompany && selectedCompany.CompanyName && selectedGroup">
+                                <sg-origami-csv [orgChartData]="selectedGroup" [orgName]="selectedCompany.CompanyName"></sg-origami-csv>
                             </div>
                         </div>
                     </div>
