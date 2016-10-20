@@ -114,6 +114,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             .attr("transform", "translate(" + ((this.treeWidth / 2) - SIBLING_RADIUS * 1.35) + "," + ((this.treeHeight / 2) - SIBLING_RADIUS * 1.275) + ")");
 
         this.svg = d3.select("g.nodes");
+        this.svg.append("g").attr("id", "concentricRings");
 
         // creates arrows directions
         this.createArrows();
@@ -170,7 +171,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 .separation(function (a, b) {
                     return (a.parent === b.parent ? RADIAL_VALUE : DEPTH) / a.depth;
                 });
-         //   this.insertConcentricRings();
             this.setNodeLabelVisiblity();
             this.selectedOrgNode = this.root;
             this.diagonal = d3.svg.diagonal.radial()
@@ -180,14 +180,17 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         }
     }
 
-    // insertConcentricRings() {
-    //     this.svg.append(CIRCLE).attr("r", function (d) { return "20px"; })
-    //         // .attr("dy", function (d) { d.y; })
-    //         // .attr("dx", function (d) { d.x / DEPTH * Math.PI; })
-    //         .attr("id", "concentricRings")
-    //         .style("stroke", "#EEEEF0")    // set the line colour
-    //         .style("fill", "none");
-    // }
+    insertConcentricRings() {
+        this.calculateLevelDepth();
+        let concentricRings = d3.select("g#concentricRings");
+        this.levelDepth.forEach((d, index) => {
+            concentricRings.append(CIRCLE).attr("r", 160 * index)
+                .attr("class", "concentricRing")
+                .style("stroke", "#EEEEF0")    // set the line colour
+                .style("fill", "none");
+        });
+
+    }
 
     setNodeLabelVisiblity() {
         d3.selectAll("text[data-id='name']").style("visibility", () => {
@@ -599,9 +602,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         d3.select("g.nodes").transition()
             .duration(DURATION)
             .attr("transform", () => {
-                if (this.currentMode === ChartMode.explore) {
-                    return "translate(" + x + "," + y + ")";
-                }
                 return "translate(" + x + "," + y + ")";
             });
 
@@ -690,6 +690,11 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 this.nodes.forEach(function (d) { d.y = d.depth * (RADIAL_DEPTH + NODE_HEIGHT); });
             }
 
+            d3.selectAll(".concentricRing").remove();
+            if (this.currentMode === ChartMode.explore) {
+                this.insertConcentricRings();
+            }
+
             this.renderOrUpdateNodes(source);
 
             this.renderOrUpdateLinks(source);
@@ -753,9 +758,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             .attr("id", "abbr")
             .attr("dy", ".4em")
             .attr("text-anchor", "middle");
-        // if (this.currentMode === ChartMode.explore) {
 
-        // }
 
         node.select("#abbr").text((d) => {
             if (d.IsStaging && d.NodeID === -1) { return "+"; }
