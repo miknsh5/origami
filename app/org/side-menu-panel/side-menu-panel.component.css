@@ -42,36 +42,37 @@
     position: absolute;
     right: 0;
     z-index: 0;
-    width: 27px;
-    /*width: 36.1px;
-    height: 28px;*/
+    width: 30px;
 }
 
-.sideNav .menuButton:before {
-    right: 100%;
-    top: 50%;
-    border: solid transparent;
-    content: " ";
-    height: 0;
-    width: 0;
-    position: absolute;
-    pointer-events: none;
-    border-color: rgba(96, 125, 139, 0);
-    border-right-color: #607D8B;
-    border-width: 14px;
-    margin-top: -14px;
-    border-right: 13px #607d8b;
-    border-right-style: solid;
-}
-
-.sideNav .menuButton button {
+.sideNav .menuButton a {
     color: #fff;
     background: #607D8B;
     border: none;
     font-weight: bold;
+    display: inline-block;
     position: relative;
-    width: 28px;
-    height: 28px;
+    overflow: initial;
+    padding: 0;
+}
+
+.sideNav .menuButton a>i {
+    padding: 0 5px;
+}
+
+.sideNav .menuButton a::after {
+    content: '';
+    display: block;
+    position: absolute;
+    left: -49%;
+    top: 0;
+    width: 0;
+    height: 0;
+    border-top: 14px solid transparent;
+    border-left: 14px solid #607D8B;
+    border-bottom: 14px solid transparent;
+    border-right: 0;
+    transform: rotate(180deg);
 }
 
 .sideNav #menuPanel {
