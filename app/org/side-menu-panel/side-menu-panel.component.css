@@ -64,12 +64,12 @@
     content: '';
     display: block;
     position: absolute;
-    left: -49%;
+    left: -35%;
     top: 0;
     width: 0;
     height: 0;
     border-top: 14px solid transparent;
-    border-left: 14px solid #607D8B;
+    border-left: 10px solid #607D8B;
     border-bottom: 14px solid transparent;
     border-right: 0;
     transform: rotate(180deg);
