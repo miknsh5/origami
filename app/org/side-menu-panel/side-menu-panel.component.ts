@@ -48,7 +48,6 @@ export class SideMenuComponent implements OnChanges {
     @Output() showDescriptionLabel = new EventEmitter<boolean>();
 
     constructor(private orgSevice: OrgService, private domHelper: DomElementHelper) {
-
         this.feedbackIcon = FEEDBACK_ICON_OPEN;
         this.isFeedbackOpen = false;
         this.isClosed = false;
@@ -56,22 +55,27 @@ export class SideMenuComponent implements OnChanges {
 
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
         if (changes["orgChart"]) {
-            this.isClosed = false;
-            this.openPanel();
+            if (changes["orgChart"].currentValue) {
+                this.isClosed = false;
+                this.openPanel();
+            } else {
+                this.isClosed = true;
+                this.closePanel();
+            }
         }
+
         if (changes["isAddOrEditModeEnabled"] && !changes["isAddOrEditModeEnabled"].currentValue) {
-            this.isClosed = false;
-            this.openPanel();
+            if (this.selectedOrgNode && this.selectedOrgNode.NodeID === -1) {
+                this.isClosed = false;
+                this.openPanel();
+            }
         }
 
         if (changes["selectedOrgNode"]) {
             if (this.selectedOrgNode) {
-                if (this.selectedOrgNode && this.selectedOrgNode.NodeID === -1) {
+                if (this.selectedOrgNode.NodeID === -1) {
                     this.closePanel();
-                } else if (!this.isClosed && this.selectedOrgNode.NodeID !== -1) {
-                    this.openPanel();
-                }
-                if (this.isCollapsed && this.selectedOrgNode.NodeID !== -1) {
+                } else if ((this.isCollapsed || !this.isClosed)) {
                     this.openPanel();
                 }
                 this.selectedNode = this.selectedOrgNode;
@@ -84,7 +88,7 @@ export class SideMenuComponent implements OnChanges {
                         this.totalReportees += d;
                     });
                 }
-            } else if (!this.selectedOrgNode && this.isCollapsed) {
+            } else if (this.isCollapsed) {
                 if (this.feedbackIcon === FEEDBACK_ICON_CLOSE) {
                     this.feedbackIcon = FEEDBACK_ICON_OPEN;
                 }
