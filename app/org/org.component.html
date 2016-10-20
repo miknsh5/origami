@@ -25,7 +25,7 @@
         (chartStructureUpdated)="onChartUpdated($event)" (updateMenuNode)="onNodeTextChange($event)" [isMenuSettingsEnabled]="isMenuSettingsEnabled">
     </sg-org-node-detail>-->
     <div>
-        <sg-org-smart-bar [treeJson]="treeJson" (nodeSearched)="onNodeSearched($event)" [selectedOrgNode]="selectedNode">
+        <sg-org-smart-bar [treeJson]="orgNodes" (nodeSearched)="onNodeSearched($event)" [selectedOrgNode]="selectedNode">
         </sg-org-smart-bar>
     </div>
 </div>

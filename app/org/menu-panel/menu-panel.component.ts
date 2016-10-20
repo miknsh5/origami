@@ -234,7 +234,8 @@ export class MenuPanelComponent implements OnChanges {
             } else {
                 this.domHelper.showElements(MenuElement.exportData);
                 this.domHelper.hideElements(MenuElement.downloadTemplate);
-            } element = document.querySelector("input[name=existingGroupName]");
+            }
+            element = document.querySelector("input[name=existingGroupName]");
         } else if (name === "newGroup") {
             this.groupSelectedMode = "AddNewGroup";
             this.groupSettingTitle = "Add New Group";

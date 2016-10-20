@@ -201,11 +201,15 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             this.treeWidth = this.width;
             this.treeHeight = this.height;
 
-            if (changes["searchNode"] && changes["searchNode"].currentValue) {
-                this.selectedOrgNode = this.searchNode;
-                this.highlightSelectedNode(this.selectedOrgNode);
+            if (changes["searchNode"]) {
+                if (changes["searchNode"].currentValue) {
+                    this.selectedOrgNode = this.searchNode;
+                    this.highlightAndCenterNode(this.searchNode);
+                    this.lastSelectedNode = this.selectedOrgNode;
+                } else {
+                    return;
+                }
             }
-
             if (changes["orgGroupID"]) {
                 if (this.root) {
                     this.selectedOrgNode = this.root;
@@ -544,7 +548,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         }
         if (d.children) {
             for (let i = 0; i < d.children.length; i++) {
-
                 this.collapseExceptSelectedNode(d.children[i]);
             };
         }
@@ -552,7 +555,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
     collapseTree(d) {
         if (d.children) {
-
             d._children = d.children;
             for (let i = 0; i < d._children.length; i++) {
                 this.collapseTree(d._children[i]);
@@ -560,6 +562,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             d.children = null;
         }
     }
+
     expandTree(d) {
         if (d && d._children != null && d.children == null) {
 
@@ -651,21 +654,42 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         }
     }
 
+    private expanParentAndChildNodes(rootNode) {
+        if (rootNode) {
+            this.expandTree(rootNode);
+            let parentNode = this.getNode(rootNode.ParentNodeID, this.root);
+            if (parentNode) {
+                this.expandTree(parentNode);
+                let children = parentNode.children;
+                for (let k = 0; k < children.length; k++) {
+                    this.collapseExceptSelectedNode(children[k]);
+                };
+                let parent = this.getNode(rootNode.ParentNodeID, this.root);
+                this.expanParentAndChildNodes(parent);
+            }
+        }
+    }
+
     render(source) {
         if (source) {
             if (!this.nodes || this.selectedOrgNode) {
                 //  The tree defines the position of the nodes based on the number of nodes it needs to draw.
                 // collapse out the child nodes which will not be shown
                 this.markAncestors(this.selectedOrgNode);
+                let rootNode = this.root;
                 if (this.currentMode === ChartMode.build) {
-                    if (this.root && this.root.children) {
-                        for (let k = 0; k < this.root.children.length; k++) {
-                            this.collapseExceptSelectedNode(this.root.children[k]);
+                    if (this.searchNode && this.selectedOrgNode.ParentNodeID && this.selectedOrgNode.NodeID === this.searchNode.NodeID) {
+                        this.expandTree(this.selectedOrgNode);
+                        rootNode = this.getNode(this.selectedOrgNode.ParentNodeID, this.root);
+                        this.expanParentAndChildNodes(rootNode);
+                    } else if (rootNode && rootNode.children) {
+                        for (let k = 0; k < rootNode.children.length; k++) {
+                            this.collapseExceptSelectedNode(rootNode.children[k]);
                         };
                     }
                 }
 
-                this.nodes = this.tree.nodes(this.root).reverse();
+                this.nodes = this.tree.nodes(rootNode).reverse();
 
                 for (let j = 0; j < this.nodes.length; j++) {
                     this.isAncestorOrRelated(this.nodes[j]);

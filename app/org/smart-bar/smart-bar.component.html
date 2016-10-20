@@ -7,23 +7,23 @@
     <div *ngIf="searchInProgress" class="search">
         <ul id="searchSelection">
             <li style="font-size: 65%; padding: 2px 10px;">Find</li>
-            <li class="header">BY NAME</li>
+            <li class="header">{{ searchHeader }}</li>
             <li *ngFor="let nameData of nameSearchResults" class="nameSearch" (click)="onNodeSleect($event,nameData)">
                 <a>
                     <i class="material-icons ">search</i> {{nameData.Name}} <span class="title "> {{nameData.Title}}</span>
                 </a>
             </li>
-            <li *ngIf="nameSearchResults.length===0 ">
+            <li *ngIf="nameSearchResults.length===0">
                 <i class="material-icons ">search</i> No Results
             </li>
-            <li class="header ">BY TITLE</li>
-            <li *ngFor="let titleData of titleSearchResult " class="titleSearch">
+            <li *ngIf="!isTitleSelected" class="header">BY TITLE</li>
+            <li *ngFor="let titleData of titleSearchResult " class="titleSearch" (click)="onTitleFilterSelect($event,titleData)">
                 <a>
                     <i class="material-icons ">search</i> {{titleData.Name}} <i class="material-icons right ">keyboard_arrow_right</i>
                     <span class="badge right "> {{titleData.Count}}</span>
                 </a>
             </li>
-            <li *ngIf="titleSearchResult.length===0 ">
+            <li *ngIf="titleSearchResult.length===0">
                 <i class="material-icons ">search</i> No Results
             </li>
         </ul>

@@ -1,8 +1,9 @@
-import { Component, ElementRef, Input, Output, EventEmitter, OnChanges, SimpleChange, HostListener } from "@angular/core";
+import { Component, ElementRef, Input, Output, EventEmitter, OnChanges, SimpleChange, HostListener, Renderer } from "@angular/core";
 import { NgForm, NgControl } from "@angular/forms";
 
 import { OrgNodeModel, OrgSearchModel, OrgService, DomElementHelper } from "../shared/index";
 
+const HeaderTitle = "NAME";
 declare let $;
 
 @Component({
@@ -12,19 +13,21 @@ declare let $;
 })
 
 export class SamrtBarComponent implements OnChanges {
+    private searchHeader: string;
     private prevSearchTerm: any;
     private orgSearchData: OrgSearchModel[];
     private searchOrAddTerm = "";
     private nameSearchResults: OrgSearchModel[];
     private titleSearchResult: any[];
     private searchInProgress: boolean = false;
+    private isTitleSelected: boolean = false;
 
     @Input() treeJson: any;
     @Input() selectedOrgNode: OrgNodeModel;
     @Output() nodeSearched = new EventEmitter<OrgNodeModel>();
 
-    constructor(private elementRef: ElementRef, private domHelper: DomElementHelper) {
-
+    constructor(private elementRef: ElementRef, private domHelper: DomElementHelper, private renderer: Renderer) {
+        this.searchHeader = `BY ${HeaderTitle}`;
     }
 
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
@@ -37,6 +40,9 @@ export class SamrtBarComponent implements OnChanges {
         if (changes["selectedOrgNode"]) {
             if (this.selectedOrgNode === null) {
                 this.nodeSearched.emit(this.selectedOrgNode);
+                this.renderer.invokeElementMethod(document.querySelector("input[name=searchOrAddTerm]"), "focus", []);
+            } else {
+                this.nodeSearched.emit(null);
             }
         }
         this.clearSearch();
@@ -67,7 +73,7 @@ export class SamrtBarComponent implements OnChanges {
         if (this.searchInProgress) {
             let searchContainer = document.getElementById("searchSelection");
             if ((event as KeyboardEvent).keyCode === 38) {
-                if (this.selectedOrgNode === null) {
+                if (!this.selectedOrgNode) {
                     let prevElement = $(searchContainer).find("li.active").prev();
                     if ($(searchContainer).find("li.active").hasClass("titleSearch") && !$(prevElement).hasClass("titleSearch")) {
                         prevElement = $(prevElement).prev();
@@ -83,7 +89,7 @@ export class SamrtBarComponent implements OnChanges {
                 }
             }
             else if ((event as KeyboardEvent).keyCode === 40) {
-                if (this.selectedOrgNode === null) {
+                if (!this.selectedOrgNode) {
                     let nextElement = $(searchContainer).find("li.active").next();
                     if ($(searchContainer).find("li.active").hasClass("nameSearch") && !$(nextElement).hasClass("nameSearch")) {
                         nextElement = $(nextElement).next();
@@ -97,6 +103,12 @@ export class SamrtBarComponent implements OnChanges {
                         $(nextElement).addClass("active");
                     }
                 }
+            } else if ((event as KeyboardEvent).keyCode === 13) {
+                if (!this.selectedOrgNode) {
+                    let element = document.querySelector("#searchSelection li.active");
+                    if (element)
+                        this.renderer.invokeElementMethod(element, "click", []);
+                }
             }
         }
     }
@@ -106,7 +118,7 @@ export class SamrtBarComponent implements OnChanges {
             if (this.prevSearchTerm !== this.searchOrAddTerm) {
                 this.prevSearchTerm = this.searchOrAddTerm;
                 if (this.selectedOrgNode === null) {
-                    this.searchList();
+                    this.searchList(this.searchOrAddTerm.toLowerCase());
                 }
             }
         } else {
@@ -125,43 +137,62 @@ export class SamrtBarComponent implements OnChanges {
         }
     }
 
-    private searchList() {
+    private onTitleFilterSelect(event: any, data: any) {
+        this.isTitleSelected = true;
+        this.titleSearchResult = null;
+        this.searchHeader = `BY ${data.Name.toUpperCase()}`;
+        this.searchList(data.Name.toLowerCase(), true);
+    }
+
+    private searchList(searchTerm: string, isTitleSearch?: boolean) {
         this.searchInProgress = true;
         this.nameSearchResults = new Array<OrgSearchModel>();
         this.titleSearchResult = new Array();
         setTimeout(() => {
             this.orgSearchData.forEach((data, index) => {
-                if (data.Name.toLowerCase().search(this.searchOrAddTerm.toLowerCase()) > -1) {
-                    this.nameSearchResults.push(data);
+                if (isTitleSearch) {
+                    if (data.Title.toLowerCase() === searchTerm) {
+                        this.nameSearchResults.push(data);
+                    }
+                } else {
+                    if (data.Name.toLowerCase().search(searchTerm) > -1) {
+                        this.nameSearchResults.push(data);
+                    }
                 }
             });
 
-            if (this.nameSearchResults.length > 0) {
+            if (!this.isTitleSelected) {
+                let titleResults = new Array();
+                this.orgSearchData.forEach((data, index) => {
+                    if (data.Title.toLowerCase().search(searchTerm) > -1) {
+                        titleResults.push(data);
+                    }
+                });
                 let groups = {};
-                for (let i = 0; i < this.nameSearchResults.length; i++) {
-                    let title = this.nameSearchResults[i].Title;
+                for (let i = 0; i < titleResults.length; i++) {
+                    let title = titleResults[i].Title;
                     if (!groups[title]) {
                         groups[title] = [];
                     }
-                    groups[title].push(this.nameSearchResults[i]);
+                    groups[title].push(titleResults[i]);
                 }
 
                 for (let title in groups) {
                     this.titleSearchResult.push({ Name: title, Count: groups[title].length });
                 }
-                setTimeout(() => {
-                    $("#searchSelection li.nameSearch").first().addClass("active");
-                }, 100);
             }
+            setTimeout(() => {
+                $("#searchSelection li.nameSearch").first().addClass("active");
+            }, 100);
         }, 100);
     }
 
     private clearSearch() {
-        this.searchOrAddTerm = "";
-        this.prevSearchTerm = "";
-        this.searchInProgress = false;
+        this.searchOrAddTerm = this.prevSearchTerm = "";
+        this.isTitleSelected = this.searchInProgress = false;
         this.nameSearchResults = new Array<OrgSearchModel>();
         this.titleSearchResult = new Array();
+        this.searchHeader = `BY ${HeaderTitle}`;
     }
 
     private getNode(nodeID: number, rootNode: any) {
