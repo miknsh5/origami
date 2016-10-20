@@ -184,9 +184,22 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         this.calculateLevelDepth();
         let concentricRings = d3.select("g#concentricRings");
         this.levelDepth.forEach((d, index) => {
-            concentricRings.append(CIRCLE).attr("r", 160 * index)
+            let value = (160 * index) || TOPBOTTOM_MARGIN;
+            concentricRings.append(CIRCLE).attr("r", value)
                 .attr("class", "concentricRing")
-                .style("stroke", "#EEEEF0")    // set the line colour
+                .style("stroke", () => {
+                    if (value === TOPBOTTOM_MARGIN)
+                        return "#CFD8DC";
+                    else
+                        return "#EDEEEF";
+                })
+                .style("opacity", () => {
+                    if (value === TOPBOTTOM_MARGIN)
+                        return 1;
+                    else
+                        return 0.5;
+                })
+                .style("stroke-width", "3px")
                 .style("fill", "none");
         });
 
