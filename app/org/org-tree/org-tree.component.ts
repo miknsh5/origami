@@ -114,6 +114,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             .attr("transform", "translate(" + ((this.treeWidth / 2) - SIBLING_RADIUS * 1.35) + "," + ((this.treeHeight / 2) - SIBLING_RADIUS * 1.275) + ")");
 
         this.svg = d3.select("g.nodes");
+        this.svg.append("g").attr("id", "concentricRings");
 
         // creates arrows directions
         this.createArrows();
@@ -177,6 +178,31 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                     return [d.y, d.x / DEPTH * Math.PI];
                 });
         }
+    }
+
+    insertConcentricRings() {
+        this.calculateLevelDepth();
+        let concentricRings = d3.select("g#concentricRings");
+        this.levelDepth.forEach((d, index) => {
+            let value = (160 * index) || TOPBOTTOM_MARGIN;
+            concentricRings.append(CIRCLE).attr("r", value)
+                .attr("class", "concentricRing")
+                .style("stroke", () => {
+                    if (value === TOPBOTTOM_MARGIN)
+                        return "#CFD8DC";
+                    else
+                        return "#EDEEEF";
+                })
+                .style("opacity", () => {
+                    if (value === TOPBOTTOM_MARGIN)
+                        return 1;
+                    else
+                        return 0.5;
+                })
+                .style("stroke-width", "3px")
+                .style("fill", "none");
+        });
+
     }
 
     setNodeLabelVisiblity() {
@@ -589,9 +615,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         d3.select("g.nodes").transition()
             .duration(DURATION)
             .attr("transform", () => {
-                if (this.currentMode === ChartMode.explore) {
-                    return "translate(" + x + "," + y + ")";
-                }
                 return "translate(" + x + "," + y + ")";
             });
 
@@ -680,6 +703,11 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 this.nodes.forEach(function (d) { d.y = d.depth * (RADIAL_DEPTH + NODE_HEIGHT); });
             }
 
+            d3.selectAll(".concentricRing").remove();
+            if (this.currentMode === ChartMode.explore) {
+                this.insertConcentricRings();
+            }
+
             this.renderOrUpdateNodes(source);
 
             this.renderOrUpdateLinks(source);
@@ -743,6 +771,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             .attr("id", "abbr")
             .attr("dy", ".4em")
             .attr("text-anchor", "middle");
+
 
         node.select("#abbr").text((d) => {
             if (d.IsStaging && d.NodeID === -1) { return "+"; }
