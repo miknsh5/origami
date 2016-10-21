@@ -3,13 +3,13 @@ import { tokenNotExpired } from "angular2-jwt";
 
 import { OrgNodeModel, ChartMode, OrgCompanyModel, OrgGroupModel, OrgNodeStatus } from "./shared/index";
 
-const MIN_HEIGHT: number = 320;
+const MIN_HEIGHT: number = 480;
 const MAX_HEIGHT: number = 768;
 
-const MIN_WIDTH: number = 420;
+const MIN_WIDTH: number = 540;
 const MAX_WIDTH: number = 1366;
 
-const DEFAULT_OFFSET: number = 70;
+const DEFAULT_OFFSET: number = 55;
 
 declare var svgPanZoom: any;
 
