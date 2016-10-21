@@ -17,22 +17,22 @@
         <ul id="searchSelection">
             <li style="font-size: 65%; padding: 2px 10px;">Find</li>
             <li class="header">{{ searchHeader }}</li>
-            <li *ngFor="let nameData of nameSearchResults" class="nameSearch" (click)="onNodeSleect($event,nameData)">
+            <li *ngFor="let nodeData of nodeSearchedList" class="nodeSearch" (click)="onNodeSelected($event,nodeData)">
                 <a>
-                    <i class="material-icons ">search</i> {{nameData.Name}} <span class="title "> {{nameData.Title}}</span>
+                    <i class="material-icons ">search</i> {{nodeData.Name}} <span class="title "> {{nodeData.Title}}</span>
                 </a>
             </li>
-            <li *ngIf="nameSearchResults.length===0">
+            <li *ngIf="nodeSearchedList.length===0">
                 <i class="material-icons ">search</i> No Results
             </li>
-            <li *ngIf="!isTitleSelected" class="header">BY TITLE</li>
-            <li *ngFor="let titleData of titleSearchResult " class="titleSearch" (click)="onTitleFilterSelect($event,titleData)">
+            <li *ngIf="!selectedOrgNode && !isTitleSelected" class="header">BY TITLE</li>
+            <li *ngFor="let titleData of titleFilterList " class="titleFilter" (click)="onTitleFilterSelected($event,titleData)">
                 <a>
                     <i class="material-icons ">search</i> {{titleData.Name}} <i class="material-icons right ">keyboard_arrow_right</i>
                     <span class="badge right "> {{titleData.Count}}</span>
                 </a>
             </li>
-            <li *ngIf="titleSearchResult.length===0">
+            <li *ngIf="titleFilterList.length===0">
                 <i class="material-icons ">search</i> No Results
             </li>
         </ul>
