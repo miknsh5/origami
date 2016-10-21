@@ -2,20 +2,20 @@
     <form>
         <div center class="input-field">
             <input *ngIf="!selectedOrgNode" id="searchNodes" type="text" required placeholder="Search" name="searchTerm" (keyup)="onInputSearch($event)" [(ngModel)]="searchTerm" autocomplete="off">
-            <ul *ngIf="selectedOrgNode" class="ui-autocomplete-multiple-container ui-widget ui-inputtext ui-state-default ui-corner-all" (click)="addNodes.focus()">
-                <li #token *ngFor="let val of value" class="ui-autocomplete-token ui-state-highlight ui-corner-all">
-                    <span class="ui-autocomplete-token-icon fa fa-fw fa-close" (click)="removeItem(token)"></span>
-                    <span class="ui-autocomplete-token-label">{{field ? val[field] : val}}</span>
+            <ul *ngIf="selectedOrgNode" class="ui-autocomplete-multiple-container" (click)="addNodes.focus()">
+                <li #token *ngFor="let newNode of newNodeValue" class="ui-autocomplete-token ui-state-highlight ui-corner-all">
+                    <span class="ui-autocomplete-token-label">{{newNode}}</span>
+                    <i class="material-icons right ">keyboard_arrow_right</i>
                 </li>
                 <li class="ui-autocomplete-input-token">
-                    <input #addNodes type="text" required placeholder="Search, Add Resources" name="multiInTerm" (keyup)="onInputMultiSearch($event)" [(ngModel)]="multiInTerm" autocomplete="off">
+                    <input #addNodes type="text" placeholder="Search, Add Resources" name="multiInTerm" (keyup)="onInputMultiSearch($event)" [(ngModel)]="multiInTerm" autocomplete="off">
                 </li>
             </ul>
         </div>
     </form>
     <div *ngIf="searchInProgress" class="search">
         <ul id="searchSelection">
-            <li style="font-size: 65%; padding: 2px 10px;">Find</li>
+            <li *ngIf="!selectedOrgNode" style="font-size: 65%; padding: 2px 10px;">Find</li>
             <li class="header">{{ searchHeader }}</li>
             <li *ngFor="let nodeData of nodeSearchedList" class="nodeSearch" (click)="onNodeSelected($event,nodeData)">
                 <a>
@@ -32,8 +32,14 @@
                     <span class="badge right "> {{titleData.Count}}</span>
                 </a>
             </li>
-            <li *ngIf="titleFilterList.length===0">
+            <li *ngIf="!selectedOrgNode && titleFilterList.length===0">
                 <i class="material-icons ">search</i> No Results
+            </li>
+            <li *ngIf="selectedOrgNode && multiInTerm" class="header">ADD A RESOURCE</li>
+            <li *ngIf="selectedOrgNode && multiInTerm" class="addNode">
+                <a>
+                    <i class="material-icons">add_circle</i> {{multiInTerm}} <i class="material-icons right ">keyboard_arrow_right</i>
+                </a>
             </li>
         </ul>
     </div>

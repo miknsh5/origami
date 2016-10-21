@@ -20,6 +20,7 @@ export class SamrtBarComponent implements OnChanges {
     private multiInTerm: string = "";
     private nodeSearchedList: OrgSearchModel[];
     private titleFilterList: any[];
+    private newNodeValue: any[];
     private nodeTitleSearchedList: OrgSearchModel[];
     private searchInProgress: boolean = false;
     private isTitleSelected: boolean = false;
@@ -79,11 +80,12 @@ export class SamrtBarComponent implements OnChanges {
     public OnKeyDown(event) {
         let searchContainer = document.getElementById("searchSelection");
         if ((event as KeyboardEvent).keyCode === 38) {
-            let element;
+            let element = $(searchContainer).find("li.active").prev();
             if (this.selectedOrgNode) {
-
+                if ($(searchContainer).find("li.active").hasClass("addNode") && !$(element).hasClass("addNode")) {
+                    element = $(element).prev();
+                }
             } else {
-                element = $(searchContainer).find("li.active").prev();
                 if ($(searchContainer).find("li.active").hasClass("titleFilter") && !$(element).hasClass("titleFilter")) {
                     element = $(element).prev();
                 }
@@ -104,7 +106,9 @@ export class SamrtBarComponent implements OnChanges {
             }
 
             if (this.selectedOrgNode) {
-
+                if ($(searchContainer).find("li.active").hasClass("addNode") && !$(element).hasClass("addNode")) {
+                    element = null;
+                }
             } else {
                 if ($(searchContainer).find("li.active").hasClass("titleFilter") && !$(element).hasClass("titleFilter")) {
                     element = null;
@@ -117,11 +121,9 @@ export class SamrtBarComponent implements OnChanges {
             }
 
         } else if ((event as KeyboardEvent).keyCode === 13) {
-            if (!this.selectedOrgNode) {
-                let element = document.querySelector("#searchSelection li.active");
-                if (element)
-                    this.renderer.invokeElementMethod(element, "click", []);
-            }
+            let element = document.querySelector("#searchSelection li.active");
+            if (element)
+                this.renderer.invokeElementMethod(element, "click", []);
         } else if ((event as KeyboardEvent).keyCode === 27) {
             if (this.isAddOrEditModeEnabled) {
                 if (this.selectedOrgNode.IsNewRoot || (this.selectedOrgNode.ParentNodeID && this.selectedOrgNode.NodeID === -1)) {
@@ -139,12 +141,7 @@ export class SamrtBarComponent implements OnChanges {
 
     private onInputSearch() {
         if (this.searchTerm) {
-            if (this.prevSearchTerm !== this.searchTerm) {
-                this.prevSearchTerm = this.searchTerm;
-                if (this.selectedOrgNode === null) {
-                    this.searchList(this.searchTerm.toLowerCase());
-                }
-            }
+            this.processSearch(this.searchTerm);
         } else {
             this.clearSearch();
         }
@@ -152,14 +149,16 @@ export class SamrtBarComponent implements OnChanges {
 
     private onInputMultiSearch() {
         if (this.multiInTerm) {
-            if (this.prevSearchTerm !== this.multiInTerm) {
-                this.prevSearchTerm = this.multiInTerm;
-                if (this.selectedOrgNode === null) {
-                    this.searchList(this.multiInTerm.toLowerCase());
-                }
-            }
+            this.processSearch(this.multiInTerm);
         } else {
             this.clearSearch();
+        }
+    }
+
+    private processSearch(searchTerm) {
+        if (this.prevSearchTerm !== searchTerm) {
+            this.prevSearchTerm = searchTerm;
+            this.searchList(searchTerm.toLowerCase());
         }
     }
 
@@ -192,14 +191,16 @@ export class SamrtBarComponent implements OnChanges {
                         this.nodeSearchedList.push(data);
                     }
                 } else {
-                    if (data.Name.toLowerCase().search(searchTerm) > -1) {
+                    if (data.Name.toLowerCase().includes(searchTerm)) {
                         this.nodeSearchedList.push(data);
                     }
                 }
             });
 
             if (this.selectedOrgNode) {
-
+                setTimeout(() => {
+                    $("#searchSelection li.addNode").first().addClass("active");
+                }, 100);
             } else {
                 this.searchTitleData(searchTerm);
                 setTimeout(() => {
@@ -219,7 +220,7 @@ export class SamrtBarComponent implements OnChanges {
         if (!this.isTitleSelected) {
             let titleResults = new Array();
             this.orgSearchData.forEach((data, index) => {
-                if (data.Title.toLowerCase().search(searchTerm) > -1) {
+                if (data.Title.toLowerCase().includes(searchTerm)) {
                     titleResults.push(data);
                 }
             });

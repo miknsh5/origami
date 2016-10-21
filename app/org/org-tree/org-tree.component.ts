@@ -606,18 +606,18 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         let x = 0; source.y0;
         let y = 0; source.x0;
         if (this.currentMode === ChartMode.build) {
-            x = source.y0;
-            y = source.x0;
+            x = source.y0 || 0;
+            y = source.x0 || 0;
             x = this.treeWidth / 2 - x;
             y = this.treeHeight / 2 - y;
         } else if (this.currentMode === ChartMode.report) {
-            x = source.x0;
-            y = source.y0;
+            x = source.x0 || 0;
+            y = source.y0 || 0;
             x = this.treeWidth / 2 - x;
             y = NODE_WIDTH;
         } else {
-            x = source.x0;
-            y = source.y0;
+            x = source.x0 || 0;
+            y = source.y0 || 0;
             x = this.treeWidth / 2;
             y = this.treeHeight / 2;
         }
@@ -668,7 +668,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 .duration(DURATION)
                 .attr("transform", (d) => {
                     if (this.currentMode === ChartMode.build) {
-                        return "translate(" + parentNode.y + " , " + source.x + ")";
+                        return "translate(" + parentNode.y + " , " + (source.x || 0) + ")";
                     }
                     return "translate(" + source.x + " , " + (parentNode.y - 40) + ")";
                 });
@@ -773,7 +773,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         let nodeEnter = node.enter().append("g")
             .attr("class", "node")
             .attr("transform", (d) => {
-                let transformString = "translate(" + source.y0 + "," + source.x0 + ")";
+                let transformString = "translate(" + (source.y0 || 0) + "," + (source.x0 || 0) + ")";
                 if (this.currentMode === ChartMode.report) {
                     transformString = "translate(" + source.x0 + "," + source.y0 + ")";
                 } else if (this.currentMode === ChartMode.explore) {
@@ -971,7 +971,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             .duration(DURATION)
             .attr("transform", (d) => {
                 if (this.currentMode === ChartMode.build) {
-                    return "translate(" + d.y + "," + d.x + ")";
+                    return "translate(" + (d.y || 0) + "," + (d.x || 0) + ")";
                 } else if (this.currentMode === ChartMode.report) {
                     return "translate(" + d.x + "," + d.y + ")";
                 } else {
@@ -1008,7 +1008,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             duration(DURATION)
             .attr("transform", (d) => {
                 if (this.currentMode === ChartMode.build) {
-                    return "translate(" + source.y + "," + source.x + ")";
+                    return "translate(" + (source.y || 0) + "," + (source.x || 0) + ")";
                 } else if (this.currentMode === ChartMode.report) {
                     return "translate(" + source.x + "," + source.y + ")";
                 } else {
