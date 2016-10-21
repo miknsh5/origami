@@ -601,6 +601,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             d._children = null;
         }
     }
+
     centerNode(source) {
         let x = 0; source.y0;
         let y = 0; source.x0;
@@ -669,10 +670,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                     if (this.currentMode === ChartMode.build) {
                         return "translate(" + parentNode.y + " , " + source.x + ")";
                     }
-                    else {
-                        return "translate(" + source.x + " , " + (parentNode.y - 40) + ")";
-
-                    }
+                    return "translate(" + source.x + " , " + (parentNode.y - 40) + ")";
                 });
         }
     }
@@ -742,8 +740,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
             this.renderOrUpdateLinks(source);
 
-            this.renderCircles(source);
-
             // Stash the old positions for transition.
             this.nodes.forEach(function (d) {
                 d.x0 = d.x;
@@ -760,12 +756,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         return [radius * Math.cos(angle), radius * Math.sin(angle)];
     }
 
-    renderCircles(source) {
-
-    }
-
     renderOrUpdateNodes(source) {
-
         if (this.currentMode === ChartMode.build) {
             d3.select("g.svg-pan-zoom_viewport")
                 .transition()
@@ -811,9 +802,8 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             if (d.IsGrandParent) {
                 if (this.currentMode === ChartMode.explore) {
                     return fn + ln;
-                } else {
-                    return "";
                 }
+                return "";
             }
             return fn + ln;
         }).style("fill", function (d) {
@@ -860,76 +850,55 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             }
 
             if (name.length > 15) {
-                if (this.currentMode === ChartMode.build) {
-                    return name.substring(0, 15) + "...";
-                } else {
-                    return name.substring(0, 15) + "...";
-                }
-            } else {
-                if (this.currentMode === ChartMode.build) {
-                    return name;
-                } else {
-                    return name;
-                }
+                return name.substring(0, 15) + "..";
             }
+            return name;
         }).attr("text-anchor", (d) => {
             if (this.currentMode === ChartMode.build) { return "start"; }
             else if (this.currentMode === ChartMode.report) { return "middle"; }
             else {
-                if (d.NodeID === this.root.NodeID && this.currentMode === ChartMode.explore)
+                if (d.NodeID === this.root.NodeID && this.currentMode === ChartMode.explore) {
                     return "start";
-                else
-                    return Number.isNaN(d.x) || d.x < DEPTH ? "start" : "end";
+                }
+                return Number.isNaN(d.x) || d.x < DEPTH ? "start" : "end";
             }
         }).attr("transform", (d) => {
             if (this.currentMode === ChartMode.explore) {
-                if (d.NodeID === this.root.NodeID && this.currentMode === ChartMode.explore)
+                if (d.NodeID === this.root.NodeID && this.currentMode === ChartMode.explore) {
                     return "rotate(0)";
-                else
-                    return Number.isNaN(d.x) || d.x < DEPTH ? "rotate(0)" : "rotate(180)";
-            } else {
-                return "rotate(0)";
+                }
+                return Number.isNaN(d.x) || d.x < DEPTH ? "rotate(0)" : "rotate(180)";
             }
+            return "rotate(0)";
         });
 
         node.select("g.label text[data-id='description']").text((d) => {
             if (d.Description.length > 15) {
-                if (this.currentMode === ChartMode.build) {
-                    return d.Description.substring(0, 15) + "...";
-                } else if (this.currentMode === ChartMode.explore) {
-                    return d.Description.substring(0, 15) + "...";
-                } else {
-                    return d.Description.substring(0, 15) + "...";
-                }
-            } else {
-                if (this.currentMode === ChartMode.build) { d.Description; }
-                else if (this.currentMode === ChartMode.explore) { return d.Description; }
-                else { return d.Description; }
+                return d.Description.substring(0, 15) + "..";
             }
+            return d.Description;
         }).attr("text-anchor", (d) => {
             if (this.currentMode === ChartMode.build) { return "start"; }
             else if (this.currentMode === ChartMode.report) { return "middle"; }
             else {
-                if (d.NodeID === this.root.NodeID && this.currentMode === ChartMode.explore)
+                if (d.NodeID === this.root.NodeID && this.currentMode === ChartMode.explore) {
                     return "start";
-                else
-                    return Number.isNaN(d.x) || d.x < DEPTH ? "start" : "end";
+                }
+                return Number.isNaN(d.x) || d.x < DEPTH ? "start" : "end";
             }
         }).attr("dy", (d) => {
             if (this.showDescriptionLabel && !this.showFirstNameLabel && !this.showLastNameLabel) {
                 return "0em";
             }
-            else { return "1em"; }
+            return "1em";
         }).attr("transform", (d) => {
             if (this.currentMode === ChartMode.explore) {
-                if (d.NodeID === this.root.NodeID && this.currentMode === ChartMode.explore)
+                if (d.NodeID === this.root.NodeID && this.currentMode === ChartMode.explore) {
                     return "rotate(0)";
-                else {
-                    return Number.isNaN(d.x) || d.x < DEPTH ? "rotate(0)" : "rotate(180)";
                 }
-            } else {
-                return "rotate(0)";
+                return Number.isNaN(d.x) || d.x < DEPTH ? "rotate(0)" : "rotate(180)";
             }
+            return "rotate(0)";
         });
 
         if (this.currentMode === ChartMode.build) {
@@ -971,9 +940,8 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         node.select("polygon[data-id='childIndicator']").attr("fill", function (d) {
             if (d._children && d._children.length > 0 && !d.IsSelceted) {
                 return CHILD_ARROW_FILL;
-            } else {
-                return TRANSPARENT_COLOR;
             }
+            return TRANSPARENT_COLOR;
         }).attr("transform", (d, index) => {
             let x = Math.round(this.labelWidths[0][index].getBoundingClientRect()["width"]);
             if (d.IsSibling) {
@@ -1020,9 +988,8 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                     if (d.IsSelected === true || d.IsSibling === true) { return SIBLING_RADIUS; }
                     else if (d.IsParent === true || d.IsChild === true) { return PARENTCHILD_RADIUS; }
                     else { return DEFAULT_RADIUS; }
-                } else {
-                    return PARENTCHILD_RADIUS;
                 }
+                return PARENTCHILD_RADIUS;
             })
             .attr("class", (d) => {
                 if (d.IsSelected && d.IsStaging && d.NodeID === -1) { return STAGED_CIRCLE; }
@@ -1140,9 +1107,8 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                     }
                     return "none";
                 }
-            } else {
-                return (d.source.IsSelected ? "#ccc" : "none");
             }
+            return (d.source.IsSelected ? "#ccc" : "none");
         });
 
         // Transition exiting nodes to the parent"s new position.
