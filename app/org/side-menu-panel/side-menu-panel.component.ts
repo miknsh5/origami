@@ -1,5 +1,5 @@
 import { Component, Input, Output, OnChanges, SimpleChange, EventEmitter } from "@angular/core";
-
+import { NgForm, NgControl } from "@angular/forms";
 import { OrgGroupModel, OrgNodeModel, ChartMode, OrgService, UserFeedBack, DomElementHelper } from "../shared/index";
 import { UserModel } from "../../Shared/index";
 
@@ -7,6 +7,11 @@ declare let $: any;
 
 const FEEDBACK_ICON_OPEN = `keyboard_arrow_up`;
 const FEEDBACK_ICON_CLOSE = `close`;
+const EDIT_ICON = `create`;
+const DELETE_ICON = `delete`;
+const SAVE_ICON = `save`;
+const CLOSE_ICON = `close`;
+
 
 const MenuElement = {
     sidePanelExportData: "#sidePanelExportData",
@@ -26,9 +31,14 @@ export class SideMenuComponent implements OnChanges {
     isCollapsed: boolean;
     isClosed: boolean;
     selectedNode: OrgNodeModel;
+    editNode: OrgNodeModel;
     directReportees: any;
     totalReportees: any;
     depth: any;
+    isEditModeEnabled: boolean;
+    editOrSave: any;
+    deleteOrClose: any;
+
     private userModel: UserModel;
     private isFeedbackOpen: boolean;
     private feedbackDescriptionText: any;
@@ -43,6 +53,7 @@ export class SideMenuComponent implements OnChanges {
     @Input() svgWidth: any;
     @Input() svgHeight: any;
 
+    @Output() updateNode = new EventEmitter<OrgNodeModel>();
     @Output() deleteNode = new EventEmitter<OrgNodeModel>();
     @Output() showFirstNameLabel = new EventEmitter<boolean>();
     @Output() showLastNameLabel = new EventEmitter<boolean>();
@@ -52,6 +63,9 @@ export class SideMenuComponent implements OnChanges {
         this.feedbackIcon = FEEDBACK_ICON_OPEN;
         this.isFeedbackOpen = false;
         this.isClosed = false;
+        this.isEditModeEnabled = false;
+        this.editOrSave = EDIT_ICON;
+        this.deleteOrClose = DELETE_ICON;
     }
 
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
@@ -80,6 +94,7 @@ export class SideMenuComponent implements OnChanges {
                     this.openPanel();
                 }
                 this.selectedNode = this.selectedOrgNode;
+                
                 this.depth = new Array();
                 this.childCount(0, this.selectedNode);
                 if (this.depth) {
@@ -178,26 +193,81 @@ export class SideMenuComponent implements OnChanges {
         this.domHelper.hideElements(MenuElement.publishData);
     }
     onDeleteNodeClicked() {
-        if (this.selectedNode.NodeID === -1) {
-            this.deleteNode.emit(this.selectedNode);
-        } else {
-            if (this.selectedNode.children && this.selectedNode.children.length > 0) {
-                alert("Delete Child Node First!");
+        if (this.deleteOrClose === DELETE_ICON) {
+            if (this.selectedNode.NodeID === -1) {
+                this.deleteNode.emit(this.selectedNode);
             } else {
-                this.orgService.deleteNode(this.selectedNode.NodeID)
-                    .subscribe(data => this.emitDeleteNodeNotification(data),
-                    error => this.handleError(error),
-                    () => console.log("Deleted node."));
+                if (this.selectedNode.children && this.selectedNode.children.length > 0) {
+                    alert("Delete Child Node First!");
+                } else {
+                    this.orgService.deleteNode(this.selectedNode.NodeID)
+                        .subscribe(data => this.emitDeleteNodeNotification(data),
+                        error => this.handleError(error),
+                        () => console.log("Deleted node."));
+                }
             }
+        } else if (this.deleteOrClose === CLOSE_ICON) {
+            this.editOrSave = EDIT_ICON;
+            this.deleteOrClose = DELETE_ICON;
+            this.isEditModeEnabled = false;
+           this.editNode.NodeFirstName = this.selectedNode.NodeFirstName;
+           this.editNode.NodeLastName = this.selectedNode.NodeLastName;
+           this.editNode.Description = this.selectedNode.Description;
         }
+
     }
     private emitDeleteNodeNotification(data) {
         if (data === true) {
             this.deleteNode.emit(this.selectedNode);
         }
     }
-    editNode() {
+    onEditNodeClicked() {
+        this.isEditModeEnabled = true;
+        this.editOrSave = SAVE_ICON;
+        this.deleteOrClose = CLOSE_ICON;
+        this.editNode = this.selectedOrgNode;
+    }
 
+    private onInputKeyDownOrUp(event: KeyboardEvent, ngControl: NgControl) {
+        if (this.editNode) {
+            let target = (<HTMLInputElement>event.target);
+            let node = new OrgNodeModel();
+            node.OrgGroupID = this.editNode.OrgGroupID;
+            node.CompanyID = this.editNode.CompanyID;
+            node.ParentNodeID = this.editNode.ParentNodeID;
+            node.NodeID = this.editNode.NodeID;
+            node.IsStaging = this.editNode.IsStaging;
+            node.Description = this.editNode.Description;
+            node.IsFakeRoot = this.editNode.IsFakeRoot;
+            node.IsNewRoot = this.editNode.IsNewRoot;
+            node.children = this.editNode.children;
+
+            if (ngControl.name === "firstName") {
+                this.editNode.NodeFirstName = node.NodeFirstName = ngControl.value;
+                node.NodeLastName = this.editNode.NodeLastName;
+                node.Description = this.editNode.Description;
+            } else if (ngControl.name === "lastName") {
+                node.NodeFirstName = this.editNode.NodeFirstName;
+                this.editNode.NodeLastName = node.NodeLastName = ngControl.value;
+                node.Description = this.editNode.Description;
+            }
+            else if (ngControl.name === "description") {
+                node.NodeFirstName = this.editNode.NodeFirstName;
+                node.NodeLastName = this.editNode.NodeLastName;
+                this.editNode.Description = node.Description = ngControl.value;
+            }
+
+            if (node.IsStaging && node.NodeID === -1) {
+                if (this.editNode.NodeFirstName || this.editNode.NodeLastName || this.editNode.Description) {
+                    this.selectedNode.IsStaging = node.IsStaging = false;
+                }
+            } else {
+                if (node.NodeID !== -1) {
+                    node.IsStaging = true;
+                }
+                this.updateNode.emit(node);
+            }
+        }
     }
 
     openOrCloseFeedBackPanel() {

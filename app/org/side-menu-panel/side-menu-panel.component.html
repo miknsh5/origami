@@ -9,16 +9,28 @@
                 <button class="waves-effect waves-light closebtn" (click)="closePanel()"><i class="material-icons">close</i></button>
                 <hr/>
             </div>
-
-            <div>
-                <button class="waves-effect waves-light deletebtn right" (click)="onDeleteNodeClicked()"> <i class="material-icons">delete</i></button>
-            </div>
-            <div>
-                <button class="waves-effect waves-light editbtn right" (click)="editNode()"><i class="material-icons">create</i></button>
+            <div *ngIf="currentMode===1">
+                <div>
+                    <button class="waves-effect waves-light deletebtn right" (click)="onDeleteNodeClicked()"> <i class="material-icons">{{deleteOrClose}}</i></button>
+                </div>
+                <div>
+                    <button class="waves-effect waves-light editbtn right" (click)="onEditNodeClicked()"><i class="material-icons">{{editOrSave}}</i></button>
+                </div>
             </div>
             <label class="menuTitle">Resource</label>
+            <div class="detail-wrap">
+                <form #orgform="ngForm" *ngIf="selectedOrgNode" (ngSubmit)="onSubmit()">
+                    <div *ngIf="selectedNode && isEditModeEnabled" class="form-group text-wrap">
+                        <input type="text" class="h-1 title-name-edit form-control firstName" (keyup)="onInputKeyDownOrUp($event,firstName)" ngControl="firstName" #firstName="ngModel" [ngModel]="editNode.NodeFirstName" placeholder="First Name" name="firstName" autocomplete="off"
+                        />
+                        <input type="text" class="h-1 title-name-edit form-control" (keyup)="onInputKeyDownOrUp($event,lastName)" ngControl="lastName" #lastName="ngModel" [ngModel]="editNode.NodeLastName" placeholder="Last Name" name="lastName" autocomplete="off" />
+                        <input type="text" class="h-3 title-position-edit form-control" (keyup)="onInputKeyDownOrUp($event,description)" ngControl="description" #description="ngModel" [ngModel]="editNode.Description" placeholder="Description" name="description" autocomplete="off"
+                        />
+                    </div>
+                </form>
+            </div>
 
-            <div *ngIf="selectedNode" class="labelWrap">
+            <div *ngIf="selectedNode && !isEditModeEnabled" class="labelWrap">
                 <p class="lblName"> {{selectedNode.NodeFirstName}} {{selectedNode.NodeLastName}}</p>
                 <p class="lblJobTitle"> {{selectedNode.Description}} </p>
             </div>
