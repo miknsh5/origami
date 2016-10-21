@@ -94,6 +94,21 @@
     border: 0;
 }
 
+.sideNav .editbtn,
+.deletebtn {
+    width: 30px;
+    height: 30px;
+    background-color: #607d8b;
+    background-color: var(--blue-grey);
+    border: 0;
+}
+
+.sideNav .editbtn i,
+.deletebtn i {
+    font-size: 0.99rem;
+    line-height: 1.53em;
+}
+
 .sideNav .menuTitle {
     padding-left: 15px;
     font-size: 0.9em;

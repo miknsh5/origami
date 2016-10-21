@@ -9,6 +9,13 @@
                 <button class="waves-effect waves-light closebtn" (click)="closePanel()"><i class="material-icons">close</i></button>
                 <hr/>
             </div>
+
+            <div>
+                <button class="waves-effect waves-light deletebtn right" (click)="deleteNode()"> <i class="material-icons">delete</i></button>
+            </div>
+            <div>
+                <button class="waves-effect waves-light editbtn right" (click)="editNode()"><i class="material-icons">create</i></button>
+            </div>
             <label class="menuTitle">Resource</label>
 
             <div *ngIf="selectedNode" class="labelWrap">

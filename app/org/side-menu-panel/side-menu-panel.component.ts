@@ -176,6 +176,12 @@ export class SideMenuComponent implements OnChanges {
         this.domHelper.showElements(MenuElement.sidePanelExportData);
         this.domHelper.hideElements(MenuElement.publishData);
     }
+    deleteNode() {
+
+    }
+    editNode() {
+
+    }
 
     openOrCloseFeedBackPanel() {
         if (this.feedbackIcon === FEEDBACK_ICON_OPEN) {
