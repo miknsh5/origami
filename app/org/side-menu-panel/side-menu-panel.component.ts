@@ -43,11 +43,12 @@ export class SideMenuComponent implements OnChanges {
     @Input() svgWidth: any;
     @Input() svgHeight: any;
 
+    @Output() deleteNode = new EventEmitter<OrgNodeModel>();
     @Output() showFirstNameLabel = new EventEmitter<boolean>();
     @Output() showLastNameLabel = new EventEmitter<boolean>();
     @Output() showDescriptionLabel = new EventEmitter<boolean>();
 
-    constructor(private orgSevice: OrgService, private domHelper: DomElementHelper) {
+    constructor(private orgService: OrgService, private domHelper: DomElementHelper) {
         this.feedbackIcon = FEEDBACK_ICON_OPEN;
         this.isFeedbackOpen = false;
         this.isClosed = false;
@@ -65,7 +66,7 @@ export class SideMenuComponent implements OnChanges {
         }
 
         if (changes["isAddOrEditModeEnabled"] && !changes["isAddOrEditModeEnabled"].currentValue) {
-            if (this.selectedOrgNode && this.selectedOrgNode.NodeID === -1) {
+            if (this.selectedOrgNode && this.selectedOrgNode.NodeID !== -1) {
                 this.isClosed = false;
                 this.openPanel();
             }
@@ -176,8 +177,24 @@ export class SideMenuComponent implements OnChanges {
         this.domHelper.showElements(MenuElement.sidePanelExportData);
         this.domHelper.hideElements(MenuElement.publishData);
     }
-    deleteNode() {
-
+    onDeleteNodeClicked() {
+        if (this.selectedNode.NodeID === -1) {
+            this.deleteNode.emit(this.selectedNode);
+        } else {
+            if (this.selectedNode.children && this.selectedNode.children.length > 0) {
+                alert("Delete Child Node First!");
+            } else {
+                this.orgService.deleteNode(this.selectedNode.NodeID)
+                    .subscribe(data => this.emitDeleteNodeNotification(data),
+                    error => this.handleError(error),
+                    () => console.log("Deleted node."));
+            }
+        }
+    }
+    private emitDeleteNodeNotification(data) {
+        if (data === true) {
+            this.deleteNode.emit(this.selectedNode);
+        }
     }
     editNode() {
 
@@ -207,9 +224,21 @@ export class SideMenuComponent implements OnChanges {
             }
             this.feedback.Description = this.feedbackDescriptionText;
 
-            this.orgSevice.sendFeedback(this.feedback)
+            this.orgService.sendFeedback(this.feedback)
                 .subscribe(data => { this.feedbackDescriptionText = ""; },
-                err => this.orgSevice.logError(err));
+                err => this.orgService.logError(err));
         }
+    }
+
+    private handleError(err) {
+        try {
+            let errorMessage = JSON.parse(err._body);
+            alert(errorMessage.Message);
+        } catch (ex) {
+            alert("OOPs!! Something went wrong!! ");
+        }
+        console.log(err);
+        // this.editNodeDetails = null;
+        // this.isFormSubmitted = false;
     }
 }
