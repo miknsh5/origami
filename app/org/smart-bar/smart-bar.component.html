@@ -1,7 +1,16 @@
 <div class="smart-bar-wrap">
     <form>
         <div center class="input-field">
-            <input id="add_search" type="text" required placeholder="Search, Build, Edit" name="searchOrAddTerm" (keyup)="onInputName($event)" [(ngModel)]="searchOrAddTerm" autocomplete="off">
+            <input *ngIf="!selectedOrgNode" id="searchNodes" type="text" required placeholder="Search" name="searchTerm" (keyup)="onInputSearch($event)" [(ngModel)]="searchTerm" autocomplete="off">
+            <ul *ngIf="selectedOrgNode" class="ui-autocomplete-multiple-container ui-widget ui-inputtext ui-state-default ui-corner-all" (click)="addNodes.focus()">
+                <li #token *ngFor="let val of value" class="ui-autocomplete-token ui-state-highlight ui-corner-all">
+                    <span class="ui-autocomplete-token-icon fa fa-fw fa-close" (click)="removeItem(token)"></span>
+                    <span class="ui-autocomplete-token-label">{{field ? val[field] : val}}</span>
+                </li>
+                <li class="ui-autocomplete-input-token">
+                    <input #addNodes type="text" required placeholder="Search, Add Resources" name="multiInTerm" (keyup)="onInputMultiSearch($event)" [(ngModel)]="multiInTerm" autocomplete="off">
+                </li>
+            </ul>
         </div>
     </form>
     <div *ngIf="searchInProgress" class="search">

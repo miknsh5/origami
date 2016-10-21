@@ -11,7 +11,7 @@
     min-width: 240px;
     max-width: 720px;
     margin: 0 auto;
-    width: 50%;
+    width: 95%;
 }
 
 .smart-bar-wrap input[type=text] {
@@ -19,7 +19,7 @@
     margin: 0px 3%;
     border: #58727F;
     background-color: #58727F;
-    height: 2rem;
+    height: 30px;
     width: 90%;
     border-radius: 10px;
     box-shadow: 0 1px 0 0 #58727F;

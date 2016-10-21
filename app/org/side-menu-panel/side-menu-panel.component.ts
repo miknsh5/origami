@@ -182,6 +182,7 @@ export class SideMenuComponent implements OnChanges {
             this.isFeedbackOpen = true;
             this.feedbackIcon = FEEDBACK_ICON_CLOSE;
             this.domHelper.setHeight(MenuElement.feedbackPanel, "220px");
+            document.querySelector("textarea").focus();
         } else if (this.feedbackIcon === FEEDBACK_ICON_CLOSE) {
             this.feedbackIcon = FEEDBACK_ICON_OPEN;
             this.feedbackDescriptionText = "";

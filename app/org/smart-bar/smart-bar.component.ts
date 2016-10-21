@@ -7,7 +7,7 @@ const HeaderTitle = "NAME";
 declare let $;
 
 @Component({
-    selector: "sg-org-smart-bar",
+    selector: "sg-smart-bar",
     templateUrl: "app/org/smart-bar/smart-bar.component.html",
     styleUrls: ["app/org/smart-bar/smart-bar.component.css"]
 })
@@ -16,7 +16,8 @@ export class SamrtBarComponent implements OnChanges {
     private searchHeader: string;
     private prevSearchTerm: any;
     private orgSearchData: OrgSearchModel[];
-    private searchOrAddTerm = "";
+    private searchTerm: string = "";
+    private multiInTerm: string = "";
     private nameSearchResults: OrgSearchModel[];
     private titleSearchResult: any[];
     private searchInProgress: boolean = false;
@@ -24,7 +25,12 @@ export class SamrtBarComponent implements OnChanges {
 
     @Input() treeJson: any;
     @Input() selectedOrgNode: OrgNodeModel;
+    @Input() isAddOrEditModeEnabled: boolean;
     @Output() nodeSearched = new EventEmitter<OrgNodeModel>();
+    @Output() deleteNode = new EventEmitter<OrgNodeModel>();
+    @Output() addNode = new EventEmitter<OrgNodeModel>();
+    @Output() setAddOrEditModeValue = new EventEmitter<boolean>();
+    @Output() chartStructureUpdated = new EventEmitter<any>();
 
     constructor(private elementRef: ElementRef, private domHelper: DomElementHelper, private renderer: Renderer) {
         this.searchHeader = `BY ${HeaderTitle}`;
@@ -40,10 +46,10 @@ export class SamrtBarComponent implements OnChanges {
         if (changes["selectedOrgNode"]) {
             if (this.selectedOrgNode === null) {
                 this.nodeSearched.emit(this.selectedOrgNode);
-                this.renderer.invokeElementMethod(document.querySelector("input[name=searchOrAddTerm]"), "focus", []);
             } else {
                 this.nodeSearched.emit(null);
             }
+            this.setInputFocus();
         }
         this.clearSearch();
     }
@@ -70,55 +76,85 @@ export class SamrtBarComponent implements OnChanges {
 
     @HostListener("window:keydown", ["$event"])
     public OnKeyDown(event) {
-        if (this.searchInProgress) {
-            let searchContainer = document.getElementById("searchSelection");
-            if ((event as KeyboardEvent).keyCode === 38) {
-                if (!this.selectedOrgNode) {
-                    let prevElement = $(searchContainer).find("li.active").prev();
-                    if ($(searchContainer).find("li.active").hasClass("titleSearch") && !$(prevElement).hasClass("titleSearch")) {
-                        prevElement = $(prevElement).prev();
-                    }
+        let searchContainer = document.getElementById("searchSelection");
+        if ((event as KeyboardEvent).keyCode === 38) {
+            let element;
+            if (this.selectedOrgNode) {
 
-                    if ($(searchContainer).find("li.active").hasClass("nameSearch") && !$(prevElement).hasClass("nameSearch")) {
-                        prevElement = null;
-                    }
-                    if (prevElement && prevElement[0] && prevElement[0].tagName === "LI") {
-                        $(searchContainer).find("li.active").removeClass("active");
-                        $(prevElement).addClass("active");
-                    }
+            } else {
+                element = $(searchContainer).find("li.active").prev();
+                if ($(searchContainer).find("li.active").hasClass("titleSearch") && !$(element).hasClass("titleSearch")) {
+                    element = $(element).prev();
                 }
             }
-            else if ((event as KeyboardEvent).keyCode === 40) {
-                if (!this.selectedOrgNode) {
-                    let nextElement = $(searchContainer).find("li.active").next();
-                    if ($(searchContainer).find("li.active").hasClass("nameSearch") && !$(nextElement).hasClass("nameSearch")) {
-                        nextElement = $(nextElement).next();
-                    }
 
-                    if ($(searchContainer).find("li.active").hasClass("titleSearch") && !$(nextElement).hasClass("titleSearch")) {
-                        nextElement = null;
-                    }
-                    if (nextElement && nextElement[0] && nextElement[0].tagName === "LI") {
-                        $(searchContainer).find("li.active").removeClass("active");
-                        $(nextElement).addClass("active");
-                    }
+            if ($(searchContainer).find("li.active").hasClass("nameSearch") && !$(element).hasClass("nameSearch")) {
+                element = null;
+            }
+            if (element && element[0] && element[0].tagName === "LI") {
+                $(searchContainer).find("li.active").removeClass("active");
+                $(element).addClass("active");
+            }
+        }
+        else if ((event as KeyboardEvent).keyCode === 40) {
+            let element = $(searchContainer).find("li.active").next();
+            if ($(searchContainer).find("li.active").hasClass("nameSearch") && !$(element).hasClass("nameSearch")) {
+                element = $(element).next();
+            }
+
+            if (this.selectedOrgNode) {
+
+            } else {
+                if ($(searchContainer).find("li.active").hasClass("titleSearch") && !$(element).hasClass("titleSearch")) {
+                    element = null;
                 }
-            } else if ((event as KeyboardEvent).keyCode === 13) {
-                if (!this.selectedOrgNode) {
-                    let element = document.querySelector("#searchSelection li.active");
-                    if (element)
-                        this.renderer.invokeElementMethod(element, "click", []);
+            }
+
+            if (element && element[0] && element[0].tagName === "LI") {
+                $(searchContainer).find("li.active").removeClass("active");
+                $(element).addClass("active");
+            }
+
+        } else if ((event as KeyboardEvent).keyCode === 13) {
+            if (!this.selectedOrgNode) {
+                let element = document.querySelector("#searchSelection li.active");
+                if (element)
+                    this.renderer.invokeElementMethod(element, "click", []);
+            }
+        } else if ((event as KeyboardEvent).keyCode === 27) {
+            if (this.isAddOrEditModeEnabled) {
+                if (this.selectedOrgNode.IsNewRoot || (this.selectedOrgNode.ParentNodeID && this.selectedOrgNode.NodeID === -1)) {
+                    if (this.selectedOrgNode.NodeID === -1) {
+                        this.deleteNode.emit(this.selectedOrgNode);
+                        this.setAddOrEditModeValue.emit(false);
+                    } else {
+                        this.setAddOrEditModeValue.emit(false);
+                        this.deleteNode.emit(null);
+                    }
                 }
             }
         }
     }
 
-    private onInputName() {
-        if (this.searchOrAddTerm) {
-            if (this.prevSearchTerm !== this.searchOrAddTerm) {
-                this.prevSearchTerm = this.searchOrAddTerm;
+    private onInputSearch() {
+        if (this.searchTerm) {
+            if (this.prevSearchTerm !== this.searchTerm) {
+                this.prevSearchTerm = this.searchTerm;
                 if (this.selectedOrgNode === null) {
-                    this.searchList(this.searchOrAddTerm.toLowerCase());
+                    this.searchList(this.searchTerm.toLowerCase());
+                }
+            }
+        } else {
+            this.clearSearch();
+        }
+    }
+
+    private onInputMultiSearch() {
+        if (this.multiInTerm) {
+            if (this.prevSearchTerm !== this.multiInTerm) {
+                this.prevSearchTerm = this.multiInTerm;
+                if (this.selectedOrgNode === null) {
+                    this.searchList(this.multiInTerm.toLowerCase());
                 }
             }
         } else {
@@ -161,34 +197,44 @@ export class SamrtBarComponent implements OnChanges {
                 }
             });
 
-            if (!this.isTitleSelected) {
-                let titleResults = new Array();
-                this.orgSearchData.forEach((data, index) => {
-                    if (data.Title.toLowerCase().search(searchTerm) > -1) {
-                        titleResults.push(data);
-                    }
-                });
-                let groups = {};
-                for (let i = 0; i < titleResults.length; i++) {
-                    let title = titleResults[i].Title;
-                    if (!groups[title]) {
-                        groups[title] = [];
-                    }
-                    groups[title].push(titleResults[i]);
-                }
+            if (this.selectedOrgNode) {
 
-                for (let title in groups) {
-                    this.titleSearchResult.push({ Name: title, Count: groups[title].length });
-                }
+            } else {
+                this.searchTitleData(searchTerm);
+                setTimeout(() => {
+                    $("#searchSelection li.nameSearch").first().addClass("active");
+                }, 100);
             }
-            setTimeout(() => {
-                $("#searchSelection li.nameSearch").first().addClass("active");
-            }, 100);
+
         }, 100);
     }
 
+    private searchTitleData(searchTerm: string) {
+        if (!this.isTitleSelected) {
+            let titleResults = new Array();
+            this.orgSearchData.forEach((data, index) => {
+                if (data.Title.toLowerCase().search(searchTerm) > -1) {
+                    titleResults.push(data);
+                }
+            });
+            let groups = {};
+            for (let i = 0; i < titleResults.length; i++) {
+                let title = titleResults[i].Title;
+                if (!groups[title]) {
+                    groups[title] = [];
+                }
+                groups[title].push(titleResults[i]);
+            }
+
+            for (let title in groups) {
+                this.titleSearchResult.push({ Name: title, Count: groups[title].length });
+            }
+        }
+    }
+
     private clearSearch() {
-        this.searchOrAddTerm = this.prevSearchTerm = "";
+
+        this.multiInTerm = this.searchTerm = this.prevSearchTerm = "";
         this.isTitleSelected = this.searchInProgress = false;
         this.nameSearchResults = new Array<OrgSearchModel>();
         this.titleSearchResult = new Array();
@@ -210,5 +256,19 @@ export class SamrtBarComponent implements OnChanges {
                 return node;
             }
         }
+    }
+
+    private setInputFocus() {
+        setTimeout(() => {
+            let element;
+            if (this.selectedOrgNode) {
+                element = document.querySelector("input[name=multiInTerm]");
+            } else {
+                element = document.querySelector("input[name=searchTerm]");
+            }
+            if (element) {
+                this.renderer.invokeElementMethod(element, "focus", []);
+            }
+        }, 100);
     }
 }

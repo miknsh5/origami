@@ -175,19 +175,19 @@
                                 <label class="lbl">Export</label>
                             </div>
                             <div class="template" id="export" *ngIf="selectedCompany && selectedCompany.CompanyName && selectedGroup">
-                                <sg-origami-csv [orgChartData]="selectedGroup" [orgName]="selectedCompany.CompanyName"></sg-origami-csv>
+                                <sg-csv [orgChartData]="selectedGroup" [orgName]="selectedCompany.CompanyName"></sg-csv>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <div *ngIf="isImport">
-                    <sg-org-import-csv-file (newOrgNodes)="updateNewOrgGroup($event)" [selectedGroup]="selectedGroup"></sg-org-import-csv-file>
+                    <sg-import-csv-file (newOrgNodes)="updateNewOrgGroup($event)" [selectedGroup]="selectedGroup"></sg-import-csv-file>
                 </div>
             </div>
             <div id="deleteGroupConfirm" class="center">
-                <sg-org-menu-confirm-button [hideMessage]="false" [titleName]="name" [deleteTitle]="deleteTitle" (onConfirmClick)="onGroupDeleteConfirm($event)" (onCancelClick)="onGroupDeleteCancel($event)">
-                </sg-org-menu-confirm-button>
+                <sg-menu-confirm-button [hideMessage]="false" [titleName]="name" [deleteTitle]="deleteTitle" (onConfirmClick)="onGroupDeleteConfirm($event)" (onCancelClick)="onGroupDeleteCancel($event)">
+                </sg-menu-confirm-button>
             </div>
             <div id="groupDeleteLoader" class="loadscreen center">
                 <div>
@@ -239,8 +239,8 @@
                         </div>
                     </div>
                     <div id="deleteCompanyConfirm" class="center">
-                        <sg-org-menu-confirm-button [hideMessage]="false" [titleName]="name" [deleteTitle]="deleteTitle" (onConfirmClick)="onCompanyDeleteConfirm($event)" (onCancelClick)="onCompanyDeleteCancel($event)">
-                        </sg-org-menu-confirm-button>
+                        <sg-menu-confirm-button [hideMessage]="false" [titleName]="name" [deleteTitle]="deleteTitle" (onConfirmClick)="onCompanyDeleteConfirm($event)" (onCancelClick)="onCompanyDeleteCancel($event)">
+                        </sg-menu-confirm-button>
                     </div>
                     <div id="companyDeleteLoader" class="loadscreen center">
                         <div>

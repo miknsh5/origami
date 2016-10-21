@@ -5,7 +5,7 @@ import { Router } from "@angular/router";
 import { AuthService } from "./auth.service";
 
 @Component({
-    selector: "sg-origami-login",
+    selector: "sg-login",
     template: ``
 })
 

@@ -4,7 +4,7 @@ import { NgForm, NgControl } from "@angular/forms";
 import { OrgNodeModel, OrgService } from "../shared/index";
 
 @Component({
-    selector: "sg-org-node-detail",
+    selector: "sg-node-detail",
     templateUrl: "app/org/org-node-detail/org-node-detail.component.html",
     styleUrls: ["app/org/org-node-detail/org-node-detail.component.css"]
 })

@@ -12,7 +12,7 @@ const DEFAULT_OFFSET: number = 55;
 declare var svgPanZoom: any;
 
 @Component({
-    selector: "sg-origami-org",
+    selector: "sg-org",
     templateUrl: "app/org/org.component.html",
     styleUrls: ["app/org/org.component.css"]
 })
