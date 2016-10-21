@@ -42,6 +42,37 @@
     position: absolute;
     right: 0;
     z-index: 0;
+    width: 30px;
+}
+
+.sideNav .menuButton a {
+    color: #fff;
+    background: #607D8B;
+    border: none;
+    font-weight: bold;
+    display: inline-block;
+    position: relative;
+    overflow: initial;
+    padding: 0;
+}
+
+.sideNav .menuButton a>i {
+    padding: 0 5px;
+}
+
+.sideNav .menuButton a::after {
+    content: '';
+    display: block;
+    position: absolute;
+    left: -49%;
+    top: 0;
+    width: 0;
+    height: 0;
+    border-top: 14px solid transparent;
+    border-left: 14px solid #607D8B;
+    border-bottom: 14px solid transparent;
+    border-right: 0;
+    transform: rotate(180deg);
 }
 
 .sideNav #menuPanel {
