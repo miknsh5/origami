@@ -65,7 +65,8 @@ export class SideMenuComponent implements OnChanges {
         }
 
         if (changes["isAddOrEditModeEnabled"] && !changes["isAddOrEditModeEnabled"].currentValue) {
-            if (this.selectedOrgNode && this.selectedOrgNode.NodeID === -1) {
+            if (this.selectedOrgNode && this.selectedOrgNode.NodeID !== -1 && !this.selectedOrgNode.ParentNodeID &&
+                this.selectedNode && !this.selectedNode.children) {
                 this.isClosed = false;
                 this.openPanel();
             }
