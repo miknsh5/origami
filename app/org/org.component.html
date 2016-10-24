@@ -1,10 +1,9 @@
 <div id="wrapper">
     <sg-menu-panel (groupSelected)="onGroupSelected($event)" (companySelected)="onCompanySelected($event)" [noNodeExsit]="isOrgNodeEmpty" [currentOrgNodeStatus]="currentOrgNodeStatus" (isMenuEnable)="onMenuSettingsChange($event)">
     </sg-menu-panel>
-
     <sg-side-menu-panel [selectedOrgNode]="selectedNode" [isAddOrEditModeEnabled]="isAddOrEditMode" [currentMode]="currentChartMode" [companyName]="companyName" (showFirstNameLabel)="enableFirstNameLabel($event)" (showLastNameLabel)="enableLastNameLabel($event)"
-        (showDescriptionLabel)="enableDescriptionLabel($event)" [svgWidth]="svgWidth" [svgHeight]="svgHeight" [orgChart]="orgGroup"></sg-side-menu-panel>
-
+        (showDescriptionLabel)="enableDescriptionLabel($event)" [svgWidth]="svgWidth" [svgHeight]="svgHeight" [orgChart]="orgGroup" (deleteNode)="onNodeDeleted($event)" (updateNode)="onNodeUpdated($event)" (setAddOrEditModeValue)="onAddOrEditModeValueSet($event)"
+        [isMenuSettingsEnabled]="isMenuSettingsEnabled"></sg-side-menu-panel>
     <div class="modes-wrap ">
         <ul>
             <li [ngClass]="buildView" class="nav-build" (click)="changeViewModeNav(1)"><a> Build</a></li>
@@ -12,12 +11,10 @@
             <li [ngClass]="reportView" class="nav-report" (click)="changeViewModeNav(3)"><a>Report</a> </li>
         </ul>
     </div>
-
     <div class="main-canvas" *ngIf="orgGroup" (window:resize)="onResize($event)">
         <sg-org-tree [treeData]="treeJson" [width]="svgWidth" [height]="svgHeight" [currentMode]="currentChartMode" [isAddOrEditModeEnabled]="isAddOrEditMode" (selectNode)="onNodeSelected($event)" (switchToAddMode)="onSwitchedToAddMode($event)" [showFirstNameLabel]="displayFirstNameLabel"
             [showLastNameLabel]="displayLastNameLabel" [showDescriptionLabel]="displayDescriptionLabel" [orgGroupID]="groupID" [CompanyID]="companyID" [isMenuSettingsEnabled]="isMenuSettingsEnabled" [searchNode]="searchedNode">
         </sg-org-tree>
-
         <div *ngIf="currentChartMode===1">
             <!--<sg-org-node-detail #nodeDetail [selectedOrgNode]="selectedNode" [isAddOrEditModeEnabled]="detailAddOrEditMode" (deleteNode)="onNodeDeleted($event)" (updateNode)="onNodeUpdated($event)" (addNode)="onNodeAdded($event)" (setAddOrEditModeValue)="onAddOrEditModeValueSet($event)"
         (chartStructureUpdated)="onChartUpdated($event)" (updateMenuNode)="onNodeTextChange($event)" [isMenuSettingsEnabled]="isMenuSettingsEnabled">
