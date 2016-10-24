@@ -41,7 +41,7 @@
 .smart-bar-wrap .search ul {
     border: 1px solid #cfd8dc;
     border: 1px solid var(--silver);
-    /*max-height: 190px;*/
+    max-height: 200px;
     overflow-y: auto;
     margin: 0;
 }
@@ -66,7 +66,7 @@
     display: block;
 }
 
-.smart-bar-wrap .search ul li.active a {
+.smart-bar-wrap .search ul li.selected a {
     background: #0097ff;
     background: var(--azure);
     color: #ffffff;
