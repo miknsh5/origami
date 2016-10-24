@@ -2,7 +2,6 @@
     <div class="menuButton">
         <a class="waves-effect waves-light" (click)="openPanel()"><i class="material-icons">folder_shared</i></a>
     </div>
-
     <div id="menuPanel" class="right">
         <div style="min-height: 600px;">
             <div>
@@ -11,25 +10,26 @@
             </div>
             <div *ngIf="currentMode===1">
                 <div>
-                    <button class="waves-effect waves-light deletebtn right" (click)="onDeleteNodeClicked()"> <i class="material-icons">{{deleteOrClose}}</i></button>
+                    <button class="waves-effect waves-light deletebtn right" [ngClass]='{disabled: isEditOrDeleteDisabled}' (click)="onDeleteOrCancelNodeClicked()"> <i class="material-icons">{{deleteOrClose}}</i></button>
                 </div>
                 <div>
-                    <button class="waves-effect waves-light editbtn right" (click)="onEditNodeClicked()"><i class="material-icons">{{editOrSave}}</i></button>
+                    <button class="waves-effect waves-light editbtn right" [ngClass]='{disabled: isEditOrDeleteDisabled}' (click)="onEditOrSaveNodeClicked()"><i class="material-icons">{{editOrSave}}</i></button>
                 </div>
             </div>
             <label class="menuTitle">Resource</label>
             <div class="detail-wrap">
                 <form #orgform="ngForm" *ngIf="selectedOrgNode" (ngSubmit)="onSubmit()">
                     <div *ngIf="selectedNode && isEditModeEnabled" class="form-group text-wrap">
-                        <input type="text" class="h-1 title-name-edit form-control firstName" (keyup)="onInputKeyDownOrUp($event,firstName)" ngControl="firstName" #firstName="ngModel" [ngModel]="editNode.NodeFirstName" placeholder="First Name" name="firstName" autocomplete="off"
-                        />
-                        <input type="text" class="h-1 title-name-edit form-control" (keyup)="onInputKeyDownOrUp($event,lastName)" ngControl="lastName" #lastName="ngModel" [ngModel]="editNode.NodeLastName" placeholder="Last Name" name="lastName" autocomplete="off" />
-                        <input type="text" class="h-3 title-position-edit form-control" (keyup)="onInputKeyDownOrUp($event,description)" ngControl="description" #description="ngModel" [ngModel]="editNode.Description" placeholder="Description" name="description" autocomplete="off"
+                        <div class="edit-name">
+                            <input type="text" class="h-1 title-name-edit form-control firstName" (keyup)="onInputKeyDownOrUp($event,firstName)" ngControl="firstName" #firstName="ngModel" [ngModel]="selectedNode.NodeFirstName" placeholder="First Name" name="firstName" autocomplete="off"
+                            />
+                            <input type="text" class="h-1 title-name-edit form-control" (keyup)="onInputKeyDownOrUp($event,lastName)" ngControl="lastName" #lastName="ngModel" [ngModel]="selectedNode.NodeLastName" placeholder="Last Name" name="lastName" autocomplete="off" />
+                        </div>
+                        <input type="text" class="h-3 title-position-edit form-control" (keyup)="onInputKeyDownOrUp($event,description)" ngControl="description" #description="ngModel" [ngModel]="selectedNode.Description" placeholder="Description" name="description" autocomplete="off"
                         />
                     </div>
                 </form>
             </div>
-
             <div *ngIf="selectedNode && !isEditModeEnabled" class="labelWrap">
                 <p class="lblName"> {{selectedNode.NodeFirstName}} {{selectedNode.NodeLastName}}</p>
                 <p class="lblJobTitle"> {{selectedNode.Description}} </p>
@@ -51,7 +51,6 @@
                 </div>
                 <hr/>
             </div>
-
             <div *ngIf="currentMode===3">
                 <hr/>
                 <label class="menuTitle">Settings</label>
@@ -63,17 +62,14 @@
                     <input type="checkbox" class="filled-in" id="JobTitle" checked="checked" (change)="setLabelVisiblity($event)" />
                     <label for="JobTitle">Job Title</label>
                 </div>
-
                 <div class="tabControl">
                     <ul class="tabs">
                         <li class="tab" href="#publishData" (click)="OnPublish($data)"><a>Publish</a></li>
                         <li class="tab" (click)="OnExport($data)"><a class="active">Export</a></li>
                     </ul>
-
                     <div id="publishData" class="col s12">
                         <span class="title">Coming soon</span>
                     </div>
-
                     <div id="sidePanelExportData" class="col s12">
                         <sg-origami-csv [orgChartData]="orgChart" [orgName]="companyName"></sg-origami-csv>
                         <sg-origami-png [width]="svgWidth" [height]="svgHeight" [selectedOrgNode]="selectedNode" [orgName]="companyName"></sg-origami-png>
@@ -83,7 +79,6 @@
             <div id="feedbackPanel">
                 <div class="feedbackPanel">
                     <div class="feedbackTitle" (click)="openOrCloseFeedBackPanel()"> <i class="material-icons">{{feedbackIcon}}</i> <span>Feedback</span></div>
-
                     <div class="divider"></div>
                     <div class="input-field col s9">
                         <textarea placeholder="Share you feedback! Feature requests? Bugs? Compliments? Constructive criticism?" cols="50" id="feedbacktxt" [(ngModel)]="feedbackDescriptionText" autocomplete="off"></textarea>

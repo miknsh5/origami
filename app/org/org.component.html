@@ -3,7 +3,7 @@
 </div>
 <div>
     <sg-side-menu-panel [selectedOrgNode]="selectedNode" [isAddOrEditModeEnabled]="isAddOrEditMode" [currentMode]="currentChartMode" [companyName]="companyName" (showFirstNameLabel)="enableFirstNameLabel($event)" (showLastNameLabel)="enableLastNameLabel($event)"
-        (showDescriptionLabel)="enableDescriptionLabel($event)" [svgWidth]="svgWidth" [svgHeight]="svgHeight" [orgChart]="orgGroup" (deleteNode)="onNodeDeleted($event)"></sg-side-menu-panel>
+        (showDescriptionLabel)="enableDescriptionLabel($event)" [svgWidth]="svgWidth" [svgHeight]="svgHeight" [orgChart]="orgGroup" (deleteNode)="onNodeDeleted($event)" (updateNode)="onNodeUpdated($event)" (setAddOrEditModeValue)="onAddOrEditModeValueSet($event)"></sg-side-menu-panel>
 </div>
 
 <div class="modes-wrap ">

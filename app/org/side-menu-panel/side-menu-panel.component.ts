@@ -1,4 +1,4 @@
-import { Component, Input, Output, OnChanges, SimpleChange, EventEmitter } from "@angular/core";
+import { Component, Input, Output, OnChanges, SimpleChange, EventEmitter, ViewChild } from "@angular/core";
 import { NgForm, NgControl } from "@angular/forms";
 import { OrgGroupModel, OrgNodeModel, ChartMode, OrgService, UserFeedBack, DomElementHelper } from "../shared/index";
 import { UserModel } from "../../Shared/index";
@@ -31,7 +31,6 @@ export class SideMenuComponent implements OnChanges {
     isCollapsed: boolean;
     isClosed: boolean;
     selectedNode: OrgNodeModel;
-    editNode: OrgNodeModel;
     directReportees: any;
     totalReportees: any;
     depth: any;
@@ -39,11 +38,17 @@ export class SideMenuComponent implements OnChanges {
     editOrSave: any;
     deleteOrClose: any;
 
+    private editNodeDetails: OrgNodeModel;
     private userModel: UserModel;
     private isFeedbackOpen: boolean;
     private feedbackDescriptionText: any;
     private feedbackIcon: any;
     private feedback: UserFeedBack;
+    private isEditOrDeleteDisabled: boolean;
+
+    @ViewChild("firstName") firstName;
+    @ViewChild("lastName") lastName;
+    @ViewChild("description") description;
 
     @Input() currentMode: ChartMode;
     @Input() orgChart: OrgGroupModel;
@@ -53,6 +58,7 @@ export class SideMenuComponent implements OnChanges {
     @Input() svgWidth: any;
     @Input() svgHeight: any;
 
+    @Output() setAddOrEditModeValue = new EventEmitter<boolean>();
     @Output() updateNode = new EventEmitter<OrgNodeModel>();
     @Output() deleteNode = new EventEmitter<OrgNodeModel>();
     @Output() showFirstNameLabel = new EventEmitter<boolean>();
@@ -66,6 +72,7 @@ export class SideMenuComponent implements OnChanges {
         this.isEditModeEnabled = false;
         this.editOrSave = EDIT_ICON;
         this.deleteOrClose = DELETE_ICON;
+        this.isEditOrDeleteDisabled = false;
     }
 
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
@@ -89,12 +96,13 @@ export class SideMenuComponent implements OnChanges {
         if (changes["selectedOrgNode"]) {
             if (this.selectedOrgNode) {
                 if (this.selectedOrgNode.NodeID === -1) {
+                    this.isEditOrDeleteDisabled = true;
                     this.closePanel();
                 } else if ((this.isCollapsed || !this.isClosed)) {
+                    this.isEditOrDeleteDisabled = false;
                     this.openPanel();
                 }
                 this.selectedNode = this.selectedOrgNode;
-                
                 this.depth = new Array();
                 this.childCount(0, this.selectedNode);
                 if (this.depth) {
@@ -192,27 +200,31 @@ export class SideMenuComponent implements OnChanges {
         this.domHelper.showElements(MenuElement.sidePanelExportData);
         this.domHelper.hideElements(MenuElement.publishData);
     }
-    onDeleteNodeClicked() {
-        if (this.deleteOrClose === DELETE_ICON) {
-            if (this.selectedNode.NodeID === -1) {
-                this.deleteNode.emit(this.selectedNode);
-            } else {
-                if (this.selectedNode.children && this.selectedNode.children.length > 0) {
-                    alert("Delete Child Node First!");
+    onDeleteOrCancelNodeClicked() {
+        if (this.selectedNode.NodeID !== -1) {
+            if (this.deleteOrClose === DELETE_ICON) {
+                if (this.selectedNode.NodeID === -1) {
+                    this.deleteNode.emit(this.selectedNode);
                 } else {
-                    this.orgService.deleteNode(this.selectedNode.NodeID)
-                        .subscribe(data => this.emitDeleteNodeNotification(data),
-                        error => this.handleError(error),
-                        () => console.log("Deleted node."));
+                    if (this.selectedNode.children && this.selectedNode.children.length > 0) {
+                        alert("Delete Child Node First!");
+                    } else {
+                        this.orgService.deleteNode(this.selectedNode.NodeID)
+                            .subscribe(data => this.emitDeleteNodeNotification(data),
+                            error => this.handleError(error),
+                            () => console.log("Deleted node."));
+                    }
                 }
+            } else if (this.deleteOrClose === CLOSE_ICON) {
+                this.editOrSave = EDIT_ICON;
+                this.deleteOrClose = DELETE_ICON;
+                this.isEditModeEnabled = false;
+                this.selectedNode.NodeFirstName = this.editNodeDetails.NodeFirstName;
+                this.selectedNode.NodeLastName = this.editNodeDetails.NodeLastName;
+                this.selectedNode.Description = this.editNodeDetails.Description;
+                 this.setAddOrEditModeValue.emit(false);
+                this.emitUpdateNodeNotification(this.selectedNode);
             }
-        } else if (this.deleteOrClose === CLOSE_ICON) {
-            this.editOrSave = EDIT_ICON;
-            this.deleteOrClose = DELETE_ICON;
-            this.isEditModeEnabled = false;
-           this.editNode.NodeFirstName = this.selectedNode.NodeFirstName;
-           this.editNode.NodeLastName = this.selectedNode.NodeLastName;
-           this.editNode.Description = this.selectedNode.Description;
         }
 
     }
@@ -221,44 +233,97 @@ export class SideMenuComponent implements OnChanges {
             this.deleteNode.emit(this.selectedNode);
         }
     }
-    onEditNodeClicked() {
-        this.isEditModeEnabled = true;
-        this.editOrSave = SAVE_ICON;
-        this.deleteOrClose = CLOSE_ICON;
-        this.editNode = this.selectedOrgNode;
+
+    private isNullOrEmpty(value: string) {
+        if (value && value.trim().length > 0) {
+            return false;
+        }
+        return true;
+    }
+
+    onEditOrSaveNodeClicked() {
+        if (this.selectedNode.NodeID !== -1) {
+            if (this.editOrSave === EDIT_ICON) {
+                 this.setAddOrEditModeValue.emit(true);
+                this.isEditModeEnabled = true;
+                this.editOrSave = SAVE_ICON;
+                this.deleteOrClose = CLOSE_ICON;
+                this.editNodeDetails = new OrgNodeModel();
+                this.editNodeDetails.NodeFirstName = this.selectedNode.NodeFirstName;
+                this.editNodeDetails.NodeLastName = this.selectedNode.NodeLastName;
+                this.editNodeDetails.Description = this.selectedNode.Description;
+            } else if (this.editOrSave === SAVE_ICON) {
+                if (!this.isNullOrEmpty(this.firstName.value)) {
+                    //    this.isFormSubmitted = true;
+                    this.editNodeDetails = new OrgNodeModel();
+                    this.editNodeDetails.NodeFirstName = (this.firstName.value).trim();
+                    this.editNodeDetails.NodeLastName = (this.lastName.value).trim();
+                    this.editNodeDetails.Description = (this.description.value).trim();
+                    this.editNodeDetails.children = this.selectedNode.children;
+                    this.editNodeDetails.NodeID = this.selectedNode.NodeID;
+                    this.editNodeDetails.OrgGroupID = this.selectedNode.OrgGroupID;
+                    this.editNodeDetails.CompanyID = this.selectedNode.CompanyID;
+                    this.editNodeDetails.ParentNodeID = this.selectedNode.ParentNodeID;
+                    this.editNode(this.editNodeDetails);
+                    this.isEditModeEnabled = false;
+                    this.editOrSave = EDIT_ICON;
+                    this.deleteOrClose = DELETE_ICON;
+                } else {
+                    alert("Please enter FirstName.");
+                }
+            }
+        }
+    }
+
+    private editNode(node: OrgNodeModel) {
+        if (!node) { return; }
+        // we don"t really need to send any child info to the server at this point
+        node.children = null;
+        this.orgService.updateNode(node)
+            .subscribe(data => this.emitUpdateNodeNotification(data),
+            error => this.handleError(error),
+            () => console.log("Updated node."));
+    }
+
+    private emitUpdateNodeNotification(data) {
+        if (data === true) {
+            this.updateNode.emit(this.editNodeDetails);
+            this.editNodeDetails = null;
+            this.setAddOrEditModeValue.emit(false);
+        }
     }
 
     private onInputKeyDownOrUp(event: KeyboardEvent, ngControl: NgControl) {
-        if (this.editNode) {
+        if (this.selectedNode) {
             let target = (<HTMLInputElement>event.target);
             let node = new OrgNodeModel();
-            node.OrgGroupID = this.editNode.OrgGroupID;
-            node.CompanyID = this.editNode.CompanyID;
-            node.ParentNodeID = this.editNode.ParentNodeID;
-            node.NodeID = this.editNode.NodeID;
-            node.IsStaging = this.editNode.IsStaging;
-            node.Description = this.editNode.Description;
-            node.IsFakeRoot = this.editNode.IsFakeRoot;
-            node.IsNewRoot = this.editNode.IsNewRoot;
-            node.children = this.editNode.children;
+            node.OrgGroupID = this.selectedNode.OrgGroupID;
+            node.CompanyID = this.selectedNode.CompanyID;
+            node.ParentNodeID = this.selectedNode.ParentNodeID;
+            node.NodeID = this.selectedNode.NodeID;
+            node.IsStaging = this.selectedNode.IsStaging;
+            node.Description = this.selectedNode.Description;
+            node.IsFakeRoot = this.selectedNode.IsFakeRoot;
+            node.IsNewRoot = this.selectedNode.IsNewRoot;
+            node.children = this.selectedNode.children;
 
             if (ngControl.name === "firstName") {
-                this.editNode.NodeFirstName = node.NodeFirstName = ngControl.value;
-                node.NodeLastName = this.editNode.NodeLastName;
-                node.Description = this.editNode.Description;
+                this.selectedNode.NodeFirstName = node.NodeFirstName = ngControl.value;
+                node.NodeLastName = this.selectedNode.NodeLastName;
+                node.Description = this.selectedNode.Description;
             } else if (ngControl.name === "lastName") {
-                node.NodeFirstName = this.editNode.NodeFirstName;
-                this.editNode.NodeLastName = node.NodeLastName = ngControl.value;
-                node.Description = this.editNode.Description;
+                node.NodeFirstName = this.selectedNode.NodeFirstName;
+                this.selectedNode.NodeLastName = node.NodeLastName = ngControl.value;
+                node.Description = this.selectedNode.Description;
             }
             else if (ngControl.name === "description") {
-                node.NodeFirstName = this.editNode.NodeFirstName;
-                node.NodeLastName = this.editNode.NodeLastName;
-                this.editNode.Description = node.Description = ngControl.value;
+                node.NodeFirstName = this.selectedNode.NodeFirstName;
+                node.NodeLastName = this.selectedNode.NodeLastName;
+                this.selectedNode.Description = node.Description = ngControl.value;
             }
 
             if (node.IsStaging && node.NodeID === -1) {
-                if (this.editNode.NodeFirstName || this.editNode.NodeLastName || this.editNode.Description) {
+                if (this.selectedNode.NodeFirstName || this.selectedNode.NodeLastName || this.selectedNode.Description) {
                     this.selectedNode.IsStaging = node.IsStaging = false;
                 }
             } else {
@@ -308,7 +373,6 @@ export class SideMenuComponent implements OnChanges {
             alert("OOPs!! Something went wrong!! ");
         }
         console.log(err);
-        // this.editNodeDetails = null;
-        // this.isFormSubmitted = false;
+        this.editNodeDetails = null;
     }
 }

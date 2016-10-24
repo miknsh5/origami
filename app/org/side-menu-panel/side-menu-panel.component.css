@@ -109,6 +109,10 @@
     line-height: 1.53em;
 }
 
+.editbtn {
+    right: 1px;
+}
+
 .sideNav .menuTitle {
     padding-left: 15px;
     font-size: 0.9em;
@@ -345,53 +349,13 @@ ul.tabs .tab {
     /* red */
 }
 
-
-/*.detail-wrap {
-    height: 58px;
-    min-width: 30px;
-    position: fixed;
-    background-color: #0097ff;
-    /*background-color: var(--azure);*/
-
-
-/*bottom: 5px;
-left: 0;
-box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);*/
-
-
-/*box-shadow: 0 2px 4px 0 var(--black-50);*/
-
-
-/*}
-*/
-
-
-/*.orgFormControls {
-    left: 20px;
-    top: 0;
-    height: 100%;
-    display: inline-block;
-    position: absolute;
-    z-index: 11;
-}*/
-
-
-/*.text-wrap {
-    position: relative;
-    padding-left: 60px;
-    margin: 11px 0;
-    color: #FFFFFF;
-    width: 390px;
-    max-width: 100%;
-}
-
-.title-name {
-    font-size: 1.1em;
-    font-weight: bolder;
+.edit-name {
+    margin-top: 25px;
+    margin-left: 30px;
 }
 
 .title-name-edit {
-    width: 140px;
+    width: 90px;
     border: none;
     display: inline-block;
     padding: 1px 2px;
@@ -399,15 +363,12 @@ box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);*/
     background-color: rgba(0, 0, 0, 0.2);
 }
 
-.title-position {
-    font-size: 0.9em;
-}
-
 .title-position-edit {
-    width: 140px;
+    width: 187px;
     border: none;
     padding: 1px 2px;
     display: block;
     margin-top: 2px;
+    margin-left: 30px;
     background-color: rgba(0, 0, 0, 0.2);
-}*/
+}
