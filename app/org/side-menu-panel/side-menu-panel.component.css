@@ -94,6 +94,25 @@
     border: 0;
 }
 
+.sideNav .editbtn,
+.deletebtn {
+    width: 30px;
+    height: 30px;
+    background-color: #607d8b;
+    background-color: var(--blue-grey);
+    border: 0;
+}
+
+.sideNav .editbtn i,
+.deletebtn i {
+    font-size: 0.99rem;
+    line-height: 1.53em;
+}
+
+.editbtn {
+    right: 1px;
+}
+
 .sideNav .menuTitle {
     padding-left: 15px;
     font-size: 0.9em;
@@ -318,4 +337,38 @@ ul.tabs .tab {
 #publishData .title {
     color: #B6B6B6;
     font-size: 1.278em;
+}
+
+.ng-valid[required] {
+    border-left: 5px solid #42A948;
+    /* green */
+}
+
+.ng-invalid {
+    border-left: 5px solid #a94442;
+    /* red */
+}
+
+.edit-name {
+    margin-top: 25px;
+    margin-left: 30px;
+}
+
+.title-name-edit {
+    width: 90px;
+    border: none;
+    display: inline-block;
+    padding: 1px 2px;
+    margin: 0px;
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.title-position-edit {
+    width: 187px;
+    border: none;
+    padding: 1px 2px;
+    display: block;
+    margin-top: 2px;
+    margin-left: 30px;
+    background-color: rgba(0, 0, 0, 0.2);
 }
