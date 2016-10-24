@@ -132,6 +132,13 @@ export class SideMenuComponent implements OnChanges {
         }
 
         if (changes["selectedOrgNode"]) {
+            if (this.isEditModeEnabled && this.selectedNode.NodeID !== this.selectedOrgNode.NodeID) {
+                console.log(this.selectedNode.NodeID);
+                console.log(this.selectedOrgNode.NodeID);
+
+                this.deleteOrClose = CLOSE_ICON;
+                this.onDeleteOrCancelNodeClicked();
+            }
             if (this.selectedOrgNode) {
                 if (this.selectedOrgNode.NodeID === -1) {
                     this.isEditOrDeleteDisabled = true;
@@ -184,6 +191,10 @@ export class SideMenuComponent implements OnChanges {
         }
         this.domHelper.setWidth(MenuElement.menuPanel, "3px");
         this.domHelper.setWidth(MenuElement.sideNavfixed, 0);
+        if (this.isEditModeEnabled) {
+            this.deleteOrClose = CLOSE_ICON;
+            this.onDeleteOrCancelNodeClicked();
+        }
     }
 
     private childCount(level, node) {

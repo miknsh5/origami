@@ -268,7 +268,8 @@ export class SamrtBarComponent implements OnChanges {
         setTimeout(() => {
             let element;
             if (this.selectedOrgNode) {
-                element = document.querySelector("input[name=multiInTerm]");
+                if (!this.isAddOrEditModeEnabled)
+                    element = document.querySelector("input[name=multiInTerm]");
             } else {
                 element = document.querySelector("input[name=searchTerm]");
             }
