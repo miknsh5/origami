@@ -36,7 +36,7 @@
                 <i class="material-icons">search</i> No Results
             </li>
             <li *ngIf="selectedOrgNode && multiInTerm" class="header">ADD A RESOURCE</li>
-            <li *ngIf="selectedOrgNode && multiInTerm" class="addNode">
+            <li *ngIf="selectedOrgNode && multiInTerm" class="addNode" (click)="onAddNode($event)">
                 <a>
                     <i class="material-icons">add_circle</i> {{multiInTerm}} <i class="material-icons right">keyboard_arrow_right</i>
                 </a>

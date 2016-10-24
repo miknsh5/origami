@@ -34,8 +34,9 @@ export class SamrtBarComponent implements OnChanges {
     @Output() setAddOrEditModeValue = new EventEmitter<boolean>();
     @Output() chartStructureUpdated = new EventEmitter<any>();
 
-    constructor(private elementRef: ElementRef, private domHelper: DomElementHelper, private renderer: Renderer) {
+    constructor(private elementRef: ElementRef, private domHelper: DomElementHelper, private renderer: Renderer, private orgService: OrgService) {
         this.searchHeader = `BY ${HeaderTitle}`;
+        this.newNodeValue = new Array();
     }
 
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
@@ -136,6 +137,58 @@ export class SamrtBarComponent implements OnChanges {
                     }
                 }
             }
+        }
+    }
+
+    onAddNode() {
+        let firstName: any;
+        let lastName: any;
+        if (this.multiInTerm.indexOf(" ") >= 0) {
+            let index = this.multiInTerm.indexOf(" ");
+            firstName = this.multiInTerm.substring(0, index);
+            lastName = this.multiInTerm.substring(index + 1, this.multiInTerm.length);
+        } else {
+            firstName = this.multiInTerm;
+            lastName = "";
+        }
+
+
+        let newOrgNode = new OrgNodeModel();
+        newOrgNode.NodeFirstName = firstName;
+        newOrgNode.NodeLastName = lastName;
+        newOrgNode.Description = "";
+        newOrgNode.ParentNodeID = this.selectedOrgNode.NodeID;
+        newOrgNode.OrgGroupID = this.selectedOrgNode.OrgGroupID;
+        newOrgNode.CompanyID = this.selectedOrgNode.CompanyID;
+
+        this.newNodeValue.push(firstName + " " + lastName);
+        this.multiInTerm = "";
+        console.log(this.newNodeValue.length)
+        if (this.newNodeValue.length > 1) {
+
+            this.newNodeValue.push(this.multiInTerm);
+            newOrgNode.Description = this.multiInTerm;
+            console.log(this.newNodeValue.length);
+            this.addNewNode(newOrgNode);
+            this.newNodeValue = null;
+            newOrgNode = null;
+            this.multiInTerm = "";
+        }
+    }
+
+    private addNewNode(node: OrgNodeModel) {
+        if (!node) { return; }
+        // we don"t really need to send any child info to the server at this point
+        node.children = null;
+        this.orgService.addNode(node)
+            .subscribe(data => this.emitAddNodeNotification(data),
+            error => this.handleError(error),
+            () => console.log("Added new node."));
+    }
+
+    private emitAddNodeNotification(data: OrgNodeModel) {
+        if (data) {
+            this.addNode.emit(data);
         }
     }
 
@@ -277,5 +330,15 @@ export class SamrtBarComponent implements OnChanges {
                 this.renderer.invokeElementMethod(element, "focus", []);
             }
         }, 100);
+    }
+
+    private handleError(err) {
+        try {
+            let errorMessage = JSON.parse(err._body);
+            alert(errorMessage.Message);
+        } catch (ex) {
+            alert("OOPs!! Something went wrong!! ");
+        }
+        console.log(err);
     }
 }
