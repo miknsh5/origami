@@ -98,6 +98,7 @@ export class SideMenuComponent implements OnChanges {
                 if (this.selectedOrgNode.NodeID === -1) {
                     this.isEditOrDeleteDisabled = true;
                     this.closePanel();
+                    this.isCollapsed = true;
                 } else if ((this.isCollapsed || !this.isClosed)) {
                     this.isEditOrDeleteDisabled = false;
                     this.openPanel();
@@ -222,7 +223,7 @@ export class SideMenuComponent implements OnChanges {
                 this.selectedNode.NodeFirstName = this.editNodeDetails.NodeFirstName;
                 this.selectedNode.NodeLastName = this.editNodeDetails.NodeLastName;
                 this.selectedNode.Description = this.editNodeDetails.Description;
-                 this.setAddOrEditModeValue.emit(false);
+                this.setAddOrEditModeValue.emit(false);
                 this.emitUpdateNodeNotification(this.selectedNode);
             }
         }
@@ -244,7 +245,7 @@ export class SideMenuComponent implements OnChanges {
     onEditOrSaveNodeClicked() {
         if (this.selectedNode.NodeID !== -1) {
             if (this.editOrSave === EDIT_ICON) {
-                 this.setAddOrEditModeValue.emit(true);
+                this.setAddOrEditModeValue.emit(true);
                 this.isEditModeEnabled = true;
                 this.editOrSave = SAVE_ICON;
                 this.deleteOrClose = CLOSE_ICON;
