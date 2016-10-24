@@ -10,10 +10,10 @@
             </div>
             <div *ngIf="currentMode===1">
                 <div>
-                    <button class="waves-effect waves-light deletebtn right" [ngClass]='{disabled: isEditOrDeleteDisabled}' (click)="onDeleteOrCancelNodeClicked()"> <i class="material-icons">{{deleteOrClose}}</i></button>
+                    <button class="waves-effect waves-light deletebtn right" (click)="onDeleteOrCancelNodeClicked()"> <i class="material-icons">{{deleteOrClose}}</i></button>
                 </div>
                 <div>
-                    <button class="waves-effect waves-light editbtn right" [ngClass]='{disabled: isEditOrDeleteDisabled}' (click)="onEditOrSaveNodeClicked()"><i class="material-icons">{{editOrSave}}</i></button>
+                    <button class="waves-effect waves-light editbtn right" (click)="onEditOrSaveNodeClicked()"><i class="material-icons">{{editOrSave}}</i></button>
                 </div>
             </div>
             <label class="menuTitle">Resource</label>

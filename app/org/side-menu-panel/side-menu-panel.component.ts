@@ -1,4 +1,4 @@
-import { Component, Input, Output, OnChanges, SimpleChange, EventEmitter, ViewChild } from "@angular/core";
+import { Component, HostListener, Input, Output, OnChanges, SimpleChange, EventEmitter, ViewChild } from "@angular/core";
 import { NgForm, NgControl } from "@angular/forms";
 import { OrgGroupModel, OrgNodeModel, ChartMode, OrgService, UserFeedBack, DomElementHelper } from "../shared/index";
 import { UserModel } from "../../Shared/index";
@@ -57,6 +57,7 @@ export class SideMenuComponent implements OnChanges {
     @Input() isAddOrEditModeEnabled: boolean;
     @Input() svgWidth: any;
     @Input() svgHeight: any;
+    @Input() isMenuSettingsEnabled: boolean;
 
     @Output() setAddOrEditModeValue = new EventEmitter<boolean>();
     @Output() updateNode = new EventEmitter<OrgNodeModel>();
@@ -64,6 +65,42 @@ export class SideMenuComponent implements OnChanges {
     @Output() showFirstNameLabel = new EventEmitter<boolean>();
     @Output() showLastNameLabel = new EventEmitter<boolean>();
     @Output() showDescriptionLabel = new EventEmitter<boolean>();
+
+    @HostListener("window:keydown", ["$event"])
+    onKeyDown(event: any) {
+        event.stopPropagation();
+        if (!this.isMenuSettingsEnabled) {
+            if ((event as KeyboardEvent).keyCode === 27) {
+                if (this.isEditModeEnabled) {
+                    this.setAddOrEditModeValue.emit(false);
+                    this.deleteOrClose = CLOSE_ICON;
+                    this.onDeleteOrCancelNodeClicked();
+                }
+            }
+        }
+    }
+
+    @HostListener("window:click", ["$event"])
+    onClick(event: any) {
+        if (!this.isMenuSettingsEnabled) {
+            event.stopPropagation();
+            if (event.target.nodeName === "svg") {
+                if (this.firstName && this.lastName && this.description) {
+                    if (this.firstName.value) {
+                        this.editOrSave = SAVE_ICON;
+                        this.onEditOrSaveNodeClicked();
+                    } else {
+                        this.deleteOrClose = CLOSE_ICON;
+                        this.onDeleteOrCancelNodeClicked();
+                        let node: any = this.selectedOrgNode;
+                        if (node.parent || this.firstName.value === "") {
+                            alert("Please enter FirstName.");
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     constructor(private orgService: OrgService, private domHelper: DomElementHelper) {
         this.feedbackIcon = FEEDBACK_ICON_OPEN;
@@ -128,12 +165,14 @@ export class SideMenuComponent implements OnChanges {
     }
 
     openPanel() {
-        this.isCollapsed = true;
-        this.isClosed = false;
-        this.domHelper.setElementWidth(MenuElement.menuPanel, "100%");
-        this.domHelper.setElementWidth(MenuElement.sideNavfixed, "100%");
-        this.domHelper.hideElements(MenuElement.publishData);
-        this.domHelper.showElements(MenuElement.sidePanelExportData);
+        if (this.selectedOrgNode && this.selectedOrgNode.NodeID !== -1) {
+            this.isCollapsed = true;
+            this.isClosed = false;
+            this.domHelper.setElementWidth(MenuElement.menuPanel, "100%");
+            this.domHelper.setElementWidth(MenuElement.sideNavfixed, "100%");
+            this.domHelper.hideElements(MenuElement.publishData);
+            this.domHelper.showElements(MenuElement.sidePanelExportData);
+        }
     }
 
     closePanel() {
