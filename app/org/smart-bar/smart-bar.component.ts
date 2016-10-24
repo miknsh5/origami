@@ -81,48 +81,52 @@ export class SamrtBarComponent implements OnChanges {
     public OnKeyDown(event) {
         let searchContainer = document.getElementById("searchSelection");
         if ((event as KeyboardEvent).keyCode === 38) {
-            let element = $(searchContainer).find("li.active").prev();
+            let $element = $(searchContainer).find("li.selected").prev();
             if (this.selectedOrgNode) {
-                if ($(searchContainer).find("li.active").hasClass("addNode") && !$(element).hasClass("addNode")) {
-                    element = $(element).prev();
+                if ($(searchContainer).find("li.selected").hasClass("addNode") && !$element.hasClass("addNode")) {
+                    $element = $element.prev();
                 }
             } else {
-                if ($(searchContainer).find("li.active").hasClass("titleFilter") && !$(element).hasClass("titleFilter")) {
-                    element = $(element).prev();
+                if ($(searchContainer).find("li.selected").hasClass("titleFilter") && !$element.hasClass("titleFilter")) {
+                    $element = $element.prev();
                 }
             }
 
-            if ($(searchContainer).find("li.active").hasClass("nodeSearch") && !$(element).hasClass("nodeSearch")) {
-                element = null;
+            if ($(searchContainer).find("li.selected").hasClass("nodeSearch") && !$element.hasClass("nodeSearch")) {
+                $element = null;
             }
-            if (element && element[0] && element[0].tagName === "LI") {
-                $(searchContainer).find("li.active").removeClass("active");
-                $(element).addClass("active");
+            if ($element && $element[0] && $element[0].tagName === "LI") {
+                $(searchContainer).find("li.selected").removeClass("selected");
+                $element.addClass("selected");
+                $(searchContainer).scrollTop($(searchContainer).scrollTop() + $element.position().top);
             }
         }
         else if ((event as KeyboardEvent).keyCode === 40) {
-            let element = $(searchContainer).find("li.active").next();
-            if ($(searchContainer).find("li.active").hasClass("nodeSearch") && !$(element).hasClass("nodeSearch")) {
-                element = $(element).next();
+            let $element = $(searchContainer).find("li.selected").next();
+            if ($(searchContainer).find("li.selected").hasClass("nodeSearch") && !$element.hasClass("nodeSearch")) {
+                $element = $element.next();
             }
 
             if (this.selectedOrgNode) {
-                if ($(searchContainer).find("li.active").hasClass("addNode") && !$(element).hasClass("addNode")) {
-                    element = null;
+                if ($(searchContainer).find("li.selected").hasClass("addNode") && !$element.hasClass("addNode")) {
+                    $element = null;
                 }
             } else {
-                if ($(searchContainer).find("li.active").hasClass("titleFilter") && !$(element).hasClass("titleFilter")) {
-                    element = null;
+                if ($(searchContainer).find("li.selected").hasClass("titleFilter") && !$element.hasClass("titleFilter")) {
+                    $element = null;
                 }
             }
 
-            if (element && element[0] && element[0].tagName === "LI") {
-                $(searchContainer).find("li.active").removeClass("active");
-                $(element).addClass("active");
+            if ($element && $element[0] && $element[0].tagName === "LI") {
+                if ($element.hasClass("addNode") || $element.hasClass("titleFilter") || $element.hasClass("nodeSearch")) {
+                    $(searchContainer).find("li.selected").removeClass("selected");
+                    $element.addClass("selected");
+                    $(searchContainer).scrollTop($(searchContainer).scrollTop() + $element.position().top);
+                }
             }
 
         } else if ((event as KeyboardEvent).keyCode === 13) {
-            let element = document.querySelector("#searchSelection li.active");
+            let element = document.querySelector("#searchSelection li.selected");
             if (element)
                 this.renderer.invokeElementMethod(element, "click", []);
         } else if ((event as KeyboardEvent).keyCode === 27) {
@@ -219,8 +223,9 @@ export class SamrtBarComponent implements OnChanges {
         if (data) {
             let node = this.getNode(data.NodeID, this.treeJson[0]);
             if (node) {
-                $("#searchSelection").find("li.active").removeClass("active");
-                $(event.target).closest("li.nodeSearch").addClass("active");
+                $("#searchSelection").find("li.selected").removeClass("selected");
+                let $element = $(event.target).closest("li.nodeSearch");
+                $element.addClass("selected").scrollTop($("#searchSelection").scrollTop() + $element.position().top);
                 this.nodeSearched.emit(node);
             }
         }
@@ -252,16 +257,19 @@ export class SamrtBarComponent implements OnChanges {
 
             if (this.selectedOrgNode) {
                 setTimeout(() => {
-                    $("#searchSelection li.addNode").first().addClass("active");
+                    let $element = $("#searchSelection li.addNode").addClass("selected");
+                    $element.scrollTop($("#searchSelection").scrollTop() + $element.position().top);
                 }, 100);
             } else {
                 this.searchTitleData(searchTerm);
                 setTimeout(() => {
                     if (this.nodeSearchedList.length > 0) {
-                        $("#searchSelection li.nodeSearch").first().addClass("active");
+                        let $element = $("#searchSelection li.nodeSearch").first();
+                        $element.addClass("selected").scrollTop($("#searchSelection").scrollTop() + $element.position().top);
                     }
                     else if (this.titleFilterList.length > 0) {
-                        $("#searchSelection li.titleFilter").first().addClass("active");
+                        let $element = $("#searchSelection li.titleFilter").first();
+                        $element.addClass("selected").scrollTop($("#searchSelection").scrollTop() + $element.position().top);
                     }
                 }, 100);
             }

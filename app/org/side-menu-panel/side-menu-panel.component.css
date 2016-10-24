@@ -350,8 +350,8 @@ ul.tabs .tab {
 }
 
 .edit-name {
-    margin-top: 25px;
-    margin-left: 30px;
+    padding: 20px 0 0 30px;
+    max-width: 238px;
 }
 
 .title-name-edit {
