@@ -135,22 +135,17 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         this.calculateLevelDepth();
         this.resizeLinesArrowsAndSvg();
         this.centerNode(this.root);
+        this.initSpeechRecognitionCommand();
+    }
 
+    initSpeechRecognitionCommand() {
         if (annyang) {
             // Let's define our first command. First the text we expect, and then the function it should call
             let commands = {
-                "move up": () => {
-                    this.moveUp();
-                },
-                "move down": () => {
-                    this.moveDown();
-                },
-                "move left": () => {
-                    this.moveLeft();
-                },
-                "move right": () => {
-                    this.moveRight();
-                }
+                "move up": () => this.moveUp(),
+                "move down": () => this.moveDown(),
+                "move left": () => this.moveLeft(),
+                "move right": () => this.moveRight()
             };
 
             // Add our commands to annyang
