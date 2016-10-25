@@ -24,6 +24,7 @@ export class SamrtBarComponent implements OnChanges {
     private nodeTitleSearchedList: OrgSearchModel[];
     private searchInProgress: boolean = false;
     private isTitleSelected: boolean = false;
+    private newOrgNode: OrgNodeModel;
 
     @Input() treeJson: any;
     @Input() selectedOrgNode: OrgNodeModel;
@@ -33,10 +34,11 @@ export class SamrtBarComponent implements OnChanges {
     @Output() addNode = new EventEmitter<OrgNodeModel>();
     @Output() setAddOrEditModeValue = new EventEmitter<boolean>();
     @Output() chartStructureUpdated = new EventEmitter<any>();
+    @Output() updateNode = new EventEmitter<OrgNodeModel>();
 
     constructor(private elementRef: ElementRef, private domHelper: DomElementHelper, private renderer: Renderer, private orgService: OrgService) {
         this.searchHeader = `BY ${HeaderTitle}`;
-        this.newNodeValue = new Array();
+        this.newOrgNode = new OrgNodeModel();
     }
 
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
@@ -147,38 +149,78 @@ export class SamrtBarComponent implements OnChanges {
     onAddNode() {
         let firstName: any;
         let lastName: any;
-        if (this.multiInTerm.indexOf(" ") >= 0) {
-            let index = this.multiInTerm.indexOf(" ");
+        let index = this.multiInTerm.indexOf(" ");
+        if (index !== -1 && this.multiInTerm && !this.newNodeValue) {
             firstName = this.multiInTerm.substring(0, index);
             lastName = this.multiInTerm.substring(index + 1, this.multiInTerm.length);
-        } else {
+            this.newOrgNode.NodeFirstName = firstName;
+            this.newOrgNode.NodeLastName = lastName;
+            this.newOrgNode.Description = "";
+        } else if (index === -1 && this.multiInTerm && !this.newNodeValue) {
             firstName = this.multiInTerm;
             lastName = "";
+            this.newOrgNode.NodeFirstName = firstName;
+            this.newOrgNode.NodeLastName = lastName;
+            this.newOrgNode.Description = "";
         }
+        this.newOrgNode.IsNewRoot = this.selectedOrgNode.IsNewRoot;
+        this.newOrgNode.IsStaging = this.selectedOrgNode.IsStaging;
+        this.newOrgNode.IsFakeRoot = this.selectedOrgNode.IsFakeRoot;
+        this.newOrgNode.IsSelected = true;
+        if (this.newNodeValue && this.newNodeValue.length === 1) {
 
-
-        let newOrgNode = new OrgNodeModel();
-        newOrgNode.NodeFirstName = firstName;
-        newOrgNode.NodeLastName = lastName;
-        newOrgNode.Description = "";
-        newOrgNode.ParentNodeID = this.selectedOrgNode.NodeID;
-        newOrgNode.OrgGroupID = this.selectedOrgNode.OrgGroupID;
-        newOrgNode.CompanyID = this.selectedOrgNode.CompanyID;
-
-        this.newNodeValue.push(firstName + " " + lastName);
-        this.multiInTerm = "";
-        console.log(this.newNodeValue.length)
-        if (this.newNodeValue.length > 1) {
-
+            this.newOrgNode.OrgGroupID = this.selectedOrgNode.OrgGroupID;
+            this.newOrgNode.CompanyID = this.selectedOrgNode.CompanyID;
+            this.newOrgNode.Description = this.multiInTerm;
             this.newNodeValue.push(this.multiInTerm);
-            newOrgNode.Description = this.multiInTerm;
-            console.log(this.newNodeValue.length);
-            this.addNewNode(newOrgNode);
+            if (!this.selectedOrgNode.ParentNodeID && this.selectedOrgNode.NodeID === -1) {  // || (this.selectedOrgNode.ParentNodeID && this.selectedOrgNode.ParentNodeID === -1)) {
+                if (this.newOrgNode.IsNewRoot) {
+                    this.newOrgNode.ParentNodeID = null;
+                    this.newOrgNode.children = new Array<OrgNodeModel>();
+                    this.newOrgNode.children.push(this.selectedOrgNode);
+                    this.addNewParentNode(this.newOrgNode);
+                }
+                else {
+                    this.newOrgNode.ParentNodeID = null;
+                    this.addNewNode(this.newOrgNode);
+                }
+
+            }
+            else {
+                this.newOrgNode.ParentNodeID = this.selectedOrgNode.NodeID;
+                this.addNewNode(this.newOrgNode);
+            }
+            console.log(this.newOrgNode);
+            console.log(this.selectedOrgNode);
+            this.multiInTerm = "";
             this.newNodeValue = null;
-            newOrgNode = null;
+        }
+        else {
+            this.newNodeValue = new Array();
+            this.newNodeValue.push(firstName + " " + lastName);
             this.multiInTerm = "";
         }
     }
+
+    private addNewParentNode(node: OrgNodeModel) {
+        if (!node) { return; }
+        // we don"t really need to send any child info to the server at this point
+        node.children = null;
+        this.orgService.addRootNode(node)
+            .subscribe(data => this.emitChartUpdatedNotification(data),
+            error => this.handleError(error),
+            () => console.log("Added new parent."));
+    }
+
+    private emitChartUpdatedNotification(data: OrgNodeModel) {
+        if (data) {
+            this.chartStructureUpdated.emit(data);
+            // this.updateNode.emit(data);
+            // call emitAddNodeNotification for root node and emitUpdateNodeNotification for children            
+            this.setAddOrEditModeValue.emit(false);
+        }
+    }
+
 
     private addNewNode(node: OrgNodeModel) {
         if (!node) { return; }
@@ -192,6 +234,7 @@ export class SamrtBarComponent implements OnChanges {
 
     private emitAddNodeNotification(data: OrgNodeModel) {
         if (data) {
+            // this.updateNode.emit(data);
             this.addNode.emit(data);
         }
     }
@@ -258,7 +301,10 @@ export class SamrtBarComponent implements OnChanges {
             if (this.selectedOrgNode) {
                 setTimeout(() => {
                     let $element = $("#searchSelection li.addNode").addClass("selected");
-                    $element.scrollTop($("#searchSelection").scrollTop() + $element.position().top);
+                    if ($element) {
+                        $element.scrollTop($("#searchSelection").scrollTop() + $element.position().top);
+                    }
+
                 }, 100);
             } else {
                 this.searchTitleData(searchTerm);

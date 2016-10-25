@@ -44,6 +44,7 @@ export class OrgComponent implements OnDestroy {
     @Output() currentOrgNodeStatus: OrgNodeStatus;
     @Output() isMenuSettingsEnabled: boolean;
     @Output() searchedNode: OrgNodeModel;
+ //   @Output() newOrgNode: OrgNodeModel;
 
     constructor(public domHelper: DomElementHelper) {
         this.currentChartMode = ChartMode.build;
@@ -151,9 +152,12 @@ export class OrgComponent implements OnDestroy {
         this.isOrgNodeEmpty = true;
         if (addedNode.NodeID !== -1) {
             // gets the stagged node and deleting it
-            let node = this.getNode(-1, this.orgNodes[0]);
-            this.deleteNodeFromArray(node, this.orgNodes);
+            if (this.orgNodes[0]) {
+                let node = this.getNode(-1, this.orgNodes[0]);
+                this.deleteNodeFromArray(node, this.orgNodes);
+            }
             this.selectedNode = addedNode;
+      //      this.newOrgNode = addedNode;
             this.detailAddOrEditMode = false;
             this.isOrgNodeEmpty = false;
             this.currentOrgNodeStatus = OrgNodeStatus.Add;
@@ -211,6 +215,7 @@ export class OrgComponent implements OnDestroy {
             newNode.IsStaging = false;
             newNode.children = new Array<OrgNodeModel>();
             this.orgNodes.push(newNode);
+            console.log(this.orgNodes);
             return true;
         }
     }
