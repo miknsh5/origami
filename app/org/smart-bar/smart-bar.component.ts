@@ -359,8 +359,7 @@ export class SamrtBarComponent implements OnChanges {
                 setTimeout(() => {
                     let $element = $("#searchSelection li.addNode").addClass("selected");
                     if ($element) {
-                        let position = $element.position();
-                        $element.scrollTop($("#searchSelection").scrollTop() + (position ? position.top : 0));
+                        $("#searchSelection").scrollTop(1000);
                     }
 
                 }, 100);
