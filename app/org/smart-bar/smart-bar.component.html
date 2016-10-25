@@ -32,7 +32,7 @@
                     <span class="badge right"> {{titleData.Count}}</span>
                 </a>
             </li>
-            <li *ngIf="!selectedOrgNode && titleFilterList.length===0">
+            <li *ngIf="!selectedOrgNode && !isTitleSelected && titleFilterList.length===0">
                 <i class="material-icons">search</i> No Results
             </li>
             <li *ngIf="selectedOrgNode && multiInTerm" class="header">ADD A RESOURCE</li>
