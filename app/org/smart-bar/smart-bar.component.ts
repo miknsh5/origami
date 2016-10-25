@@ -192,8 +192,8 @@ export class SamrtBarComponent implements OnChanges {
             this.newOrgNode.CompanyID = this.selectedOrgNode.CompanyID;
             if (this.newNodeValue.length === 2) {
                 this.newOrgNode.Description = this.newNodeValue[1];
-            }else{
-                 this.newOrgNode.Description = this.multiInTerm;
+            } else {
+                this.newOrgNode.Description = this.multiInTerm;
                 this.newNodeValue.push(this.multiInTerm);
             }
             if (!this.selectedOrgNode.ParentNodeID && this.selectedOrgNode.NodeID === -1) {  // || (this.selectedOrgNode.ParentNodeID && this.selectedOrgNode.ParentNodeID === -1)) {
@@ -274,7 +274,7 @@ export class SamrtBarComponent implements OnChanges {
     private onInputMultiSearch(event: Event) {
         if (this.newNodeValue && this.newNodeValue.length === 2) {
             this.multiInTerm = "";
-        }else if (this.multiInTerm) {
+        } else if (this.multiInTerm) {
             this.processSearch(this.multiInTerm);
         } else {
             this.clearSearch();
