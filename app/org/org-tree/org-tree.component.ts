@@ -670,7 +670,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                     if (this.currentMode === ChartMode.build) {
                         return "translate(" + parentNode.y + " , " + (source.x || 0) + ")";
                     }
-                    return "translate(" + source.x + " , " + (parentNode.y - 40) + ")";
+                    return "translate(" + (source.x0 || 0) + " , " + (parentNode.y - 40) + ")";
                 });
         }
     }
@@ -720,7 +720,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
             this.links = this.tree.links(this.nodes);
             source.x0 = source.x || 0;
-            source.y0 = source.y;
+            source.y0 = source.y || 0;
 
             // Normalize for fixed-depth.
             if (this.currentMode === ChartMode.build) {
@@ -775,9 +775,9 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             .attr("transform", (d) => {
                 let transformString = "translate(" + (source.y0 || 0) + "," + (source.x0 || 0) + ")";
                 if (this.currentMode === ChartMode.report) {
-                    transformString = "translate(" + source.x0 + "," + source.y0 + ")";
+                    transformString = "translate(" + (source.x0 || 0) + "," + (source.y0 || 0) + ")";
                 } else if (this.currentMode === ChartMode.explore) {
-                    transformString = "translate(" + this.transformNode(source.x0, source.y0) + ")";
+                    transformString = "translate(" + this.transformNode((source.x0 || 0), (source.y0 || 0)) + ")";
                 }
                 return transformString;
             })
@@ -1033,18 +1033,26 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
     }
     renderOrUpdateLinks(source) {
-        let sourceCoords = { x: source.x0, y: source.y0 };
+        let sourceCoords = { x: source.x0 || 0, y: source.y0 || 0 };
         let diagCoords = this.diagonal({ source: sourceCoords, target: sourceCoords });
 
-        let sourceCoords2 = { x: source.x || 0, y: source.y };
+        let sourceCoords2 = { x: source.x || 0, y: source.y || 0 };
         let diagCoords2 = this.diagonal({ source: sourceCoords2, target: sourceCoords2 });
 
         // Update the links…
         let link = this.svg.selectAll("path.link")
             .data(this.links, function (d) { return d.target.NodeID; });
 
-        let x = function (d) { return d.y * Math.cos(((d.x || 0) - RADIAL_DEPTH) / DEPTH * Math.PI); };
-        let y = function (d) { return d.y * Math.sin(((d.x || 0) - RADIAL_DEPTH) / DEPTH * Math.PI); };
+        let x = function (d) {
+            if (d.y) {
+                return d.y * Math.cos(((d.x || 0) - RADIAL_DEPTH) / DEPTH * Math.PI);
+            }
+        };
+        let y = function (d) {
+            if (d.y) {
+                return d.y * Math.sin(((d.x || 0) - RADIAL_DEPTH) / DEPTH * Math.PI);
+            }
+        };
         // Enter any new links at the parent"s previous position.
         link.enter().insert("path", "g")
             .attr("class", "link")
@@ -1161,16 +1169,16 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                         node = source.parent.children ? source.parent.children : source.parent._children;
                         let childrenCount = node.length - 1;
                         if (node[childrenCount]) {
-                            let x = node[childrenCount].x + (childrenCount === 0 ? NODE_WIDTH : (node[childrenCount].x - node[childrenCount - 1].x));
-                            this.setPeerReporteeNode(PEER_TEXT, x, source.y, "peerNode");
+                            let x = (node[childrenCount].x || 0) + (childrenCount === 0 ? NODE_WIDTH : ((node[childrenCount].x || 0) - (node[childrenCount - 1].x || 0)));
+                            this.setPeerReporteeNode(PEER_TEXT, x, (source.y || 0), "peerNode");
                         }
                     } else {
                         d3.select("g.peerNode").remove();
                     }
 
                     if (!this.selectedOrgNode.children) {
-                        let y = source.y + DEPTH;
-                        this.setPeerReporteeNode(REPORTEE_TEXT, source.x, y, "directReporteeNode");
+                        let y = (source.y || 0) + DEPTH;
+                        this.setPeerReporteeNode(REPORTEE_TEXT, (source.y || 0), y, "directReporteeNode");
                     } else {
                         d3.select("g.directReporteeNode").remove();
                     }

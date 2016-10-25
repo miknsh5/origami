@@ -192,8 +192,8 @@ export class SamrtBarComponent implements OnChanges {
             this.newOrgNode.CompanyID = this.selectedOrgNode.CompanyID;
             if (this.newNodeValue.length === 2) {
                 this.newOrgNode.Description = this.newNodeValue[1];
-            }else{
-                 this.newOrgNode.Description = this.multiInTerm;
+            } else {
+                this.newOrgNode.Description = this.multiInTerm;
                 this.newNodeValue.push(this.multiInTerm);
             }
             if (!this.selectedOrgNode.ParentNodeID && this.selectedOrgNode.NodeID === -1) {  // || (this.selectedOrgNode.ParentNodeID && this.selectedOrgNode.ParentNodeID === -1)) {
@@ -274,7 +274,7 @@ export class SamrtBarComponent implements OnChanges {
     private onInputMultiSearch(event: Event) {
         if (this.newNodeValue && this.newNodeValue.length === 2) {
             this.multiInTerm = "";
-        }else if (this.multiInTerm) {
+        } else if (this.multiInTerm) {
             this.processSearch(this.multiInTerm);
         } else {
             this.clearSearch();
@@ -359,7 +359,8 @@ export class SamrtBarComponent implements OnChanges {
                 setTimeout(() => {
                     let $element = $("#searchSelection li.addNode").addClass("selected");
                     if ($element) {
-                        $element.scrollTop($("#searchSelection").scrollTop() + $element.position().top);
+                        let position = $element.position();
+                        $element.scrollTop($("#searchSelection").scrollTop() + (position ? position.top : 0));
                     }
 
                 }, 100);
@@ -368,11 +369,13 @@ export class SamrtBarComponent implements OnChanges {
                 setTimeout(() => {
                     if (this.nodeSearchedList.length > 0) {
                         let $element = $("#searchSelection li.nodeSearch").first();
-                        $element.addClass("selected").scrollTop($("#searchSelection").scrollTop() + $element.position().top);
+                        let position = $element.position();
+                        $element.addClass("selected").scrollTop($("#searchSelection").scrollTop() + (position ? position.top : 0));
                     }
                     else if (this.titleFilterList.length > 0) {
                         let $element = $("#searchSelection li.titleFilter").first();
-                        $element.addClass("selected").scrollTop($("#searchSelection").scrollTop() + $element.position().top);
+                        let position = $element.position();
+                        $element.addClass("selected").scrollTop($("#searchSelection").scrollTop() + (position ? position.top : 0));
                     }
                 }, 100);
             }
