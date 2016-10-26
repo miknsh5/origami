@@ -44,7 +44,6 @@ export class OrgComponent implements OnDestroy {
     @Output() currentOrgNodeStatus: OrgNodeStatus;
     @Output() isMenuSettingsEnabled: boolean;
     @Output() searchedNode: OrgNodeModel;
- //   @Output() newOrgNode: OrgNodeModel;
 
     constructor(public domHelper: DomElementHelper) {
         this.currentChartMode = ChartMode.build;
@@ -157,7 +156,7 @@ export class OrgComponent implements OnDestroy {
                 this.deleteNodeFromArray(node, this.orgNodes);
             }
             this.selectedNode = addedNode;
-      //      this.newOrgNode = addedNode;
+            this.searchedNode = addedNode;
             this.detailAddOrEditMode = false;
             this.isOrgNodeEmpty = false;
             this.currentOrgNodeStatus = OrgNodeStatus.Add;

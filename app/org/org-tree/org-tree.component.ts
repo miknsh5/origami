@@ -78,7 +78,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     @Input() CompanyID: number;
     @Input() isMenuSettingsEnabled: boolean;
     @Input() searchNode: OrgNodeModel;
-    @Input() selectNewOrgNode: OrgNodeModel;
 
     @Output() selectNode = new EventEmitter<OrgNodeModel>();
     @Output() addNode = new EventEmitter<OrgNodeModel>();
@@ -227,17 +226,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             this.root = this.treeData[0];
             this.treeWidth = this.width;
             this.treeHeight = this.height;
-
-            // if (changes["selectNewOrgNode"]) {
-            //     if (this.selectNewOrgNode && changes["selectNewOrgNode"].currentValue) {
-            //         this.selectedOrgNode = this.selectNewOrgNode;
-            //         this.highlightAndCenterNode(this.searchNode);
-            //         this.lastSelectedNode = this.selectedOrgNode;
-            //     } else {
-            //         return;
-            //     }
-
-            // }
 
             if (changes["searchNode"]) {
                 if (changes["searchNode"].currentValue) {
