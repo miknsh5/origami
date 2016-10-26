@@ -25,6 +25,8 @@ export class SamrtBarComponent implements OnChanges {
     private searchInProgress: boolean = false;
     private isTitleSelected: boolean = false;
     private newOrgNode: OrgNodeModel;
+    private isDescriptionText: boolean = false;
+    private isDescriptionselected: boolean = false;
 
     @Input() treeJson: any;
     @Input() selectedOrgNode: OrgNodeModel;
@@ -81,7 +83,13 @@ export class SamrtBarComponent implements OnChanges {
 
     @HostListener("window:keydown", ["$event"])
     public OnKeyDown(event) {
-        let searchContainer = document.getElementById("searchSelection");
+        let searchContainer;
+        if (this.isDescriptionText) {
+            searchContainer = document.getElementById("titleSearchSelection");
+        } else {
+            searchContainer = document.getElementById("searchSelection");
+        }
+
         if ((event as KeyboardEvent).keyCode === 38) {
             let $element = $(searchContainer).find("li.selected").prev();
             if (this.selectedOrgNode) {
@@ -128,9 +136,20 @@ export class SamrtBarComponent implements OnChanges {
             }
 
         } else if ((event as KeyboardEvent).keyCode === 13) {
-            let element = document.querySelector("#searchSelection li.selected");
-            if (element)
-                this.renderer.invokeElementMethod(element, "click", []);
+            if (this.isDescriptionText) {
+                let element = document.querySelector("#titleSearchSelection li.selected");
+                if (element) {
+                    this.renderer.invokeElementMethod(element, "click", []);
+                    this.multiInTerm = "";
+                }
+                else if (this.isDescriptionselected || (this.newNodeValue && this.newNodeValue.length === 2) || (this.newNodeValue && this.newNodeValue.length <= 2)) {
+                    this.onAddNode();
+                }
+            } else {
+                let element = document.querySelector("#searchSelection li.selected");
+                if (element)
+                    this.renderer.invokeElementMethod(element, "click", []);
+            }
         } else if ((event as KeyboardEvent).keyCode === 27) {
             if (this.isAddOrEditModeEnabled) {
                 if (this.selectedOrgNode.IsNewRoot || (this.selectedOrgNode.ParentNodeID && this.selectedOrgNode.NodeID === -1)) {
@@ -167,7 +186,7 @@ export class SamrtBarComponent implements OnChanges {
         this.newOrgNode.IsStaging = this.selectedOrgNode.IsStaging;
         this.newOrgNode.IsFakeRoot = this.selectedOrgNode.IsFakeRoot;
         this.newOrgNode.IsSelected = true;
-        if (this.newNodeValue && this.newNodeValue.length === 1) {
+        if (this.newNodeValue && this.newNodeValue.length >= 1) {
 
             this.newOrgNode.OrgGroupID = this.selectedOrgNode.OrgGroupID;
             this.newOrgNode.CompanyID = this.selectedOrgNode.CompanyID;
@@ -190,8 +209,6 @@ export class SamrtBarComponent implements OnChanges {
                 this.newOrgNode.ParentNodeID = this.selectedOrgNode.NodeID;
                 this.addNewNode(this.newOrgNode);
             }
-            console.log(this.newOrgNode);
-            console.log(this.selectedOrgNode);
             this.multiInTerm = "";
             this.newNodeValue = null;
         }
@@ -199,6 +216,7 @@ export class SamrtBarComponent implements OnChanges {
             this.newNodeValue = new Array();
             this.newNodeValue.push(firstName + " " + lastName);
             this.multiInTerm = "";
+            this.isDescriptionText = true;
         }
     }
 
@@ -215,7 +233,8 @@ export class SamrtBarComponent implements OnChanges {
     private emitChartUpdatedNotification(data: OrgNodeModel) {
         if (data) {
             this.chartStructureUpdated.emit(data);
-            // this.updateNode.emit(data);
+            this.isDescriptionText = false;
+            this.isDescriptionselected = false;
             // call emitAddNodeNotification for root node and emitUpdateNodeNotification for children            
             this.setAddOrEditModeValue.emit(false);
         }
@@ -234,7 +253,8 @@ export class SamrtBarComponent implements OnChanges {
 
     private emitAddNodeNotification(data: OrgNodeModel) {
         if (data) {
-            // this.updateNode.emit(data);
+            this.isDescriptionText = false;
+            this.isDescriptionselected = false;
             this.addNode.emit(data);
         }
     }
@@ -248,6 +268,9 @@ export class SamrtBarComponent implements OnChanges {
     }
 
     private onInputMultiSearch() {
+        if (this.multiInTerm && this.newNodeValue && this.newNodeValue.length === 2) {
+            this.multiInTerm = "";
+        }
         if (this.multiInTerm) {
             this.processSearch(this.multiInTerm);
         } else {
@@ -255,10 +278,34 @@ export class SamrtBarComponent implements OnChanges {
         }
     }
 
+    onDescritptionSearch(searchTerm) {
+        this.searchInProgress = true;
+        this.nodeSearchedList = new Array<OrgSearchModel>();
+        this.titleFilterList = new Array();
+        setTimeout(() => {
+            this.orgSearchData.forEach((data, index) => {
+                if (data.Title.toLowerCase() === searchTerm) {
+                    this.nodeSearchedList.push(data);
+                }
+            });
+            this.searchTitleData(searchTerm);
+            setTimeout(() => {
+                if (this.titleFilterList.length > 0) {
+                    let $element = $("#titleSearchSelection li.titleFilter").first();
+                    $element.addClass("selected").scrollTop($("#titleSearchSelection").scrollTop() + $element.position().top);
+                }
+            }, 100);
+        }, 100);
+    }
+
     private processSearch(searchTerm) {
         if (this.prevSearchTerm !== searchTerm) {
             this.prevSearchTerm = searchTerm;
-            this.searchList(searchTerm.toLowerCase());
+            if (this.isDescriptionText) {
+                this.onDescritptionSearch(searchTerm.toLowerCase());
+            } else {
+                this.searchList(searchTerm.toLowerCase());
+            }
         }
     }
 
@@ -279,6 +326,13 @@ export class SamrtBarComponent implements OnChanges {
         this.titleFilterList = null;
         this.searchHeader = `BY ${data.Name.toUpperCase()}`;
         this.searchList(data.Name.toLowerCase(), true);
+    }
+
+    private selectTitle(event: any, data: any) {
+        this.newNodeValue.push(data.Name);
+        this.multiInTerm = data;
+        this.titleFilterList = null;
+        this.isDescriptionselected = true;
     }
 
     private searchList(searchTerm: string, isTitleSearch?: boolean) {

@@ -13,7 +13,7 @@
             </ul>
         </div>
     </form>
-    <div *ngIf="searchInProgress" class="search">
+    <div *ngIf="searchInProgress && !isDescriptionText" class="search">
         <ul id="searchSelection">
             <li *ngIf="!selectedOrgNode" style="font-size: 65%; padding: 2px 10px;">FIND</li>
             <li *ngIf="!selectedOrgNode" class="header">{{ searchHeader }}</li>
@@ -36,6 +36,25 @@
                 <i class="material-icons">search</i> No Results
             </li>
             <li *ngIf="selectedOrgNode && multiInTerm" class="header">ADD A RESOURCE</li>
+            <li *ngIf="selectedOrgNode && multiInTerm" class="addNode" (click)="onAddNode($event)">
+                <a>
+                    <i class="material-icons">add_circle</i> {{multiInTerm}} <i class="material-icons right">keyboard_arrow_right</i>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <div *ngIf="searchInProgress && isDescriptionText " class="search">
+        <ul id="titleSearchSelection">
+            <li *ngFor="let titleData of titleFilterList" class="titleFilter" (click)="selectTitle($event,titleData)">
+                <a>
+                    <i class="material-icons">folder_shared</i> {{titleData.Name}}
+                </a>
+            </li>
+            <li *ngIf="!selectedOrgNode && titleFilterList.length===0">
+                <i class="material-icons">search</i> No Results
+            </li>
+            <li *ngIf="selectedOrgNode && multiInTerm" class="header">CREATE NEW TITLE</li>
             <li *ngIf="selectedOrgNode && multiInTerm" class="addNode" (click)="onAddNode($event)">
                 <a>
                     <i class="material-icons">add_circle</i> {{multiInTerm}} <i class="material-icons right">keyboard_arrow_right</i>
