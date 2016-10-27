@@ -286,18 +286,25 @@ export class SamrtBarComponent implements OnChanges {
         this.nodeSearchedList = new Array<OrgSearchModel>();
         this.titleFilterList = new Array();
         setTimeout(() => {
-            this.orgSearchData.forEach((data, index) => {
-                if (data.Title.toLowerCase() === searchTerm) {
-                    this.nodeSearchedList.push(data);
-                }
-            });
-            this.searchTitleData(searchTerm);
-            setTimeout(() => {
-                if (this.titleFilterList.length > 0) {
-                    let $element = $("#titleSearchSelection li.titleFilter").first();
-                    $element.addClass("selected").scrollTop($("#titleSearchSelection").scrollTop() + $element.position().top);
-                }
-            }, 100);
+                this.searchTitleData(searchTerm);
+                if (this.selectedOrgNode) {
+                setTimeout(() => {
+                    let $element = $("#titleSearchSelection li.addNode").addClass("selected");
+                    if ($element) {
+                        let position = $element.position();
+                        $element.scrollTop($("#titleSearchSelection").scrollTop() + (position ? position.top : 0));
+                    }
+
+                }, 100);
+            } else {
+                setTimeout(() => {
+                    if (this.titleFilterList.length > 0) {
+                        let $element = $("#titleSearchSelection li.titleFilter").first();
+                        $element.addClass("selected").scrollTop($("#titleSearchSelection").scrollTop() + $element.position().top);
+                    }
+                }, 100);
+            }
+
         }, 100);
     }
 
