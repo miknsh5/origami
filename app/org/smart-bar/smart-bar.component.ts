@@ -162,21 +162,30 @@ export class SamrtBarComponent implements OnChanges {
                     }
                 }
             }
-        } 
-    }
+        } else if ((event as KeyboardEvent).keyCode === 8) {
+            console.log(this.isAddOrEditModeEnabled);
+            if (this.isAddOrEditModeEnabled) {
+                if (this.multiInTerm  && this.newNodeValue && (this.newNodeValue.length === 1 || this.newNodeValue.length === 2)) {
+                    this.multiInTerm = this.newNodeValue.pop();
+                }
 
+            }
+
+        }
+    }
+    
     onAddNode() {
         let firstName: any;
         let lastName: any;
         let index = this.multiInTerm.indexOf(" ");
         this.setAddOrEditModeValue.emit(true);
-        if (index !== -1 && this.multiInTerm && !this.newNodeValue) {
+        if (index !== -1 && this.multiInTerm && (!this.newNodeValue || this.newNodeValue.length === 0)) {
             firstName = this.multiInTerm.substring(0, index);
             lastName = this.multiInTerm.substring(index + 1, this.multiInTerm.length);
             this.newOrgNode.NodeFirstName = firstName;
             this.newOrgNode.NodeLastName = lastName;
             this.newOrgNode.Description = "";
-        } else if (index === -1 && this.multiInTerm && !this.newNodeValue) {
+        } else if (index === -1 && this.multiInTerm && (!this.newNodeValue || this.newNodeValue.length === 0)) {
             firstName = this.multiInTerm;
             lastName = "";
             this.newOrgNode.NodeFirstName = firstName;
