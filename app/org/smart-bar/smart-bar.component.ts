@@ -359,7 +359,8 @@ export class SamrtBarComponent implements OnChanges {
                 setTimeout(() => {
                     let $element = $("#searchSelection li.addNode").addClass("selected");
                     if ($element) {
-                        $element.scrollTop($("#searchSelection").scrollTop() + $element.position().top);
+                        let position = $element.position();
+                        $element.scrollTop($("#searchSelection").scrollTop() + (position ? position.top : 0));
                     }
 
                 }, 100);
@@ -368,11 +369,13 @@ export class SamrtBarComponent implements OnChanges {
                 setTimeout(() => {
                     if (this.nodeSearchedList.length > 0) {
                         let $element = $("#searchSelection li.nodeSearch").first();
-                        $element.addClass("selected").scrollTop($("#searchSelection").scrollTop() + $element.position().top);
+                        let position = $element.position();
+                        $element.addClass("selected").scrollTop($("#searchSelection").scrollTop() + (position ? position.top : 0));
                     }
                     else if (this.titleFilterList.length > 0) {
                         let $element = $("#searchSelection li.titleFilter").first();
-                        $element.addClass("selected").scrollTop($("#searchSelection").scrollTop() + $element.position().top);
+                        let position = $element.position();
+                        $element.addClass("selected").scrollTop($("#searchSelection").scrollTop() + (position ? position.top : 0));
                     }
                 }, 100);
             }
