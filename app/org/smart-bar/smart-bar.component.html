@@ -46,7 +46,7 @@
 
     <div *ngIf="searchInProgress && isDescriptionText " class="search">
         <ul id="titleSearchSelection">
-            <li *ngIf=" titleFilterList && titleFilterList.length===0">
+            <li *ngIf="titleFilterList.length===0">
                 <i class="material-icons">search</i> No Results
             </li>
             <li *ngFor="let titleData of titleFilterList" class="titleFilter" (click)="selectTitle($event,titleData.Name)">
