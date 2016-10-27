@@ -19,7 +19,8 @@
             <!--<sg-org-node-detail #nodeDetail [selectedOrgNode]="selectedNode" [isAddOrEditModeEnabled]="detailAddOrEditMode" (deleteNode)="onNodeDeleted($event)" (updateNode)="onNodeUpdated($event)" (addNode)="onNodeAdded($event)" (setAddOrEditModeValue)="onAddOrEditModeValueSet($event)"
         (chartStructureUpdated)="onChartUpdated($event)" (updateMenuNode)="onNodeTextChange($event)" [isMenuSettingsEnabled]="isMenuSettingsEnabled">
     </sg-org-node-detail>-->
-            <sg-smart-bar [treeJson]="orgNodes" (nodeSearched)="onNodeSearched($event)" [selectedOrgNode]="selectedNode" [isAddOrEditModeEnabled]="detailAddOrEditMode" (deleteNode)="onNodeDeleted($event)" (addNode)="onNodeAdded($event)" (setAddOrEditModeValue)="onAddOrEditModeValueSet($event)">
+            <sg-smart-bar [treeJson]="orgNodes" (nodeSearched)="onNodeSearched($event)" [selectedOrgNode]="selectedNode" [isAddOrEditModeEnabled]="detailAddOrEditMode" (deleteNode)="onNodeDeleted($event)" (addNode)="onNodeAdded($event)" (setAddOrEditModeValue)="onAddOrEditModeValueSet($event)"
+                (chartStructureUpdated)="onChartUpdated($event)">
             </sg-smart-bar>
         </div>
     </div>

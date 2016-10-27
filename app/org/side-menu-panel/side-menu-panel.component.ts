@@ -133,9 +133,6 @@ export class SideMenuComponent implements OnChanges {
 
         if (changes["selectedOrgNode"]) {
             if (this.isEditModeEnabled && this.selectedNode.NodeID !== this.selectedOrgNode.NodeID) {
-                console.log(this.selectedNode.NodeID);
-                console.log(this.selectedOrgNode.NodeID);
-
                 this.deleteOrClose = CLOSE_ICON;
                 this.onDeleteOrCancelNodeClicked();
             }
