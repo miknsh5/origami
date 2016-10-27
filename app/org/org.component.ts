@@ -1,20 +1,18 @@
 import { Component, Output, EventEmitter, OnDestroy, HostListener } from "@angular/core";
 import { tokenNotExpired } from "angular2-jwt";
 
-import { OrgNodeModel, ChartMode, OrgCompanyModel, OrgGroupModel, OrgNodeStatus } from "./shared/index";
+import { OrgNodeModel, ChartMode, OrgCompanyModel, OrgGroupModel, OrgNodeStatus, DomElementHelper } from "./shared/index";
 
 const MIN_HEIGHT: number = 480;
 const MAX_HEIGHT: number = 768;
-
 const MIN_WIDTH: number = 540;
 const MAX_WIDTH: number = 1366;
-
 const DEFAULT_OFFSET: number = 55;
 
 declare var svgPanZoom: any;
 
 @Component({
-    selector: "sg-origami-org",
+    selector: "sg-org",
     templateUrl: "app/org/org.component.html",
     styleUrls: ["app/org/org.component.css"]
 })
@@ -45,8 +43,9 @@ export class OrgComponent implements OnDestroy {
     @Output() isOrgNodeEmpty: boolean;
     @Output() currentOrgNodeStatus: OrgNodeStatus;
     @Output() isMenuSettingsEnabled: boolean;
+    @Output() searchedNode: OrgNodeModel;
 
-    constructor() {
+    constructor(public domHelper: DomElementHelper) {
         this.currentChartMode = ChartMode.build;
         this.enableLabels();
         this.svgWidth = this.getSvgWidth();
@@ -77,12 +76,15 @@ export class OrgComponent implements OnDestroy {
     enableFirstNameLabel(data) {
         this.displayFirstNameLabel = data;
     }
+
     enableLastNameLabel(data) {
         this.displayLastNameLabel = data;
     }
+
     enableDescriptionLabel(data) {
         this.displayDescriptionLabel = data;
     }
+
     enableLabels() {
         this.displayFirstNameLabel = true;
         this.displayLastNameLabel = true;
@@ -149,9 +151,12 @@ export class OrgComponent implements OnDestroy {
         this.isOrgNodeEmpty = true;
         if (addedNode.NodeID !== -1) {
             // gets the stagged node and deleting it
-            let node = this.getNode(-1, this.orgNodes[0]);
-            this.deleteNodeFromArray(node, this.orgNodes);
+            if (this.orgNodes[0]) {
+                let node = this.getNode(-1, this.orgNodes[0]);
+                this.deleteNodeFromArray(node, this.orgNodes);
+            }
             this.selectedNode = addedNode;
+            this.searchedNode = addedNode;
             this.detailAddOrEditMode = false;
             this.isOrgNodeEmpty = false;
             this.currentOrgNodeStatus = OrgNodeStatus.Add;
@@ -209,6 +214,7 @@ export class OrgComponent implements OnDestroy {
             newNode.IsStaging = false;
             newNode.children = new Array<OrgNodeModel>();
             this.orgNodes.push(newNode);
+            console.log(this.orgNodes);
             return true;
         }
     }
@@ -361,12 +367,11 @@ export class OrgComponent implements OnDestroy {
     }
 
     private getSvgHeight() {
+
         let height = window.innerHeight;
 
         // applies min height
         height = height < MIN_HEIGHT ? MIN_HEIGHT : height;
-        // applies max height
-        height = height > MAX_HEIGHT ? MAX_HEIGHT : height;
 
         // temporarily applied wiil be removed after standard and organization mode added
         if (this.svgWidth < 993 && height > MIN_HEIGHT) {
@@ -383,8 +388,6 @@ export class OrgComponent implements OnDestroy {
 
         // applies min width
         width = width < MIN_WIDTH ? MIN_WIDTH : width;
-        // applies max width
-        width = width > MAX_WIDTH ? MAX_WIDTH : width;
 
         return width;
     }
@@ -452,6 +455,10 @@ export class OrgComponent implements OnDestroy {
         } else {
             this.isMenuSettingsEnabled = data;
         }
+    }
+
+    onNodeSearched(data: OrgNodeModel) {
+        this.searchedNode = data;
     }
 
     ngOnDestroy() {

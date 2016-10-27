@@ -77,6 +77,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     @Input() orgGroupID: number;
     @Input() CompanyID: number;
     @Input() isMenuSettingsEnabled: boolean;
+    @Input() searchNode: OrgNodeModel;
 
     @Output() selectNode = new EventEmitter<OrgNodeModel>();
     @Output() addNode = new EventEmitter<OrgNodeModel>();
@@ -226,6 +227,15 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             this.treeWidth = this.width;
             this.treeHeight = this.height;
 
+            if (changes["searchNode"]) {
+                if (changes["searchNode"].currentValue) {
+                    this.selectedOrgNode = this.searchNode;
+                    this.highlightAndCenterNode(this.searchNode);
+                    this.lastSelectedNode = this.selectedOrgNode;
+                } else {
+                    return;
+                }
+            }
             if (changes["orgGroupID"]) {
                 if (this.root) {
                     this.selectedOrgNode = this.root;
@@ -596,18 +606,18 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         let x = 0; source.y0;
         let y = 0; source.x0;
         if (this.currentMode === ChartMode.build) {
-            x = source.y0;
-            y = source.x0;
+            x = source.y0 || 0;
+            y = source.x0 || 0;
             x = this.treeWidth / 2 - x;
             y = this.treeHeight / 2 - y;
         } else if (this.currentMode === ChartMode.report) {
-            x = source.x0;
-            y = source.y0;
+            x = source.x0 || 0;
+            y = source.y0 || 0;
             x = this.treeWidth / 2 - x;
             y = NODE_WIDTH;
         } else {
-            x = source.x0;
-            y = source.y0;
+            x = source.x0 || 0;
+            y = source.y0 || 0;
             x = this.treeWidth / 2;
             y = this.treeHeight / 2;
         }
@@ -658,10 +668,26 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 .duration(DURATION)
                 .attr("transform", (d) => {
                     if (this.currentMode === ChartMode.build) {
-                        return "translate(" + parentNode.y + " , " + source.x + ")";
+                        return "translate(" + parentNode.y + " , " + (source.x || 0) + ")";
                     }
                     return "translate(" + source.x + " , " + (parentNode.y - 40) + ")";
                 });
+        }
+    }
+
+    private expanParentAndChildNodes(rootNode) {
+        if (rootNode) {
+            this.expandTree(rootNode);
+            let parentNode = this.getNode(rootNode.ParentNodeID, this.root);
+            if (parentNode) {
+                this.expandTree(parentNode);
+                let children = parentNode.children;
+                for (let k = 0; k < children.length; k++) {
+                    this.collapseExceptSelectedNode(children[k]);
+                };
+                let parent = this.getNode(rootNode.ParentNodeID, this.root);
+                this.expanParentAndChildNodes(parent);
+            }
         }
     }
 
@@ -671,15 +697,20 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 //  The tree defines the position of the nodes based on the number of nodes it needs to draw.
                 // collapse out the child nodes which will not be shown
                 this.markAncestors(this.selectedOrgNode);
+                let rootNode = this.root;
                 if (this.currentMode === ChartMode.build) {
-                    if (this.root && this.root.children) {
-                        for (let k = 0; k < this.root.children.length; k++) {
-                            this.collapseExceptSelectedNode(this.root.children[k]);
+                    if (this.searchNode && this.selectedOrgNode.ParentNodeID && this.selectedOrgNode.NodeID === this.searchNode.NodeID) {
+                        this.expandTree(this.selectedOrgNode);
+                        rootNode = this.getNode(this.selectedOrgNode.ParentNodeID, this.root);
+                        this.expanParentAndChildNodes(rootNode);
+                    } else if (rootNode && rootNode.children) {
+                        for (let k = 0; k < rootNode.children.length; k++) {
+                            this.collapseExceptSelectedNode(rootNode.children[k]);
                         };
                     }
                 }
 
-                this.nodes = this.tree.nodes(this.root).reverse();
+                this.nodes = this.tree.nodes(rootNode).reverse();
 
                 for (let j = 0; j < this.nodes.length; j++) {
                     this.isAncestorOrRelated(this.nodes[j]);
@@ -742,7 +773,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         let nodeEnter = node.enter().append("g")
             .attr("class", "node")
             .attr("transform", (d) => {
-                let transformString = "translate(" + source.y0 + "," + source.x0 + ")";
+                let transformString = "translate(" + (source.y0 || 0) + "," + (source.x0 || 0) + ")";
                 if (this.currentMode === ChartMode.report) {
                     transformString = "translate(" + source.x0 + "," + source.y0 + ")";
                 } else if (this.currentMode === ChartMode.explore) {
@@ -940,7 +971,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             .duration(DURATION)
             .attr("transform", (d) => {
                 if (this.currentMode === ChartMode.build) {
-                    return "translate(" + d.y + "," + d.x + ")";
+                    return "translate(" + (d.y || 0) + "," + (d.x || 0) + ")";
                 } else if (this.currentMode === ChartMode.report) {
                     return "translate(" + d.x + "," + d.y + ")";
                 } else {
@@ -977,7 +1008,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             duration(DURATION)
             .attr("transform", (d) => {
                 if (this.currentMode === ChartMode.build) {
-                    return "translate(" + source.y + "," + source.x + ")";
+                    return "translate(" + (source.y || 0) + "," + (source.x || 0) + ")";
                 } else if (this.currentMode === ChartMode.report) {
                     return "translate(" + source.x + "," + source.y + ")";
                 } else {

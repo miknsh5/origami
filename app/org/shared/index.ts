@@ -6,5 +6,5 @@ export * from "./models/orgnode.base.model";
 export * from "./models/orgnode.model";
 export * from "./models/userfeedback.model";
 export * from "./dom-element-helper";
+export * from "./models/orgsearch.model";
 export * from "./org.service";
-

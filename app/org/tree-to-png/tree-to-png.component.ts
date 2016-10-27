@@ -1,5 +1,5 @@
 import * as angular from "@angular/core";
-import {Component, Input} from "@angular/core";
+import { Component, Input } from "@angular/core";
 
 import * as d3 from "d3";
 import * as saveSvgAsPng from "save-svg-as-png";
@@ -8,7 +8,7 @@ const DEFAULT_MATTRIX = "matrix(1,0,0,1,-3,-9)";
 const DEFAULT_EXT = ".png";
 
 @Component({
-    selector: "sg-origami-png",
+    selector: "sg-png",
     templateUrl: "app/org/tree-to-png/tree-to-png.component.html",
     styleUrls: ["app/org/tree-to-png/tree-to-png.component.css"]
 })
