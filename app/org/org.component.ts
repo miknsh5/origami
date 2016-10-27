@@ -214,7 +214,6 @@ export class OrgComponent implements OnDestroy {
             newNode.IsStaging = false;
             newNode.children = new Array<OrgNodeModel>();
             this.orgNodes.push(newNode);
-            console.log(this.orgNodes);
             return true;
         }
     }

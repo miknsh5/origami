@@ -28,7 +28,7 @@ export class SamrtBarComponent implements OnChanges {
     private isDescriptionText: boolean = false;
     private isDescriptionselected: boolean = false;
 
-    @Input() treeJson: any;
+    @Input() treeJsonData: any;
     @Input() selectedOrgNode: OrgNodeModel;
     @Input() isAddOrEditModeEnabled: boolean;
     @Output() nodeSearched = new EventEmitter<OrgNodeModel>();
@@ -44,10 +44,10 @@ export class SamrtBarComponent implements OnChanges {
     }
 
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
-        if (changes["treeJson"]) {
-            if (this.treeJson) {
+        if (changes["treeJsonData"]) {
+            if (this.treeJsonData) {
                 this.orgSearchData = new Array<any>();
-                this.convertToFlatData(this.treeJson);
+                this.convertToFlatData(this.treeJsonData);
             }
         }
         if (changes["selectedOrgNode"]) {
@@ -314,7 +314,7 @@ export class SamrtBarComponent implements OnChanges {
 
     private onNodeSelected(event: any, data: OrgSearchModel) {
         if (data) {
-            let node = this.getNode(data.NodeID, this.treeJson[0]);
+            let node = this.getNode(data.NodeID, this.treeJsonData[0]);
             if (node) {
                 $("#searchSelection").find("li.selected").removeClass("selected");
                 let $element = $(event.target).closest("li.nodeSearch");
