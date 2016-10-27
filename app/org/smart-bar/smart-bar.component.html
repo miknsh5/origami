@@ -46,7 +46,7 @@
 
     <div *ngIf="searchInProgress && isDescriptionText " class="search">
         <ul id="titleSearchSelection">
-            <li *ngFor="let titleData of titleFilterList" class="titleFilter" (click)="selectTitle($event,titleData)">
+            <li *ngFor="let titleData of titleFilterList" class="titleFilter" (click)="selectTitle($event,titleData.Name)">
                 <a>
                     <i class="material-icons">folder_shared</i> {{titleData.Name}}
                 </a>
