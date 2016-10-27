@@ -162,13 +162,14 @@ export class SamrtBarComponent implements OnChanges {
                     }
                 }
             }
-        }
+        } 
     }
 
     onAddNode() {
         let firstName: any;
         let lastName: any;
         let index = this.multiInTerm.indexOf(" ");
+        this.setAddOrEditModeValue.emit(true);
         if (index !== -1 && this.multiInTerm && !this.newNodeValue) {
             firstName = this.multiInTerm.substring(0, index);
             lastName = this.multiInTerm.substring(index + 1, this.multiInTerm.length);
@@ -196,7 +197,7 @@ export class SamrtBarComponent implements OnChanges {
                 this.newOrgNode.Description = this.multiInTerm;
                 this.newNodeValue.push(this.multiInTerm);
             }
-            if (!this.selectedOrgNode.ParentNodeID && this.selectedOrgNode.NodeID === -1) {  // || (this.selectedOrgNode.ParentNodeID && this.selectedOrgNode.ParentNodeID === -1)) {
+            if (!this.selectedOrgNode.ParentNodeID && this.selectedOrgNode.NodeID === -1) {
                 if (this.newOrgNode.IsNewRoot) {
                     this.newOrgNode.ParentNodeID = null;
                     this.newOrgNode.children = new Array<OrgNodeModel>();
@@ -259,6 +260,7 @@ export class SamrtBarComponent implements OnChanges {
         if (data) {
             this.isDescriptionText = false;
             this.isDescriptionselected = false;
+            this.setAddOrEditModeValue.emit(false);
             this.addNode.emit(data);
         }
     }
@@ -286,8 +288,8 @@ export class SamrtBarComponent implements OnChanges {
         this.nodeSearchedList = new Array<OrgSearchModel>();
         this.titleFilterList = new Array();
         setTimeout(() => {
-                this.searchTitleData(searchTerm);
-                if (this.selectedOrgNode) {
+            this.searchTitleData(searchTerm);
+            if (this.selectedOrgNode) {
                 setTimeout(() => {
                     let $element = $("#titleSearchSelection li.addNode").addClass("selected");
                     if ($element) {
