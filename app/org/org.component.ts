@@ -27,6 +27,7 @@ export class OrgComponent implements OnDestroy {
     buildViewText: any;
     reportViewText: any;
     svgPan: any;
+    isAddEnabledInSmartBar: boolean;
 
     @Output() groupID: any;
     @Output() companyID: any;
@@ -132,23 +133,25 @@ export class OrgComponent implements OnDestroy {
     }
 
     smartBarAddEnabled(data: boolean) {
-        let isAddEnabled = data;
-        this.isSmartBarAddEnabled = isAddEnabled;
+        this.isAddEnabledInSmartBar = data;
+        this.isSmartBarAddEnabled = this.isAddEnabledInSmartBar;
     }
 
     onNodeSelected(node) {
-        let prevNode = this.selectedNode ? this.selectedNode : new OrgNodeModel();
-        this.selectedNode = node;
-        if (this.selectedNode) {
-            if (node.NodeID === -1) {
-                this.isAddOrEditMode = true;
-                this.detailAddOrEditMode = true;
-            } else if ((this.isAddOrEditMode || !this.isAddOrEditMode && prevNode.IsNewRoot) && prevNode.NodeID !== node.NodeID) {
-                this.isAddOrEditMode = false;
-                this.detailAddOrEditMode = false;
+        if (!this.isAddEnabledInSmartBar) {
+            let prevNode = this.selectedNode ? this.selectedNode : new OrgNodeModel();
+            this.selectedNode = node;
+            if (this.selectedNode) {
+                if (node.NodeID === -1) {
+                    this.isAddOrEditMode = true;
+                    this.detailAddOrEditMode = true;
+                } else if ((this.isAddOrEditMode || !this.isAddOrEditMode && prevNode.IsNewRoot) && prevNode.NodeID !== node.NodeID) {
+                    this.isAddOrEditMode = false;
+                    this.detailAddOrEditMode = false;
+                }
             }
+            this.currentOrgNodeStatus = OrgNodeStatus.None;
         }
-        this.currentOrgNodeStatus = OrgNodeStatus.None;
     }
 
     onNodeAdded(addedNode: OrgNodeModel) {

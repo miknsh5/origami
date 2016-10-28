@@ -13,7 +13,7 @@
     </div>
     <div class="main-canvas" *ngIf="orgGroup" (window:resize)="onResize($event)">
         <sg-org-tree [treeData]="treeJson" [width]="svgWidth" [height]="svgHeight" [currentMode]="currentChartMode" [isAddOrEditModeEnabled]="isAddOrEditMode" (selectNode)="onNodeSelected($event)" (switchToAddMode)="onSwitchedToAddMode($event)" [showFirstNameLabel]="displayFirstNameLabel"
-            [showLastNameLabel]="displayLastNameLabel" [showDescriptionLabel]="displayDescriptionLabel" [orgGroupID]="groupID" [CompanyID]="companyID" [isMenuSettingsEnabled]="isMenuSettingsEnabled" [searchNode]="searchedNode">
+            [showLastNameLabel]="displayLastNameLabel" [showDescriptionLabel]="displayDescriptionLabel" [orgGroupID]="groupID" [CompanyID]="companyID" [isMenuSettingsEnabled]="isMenuSettingsEnabled" [searchNode]="searchedNode" [isSmartBarAddEnabled]="isAddEnabledInSmartBar">
         </sg-org-tree>
         <div *ngIf="currentChartMode===1">
             <!--<sg-org-node-detail #nodeDetail [selectedOrgNode]="selectedNode" [isAddOrEditModeEnabled]="detailAddOrEditMode" (deleteNode)="onNodeDeleted($event)" (updateNode)="onNodeUpdated($event)" (addNode)="onNodeAdded($event)" (setAddOrEditModeValue)="onAddOrEditModeValueSet($event)"

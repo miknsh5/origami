@@ -176,7 +176,7 @@ export class SideMenuComponent implements OnChanges {
     }
 
     openPanel() {
-        if (this.selectedOrgNode && this.selectedOrgNode.NodeID !== -1) {
+        if (this.selectedOrgNode && this.selectedOrgNode.NodeID !== -1 && !this.isSmartBarAddEnabled) {
             this.isCollapsed = true;
             this.isClosed = false;
             this.domHelper.setWidth(MenuElement.menuPanel, "100%");
