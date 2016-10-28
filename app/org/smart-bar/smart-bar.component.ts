@@ -37,10 +37,12 @@ export class SamrtBarComponent implements OnChanges {
     @Output() setAddOrEditModeValue = new EventEmitter<boolean>();
     @Output() chartStructureUpdated = new EventEmitter<any>();
     @Output() updateNode = new EventEmitter<OrgNodeModel>();
+    @Output() isSmartBarAddEnabled = new EventEmitter<boolean>();
 
     constructor(private elementRef: ElementRef, private domHelper: DomElementHelper, private renderer: Renderer, private orgService: OrgService) {
         this.searchHeader = `BY ${HeaderTitle}`;
         this.newOrgNode = new OrgNodeModel();
+        this.isSmartBarAddEnabled.emit(false);
     }
 
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
@@ -179,6 +181,7 @@ export class SamrtBarComponent implements OnChanges {
         let lastName: any;
         let index = this.multiInTerm.indexOf(" ");
         this.setAddOrEditModeValue.emit(true);
+        this.isSmartBarAddEnabled.emit(true);
         if (index !== -1 && this.multiInTerm && (!this.newNodeValue || this.newNodeValue.length === 0)) {
             firstName = this.multiInTerm.substring(0, index);
             lastName = this.multiInTerm.substring(index + 1, this.multiInTerm.length);
@@ -251,6 +254,7 @@ export class SamrtBarComponent implements OnChanges {
             this.isDescriptionselected = false;
             // call emitAddNodeNotification for root node and emitUpdateNodeNotification for children            
             this.setAddOrEditModeValue.emit(false);
+            this.isSmartBarAddEnabled.emit(false);
         }
     }
 
@@ -270,6 +274,7 @@ export class SamrtBarComponent implements OnChanges {
             this.isDescriptionText = false;
             this.isDescriptionselected = false;
             this.setAddOrEditModeValue.emit(false);
+            this.isSmartBarAddEnabled.emit(false);
             this.addNode.emit(data);
         }
     }

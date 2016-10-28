@@ -3,7 +3,7 @@
     </sg-menu-panel>
     <sg-side-menu-panel [selectedOrgNode]="selectedNode" [isAddOrEditModeEnabled]="isAddOrEditMode" [currentMode]="currentChartMode" [companyName]="companyName" (showFirstNameLabel)="enableFirstNameLabel($event)" (showLastNameLabel)="enableLastNameLabel($event)"
         (showDescriptionLabel)="enableDescriptionLabel($event)" [svgWidth]="svgWidth" [svgHeight]="svgHeight" [orgChart]="orgGroup" (deleteNode)="onNodeDeleted($event)" (updateNode)="onNodeUpdated($event)" (setAddOrEditModeValue)="onAddOrEditModeValueSet($event)"
-        [isMenuSettingsEnabled]="isMenuSettingsEnabled"></sg-side-menu-panel>
+        [isMenuSettingsEnabled]="isMenuSettingsEnabled" [isSmartBarAddEnabled]="isSmartBarAddEnabled"></sg-side-menu-panel>
     <div class="modes-wrap ">
         <ul>
             <li [ngClass]="buildView" class="nav-build" (click)="changeViewModeNav(1)"><a> Build</a></li>
@@ -20,7 +20,7 @@
         (chartStructureUpdated)="onChartUpdated($event)" (updateMenuNode)="onNodeTextChange($event)" [isMenuSettingsEnabled]="isMenuSettingsEnabled">
     </sg-org-node-detail>-->
             <sg-smart-bar [treeJsonData]="treeJson" (nodeSearched)="onNodeSearched($event)" [selectedOrgNode]="selectedNode" [isAddOrEditModeEnabled]="detailAddOrEditMode" (deleteNode)="onNodeDeleted($event)" (addNode)="onNodeAdded($event)" (setAddOrEditModeValue)="onAddOrEditModeValueSet($event)"
-                (chartStructureUpdated)="onChartUpdated($event)">
+                (chartStructureUpdated)="onChartUpdated($event)" (isSmartBarAddEnabled)="smartBarAddEnabled($event)">
             </sg-smart-bar>
         </div>
     </div>

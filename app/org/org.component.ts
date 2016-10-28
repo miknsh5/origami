@@ -44,6 +44,7 @@ export class OrgComponent implements OnDestroy {
     @Output() currentOrgNodeStatus: OrgNodeStatus;
     @Output() isMenuSettingsEnabled: boolean;
     @Output() searchedNode: OrgNodeModel;
+    @Output() isSmartBarAddEnabled: boolean;
 
     constructor(public domHelper: DomElementHelper) {
         this.currentChartMode = ChartMode.build;
@@ -128,6 +129,11 @@ export class OrgComponent implements OnDestroy {
                 this.svgPan.disablePan();
             }
         }
+    }
+
+    smartBarAddEnabled(data: boolean) {
+        let isAddEnabled = data;
+        this.isSmartBarAddEnabled = isAddEnabled;
     }
 
     onNodeSelected(node) {

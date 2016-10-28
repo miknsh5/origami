@@ -58,6 +58,7 @@ export class SideMenuComponent implements OnChanges {
     @Input() svgWidth: any;
     @Input() svgHeight: any;
     @Input() isMenuSettingsEnabled: boolean;
+    @Input() isSmartBarAddEnabled: boolean;
 
     @Output() setAddOrEditModeValue = new EventEmitter<boolean>();
     @Output() updateNode = new EventEmitter<OrgNodeModel>();
@@ -131,7 +132,7 @@ export class SideMenuComponent implements OnChanges {
             }
         }
 
-        if (changes["isAddOrEditModeEnabled"] && changes["isAddOrEditModeEnabled"].currentValue) {
+        if (changes["isAddOrEditModeEnabled"] && changes["isAddOrEditModeEnabled"].currentValue && changes["isSmartBarAddEnabled"]) {
             this.closePanel();
             this.isCollapsed = true;
         }
