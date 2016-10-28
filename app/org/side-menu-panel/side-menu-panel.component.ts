@@ -131,6 +131,11 @@ export class SideMenuComponent implements OnChanges {
             }
         }
 
+        if (changes["isAddOrEditModeEnabled"] && changes["isAddOrEditModeEnabled"].currentValue) {
+            this.closePanel();
+            this.isCollapsed = true;
+        }
+
         if (changes["selectedOrgNode"]) {
             if (this.isEditModeEnabled && this.selectedNode.NodeID !== this.selectedOrgNode.NodeID) {
                 this.deleteOrClose = CLOSE_ICON;

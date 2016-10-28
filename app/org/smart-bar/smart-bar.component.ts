@@ -162,18 +162,18 @@ export class SamrtBarComponent implements OnChanges {
                     }
                 }
             }
-        } else if ((event as KeyboardEvent).keyCode === 8) {
-            console.log(this.isAddOrEditModeEnabled);
-            if (this.isAddOrEditModeEnabled) {
-                if (this.multiInTerm  && this.newNodeValue && (this.newNodeValue.length === 1 || this.newNodeValue.length === 2)) {
-                    this.multiInTerm = this.newNodeValue.pop();
-                }
+         }  // else if ((event as KeyboardEvent).keyCode === 8) {
+        //     console.log(this.isAddOrEditModeEnabled);
+        //     if (this.isAddOrEditModeEnabled) {
+        //         if (this.multiInTerm && this.newNodeValue && (this.newNodeValue.length === 1 || this.newNodeValue.length === 2)) {
+        //             this.multiInTerm = this.newNodeValue.pop();
+        //         }
 
-            }
+        //     }
 
-        }
+        // }
     }
-    
+
     onAddNode() {
         let firstName: any;
         let lastName: any;
