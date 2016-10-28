@@ -164,7 +164,7 @@ export class SamrtBarComponent implements OnChanges {
                     }
                 }
             }
-         }  // else if ((event as KeyboardEvent).keyCode === 8) {
+        }  // else if ((event as KeyboardEvent).keyCode === 8) {
         //     console.log(this.isAddOrEditModeEnabled);
         //     if (this.isAddOrEditModeEnabled) {
         //         if (this.multiInTerm && this.newNodeValue && (this.newNodeValue.length === 1 || this.newNodeValue.length === 2)) {
@@ -280,21 +280,30 @@ export class SamrtBarComponent implements OnChanges {
     }
 
     private onInputSearch() {
-        if (this.searchTerm) {
-            this.processSearch(this.searchTerm);
-        } else {
-            this.clearSearch();
-        }
+  //      if (!this.isAddOrEditModeEnabled || this.isSmartBarAddEnabled) {
+            if (this.searchTerm) {
+                this.processSearch(this.searchTerm);
+            } else {
+                this.clearSearch();
+            }
+        // } else {
+        //     this.multiInTerm = "";
+        // }
+
     }
 
     private onInputMultiSearch(event: Event) {
-        if (this.newNodeValue && this.newNodeValue.length === 2) {
-            this.multiInTerm = "";
-        } else if (this.multiInTerm) {
-            this.processSearch(this.multiInTerm);
-        } else {
-            this.clearSearch();
-        }
+       // if (!this.isAddOrEditModeEnabled || this.isSmartBarAddEnabled) {
+            if (this.newNodeValue && this.newNodeValue.length === 2) {
+                this.multiInTerm = "";
+            } else if (this.multiInTerm) {
+                this.processSearch(this.multiInTerm);
+            } else {
+                this.clearSearch();
+             }
+        // } else {
+        //     this.multiInTerm = "";
+        // }
     }
 
     onDescritptionSearch(searchTerm) {
