@@ -27,6 +27,7 @@ export class OrgComponent implements OnDestroy {
     buildViewText: any;
     reportViewText: any;
     svgPan: any;
+    isAddEnabledInSmartBar: boolean;
 
     @Output() groupID: any;
     @Output() companyID: any;
@@ -44,6 +45,8 @@ export class OrgComponent implements OnDestroy {
     @Output() currentOrgNodeStatus: OrgNodeStatus;
     @Output() isMenuSettingsEnabled: boolean;
     @Output() searchedNode: OrgNodeModel;
+    @Output() isSmartBarAddEnabled: boolean;
+    @Output() isEditMenuEnable: boolean;
 
     constructor(public domHelper: DomElementHelper) {
         this.currentChartMode = ChartMode.build;
@@ -130,19 +133,30 @@ export class OrgComponent implements OnDestroy {
         }
     }
 
+    smartBarAddEnabled(data: boolean) {
+        this.isAddEnabledInSmartBar = data;
+        this.isSmartBarAddEnabled = this.isAddEnabledInSmartBar;
+    }
+
+    isEditEnabled(data) {
+        this.isEditMenuEnable = data;
+    }
+
     onNodeSelected(node) {
-        let prevNode = this.selectedNode ? this.selectedNode : new OrgNodeModel();
-        this.selectedNode = node;
-        if (this.selectedNode) {
-            if (node.NodeID === -1) {
-                this.isAddOrEditMode = true;
-                this.detailAddOrEditMode = true;
-            } else if ((this.isAddOrEditMode || !this.isAddOrEditMode && prevNode.IsNewRoot) && prevNode.NodeID !== node.NodeID) {
-                this.isAddOrEditMode = false;
-                this.detailAddOrEditMode = false;
+        if (!this.isAddEnabledInSmartBar) {
+            let prevNode = this.selectedNode ? this.selectedNode : new OrgNodeModel();
+            this.selectedNode = node;
+            if (this.selectedNode) {
+                if (node.NodeID === -1) {
+                    this.isAddOrEditMode = true;
+                    this.detailAddOrEditMode = true;
+                } else if ((this.isAddOrEditMode || !this.isAddOrEditMode && prevNode.IsNewRoot) && prevNode.NodeID !== node.NodeID) {
+                    this.isAddOrEditMode = false;
+                    this.detailAddOrEditMode = false;
+                }
             }
+            this.currentOrgNodeStatus = OrgNodeStatus.None;
         }
-        this.currentOrgNodeStatus = OrgNodeStatus.None;
     }
 
     onNodeAdded(addedNode: OrgNodeModel) {
@@ -214,7 +228,6 @@ export class OrgComponent implements OnDestroy {
             newNode.IsStaging = false;
             newNode.children = new Array<OrgNodeModel>();
             this.orgNodes.push(newNode);
-            console.log(this.orgNodes);
             return true;
         }
     }

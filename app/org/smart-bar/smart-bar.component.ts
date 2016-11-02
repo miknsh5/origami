@@ -28,26 +28,29 @@ export class SamrtBarComponent implements OnChanges {
     private isDescriptionText: boolean = false;
     private isDescriptionselected: boolean = false;
 
-    @Input() treeJson: any;
+    @Input() treeJsonData: any;
     @Input() selectedOrgNode: OrgNodeModel;
     @Input() isAddOrEditModeEnabled: boolean;
+    @Input() isEditMenuEnable: boolean;
     @Output() nodeSearched = new EventEmitter<OrgNodeModel>();
     @Output() deleteNode = new EventEmitter<OrgNodeModel>();
     @Output() addNode = new EventEmitter<OrgNodeModel>();
     @Output() setAddOrEditModeValue = new EventEmitter<boolean>();
     @Output() chartStructureUpdated = new EventEmitter<any>();
     @Output() updateNode = new EventEmitter<OrgNodeModel>();
+    @Output() isSmartBarAddEnabled = new EventEmitter<boolean>();
 
     constructor(private elementRef: ElementRef, private domHelper: DomElementHelper, private renderer: Renderer, private orgService: OrgService) {
         this.searchHeader = `BY ${HeaderTitle}`;
         this.newOrgNode = new OrgNodeModel();
+        this.isSmartBarAddEnabled.emit(false);
     }
 
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
-        if (changes["treeJson"]) {
-            if (this.treeJson) {
+        if (changes["treeJsonData"]) {
+            if (this.treeJsonData) {
                 this.orgSearchData = new Array<any>();
-                this.convertToFlatData(this.treeJson);
+                this.convertToFlatData(this.treeJsonData);
             }
         }
         if (changes["selectedOrgNode"]) {
@@ -58,7 +61,7 @@ export class SamrtBarComponent implements OnChanges {
             }
             this.setInputFocus();
         }
-        this.clearSearch();
+        // this.clearSearch();
     }
 
     convertToFlatData(inputArray, ischild?: boolean) {
@@ -136,6 +139,9 @@ export class SamrtBarComponent implements OnChanges {
             }
 
         } else if ((event as KeyboardEvent).keyCode === 13) {
+            if (this.newNodeValue && this.newNodeValue.length === 0 && this.multiInTerm === "") {
+                return;
+            }
             if (this.isDescriptionText) {
                 let element = document.querySelector("#titleSearchSelection li.selected");
                 if (element) {
@@ -160,8 +166,25 @@ export class SamrtBarComponent implements OnChanges {
                         this.setAddOrEditModeValue.emit(false);
                         this.deleteNode.emit(null);
                     }
+                } else if (this.multiInTerm || (this.newNodeValue && this.newNodeValue.length > 0)) {
+                    this.isSmartBarAddEnabled.emit(false);
+                    this.setAddOrEditModeValue.emit(false);
+                    this.multiInTerm = "";
+                    this.newNodeValue = null;
                 }
             }
+        } else if ((event as KeyboardEvent).keyCode === 8) {
+            if (this.isAddOrEditModeEnabled) {
+                if (this.multiInTerm === "" && this.newNodeValue && (this.newNodeValue.length === 1 || this.newNodeValue.length === 2)) {
+                    this.multiInTerm = this.newNodeValue.pop();
+                } else if (this.multiInTerm === "" && (this.newNodeValue && this.newNodeValue.length === 0)) {
+                    this.isSmartBarAddEnabled.emit(false);
+                    this.setAddOrEditModeValue.emit(false);
+                    this.multiInTerm = "";
+                    this.newNodeValue = null;
+                }
+            }
+
         }
     }
 
@@ -169,13 +192,15 @@ export class SamrtBarComponent implements OnChanges {
         let firstName: any;
         let lastName: any;
         let index = this.multiInTerm.indexOf(" ");
-        if (index !== -1 && this.multiInTerm && !this.newNodeValue) {
+        this.setAddOrEditModeValue.emit(true);
+        this.isSmartBarAddEnabled.emit(true);
+        if (index !== -1 && this.multiInTerm && (!this.newNodeValue || this.newNodeValue.length === 0)) {
             firstName = this.multiInTerm.substring(0, index);
             lastName = this.multiInTerm.substring(index + 1, this.multiInTerm.length);
             this.newOrgNode.NodeFirstName = firstName;
             this.newOrgNode.NodeLastName = lastName;
             this.newOrgNode.Description = "";
-        } else if (index === -1 && this.multiInTerm && !this.newNodeValue) {
+        } else if (index === -1 && this.multiInTerm && (!this.newNodeValue || this.newNodeValue.length === 0)) {
             firstName = this.multiInTerm;
             lastName = "";
             this.newOrgNode.NodeFirstName = firstName;
@@ -196,7 +221,7 @@ export class SamrtBarComponent implements OnChanges {
                 this.newOrgNode.Description = this.multiInTerm;
                 this.newNodeValue.push(this.multiInTerm);
             }
-            if (!this.selectedOrgNode.ParentNodeID && this.selectedOrgNode.NodeID === -1) {  // || (this.selectedOrgNode.ParentNodeID && this.selectedOrgNode.ParentNodeID === -1)) {
+            if (!this.selectedOrgNode.ParentNodeID && this.selectedOrgNode.NodeID === -1) {
                 if (this.newOrgNode.IsNewRoot) {
                     this.newOrgNode.ParentNodeID = null;
                     this.newOrgNode.children = new Array<OrgNodeModel>();
@@ -210,7 +235,11 @@ export class SamrtBarComponent implements OnChanges {
 
             }
             else {
-                this.newOrgNode.ParentNodeID = this.selectedOrgNode.NodeID;
+                if (this.selectedOrgNode.NodeID === -1) {
+                    this.newOrgNode.ParentNodeID = this.selectedOrgNode.ParentNodeID;
+                } else {
+                    this.newOrgNode.ParentNodeID = this.selectedOrgNode.NodeID;
+                }
                 this.addNewNode(this.newOrgNode);
             }
             this.multiInTerm = "";
@@ -241,6 +270,7 @@ export class SamrtBarComponent implements OnChanges {
             this.isDescriptionselected = false;
             // call emitAddNodeNotification for root node and emitUpdateNodeNotification for children            
             this.setAddOrEditModeValue.emit(false);
+            this.isSmartBarAddEnabled.emit(false);
         }
     }
 
@@ -259,25 +289,42 @@ export class SamrtBarComponent implements OnChanges {
         if (data) {
             this.isDescriptionText = false;
             this.isDescriptionselected = false;
+            this.setAddOrEditModeValue.emit(false);
+            this.isSmartBarAddEnabled.emit(false);
             this.addNode.emit(data);
         }
     }
 
     private onInputSearch() {
-        if (this.searchTerm) {
-            this.processSearch(this.searchTerm);
+        if (!this.isEditMenuEnable) {
+            if (this.searchTerm) {
+                this.isSmartBarAddEnabled.emit(true);
+                this.processSearch(this.searchTerm);
+            } else {
+                this.isSmartBarAddEnabled.emit(false);
+                this.clearSearch();
+            }
         } else {
-            this.clearSearch();
+            this.multiInTerm = "";
         }
+
     }
 
     private onInputMultiSearch(event: Event) {
-        if (this.newNodeValue && this.newNodeValue.length === 2) {
-            this.multiInTerm = "";
-        } else if (this.multiInTerm) {
-            this.processSearch(this.multiInTerm);
+        if (!this.isEditMenuEnable) {
+            this.setAddOrEditModeValue.emit(true);
+            if (this.newNodeValue && this.newNodeValue.length === 2) {
+                this.multiInTerm = "";
+            } else if (this.multiInTerm) {
+                this.isSmartBarAddEnabled.emit(true);
+                this.processSearch(this.multiInTerm);
+            } else {
+                // this.isSmartBarAddEnabled.emit(false);
+                // this.setAddOrEditModeValue.emit(false);
+                this.clearSearch();
+            }
         } else {
-            this.clearSearch();
+            this.multiInTerm = "";
         }
     }
 
@@ -286,18 +333,25 @@ export class SamrtBarComponent implements OnChanges {
         this.nodeSearchedList = new Array<OrgSearchModel>();
         this.titleFilterList = new Array();
         setTimeout(() => {
-            this.orgSearchData.forEach((data, index) => {
-                if (data.Title.toLowerCase() === searchTerm) {
-                    this.nodeSearchedList.push(data);
-                }
-            });
             this.searchTitleData(searchTerm);
-            setTimeout(() => {
-                if (this.titleFilterList.length > 0) {
-                    let $element = $("#titleSearchSelection li.titleFilter").first();
-                    $element.addClass("selected").scrollTop($("#titleSearchSelection").scrollTop() + $element.position().top);
-                }
-            }, 100);
+            if (this.selectedOrgNode) {
+                setTimeout(() => {
+                    let $element = $("#titleSearchSelection li.addNode").addClass("selected");
+                    if ($element) {
+                        let position = $element.position();
+                        $element.scrollTop($("#titleSearchSelection").scrollTop() + (position ? position.top : 0));
+                    }
+
+                }, 100);
+            } else {
+                setTimeout(() => {
+                    if (this.titleFilterList.length > 0) {
+                        let $element = $("#titleSearchSelection li.titleFilter").first();
+                        $element.addClass("selected").scrollTop($("#titleSearchSelection").scrollTop() + $element.position().top);
+                    }
+                }, 100);
+            }
+
         }, 100);
     }
 
@@ -314,7 +368,7 @@ export class SamrtBarComponent implements OnChanges {
 
     private onNodeSelected(event: any, data: OrgSearchModel) {
         if (data) {
-            let node = this.getNode(data.NodeID, this.treeJson[0]);
+            let node = this.getNode(data.NodeID, this.treeJsonData[0]);
             if (node) {
                 $("#searchSelection").find("li.selected").removeClass("selected");
                 let $element = $(event.target).closest("li.nodeSearch");

@@ -58,6 +58,7 @@ export class SideMenuComponent implements OnChanges {
     @Input() svgWidth: any;
     @Input() svgHeight: any;
     @Input() isMenuSettingsEnabled: boolean;
+    @Input() isSmartBarAddEnabled: boolean;
 
     @Output() setAddOrEditModeValue = new EventEmitter<boolean>();
     @Output() updateNode = new EventEmitter<OrgNodeModel>();
@@ -65,6 +66,7 @@ export class SideMenuComponent implements OnChanges {
     @Output() showFirstNameLabel = new EventEmitter<boolean>();
     @Output() showLastNameLabel = new EventEmitter<boolean>();
     @Output() showDescriptionLabel = new EventEmitter<boolean>();
+    @Output() isEditEnabled = new EventEmitter<boolean>();
 
     @HostListener("window:keydown", ["$event"])
     onKeyDown(event: any) {
@@ -110,6 +112,7 @@ export class SideMenuComponent implements OnChanges {
         this.editOrSave = EDIT_ICON;
         this.deleteOrClose = DELETE_ICON;
         this.isEditOrDeleteDisabled = false;
+        this.isEditEnabled.emit(false);
     }
 
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
@@ -131,7 +134,22 @@ export class SideMenuComponent implements OnChanges {
             }
         }
 
+        if (changes["isAddOrEditModeEnabled"] && changes["isAddOrEditModeEnabled"].currentValue && changes["isSmartBarAddEnabled"]) {
+            this.closePanel();
+            this.isCollapsed = true;
+        }
+
+        if (changes["isSmartBarAddEnabled"] && changes["isSmartBarAddEnabled"].currentValue === false && this.isCollapsed && changes["isAddOrEditModeEnabled"] && changes["isAddOrEditModeEnabled"].currentValue === false) {
+                this.openPanel();
+                this.isCollapsed = false;
+            }
+
+
         if (changes["selectedOrgNode"]) {
+            if (changes["isSmartBarAddEnabled"] && changes["isSmartBarAddEnabled"].currentValue === false && this.isCollapsed) {
+                this.openPanel();
+                this.isCollapsed = false;
+            }
             if (this.isEditModeEnabled && this.selectedNode.NodeID !== this.selectedOrgNode.NodeID) {
                 this.deleteOrClose = CLOSE_ICON;
                 this.onDeleteOrCancelNodeClicked();
@@ -170,7 +188,7 @@ export class SideMenuComponent implements OnChanges {
     }
 
     openPanel() {
-        if (this.selectedOrgNode && this.selectedOrgNode.NodeID !== -1) {
+        if (this.selectedOrgNode && this.selectedOrgNode.NodeID !== -1 && !this.isSmartBarAddEnabled) {
             this.isCollapsed = true;
             this.isClosed = false;
             this.domHelper.setWidth(MenuElement.menuPanel, "100%");
@@ -273,6 +291,7 @@ export class SideMenuComponent implements OnChanges {
                 this.selectedNode.Description = this.editNodeDetails.Description;
                 this.setAddOrEditModeValue.emit(false);
                 this.emitUpdateNodeNotification(this.selectedNode);
+                this.isEditEnabled.emit(false);
             }
         }
 
@@ -293,6 +312,7 @@ export class SideMenuComponent implements OnChanges {
     onEditOrSaveNodeClicked() {
         if (this.selectedNode.NodeID !== -1) {
             if (this.editOrSave === EDIT_ICON) {
+                this.isEditEnabled.emit(true);
                 this.setAddOrEditModeValue.emit(true);
                 this.isEditModeEnabled = true;
                 this.editOrSave = SAVE_ICON;
@@ -315,6 +335,7 @@ export class SideMenuComponent implements OnChanges {
                     this.editNodeDetails.ParentNodeID = this.selectedNode.ParentNodeID;
                     this.editNode(this.editNodeDetails);
                     this.isEditModeEnabled = false;
+                    this.isEditEnabled.emit(false);
                     this.editOrSave = EDIT_ICON;
                     this.deleteOrClose = DELETE_ICON;
                 } else {

@@ -46,13 +46,13 @@
 
     <div *ngIf="searchInProgress && isDescriptionText " class="search">
         <ul id="titleSearchSelection">
+            <li *ngIf=" titleFilterList && titleFilterList.length===0">
+                <i class="material-icons">search</i> No Results
+            </li>
             <li *ngFor="let titleData of titleFilterList" class="titleFilter" (click)="selectTitle($event,titleData.Name)">
                 <a>
                     <i class="material-icons">folder_shared</i> {{titleData.Name}}
                 </a>
-            </li>
-            <li *ngIf="!selectedOrgNode && titleFilterList.length===0">
-                <i class="material-icons">search</i> No Results
             </li>
             <li *ngIf="selectedOrgNode && multiInTerm" class="header">CREATE NEW TITLE</li>
             <li *ngIf="selectedOrgNode && multiInTerm" class="addNode" (click)="onAddNode($event)">
