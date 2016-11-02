@@ -31,6 +31,7 @@ export class SamrtBarComponent implements OnChanges {
     @Input() treeJsonData: any;
     @Input() selectedOrgNode: OrgNodeModel;
     @Input() isAddOrEditModeEnabled: boolean;
+    @Input() isEditMenuEnable: boolean;
     @Output() nodeSearched = new EventEmitter<OrgNodeModel>();
     @Output() deleteNode = new EventEmitter<OrgNodeModel>();
     @Output() addNode = new EventEmitter<OrgNodeModel>();
@@ -280,20 +281,20 @@ export class SamrtBarComponent implements OnChanges {
     }
 
     private onInputSearch() {
-  //      if (!this.isAddOrEditModeEnabled || this.isSmartBarAddEnabled) {
+        if (!this.isEditMenuEnable) {
             if (this.searchTerm) {
                 this.processSearch(this.searchTerm);
             } else {
                 this.clearSearch();
             }
-        // } else {
-        //     this.multiInTerm = "";
-        // }
+        } else {
+            this.multiInTerm = "";
+        }
 
     }
 
     private onInputMultiSearch(event: Event) {
-       // if (!this.isAddOrEditModeEnabled || this.isSmartBarAddEnabled) {
+        if (!this.isEditMenuEnable) {
             if (this.newNodeValue && this.newNodeValue.length === 2) {
                 this.multiInTerm = "";
             } else if (this.multiInTerm) {
@@ -301,9 +302,9 @@ export class SamrtBarComponent implements OnChanges {
             } else {
                 this.clearSearch();
              }
-        // } else {
-        //     this.multiInTerm = "";
-        // }
+        } else {
+            this.multiInTerm = "";
+        }
     }
 
     onDescritptionSearch(searchTerm) {

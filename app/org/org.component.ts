@@ -46,6 +46,7 @@ export class OrgComponent implements OnDestroy {
     @Output() isMenuSettingsEnabled: boolean;
     @Output() searchedNode: OrgNodeModel;
     @Output() isSmartBarAddEnabled: boolean;
+    @Output() isEditMenuEnable: boolean;
 
     constructor(public domHelper: DomElementHelper) {
         this.currentChartMode = ChartMode.build;
@@ -135,6 +136,10 @@ export class OrgComponent implements OnDestroy {
     smartBarAddEnabled(data: boolean) {
         this.isAddEnabledInSmartBar = data;
         this.isSmartBarAddEnabled = this.isAddEnabledInSmartBar;
+    }
+
+    isEditEnabled(data) {
+        this.isEditMenuEnable = data;
     }
 
     onNodeSelected(node) {

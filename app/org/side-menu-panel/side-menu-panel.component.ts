@@ -66,6 +66,7 @@ export class SideMenuComponent implements OnChanges {
     @Output() showFirstNameLabel = new EventEmitter<boolean>();
     @Output() showLastNameLabel = new EventEmitter<boolean>();
     @Output() showDescriptionLabel = new EventEmitter<boolean>();
+    @Output() isEditEnabled = new EventEmitter<boolean>();
 
     @HostListener("window:keydown", ["$event"])
     onKeyDown(event: any) {
@@ -111,6 +112,7 @@ export class SideMenuComponent implements OnChanges {
         this.editOrSave = EDIT_ICON;
         this.deleteOrClose = DELETE_ICON;
         this.isEditOrDeleteDisabled = false;
+        this.isEditEnabled.emit(false);
     }
 
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
@@ -270,6 +272,7 @@ export class SideMenuComponent implements OnChanges {
                             () => console.log("Deleted node."));
                     }
                 }
+                this.isEditEnabled.emit(false);
             } else if (this.deleteOrClose === CLOSE_ICON) {
                 this.editOrSave = EDIT_ICON;
                 this.deleteOrClose = DELETE_ICON;
@@ -299,6 +302,7 @@ export class SideMenuComponent implements OnChanges {
     onEditOrSaveNodeClicked() {
         if (this.selectedNode.NodeID !== -1) {
             if (this.editOrSave === EDIT_ICON) {
+                this.isEditEnabled.emit(true);
                 this.setAddOrEditModeValue.emit(true);
                 this.isEditModeEnabled = true;
                 this.editOrSave = SAVE_ICON;
@@ -321,6 +325,7 @@ export class SideMenuComponent implements OnChanges {
                     this.editNodeDetails.ParentNodeID = this.selectedNode.ParentNodeID;
                     this.editNode(this.editNodeDetails);
                     this.isEditModeEnabled = false;
+                    this.isEditEnabled.emit(false);
                     this.editOrSave = EDIT_ICON;
                     this.deleteOrClose = DELETE_ICON;
                 } else {
