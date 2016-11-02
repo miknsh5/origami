@@ -139,6 +139,9 @@ export class SamrtBarComponent implements OnChanges {
             }
 
         } else if ((event as KeyboardEvent).keyCode === 13) {
+            if (this.newNodeValue && this.newNodeValue.length === 0 && this.multiInTerm === "") {
+                return;
+            }
             if (this.isDescriptionText) {
                 let element = document.querySelector("#titleSearchSelection li.selected");
                 if (element) {
@@ -165,16 +168,14 @@ export class SamrtBarComponent implements OnChanges {
                     }
                 }
             }
-        }  // else if ((event as KeyboardEvent).keyCode === 8) {
-        //     console.log(this.isAddOrEditModeEnabled);
-        //     if (this.isAddOrEditModeEnabled) {
-        //         if (this.multiInTerm && this.newNodeValue && (this.newNodeValue.length === 1 || this.newNodeValue.length === 2)) {
-        //             this.multiInTerm = this.newNodeValue.pop();
-        //         }
+        } else if ((event as KeyboardEvent).keyCode === 8) {
+            if (this.isAddOrEditModeEnabled) {
+                if (this.multiInTerm === "" && this.newNodeValue && (this.newNodeValue.length === 1 || this.newNodeValue.length === 2)) {
+                    this.multiInTerm = this.newNodeValue.pop();
+                }
+            }
 
-        //     }
-
-        // }
+        }
     }
 
     onAddNode() {
@@ -301,7 +302,7 @@ export class SamrtBarComponent implements OnChanges {
                 this.processSearch(this.multiInTerm);
             } else {
                 this.clearSearch();
-             }
+            }
         } else {
             this.multiInTerm = "";
         }
