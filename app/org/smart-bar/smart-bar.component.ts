@@ -61,7 +61,7 @@ export class SamrtBarComponent implements OnChanges {
             }
             this.setInputFocus();
         }
-        this.clearSearch();
+        // this.clearSearch();
     }
 
     convertToFlatData(inputArray, ischild?: boolean) {
@@ -166,12 +166,22 @@ export class SamrtBarComponent implements OnChanges {
                         this.setAddOrEditModeValue.emit(false);
                         this.deleteNode.emit(null);
                     }
+                } else if (this.multiInTerm || (this.newNodeValue && this.newNodeValue.length > 0)) {
+                    this.isSmartBarAddEnabled.emit(false);
+                    this.setAddOrEditModeValue.emit(false);
+                    this.multiInTerm = "";
+                    this.newNodeValue = null;
                 }
             }
         } else if ((event as KeyboardEvent).keyCode === 8) {
             if (this.isAddOrEditModeEnabled) {
                 if (this.multiInTerm === "" && this.newNodeValue && (this.newNodeValue.length === 1 || this.newNodeValue.length === 2)) {
                     this.multiInTerm = this.newNodeValue.pop();
+                } else if (this.multiInTerm === "" && (this.newNodeValue && this.newNodeValue.length === 0)) {
+                    this.isSmartBarAddEnabled.emit(false);
+                    this.setAddOrEditModeValue.emit(false);
+                    this.multiInTerm = "";
+                    this.newNodeValue = null;
                 }
             }
 
@@ -225,7 +235,11 @@ export class SamrtBarComponent implements OnChanges {
 
             }
             else {
-                this.newOrgNode.ParentNodeID = this.selectedOrgNode.NodeID;
+                if (this.selectedOrgNode.NodeID === -1) {
+                    this.newOrgNode.ParentNodeID = this.selectedOrgNode.ParentNodeID;
+                } else {
+                    this.newOrgNode.ParentNodeID = this.selectedOrgNode.NodeID;
+                }
                 this.addNewNode(this.newOrgNode);
             }
             this.multiInTerm = "";
@@ -284,8 +298,10 @@ export class SamrtBarComponent implements OnChanges {
     private onInputSearch() {
         if (!this.isEditMenuEnable) {
             if (this.searchTerm) {
+                this.isSmartBarAddEnabled.emit(true);
                 this.processSearch(this.searchTerm);
             } else {
+                this.isSmartBarAddEnabled.emit(false);
                 this.clearSearch();
             }
         } else {
@@ -296,11 +312,15 @@ export class SamrtBarComponent implements OnChanges {
 
     private onInputMultiSearch(event: Event) {
         if (!this.isEditMenuEnable) {
+            this.setAddOrEditModeValue.emit(true);
             if (this.newNodeValue && this.newNodeValue.length === 2) {
                 this.multiInTerm = "";
             } else if (this.multiInTerm) {
+                this.isSmartBarAddEnabled.emit(true);
                 this.processSearch(this.multiInTerm);
             } else {
+                // this.isSmartBarAddEnabled.emit(false);
+                // this.setAddOrEditModeValue.emit(false);
                 this.clearSearch();
             }
         } else {

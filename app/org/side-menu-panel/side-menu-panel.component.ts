@@ -139,7 +139,17 @@ export class SideMenuComponent implements OnChanges {
             this.isCollapsed = true;
         }
 
+        if (changes["isSmartBarAddEnabled"] && changes["isSmartBarAddEnabled"].currentValue === false && this.isCollapsed && changes["isAddOrEditModeEnabled"] && changes["isAddOrEditModeEnabled"].currentValue === false) {
+                this.openPanel();
+                this.isCollapsed = false;
+            }
+
+
         if (changes["selectedOrgNode"]) {
+            if (changes["isSmartBarAddEnabled"] && changes["isSmartBarAddEnabled"].currentValue === false && this.isCollapsed) {
+                this.openPanel();
+                this.isCollapsed = false;
+            }
             if (this.isEditModeEnabled && this.selectedNode.NodeID !== this.selectedOrgNode.NodeID) {
                 this.deleteOrClose = CLOSE_ICON;
                 this.onDeleteOrCancelNodeClicked();
@@ -272,7 +282,6 @@ export class SideMenuComponent implements OnChanges {
                             () => console.log("Deleted node."));
                     }
                 }
-                this.isEditEnabled.emit(false);
             } else if (this.deleteOrClose === CLOSE_ICON) {
                 this.editOrSave = EDIT_ICON;
                 this.deleteOrClose = DELETE_ICON;
@@ -282,6 +291,7 @@ export class SideMenuComponent implements OnChanges {
                 this.selectedNode.Description = this.editNodeDetails.Description;
                 this.setAddOrEditModeValue.emit(false);
                 this.emitUpdateNodeNotification(this.selectedNode);
+                this.isEditEnabled.emit(false);
             }
         }
 

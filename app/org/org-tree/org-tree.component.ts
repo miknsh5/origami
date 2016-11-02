@@ -1179,7 +1179,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
                     if (!this.selectedOrgNode.children) {
                         let y = (source.y || 0) + DEPTH;
-                        this.setPeerReporteeNode(REPORTEE_TEXT, (source.y || 0), y, "directReporteeNode");
+                        this.setPeerReporteeNode(REPORTEE_TEXT, (source.x || 0), y, "directReporteeNode");
                     } else {
                         d3.select("g.directReporteeNode").remove();
                     }
