@@ -1,4 +1,4 @@
-.smart-bar-wrap {
+.smart_bar_wrap {
     height: 55px;
     position: fixed;
     background-color: #607D8B;
@@ -14,7 +14,7 @@
     width: 95%;
 }
 
-.smart-bar-wrap .input-field input[type=text] {
+.smart_bar_wrap .input-field input[type=text] {
     padding: 0 2%;
     margin: 0px 3%;
     border: #58727F;
@@ -27,7 +27,7 @@
     color: var(--white-text);
 }
 
-.smart-bar-wrap .search {
+.smart_bar_wrap .search {
     bottom: 65px;
     position: absolute;
     height: auto;
@@ -38,7 +38,7 @@
     background-color: var(--white)
 }
 
-.smart-bar-wrap .search ul {
+.smart_bar_wrap .search ul {
     border: 1px solid #cfd8dc;
     border: 1px solid var(--silver);
     max-height: 200px;
@@ -46,12 +46,12 @@
     margin: 0;
 }
 
-.smart-bar-wrap .search ul li {
+.smart_bar_wrap .search ul li {
     font-size: 85%;
     color: #949494;
 }
 
-.smart-bar-wrap .search ul li.header {
+.smart_bar_wrap .search ul li.header {
     padding: 2px 10px;
     background-color: #cfd8dc;
     background-color: var(--silver);
@@ -59,31 +59,31 @@
     font-weight: bolder;
 }
 
-.smart-bar-wrap .search ul li a {
+.smart_bar_wrap .search ul li a {
     padding: 2px 10px;
     color: #949494;
     cursor: pointer;
     display: block;
 }
 
-.smart-bar-wrap .search ul li.selected a {
+.smart_bar_wrap .search ul li.selected a {
     background: #0097ff;
     background: var(--azure);
     color: #ffffff;
     color: var(--white-text);
 }
 
-.smart-bar-wrap .search ul li i {
+.smart_bar_wrap .search ul li i {
     font-size: 15px;
     vertical-align: text-top;
 }
 
-.smart-bar-wrap .search ul li span.badge {
+.smart_bar_wrap .search ul li span.badge {
     font-size: 90%;
     padding: 0 10px;
 }
 
-.smart-bar-wrap .search ul li span.badge {
+.smart_bar_wrap .search ul li span.badge {
     color: #0097ff;
     color: var(--azure);
     background-color: #ffffff;
@@ -94,28 +94,43 @@
     min-width: 20px;
 }
 
-.ui-autocomplete-input-token {
+.ui-addList {
     display: inline-block;
     margin-top: 0px;
 }
 
-.ui-autocomplete-token {
-    display: inline-block;
+.ui-addList>span {
+    border: 1px solid white;
+    padding: 0 5px;
+    font-size: 90%;
+    vertical-align: bottom;
 }
 
-.smart-bar-wrap .input-field ul {
+.ui-addList>i {
+    font-size: 18px;
+    margin: 3px;
+}
+
+.ui-addList:nth-child(2)>i {
+    display: none;
+}
+
+.smart_bar_wrap .input-field ul {
     padding: 0 2%;
     margin: 0px 3%;
     border: #58727F;
     background-color: #58727F;
     height: 30px;
-    width: 90%;
+    width: 94%;
     border-radius: 10px;
     box-shadow: 0 1px 0 0 #58727F;
     color: #ffffff;
     color: var(--white-text);
 }
 
-::-webkit-input-placeholder, :-moz-placeholder, ::-moz-placeholder, :-ms-input-placeholder {
+::-webkit-input-placeholder,
+ :-moz-placeholder,
+ ::-moz-placeholder,
+ :-ms-input-placeholder {
     color: #879AA3;
 }

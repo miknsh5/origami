@@ -13,7 +13,7 @@
                 <button class="waves-effect waves-light editbtn right" (click)="onEditOrSaveNodeClicked()"><i class="material-icons">{{editOrSave}}</i></button>
             </div>
             <label class="menuTitle">Resource</label>
-            <div class="detail-wrap">
+            <div class="detail_wrap">
                 <form #orgform="ngForm" *ngIf="selectedOrgNode" (ngSubmit)="onSubmit()">
                     <div *ngIf="selectedNode && isEditModeEnabled" class="form-group text-wrap">
                         <div class="edit-name">

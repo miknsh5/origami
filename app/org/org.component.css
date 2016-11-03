@@ -1,16 +1,16 @@
-.main-canvas {
+.main_canvas {
     float: left;
     width: 100%;
     overflow-x: auto;
 }
 
-.modes-wrap {
+.modes_wrap {
     width: 140px;
     position: absolute;
     left: 30px
 }
 
-.modes-wrap li {
+.modes_wrap li {
     width: 50px;
     height: 50px;
     object-fit: contain;
@@ -20,31 +20,31 @@
     cursor: pointer;
 }
 
-.modes-wrap li.nav-build {
+.modes_wrap li.nav_build {
     background-image: url("app/images/nav-build.png");
 }
 
-.modes-wrap li.nav-build.active {
+.modes_wrap li.nav_build.active {
     background-image: url("app/images/nav-build-active.png");
 }
 
-.modes-wrap li.nav-explore {
+.modes_wrap li.nav_explore {
     background-image: url("app/images/nav-explore.png");
 }
 
-.modes-wrap li.nav-explore.active {
+.modes_wrap li.nav_explore.active {
     background-image: url("app/images/nav-explore-active.png");
 }
 
-.modes-wrap li.nav-report {
+.modes_wrap li.nav_report {
     background-image: url("app/images/nav-report.png");
 }
 
-.modes-wrap li.nav-report.active {
+.modes_wrap li.nav_report.active {
     background-image: url("app/images/nav-report-active.png");
 }
 
-.modes-wrap li>a {
+.modes_wrap li>a {
     width: 80px;
     line-height: 43px;
     font-family: Roboto, HelveticaNeue;
@@ -55,15 +55,15 @@
     display: block;
 }
 
-.modes-wrap li.active>a {
+.modes_wrap li.active>a {
     font-weight: 800;
 }
 
 @media only screen and (max-width:600px) {
-    .main-canvas {
+    .main_canvas {
         height: auto;
     }
-    .modes-wrap {
+    .modes_wrap {
         top: 65px;
         left: 10px;
     }

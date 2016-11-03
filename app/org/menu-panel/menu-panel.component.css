@@ -1,13 +1,13 @@
-.auth-panel {
+.auth_panel {
     height: 55px;
 }
 
-.auth-panel button {
+.auth_panel button {
     float: right;
     margin-left: 0.7em;
 }
 
-.auth-panel .nav-wrapper i.material-icons {
+.auth_panel .nav-wrapper i.material-icons {
     font-size: 1.2em;
 }
 

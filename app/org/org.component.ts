@@ -327,9 +327,9 @@ export class OrgComponent implements OnDestroy {
         }
         if (selected.NodeID !== -1 && selected.IsStaging) {
             // updating local changes
-            let nodes = JSON.parse(JSON.stringify(this.orgNodes));
-            this.updateOrgNode(nodes[0], selected);
-            this.treeJson = JSON.parse(JSON.stringify(nodes));
+            this.orgGroup.OrgNodes = JSON.parse(JSON.stringify(this.orgNodes));
+            this.updateOrgNode(this.orgNodes[0], selected);
+            this.treeJson = JSON.parse(JSON.stringify(this.orgNodes));
         } else {
             // updating submitted or saved changes
             this.updateOrgNode(this.orgNodes[0], selected);

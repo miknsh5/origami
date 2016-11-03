@@ -231,7 +231,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             if (changes["searchNode"]) {
                 if (changes["searchNode"].currentValue) {
                     this.selectedOrgNode = this.searchNode;
-                    this.highlightAndCenterNode(this.searchNode);
+                    this.highlightAndCenterNode(this.selectedOrgNode);
                     this.lastSelectedNode = this.selectedOrgNode;
                 } else {
                     return;
@@ -1419,7 +1419,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             this.centerNode(d);
             this.hideTopArrow(d);
         }
-
     }
 
     hideTopArrow(d) {
