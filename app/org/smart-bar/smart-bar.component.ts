@@ -323,6 +323,8 @@ export class SamrtBarComponent implements OnChanges {
                 }
                 this.processSearch(this.multiInTerm);
             } else {
+                this.setAddOrEditModeValue.emit(false);
+                this.isSmartBarAddEnabled.emit(false);
                 this.clearSearch();
             }
         } else {
