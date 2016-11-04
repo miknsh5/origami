@@ -309,8 +309,42 @@ export class SamrtBarComponent implements OnChanges {
         }
     }
 
+    private checkSpaceInName(name) {
+        let index = name.indexOf(" ");
+        if (index === -1) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     private onInputMultiSearch(event: Event) {
         if (!this.isEditMenuEnable) {
+            if (this.selectedOrgNode && this.selectedOrgNode.NodeID === -1) {
+                let islastName = this.checkSpaceInName(this.multiInTerm);
+                let index = this.multiInTerm.indexOf(" ");
+                if (!this.newNodeValue || this.newNodeValue.length === 0) {
+                    if (islastName) {
+                        this.selectedOrgNode.NodeLastName = this.multiInTerm.substring(index + 1, this.multiInTerm.length);
+                    }
+                    else {
+                        this.selectedOrgNode.NodeFirstName = this.multiInTerm;
+                    }
+                } else {
+                    if (this.newNodeValue.length !== 0) {
+                        this.selectedOrgNode.Description = this.multiInTerm;
+                    }
+                }
+
+                if (this.selectedOrgNode.IsStaging && this.selectedOrgNode.NodeID === -1) {
+                    if (this.selectedOrgNode.NodeFirstName || this.selectedOrgNode.NodeLastName) {
+                        this.selectedOrgNode.IsStaging = false;
+                        this.addNode.emit(this.selectedOrgNode);
+                    }
+                } else {
+                    this.updateNode.emit(this.selectedOrgNode);
+                }
+            }
             if (this.newNodeValue && this.newNodeValue.length === 2) {
                 this.multiInTerm = "";
                 if (!this.isAddOrEditModeEnabled) {

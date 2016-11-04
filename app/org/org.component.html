@@ -16,8 +16,8 @@
             [showLastNameLabel]="displayLastNameLabel" [showDescriptionLabel]="displayDescriptionLabel" [orgGroupID]="groupID" [CompanyID]="companyID" [isMenuSettingsEnabled]="isMenuSettingsEnabled" [searchNode]="searchedNode" [isSmartBarAddEnabled]="isAddEnabledInSmartBar">
         </sg-org-tree>
         <div *ngIf="currentChartMode===1">
-            <sg-smart-bar [treeJsonData]="orgGroup.OrgNodes" (nodeSearched)="onNodeSearched($event)" [selectedOrgNode]="selectedNode" [isAddOrEditModeEnabled]="detailAddOrEditMode" (deleteNode)="onNodeDeleted($event)" (addNode)="onNodeAdded($event)" (setAddOrEditModeValue)="onAddOrEditModeValueSet($event)"
-                (chartStructureUpdated)="onChartUpdated($event)" (isSmartBarAddEnabled)="smartBarAddEnabled($event)" [isEditMenuEnable]="isEditMenuEnable">
+            <sg-smart-bar [treeJsonData]="orgGroup.OrgNodes" (nodeSearched)="onNodeSearched($event)" [selectedOrgNode]="selectedNode" [isAddOrEditModeEnabled]="detailAddOrEditMode" (deleteNode)="onNodeDeleted($event)" (updateNode)="onNodeUpdated($event)" (addNode)="onNodeAdded($event)"
+                (setAddOrEditModeValue)="onAddOrEditModeValueSet($event)" (chartStructureUpdated)="onChartUpdated($event)" (isSmartBarAddEnabled)="smartBarAddEnabled($event)" [isEditMenuEnable]="isEditMenuEnable">
             </sg-smart-bar>
         </div>
     </div>
