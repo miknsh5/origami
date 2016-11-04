@@ -400,7 +400,7 @@ export class SamrtBarComponent implements OnChanges {
         this.nodeSearchedList = new Array<OrgSearchModel>();
         this.titleFilterList = new Array();
         setTimeout(() => {
-            if (this.selectedOrgNode && this.selectedOrgNode.NodeID !== -1) {
+            if (isTitleSearch || (this.selectedOrgNode && this.selectedOrgNode.NodeID !== -1)) {
                 this.orgSearchData.forEach((data, index) => {
                     if (isTitleSearch) {
                         if (data.Title.toLowerCase() === searchTerm) {
