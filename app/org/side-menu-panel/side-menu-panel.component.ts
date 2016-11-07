@@ -3,7 +3,7 @@ import { NgForm, NgControl } from "@angular/forms";
 import { OrgGroupModel, OrgNodeModel, ChartMode, OrgService, UserFeedBack, DomElementHelper } from "../shared/index";
 import { UserModel } from "../../Shared/index";
 
-declare let $: any;
+declare let jQuery: any;
 
 const FEEDBACK_ICON_OPEN = `keyboard_arrow_up`;
 const FEEDBACK_ICON_CLOSE = `close`;

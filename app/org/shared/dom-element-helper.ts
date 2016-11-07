@@ -1,82 +1,82 @@
 import { Injectable } from "@angular/core";
 
-declare let $: any;
+declare let jQuery: any;
 
 @Injectable()
 export class DomElementHelper {
 
     public initTabControl() {
         setTimeout(() => {
-            $("ul.tabs").tabs();
+            jQuery("ul.tabs").tabs();
         }, 500);
     }
 
     public initDropDown(selector: string, options: any) {
-        $(selector).dropdown(options);
+        jQuery(selector).dropdown(options);
     }
 
     public setWidth(selector: string, width: any) {
-        $(selector).width(width);
+        jQuery(selector).width(width);
     }
 
     public setHeight(selector: string, height: any) {
-        $(selector).height(height);
+        jQuery(selector).height(height);
     }
 
     public showElements(selector: any) {
         if (typeof selector === "string") {
-            $(selector).fadeIn(500);
+            jQuery(selector).fadeIn(500);
         } else {
-            $(selector.join(", ")).fadeIn(500);
+            jQuery(selector.join(", ")).fadeIn(500);
         }
     }
 
     public hideElements(selector: any) {
         if (typeof selector === "string") {
-            $(selector).hide();
+            jQuery(selector).hide();
         } else {
-            $(selector.join(", ")).hide();
+            jQuery(selector.join(", ")).hide();
         }
     }
 
     public addClass(selector: any, className: string): void {
-        $(selector).addClass(className);
+        jQuery(selector).addClass(className);
     }
 
     public addMultipleClasses(selector: any, className: string): void {
         let styles: string[] = className.split(" ");
         for (let i = 0; i < styles.length; i++) {
-            $(selector).addClass(styles[i]);
+            jQuery(selector).addClass(styles[i]);
         }
     }
 
     public removeClass(selector: any, className: string): void {
-        $(selector).removeClass(className);
+        jQuery(selector).removeClass(className);
     }
 
     public hasClass(selector: any, className: string): boolean {
-        return $(selector).hasClass(className);
+        return jQuery(selector).hasClass(className);
     }
 
     public find(element: any, selector: string): any[] {
-        return $(element).find(selector);
+        return jQuery(element).find(selector);
     }
 
     public index(selector: string): number {
-        let element = $(selector);
+        let element = jQuery(selector);
         if (element) {
-            let parent = $(element).offsetParent();
-            return $(parent).index(element);
+            let parent = jQuery(element).offsetParent();
+            return jQuery(parent).index(element);
         }
         return -1;
     }
 
     public fadeIn(selector, duration: number): void {
-        $(selector).fadeIn(duration);
+        jQuery(selector).fadeIn(duration);
     }
 
     public fadeOut(selector, duration: number) {
-        $(selector).fadeOut(duration);
+        jQuery(selector).fadeOut(duration);
     }
 
     public getWindowScrollTop(): number {

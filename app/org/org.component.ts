@@ -183,7 +183,13 @@ export class OrgComponent implements OnDestroy {
         else {
             this.addChildToSelectedOrgNode(addedNode, this.orgNodes[0]);
         }
-        this.updateJSON();
+        if (this.selectedNode && this.selectedNode.NodeID !== addedNode.NodeID) {
+            console.log(this.selectedNode);
+            this.updateJSON(addedNode);
+        } else {
+            this.updateJSON();
+        }
+
     }
 
     onSwitchedToAddMode(node: OrgNodeModel) {
@@ -254,10 +260,15 @@ export class OrgComponent implements OnDestroy {
         }
     }
 
-    updateJSON() {
+    updateJSON(addedNode?: OrgNodeModel) {
         this.removeCircularRef(this.orgNodes[0]);
         this.orgGroup.OrgNodes = JSON.parse(JSON.stringify(this.orgNodes));
         this.treeJson = JSON.parse(JSON.stringify(this.orgNodes));
+        if (addedNode && addedNode.NodeID === -1) {
+            console.log(this.searchedNode);
+            this.searchedNode = this.getNode(addedNode.NodeID, this.treeJson[0]);
+            console.log(this.searchedNode);
+        }
         if ((this.treeJson && this.treeJson.length === 0) || (this.selectedNode && this.selectedNode.NodeID === -1)) {
             this.disableViewAndExploreModesNav();
         }

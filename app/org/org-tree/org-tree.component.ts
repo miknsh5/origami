@@ -1413,12 +1413,10 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     }
 
     highlightAndCenterNode(d) {
-        if (!this.isSmartBarAddEnabled) {
-            this.highlightSelectedNode(d);
-            this.render(d);
-            this.centerNode(d);
-            this.hideTopArrow(d);
-        }
+        this.highlightSelectedNode(d);
+        this.render(d);
+        this.centerNode(d);
+        this.hideTopArrow(d);
     }
 
     hideTopArrow(d) {
