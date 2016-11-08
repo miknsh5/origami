@@ -43,6 +43,7 @@ export class SamrtBarComponent implements OnChanges {
         this.searchHeader = `BY ${HeaderTitle}`;
         this.newOrgNode = new OrgNodeModel();
         this.isSmartBarEnabled.emit(false);
+        this.newNodeValue = null;
     }
 
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
@@ -156,9 +157,9 @@ export class SamrtBarComponent implements OnChanges {
             }
         } else if ((event as KeyboardEvent).keyCode === 27) {
             if (this.isEditModeEnabled && this.selectedOrgNode) {
-                this.newOrgNode.Description = this.selectedOrgNode.Description = "";
-                this.newOrgNode.NodeFirstName = this.selectedOrgNode.NodeFirstName = "";
-                this.newOrgNode.NodeLastName = this.selectedOrgNode.NodeLastName = "";
+                this.newOrgNode.Description = "";
+                this.newOrgNode.NodeFirstName = "";
+                this.newOrgNode.NodeLastName = "";
                 if (this.selectedOrgNode.IsNewRoot || (this.selectedOrgNode.ParentNodeID && this.selectedOrgNode.NodeID === -1)) {
                     if (this.selectedOrgNode.NodeID === -1) {
                         this.deleteNode.emit(this.selectedOrgNode);
@@ -420,8 +421,10 @@ export class SamrtBarComponent implements OnChanges {
                     this.processSearch(searchTerm);
                 }
             } else {
-                if (this.newNodeValue && this.newNodeValue.length === 0) {
-                    this.isSmartBarEnabled.emit(false);
+                if (this.newNodeValue === null || (this.newNodeValue && this.newNodeValue.length === 0)) {
+                    if (this.selectedOrgNode && this.selectedOrgNode.NodeID !== -1) {
+                        this.isSmartBarEnabled.emit(false);
+                    }
                     this.newNodeValue = null;
                 }
                 this.clearSearch();
