@@ -3,7 +3,7 @@ import { NgForm, NgControl } from "@angular/forms";
 import { OrgGroupModel, OrgNodeModel, ChartMode, OrgService, UserFeedBack, DomElementHelper } from "../shared/index";
 import { UserModel } from "../../Shared/index";
 
-declare let $: any;
+declare let jQuery: any;
 
 const FEEDBACK_ICON_OPEN = `keyboard_arrow_up`;
 const FEEDBACK_ICON_CLOSE = `close`;
@@ -54,7 +54,6 @@ export class SideMenuComponent implements OnChanges {
     @Input() orgChart: OrgGroupModel;
     @Input() companyName: string;
     @Input() selectedOrgNode: OrgNodeModel;
-    @Input() isAddOrEditModeEnabled: boolean;
     @Input() svgWidth: any;
     @Input() svgHeight: any;
     @Input() isMenuSettingsEnabled: boolean;
@@ -126,24 +125,10 @@ export class SideMenuComponent implements OnChanges {
             }
         }
 
-        if (changes["isAddOrEditModeEnabled"] && !changes["isAddOrEditModeEnabled"].currentValue) {
-            if (this.selectedOrgNode && this.selectedOrgNode.NodeID !== -1 && !this.selectedOrgNode.ParentNodeID &&
-                this.selectedNode && !this.selectedNode.children) {
-                this.isClosed = false;
-                this.openPanel();
-            }
-        }
-
-        if (changes["isAddOrEditModeEnabled"] && changes["isAddOrEditModeEnabled"].currentValue && changes["isSmartBarAddEnabled"]) {
-            this.closePanel();
-            this.isCollapsed = true;
-        }
-
         if (changes["isSmartBarAddEnabled"] && changes["isSmartBarAddEnabled"].currentValue === false && this.isCollapsed && changes["isAddOrEditModeEnabled"] && changes["isAddOrEditModeEnabled"].currentValue === false) {
-                this.openPanel();
-                this.isCollapsed = false;
-            }
-
+            this.openPanel();
+            this.isCollapsed = false;
+        }
 
         if (changes["selectedOrgNode"]) {
             if (changes["isSmartBarAddEnabled"] && changes["isSmartBarAddEnabled"].currentValue === false && this.isCollapsed) {
