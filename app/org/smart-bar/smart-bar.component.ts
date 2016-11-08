@@ -169,7 +169,9 @@ export class SamrtBarComponent implements OnChanges {
                     }
                 } else if (this.multiInTerm || (this.newNodeValue && this.newNodeValue.length > 0)) {
                     if (this.selectedOrgNode.NodeID === -1) {
-                        this.deleteNode.emit(null);
+                        this.selectedOrgNode.NodeFirstName = "";
+                        this.selectedOrgNode.NodeLastName = "";
+                        this.selectedOrgNode.Description = "";
                     }
                     this.clearSearch();
                 }
