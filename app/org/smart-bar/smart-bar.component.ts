@@ -423,7 +423,7 @@ export class SamrtBarComponent implements OnChanges {
                     this.processSearch(searchTerm);
                 }
             } else {
-                if (!this.newNodeValue || (this.newNodeValue && this.newNodeValue.length === 0)) {
+                if (this.newNodeValue && this.newNodeValue.length === 0) {
                     this.isSmartBarEnabled.emit(false);
                     this.newNodeValue = null;
                 }
