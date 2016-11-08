@@ -184,7 +184,6 @@ export class OrgComponent implements OnDestroy {
             this.addChildToSelectedOrgNode(addedNode, this.orgNodes[0]);
         }
         if (this.selectedNode && this.selectedNode.NodeID !== addedNode.NodeID) {
-            console.log(this.selectedNode);
             this.updateJSON(addedNode);
         } else {
             this.updateJSON();
