@@ -102,7 +102,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
         // Creates and vertical line
         this.createLines(verticalLine, "vertical");
-
         // Creates and horizontal line
         this.createLines(horizontalLine, "horizontal");
 
@@ -119,7 +118,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
         // creates arrows directions
         this.createArrows();
-
         // creates drop shadow
         this.createDropShadow();
 
@@ -137,7 +135,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         this.centerNode(this.root);
     }
 
-    childCount(level, node) {
+    private childCount(level, node) {
         if (node) {
             let children: any = node.children;
             if (children && children.length > 0) {
@@ -152,11 +150,11 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         }
     }
 
-    initializeTreeAsPerMode() {
+    private initializeTreeAsPerMode() {
         if (this.currentMode === ChartMode.build) {
             this.tree = d3.layout.tree().nodeSize([NODE_HEIGHT, NODE_WIDTH]);
             this.diagonal = d3.svg.diagonal()
-                .projection(function (d) {
+                .projection(function(d) {
                     return [d.y, d.x];
                 });
         } else if (this.currentMode === ChartMode.report) {
@@ -164,24 +162,24 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             this.setNodeLabelVisiblity();
             this.root = this.selectedOrgNode || this.lastSelectedNode;
             this.diagonal = d3.svg.diagonal()
-                .projection(function (d) {
+                .projection(function(d) {
                     return [d.x, d.y];
                 });
         } else {
             this.tree = d3.layout.tree().size([RADIAL_VALUE, RADIAL_VALUE])
-                .separation(function (a, b) {
+                .separation(function(a, b) {
                     return (a.parent === b.parent ? RADIAL_VALUE : DEPTH) / a.depth;
                 });
             this.setNodeLabelVisiblity();
             this.selectedOrgNode = this.root;
             this.diagonal = d3.svg.diagonal.radial()
-                .projection(function (d) {
+                .projection(function(d) {
                     return [d.y, d.x / DEPTH * Math.PI];
                 });
         }
     }
 
-    insertConcentricRings() {
+    private insertConcentricRings() {
         this.calculateLevelDepth();
         let concentricRings = d3.select("g#concentricRings");
         this.levelDepth.forEach((d, index) => {
@@ -203,10 +201,9 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 .style("stroke-width", "3px")
                 .style("fill", "none");
         });
-
     }
 
-    setNodeLabelVisiblity() {
+    private setNodeLabelVisiblity() {
         d3.selectAll("text[data-id='name']").style("visibility", () => {
             if (this.showFirstNameLabel || this.showLastNameLabel) return "visible";
             else return "hidden";
@@ -348,7 +345,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         this.graph = d3.select(el);
     }
 
-    addEmptyRootNode() {
+    private addEmptyRootNode() {
         this.root = new OrgNodeModel();
         this.root.children = new Array<OrgNodeModel>();
         this.root.NodeID = -1;
@@ -361,12 +358,12 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         console.log("No nodes in system");
     }
 
-    calculateLevelDepth() {
+    private calculateLevelDepth() {
         this.levelDepth = [1];
         this.childCount(0, this.root);
     }
 
-    resizeLinesArrowsAndSvg() {
+    private resizeLinesArrowsAndSvg() {
         if (this.currentMode === ChartMode.build) {
             let count = this.levelDepth.length >= 2 ? this.levelDepth[1] : this.levelDepth[0];
             let maxHeight = count * NODE_HEIGHT;
@@ -378,8 +375,8 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         let horizontalLine: [number, number][] = [[0, (this.treeHeight / 2)], [this.treeWidth, (this.treeHeight / 2)]];
 
         let line = d3.svg.line()
-            .x(function (d) { return d[0]; })
-            .y(function (d) { return d[1]; });
+            .x(function(d) { return d[0]; })
+            .y(function(d) { return d[1]; });
         if (this.currentMode === ChartMode.build) {
             d3.select("path.vertical")
                 .attr("d", line(verticalLine))
@@ -432,7 +429,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         }
     }
 
-    createDropShadow() {
+    private createDropShadow() {
         let defs = this.svg.append("defs");
 
         let filter = defs.append("filter")
@@ -455,11 +452,11 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         feMerge.append("feMergeNode").attr("in", "SourceGraphic");
     }
 
-    getIndexOfNode(parentNode: OrgNodeModel, currentNode: OrgNodeModel, rootNode) {
+    private getIndexOfNode(parentNode: OrgNodeModel, currentNode: OrgNodeModel, rootNode) {
         let index;
         let node = this.getNode(parentNode.NodeID, rootNode);
         if (node.children && node.children.length > 0) {
-            node.children.forEach(function (d) {
+            node.children.forEach(function(d) {
                 if (d.NodeID === currentNode.NodeID) {
                     index = node.children.indexOf(currentNode, 0);
                 }
@@ -468,7 +465,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         return index;
     }
 
-    getPreviousNodeIfAddedOrDeleted() {
+    private getPreviousNodeIfAddedOrDeleted() {
         let previousNode;
         if (this.selectedOrgNode.ParentNodeID == null && this.selectedOrgNode.IsNewRoot) {
             this.root.ParentNodeID = null;
@@ -500,7 +497,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         return previousNode;
     }
 
-    getPreviousSiblingNode(node: OrgNodeModel, rootNode) {
+    private getPreviousSiblingNode(node: OrgNodeModel, rootNode) {
         let previousNode;
         if (node.ParentNodeID) {
             previousNode = this.getNode(node.ParentNodeID, this.root);
@@ -519,10 +516,10 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         return previousNode;
     }
 
-    createLines(lineData, className) {
+    private createLines(lineData, className) {
         let line = d3.svg.line()
-            .x(function (d) { return d[0]; })
-            .y(function (d) { return d[1]; });
+            .x(function(d) { return d[0]; })
+            .y(function(d) { return d[1]; });
 
         this.svg.append("path")
             .attr("d", line(lineData))
@@ -532,14 +529,14 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             .attr("class", className);
     }
 
-    createArrows() {
+    private createArrows() {
         let arrowsData = [{ "points": ARROW_POINTS, "transform": "", "id": "right" },
         { "points": ARROW_POINTS, "transform": "translate(58, 55) rotate(-180)", "id": "left" },
         { "points": ARROW_POINTS, "transform": "translate(2,58) rotate(-90)", "id": "top" },
         { "points": ARROW_POINTS, "transform": "translate(56, -2) rotate(90)", "id": "bottom" }];
 
         let arrows = this.arrows;
-        arrowsData.forEach(function (data) {
+        arrowsData.forEach(function(data) {
             arrows.append(POLYGON)
                 .attr("id", data.id)
                 .attr("points", data.points)
@@ -547,14 +544,14 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         });
     }
 
-    hideAllArrows() {
+    private hideAllArrows() {
         // hides all arrows by making transparent
         d3.selectAll("#arrows " + POLYGON)
             .attr("stroke", TRANSPARENT_COLOR)
             .attr("fill", TRANSPARENT_COLOR);
     }
 
-    markAncestors(d: OrgNodeModel) {
+    private markAncestors(d: OrgNodeModel) {
         if (d.ParentNodeID !== null) {
             let node = this.getNode(d.ParentNodeID, this.root);
             if (node != null) {
@@ -566,7 +563,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         }
     }
 
-    collapseExceptSelectedNode(d) {
+    private collapseExceptSelectedNode(d) {
         this.isAncestorOrRelated(d);
 
         if ((d.Show === false && !d.IsAncestor) || (d.IsSibling && !d.IsSelected) || d.IsChild) {
@@ -579,7 +576,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         }
     }
 
-    collapseTree(d) {
+    private collapseTree(d) {
         if (d.children) {
             d._children = d.children;
             for (let i = 0; i < d._children.length; i++) {
@@ -589,7 +586,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         }
     }
 
-    expandTree(d) {
+    private expandTree(d) {
         if (d && d._children != null && d.children == null) {
 
             d.children = d._children;
@@ -602,7 +599,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         }
     }
 
-    centerNode(source) {
+    private centerNode(source) {
         let x = 0; source.y0;
         let y = 0; source.x0;
         if (this.currentMode === ChartMode.build) {
@@ -651,7 +648,8 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             }
         }
     }
-    getGrandParentID(node: d3.layout.tree.Node) {
+
+    private getGrandParentID(node: d3.layout.tree.Node) {
         if (node && node.parent) {
             let orgNode = node.parent as OrgNodeModel;
             return orgNode;
@@ -659,10 +657,10 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         return null;
     }
 
-    moveParentNodesToCenter(parentNode, source) {
+    private moveParentNodesToCenter(parentNode, source) {
         if (parentNode) {
             d3.selectAll("g.node")
-                .filter(function (d) {
+                .filter(function(d) {
                     return d.NodeID === parentNode.NodeID;
                 }).transition()
                 .duration(DURATION)
@@ -691,7 +689,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         }
     }
 
-    render(source) {
+    private render(source) {
         if (source) {
             if (!this.nodes || this.selectedOrgNode) {
                 //  The tree defines the position of the nodes based on the number of nodes it needs to draw.
@@ -715,7 +713,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 for (let j = 0; j < this.nodes.length; j++) {
                     this.isAncestorOrRelated(this.nodes[j]);
                 };
-                this.nodes = this.nodes.filter(function (d) { return d.Show; });
+                this.nodes = this.nodes.filter(function(d) { return d.Show; });
             }
 
             this.links = this.tree.links(this.nodes);
@@ -724,11 +722,11 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
             // Normalize for fixed-depth.
             if (this.currentMode === ChartMode.build) {
-                this.nodes.forEach(function (d) { d.y = d.depth * DEPTH; });
+                this.nodes.forEach(function(d) { d.y = d.depth * DEPTH; });
             } else if (this.currentMode === ChartMode.report) {
-                this.nodes.forEach(function (d) { d.y = d.depth * NODE_WIDTH; });
+                this.nodes.forEach(function(d) { d.y = d.depth * NODE_WIDTH; });
             } else {
-                this.nodes.forEach(function (d) { d.y = d.depth * (RADIAL_DEPTH + NODE_HEIGHT); });
+                this.nodes.forEach(function(d) { d.y = d.depth * (RADIAL_DEPTH + NODE_HEIGHT); });
             }
 
             d3.selectAll(".concentricRing").remove();
@@ -737,11 +735,10 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             }
 
             this.renderOrUpdateNodes(source);
-
             this.renderOrUpdateLinks(source);
 
             // Stash the old positions for transition.
-            this.nodes.forEach(function (d) {
+            this.nodes.forEach(function(d) {
                 d.x0 = d.x;
                 d.y0 = d.y;
             });
@@ -751,12 +748,12 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         this.resizeLinesArrowsAndSvg();
     }
 
-    transformNode(x, y) {
+    private transformNode(x, y) {
         let angle = (x - 90) / 180 * Math.PI, radius = y;
         return [radius * Math.cos(angle), radius * Math.sin(angle)];
     }
 
-    renderOrUpdateNodes(source) {
+    private renderOrUpdateNodes(source) {
         if (this.currentMode === ChartMode.build) {
             d3.select("g.svg-pan-zoom_viewport")
                 .transition()
@@ -767,7 +764,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
         // Update the nodes…
         let node = this.svg.selectAll("g.node")
-            .data(this.nodes, function (d) { return d.NodeID || (++i); });
+            .data(this.nodes, function(d) { return d.NodeID || (++i); });
 
         // Enter any new nodes at the parent"s previous position.
         let nodeEnter = node.enter().append("g")
@@ -784,7 +781,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             .on("click", (ev) => this.nodeClicked(ev));
 
         nodeEnter.append(CIRCLE).attr("r", 1e-6)
-            .style("filter", function (d) {
+            .style("filter", function(d) {
                 return d.IsStaging && d.NodeID === -1 ? " " : "url(home#drop-shadow)";
             });
 
@@ -806,7 +803,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 return "";
             }
             return fn + ln;
-        }).style("fill", function (d) {
+        }).style("fill", function(d) {
             return d.IsStaging && d.NodeID === -1 ? "#0097FF" : "#FFFFFF";
         }).style("font-size", (d) => {
             if (this.currentMode === ChartMode.explore) {
@@ -902,7 +899,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         });
 
         if (this.currentMode === ChartMode.build) {
-            node.select("g.label").attr("x", function (d) {
+            node.select("g.label").attr("x", function(d) {
                 if (d.IsParent === true || d.IsChild === true) { return PARENTCHILD_RADIUS + DEFAULT_MARGIN; }
                 else { return SIBLING_RADIUS + DEFAULT_MARGIN; }
             });
@@ -911,7 +908,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         }
 
         // used to get the label width of each node
-        this.labelWidths = node.select("g.label").each(function (d) {
+        this.labelWidths = node.select("g.label").each(function(d) {
             return d3.select(this).node();
         });
 
@@ -937,7 +934,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             .attr("data-id", "childIndicator");
 
         // css class is applied on polygon if a node have child(s) and the polygon is transformed to the position given
-        node.select("polygon[data-id='childIndicator']").attr("fill", function (d) {
+        node.select("polygon[data-id='childIndicator']").attr("fill", function(d) {
             if (d._children && d._children.length > 0 && !d.IsSelceted) {
                 return CHILD_ARROW_FILL;
             }
@@ -997,7 +994,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 else if (d.IsSibling) { return DEFAULT_CIRCLE + " sibling"; }
                 else { return DEFAULT_CIRCLE; }
             })
-            .style("filter", function (d) {
+            .style("filter", function(d) {
                 return d.IsStaging && d.NodeID === -1 ? " " : "url(home#drop-shadow)";
             });
 
@@ -1026,13 +1023,13 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         nodeExit.select("g.label")
             .style("visibility", "hidden");
 
-        node.each(function (d) {
+        node.each(function(d) {
             if (d.IsFakeRoot)
                 d3.select(this).remove();
         });
-
     }
-    renderOrUpdateLinks(source) {
+
+    private renderOrUpdateLinks(source) {
         let sourceCoords = { x: source.x0 || 0, y: source.y0 || 0 };
         let diagCoords = this.diagonal({ source: sourceCoords, target: sourceCoords });
 
@@ -1041,14 +1038,14 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
         // Update the links…
         let link = this.svg.selectAll("path.link")
-            .data(this.links, function (d) { return d.target.NodeID; });
+            .data(this.links, function(d) { return d.target.NodeID; });
 
-        let x = function (d) {
+        let x = function(d) {
             if (d.y) {
                 return d.y * Math.cos(((d.x || 0) - RADIAL_DEPTH) / DEPTH * Math.PI);
             }
         };
-        let y = function (d) {
+        let y = function(d) {
             if (d.y) {
                 return d.y * Math.sin(((d.x || 0) - RADIAL_DEPTH) / DEPTH * Math.PI);
             }
@@ -1056,10 +1053,10 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         // Enter any new links at the parent"s previous position.
         link.enter().insert("path", "g")
             .attr("class", "link")
-            .attr("id", function (d) {
+            .attr("id", function(d) {
                 return ("link" + d.source.NodeID + "-" + d.target.NodeID);
             })
-            .attr("d", function (d) {
+            .attr("d", function(d) {
                 if (this.currentMode === ChartMode.explore) {
                     return "M" + x(d.source) + "," + y(d.source) + "L" + x(d.target) + "," + y(d.target);
                 }
@@ -1070,7 +1067,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         if (this.currentMode === ChartMode.explore) {
             link.transition()
                 .duration(DURATION)
-                .attr("d", function (d) {
+                .attr("d", function(d) {
                     return "M" + x(d.source) + "," + y(d.source) + "L" + x(d.target) + "," + y(d.target);
                 });
         } else {
@@ -1122,24 +1119,24 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         // Transition exiting nodes to the parent"s new position.
         link.exit().transition()
             .duration(DURATION)
-            .attr("d", function (d) {
+            .attr("d", function(d) {
                 return diagCoords2;
             })
             .remove();
 
-        link.each(function (d) {
+        link.each(function(d) {
             if (d.source.IsFakeRoot)
                 d3.select(this).remove();
         });
     }
 
-    setPeerReporteeNode(nodeName, x, y, className) {
+    private setPeerReporteeNode(nodeName, x, y, className) {
         let node = d3.select("g." + className);
         let element = node[0][0]; // assigns the selected element
         if (!element) {
             node = this.svg.append("g")
                 .attr("class", className)
-                .attr("transform", function (d) { return "translate(" + y + "," + x + ")"; })
+                .attr("transform", function(d) { return "translate(" + y + "," + x + ")"; })
                 .on("click", (ev) => this.peerReporteeNodeClicked(nodeName));
 
             node.append(CIRCLE)
@@ -1156,11 +1153,11 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 .text(nodeName)
                 .attr("class", "new-peer_reportee-outerText");
         } else {
-            node.attr("transform", function (d) { return "translate(" + y + "," + x + ")"; });
+            node.attr("transform", function(d) { return "translate(" + y + "," + x + ")"; });
         }
     }
 
-    showUpdatePeerReporteeNode(source) {
+    private showUpdatePeerReporteeNode(source) {
         if (this.currentMode === ChartMode.build) {
             if (source && this.selectedOrgNode && !this.isAddOrEditModeEnabled) {
                 if (source.NodeID !== -1) {
@@ -1193,12 +1190,12 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         }
     }
 
-    removePeerAndReporteeNodes() {
+    private removePeerAndReporteeNodes() {
         d3.select("g.peerNode").remove();
         d3.select("g.directReporteeNode").remove();
     }
 
-    peerReporteeNodeClicked(nodeName) {
+    private peerReporteeNodeClicked(nodeName) {
         if (nodeName === REPORTEE_TEXT) {
             this.addNewNode(this.selectedOrgNode);
         } else {
@@ -1212,6 +1209,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         if (this.currentMode === ChartMode.build && !this.isAddOrEditModeEnabled) {
             if (event.target.nodeName === "svg") {
                 if (!this.isAddOrEditModeEnabled && this.selectedOrgNode) {
+                    alert();
                     this.deselectNode();
                     this.selectNode.emit(this.selectedOrgNode);
                 }
@@ -1219,7 +1217,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         }
     }
 
-    deselectNode() {
+    private deselectNode() {
         if (this.selectedOrgNode && !this.isAddOrEditModeEnabled) {
             if (this.selectedOrgNode.NodeID !== -1) {
                 //  Save the last selection temp so that the graph maintains its position
@@ -1356,7 +1354,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         }
     }
 
-    getNode(nodeID: number, rootNode: any) {
+    private getNode(nodeID: number, rootNode: any) {
         if (rootNode.NodeID === nodeID) {
             return rootNode;
         } else {
@@ -1373,8 +1371,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         }
     }
 
-
-    addParentToNode(isFake: boolean, node: OrgNodeModel) {
+    private addParentToNode(isFake: boolean, node: OrgNodeModel) {
         if (!node.ParentNodeID || node.ParentNodeID === -1) {
             let newNode = new OrgNodeModel();
             newNode.NodeFirstName = "";
@@ -1393,7 +1390,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         }
     }
 
-    addEmptyChildToParent(node: OrgNodeModel) {
+    private addEmptyChildToParent(node: OrgNodeModel) {
         if (!node.children) {
             node.children = new Array<OrgNodeModel>();
         }
@@ -1410,20 +1407,20 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         return newNode;
     }
 
-    highlightAndCenterNode(d) {
+    private highlightAndCenterNode(d) {
         this.highlightSelectedNode(d);
         this.render(d);
         this.centerNode(d);
         this.hideTopArrow(d);
     }
 
-    hideTopArrow(d) {
+    private hideTopArrow(d) {
         if (d.ParentNodeID) {
             let index;
             let currentNode = d;
             let parentNode = this.getNode(d.ParentNodeID, this.root);
             if (parentNode && parentNode.children && parentNode.children.length > 0) {
-                parentNode.children.forEach(function (d) {
+                parentNode.children.forEach(function(d) {
                     if (d.NodeID === currentNode.NodeID) {
                         index = parentNode.children.indexOf(currentNode, 0);
                         if (index === 0) {
@@ -1437,7 +1434,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         }
     }
 
-    nodeClicked(d) {
+    private nodeClicked(d) {
         if (this.currentMode === ChartMode.build) {
             if (this.selectedOrgNode && this.selectedOrgNode.NodeID === -1) {
                 return;
@@ -1450,7 +1447,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         }
     }
 
-    expandCollapse(d) {
+    private expandCollapse(d) {
         if (d.children) {
             d._children = d.children;
             d.children = null;
@@ -1460,21 +1457,21 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         }
     }
 
-    showChildren(d) {
+    private showChildren(d) {
         if (!d.children) {
             d.children = d._children;
             d._children = null;
         }
     }
 
-    hideChildren(d) {
+    private hideChildren(d) {
         if (d.children) {
             d._children = d.children;
             d.children = null;
         }
     }
 
-    highlightSelectedNode(d, raiseEvent: boolean = true) {
+    private highlightSelectedNode(d, raiseEvent: boolean = true) {
         if (this.selectedOrgNode) {
             this.selectedOrgNode.IsSelected = false;
         }
@@ -1491,7 +1488,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         this.selectedOrgNode = d;
     }
 
-    updateSelectedOrgNode(node: OrgNodeModel) {
+    private updateSelectedOrgNode(node: OrgNodeModel) {
         if (this.compareNodeID(node, this.selectedOrgNode)) {
             this.selectedOrgNode = node;
             return true;
@@ -1560,12 +1557,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                     if (!selectedTreeNode.parent) {
                         selectedTreeNode.parent = this.getNode(this.selectedOrgNode.ParentNodeID, this.root);
                     }
-                    // if (selectedTreeNode.parent.parent) {
-                    //     let nodeID = (selectedTreeNode.parent as OrgNodeModel).ParentNodeID;
-                    //     if (nodeID === node.NodeID) {
-                    //         node.IsGrandParent = true;
-                    //     }
-                    // }
                 }
             }
         }
