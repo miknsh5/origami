@@ -59,7 +59,6 @@ export class SideMenuComponent implements OnChanges {
     @Input() isMenuSettingsEnabled: boolean;
     @Input() isSmartBarAddEnabled: boolean;
 
-    @Output() setAddOrEditModeValue = new EventEmitter<boolean>();
     @Output() updateNode = new EventEmitter<OrgNodeModel>();
     @Output() deleteNode = new EventEmitter<OrgNodeModel>();
     @Output() showFirstNameLabel = new EventEmitter<boolean>();
@@ -73,7 +72,6 @@ export class SideMenuComponent implements OnChanges {
         if (!this.isMenuSettingsEnabled) {
             if ((event as KeyboardEvent).keyCode === 27) {
                 if (this.isEditModeEnabled) {
-                    this.setAddOrEditModeValue.emit(false);
                     this.deleteOrClose = CLOSE_ICON;
                     this.onDeleteOrCancelNodeClicked();
                 }
@@ -111,7 +109,6 @@ export class SideMenuComponent implements OnChanges {
         this.editOrSave = EDIT_ICON;
         this.deleteOrClose = DELETE_ICON;
         this.isEditOrDeleteDisabled = false;
-        this.isEditEnabled.emit(false);
     }
 
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
@@ -274,9 +271,7 @@ export class SideMenuComponent implements OnChanges {
                 this.selectedNode.NodeFirstName = this.editNodeDetails.NodeFirstName;
                 this.selectedNode.NodeLastName = this.editNodeDetails.NodeLastName;
                 this.selectedNode.Description = this.editNodeDetails.Description;
-                this.setAddOrEditModeValue.emit(false);
                 this.emitUpdateNodeNotification(this.selectedNode);
-                this.isEditEnabled.emit(false);
             }
         }
 
@@ -298,7 +293,6 @@ export class SideMenuComponent implements OnChanges {
         if (this.selectedNode.NodeID !== -1) {
             if (this.editOrSave === EDIT_ICON) {
                 this.isEditEnabled.emit(true);
-                this.setAddOrEditModeValue.emit(true);
                 this.isEditModeEnabled = true;
                 this.editOrSave = SAVE_ICON;
                 this.deleteOrClose = CLOSE_ICON;
@@ -320,7 +314,6 @@ export class SideMenuComponent implements OnChanges {
                     this.editNodeDetails.ParentNodeID = this.selectedNode.ParentNodeID;
                     this.editNode(this.editNodeDetails);
                     this.isEditModeEnabled = false;
-                    this.isEditEnabled.emit(false);
                     this.editOrSave = EDIT_ICON;
                     this.deleteOrClose = DELETE_ICON;
                 } else {
@@ -344,7 +337,7 @@ export class SideMenuComponent implements OnChanges {
         if (data === true) {
             this.updateNode.emit(this.editNodeDetails);
             this.editNodeDetails = null;
-            this.setAddOrEditModeValue.emit(false);
+            this.isEditEnabled.emit(false);
         }
     }
 

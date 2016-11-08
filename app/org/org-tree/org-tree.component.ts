@@ -1209,7 +1209,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         if (this.currentMode === ChartMode.build && !this.isAddOrEditModeEnabled) {
             if (event.target.nodeName === "svg") {
                 if (!this.isAddOrEditModeEnabled && this.selectedOrgNode) {
-                    alert();
                     this.deselectNode();
                     this.selectNode.emit(this.selectedOrgNode);
                 }
