@@ -156,28 +156,25 @@ export class SamrtBarComponent implements OnChanges {
             }
         } else if ((event as KeyboardEvent).keyCode === 27) {
             if (this.isEditModeEnabled && this.selectedOrgNode) {
+                this.newOrgNode.Description = this.selectedOrgNode.Description = "";
+                this.newOrgNode.NodeFirstName = this.selectedOrgNode.NodeFirstName = "";
+                this.newOrgNode.NodeLastName = this.selectedOrgNode.NodeLastName = "";
                 if (this.selectedOrgNode.IsNewRoot || (this.selectedOrgNode.ParentNodeID && this.selectedOrgNode.NodeID === -1)) {
                     if (this.selectedOrgNode.NodeID === -1) {
                         this.deleteNode.emit(this.selectedOrgNode);
-                        this.isSmartBarEnabled.emit(false);
-                        this.newNodeValue = this.titleFilterList = null;
-                        this.isDescriptionText = false;
                         this.clearSearch();
                     } else {
-                        this.isSmartBarEnabled.emit(false);
                         this.deleteNode.emit(null);
-                        this.isDescriptionText = false;
-                        this.newNodeValue = this.titleFilterList = null;
                     }
                 } else if (this.multiInTerm || (this.newNodeValue && this.newNodeValue.length > 0)) {
                     if (this.selectedOrgNode.NodeID === -1) {
                         this.deleteNode.emit(null);
                     }
-                    this.isDescriptionText = false;
-                    this.isSmartBarEnabled.emit(false);
-                    this.newNodeValue = this.titleFilterList = null;
                     this.clearSearch();
                 }
+                this.isDescriptionText = false;
+                this.isSmartBarEnabled.emit(false);
+                this.newNodeValue = this.titleFilterList = null;
             } else {
                 this.newNodeValue = this.titleFilterList = null;
                 this.clearSearch();
