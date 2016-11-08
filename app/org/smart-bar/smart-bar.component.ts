@@ -499,6 +499,7 @@ export class SamrtBarComponent implements OnChanges {
             this.selectedOrgNode.Description = this.newNodeValue[1];
             this.updateNode.emit(this.selectedOrgNode);
         }
+        this.multiInTerm = "";
         this.titleFilterList = null;
         this.isDescriptionselected = true;
     }
