@@ -27,7 +27,6 @@ export class OrgComponent implements OnDestroy {
     buildViewText: any;
     reportViewText: any;
     svgPan: any;
-    isAddEnabledInSmartBar: boolean;
 
     @Output() groupID: any;
     @Output() companyID: any;
@@ -45,7 +44,7 @@ export class OrgComponent implements OnDestroy {
     @Output() currentOrgNodeStatus: OrgNodeStatus;
     @Output() isMenuSettingsEnabled: boolean;
     @Output() searchedNode: OrgNodeModel;
-    @Output() isSmartBarAddEnabled: boolean;
+    @Output() isSmartBarEnabled: boolean;
     @Output() isEditMenuEnable: boolean;
 
     constructor(public domHelper: DomElementHelper) {
@@ -133,17 +132,18 @@ export class OrgComponent implements OnDestroy {
         }
     }
 
-    smartBarAddEnabled(data: boolean) {
-        this.isAddEnabledInSmartBar = data;
-        this.isSmartBarAddEnabled = this.isAddEnabledInSmartBar;
+    smartBarEnabled(value: boolean) {
+        this.isSmartBarEnabled = value;
+        this.onAddOrEditModeValueSet(value);
     }
 
-    isEditEnabled(data) {
-        this.isEditMenuEnable = data;
+    isEditEnabled(value: boolean) {
+        this.isEditMenuEnable = value;
+        this.onAddOrEditModeValueSet(value);
     }
 
     onNodeSelected(node) {
-        if (!this.isAddEnabledInSmartBar) {
+        if (!this.isSmartBarEnabled) {
             let prevNode = this.selectedNode ? this.selectedNode : new OrgNodeModel();
             this.selectedNode = node;
             if (this.selectedNode) {
@@ -266,6 +266,7 @@ export class OrgComponent implements OnDestroy {
         this.treeJson = JSON.parse(JSON.stringify(this.orgNodes));
         if (addedNode && addedNode.NodeID === -1) {
             this.searchedNode = this.getNode(addedNode.NodeID, this.treeJson[0]);
+            this.selectedNode = this.searchedNode;
         }
         if ((this.treeJson && this.treeJson.length === 0) || (this.selectedNode && this.selectedNode.NodeID === -1)) {
             this.disableViewAndExploreModesNav();
@@ -318,12 +319,6 @@ export class OrgComponent implements OnDestroy {
             this.isOrgNodeEmpty = true;
         }
         this.updateJSON();
-    }
-
-    onNodeTextChange(selected) {
-        if (selected) {
-            this.selectedNode = selected;
-        }
     }
 
     onNodeUpdated(selected) {

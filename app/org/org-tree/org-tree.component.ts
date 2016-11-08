@@ -78,7 +78,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     @Input() CompanyID: number;
     @Input() isMenuSettingsEnabled: boolean;
     @Input() searchNode: OrgNodeModel;
-    @Input() isSmartBarAddEnabled: boolean;
 
     @Output() selectNode = new EventEmitter<OrgNodeModel>();
     @Output() addNode = new EventEmitter<OrgNodeModel>();
@@ -1210,7 +1209,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     @HostListener("window:click", ["$event"])
     bodyClicked(event: any) {
         // event.stopPropagation();
-        if (this.currentMode === ChartMode.build && !this.isSmartBarAddEnabled && !this.isAddOrEditModeEnabled) {
+        if (this.currentMode === ChartMode.build && !this.isAddOrEditModeEnabled) {
             if (event.target.nodeName === "svg") {
                 if (!this.isAddOrEditModeEnabled && this.selectedOrgNode) {
                     this.deselectNode();
@@ -1221,7 +1220,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     }
 
     deselectNode() {
-        if (this.selectedOrgNode && !this.isSmartBarAddEnabled && !this.isAddOrEditModeEnabled) {
+        if (this.selectedOrgNode && !this.isAddOrEditModeEnabled) {
             if (this.selectedOrgNode.NodeID !== -1) {
                 //  Save the last selection temp so that the graph maintains its position
                 this.lastSelectedNode = this.selectedOrgNode;
@@ -1234,8 +1233,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
     @HostListener("document:keydown", ["$event"])
     keyDown(event: any) {
-        if (!this.isSmartBarAddEnabled) {
-
+        if (!this.isAddOrEditModeEnabled) {
             if (!this.isMenuSettingsEnabled) {
                 if (!this.selectedOrgNode || this.isAddOrEditModeEnabled) {
                     return;
