@@ -359,7 +359,6 @@ export class SamrtBarComponent implements OnChanges {
     private onInputMultiSearch(event: Event) {
         if (!this.isEditMenuEnable) {
             if (this.selectedOrgNode && this.selectedOrgNode.NodeID === -1) {
-                console.log(this.selectedOrgNode);
                 let islastName = this.checkSpaceInName(this.multiInTerm);
                 let index = this.multiInTerm.indexOf(" ");
                 if (!this.newNodeValue || this.newNodeValue.length === 0) {
@@ -370,7 +369,7 @@ export class SamrtBarComponent implements OnChanges {
                         this.selectedOrgNode.NodeFirstName = this.multiInTerm;
                     }
                 } else {
-                    if (this.newNodeValue.length !== 0) {
+                    if (this.newNodeValue.length !== 0 && this.newNodeValue.length < 2) {
                         this.selectedOrgNode.Description = this.multiInTerm;
                     }
                 }
@@ -489,10 +488,13 @@ export class SamrtBarComponent implements OnChanges {
     private selectTitle(event: any, data: any) {
         this.newNodeValue.push(data);
         this.multiInTerm = data;
-        if (this.newNodeValue.length === 2) {
+        if (this.newNodeValue.length === 2 && this.selectedOrgNode.NodeID !== -1) {
             this.newOrgNode.Description = this.newNodeValue[1];
+            this.updateNode.emit(this.newOrgNode);
+        } else if (this.newNodeValue.length === 2 && this.selectedOrgNode.NodeID === -1) {
+            this.selectedOrgNode.Description = this.newNodeValue[1];
+            this.updateNode.emit(this.selectedOrgNode);
         }
-        this.updateNode.emit(this.newOrgNode);
         this.titleFilterList = null;
         this.isDescriptionselected = true;
     }

@@ -265,9 +265,7 @@ export class OrgComponent implements OnDestroy {
         this.orgGroup.OrgNodes = JSON.parse(JSON.stringify(this.orgNodes));
         this.treeJson = JSON.parse(JSON.stringify(this.orgNodes));
         if (addedNode && addedNode.NodeID === -1) {
-            console.log(this.searchedNode);
             this.searchedNode = this.getNode(addedNode.NodeID, this.treeJson[0]);
-            console.log(this.searchedNode);
         }
         if ((this.treeJson && this.treeJson.length === 0) || (this.selectedNode && this.selectedNode.NodeID === -1)) {
             this.disableViewAndExploreModesNav();
