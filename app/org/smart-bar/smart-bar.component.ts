@@ -227,7 +227,7 @@ export class SamrtBarComponent implements OnChanges {
                 this.newNodeValue.push(this.multiInTerm);
             }
             if (!this.selectedOrgNode.ParentNodeID && this.selectedOrgNode.NodeID === -1) {
-                if (this.newOrgNode.IsNewRoot) {
+                if (this.selectedOrgNode.IsNewRoot) {
                     this.newOrgNode.ParentNodeID = null;
                     this.newOrgNode.children = new Array<OrgNodeModel>();
                     this.newOrgNode.children.push(this.selectedOrgNode);
@@ -264,7 +264,7 @@ export class SamrtBarComponent implements OnChanges {
                     this.newOrgNode.IsSibling = true;
 
                     if (!this.selectedOrgNode.ParentNodeID && this.selectedOrgNode.NodeID === -1) {
-                        if (this.newOrgNode.IsNewRoot) {
+                        if (this.selectedOrgNode.IsNewRoot) {
                             this.newOrgNode.ParentNodeID = null;
                             this.newOrgNode.children = new Array<OrgNodeModel>();
                             this.newOrgNode.children.push(this.selectedOrgNode);
