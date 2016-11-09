@@ -95,7 +95,7 @@ export class SamrtBarComponent implements OnChanges {
     public OnKeyDown(event) {
         let searchContainer;
         if (this.isDescriptionText) {
-            searchContainer = TITLE_SEARCH_CONTAINER;;
+            searchContainer = TITLE_SEARCH_CONTAINER;
         } else {
             searchContainer = SEARCH_CONTAINER;
         }
