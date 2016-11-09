@@ -60,6 +60,8 @@ export class SamrtBarComponent implements OnChanges {
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
         if (changes["orgGroupID"]) {
             this.clearSearch();
+            this.newNodeValue = null;
+            this.multiInTerm = "";
         }
         if (changes["treeJsonData"]) {
             if (this.treeJsonData) {
