@@ -198,10 +198,6 @@ export class SamrtBarComponent implements OnChanges {
                 this.clearSearch();
             }
         } else if ((event as KeyboardEvent).keyCode === 8) {
-            if (this.searchTerm === "" && this.isSearchEnabled) {
-                this.clearSearch();
-                this.isSearchEnabled = false;
-            }
             if (this.isEditModeEnabled) {
                 if (this.multiInTerm === "" && this.newNodeValue && this.newNodeValue.length > 0) {
                     if (this.newNodeValue.length === 1) {
