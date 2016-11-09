@@ -175,6 +175,7 @@ export class OrgComponent implements OnDestroy {
             this.isOrgNodeEmpty = false;
             this.currentOrgNodeStatus = OrgNodeStatus.Add;
         }
+
         if (addedNode.IsNewRoot) {
             this.orgNodes.splice(0, 1, addedNode);
             this.isOrgNodeEmpty = false;
@@ -183,13 +184,12 @@ export class OrgComponent implements OnDestroy {
         else {
             this.addChildToSelectedOrgNode(addedNode, this.orgNodes[0]);
         }
+
         if (this.selectedNode && this.selectedNode.NodeID !== addedNode.NodeID) {
-            console.log(this.selectedNode);
             this.updateJSON(addedNode);
         } else {
             this.updateJSON();
         }
-
     }
 
     onSwitchedToAddMode(node: OrgNodeModel) {
@@ -384,9 +384,7 @@ export class OrgComponent implements OnDestroy {
     }
 
     private getSvgHeight() {
-
         let height = window.innerHeight;
-
         // applies min height
         height = height < MIN_HEIGHT ? MIN_HEIGHT : height;
 
@@ -396,16 +394,13 @@ export class OrgComponent implements OnDestroy {
         } else {
             height = height - DEFAULT_OFFSET;
         }
-
         return height;
     }
 
     private getSvgWidth() {
         let width = window.innerWidth;
-
         // applies min width
         width = width < MIN_WIDTH ? MIN_WIDTH : width;
-
         return width;
     }
 
