@@ -8,7 +8,7 @@
                     <i class="material-icons right">keyboard_arrow_right</i>
                 </li>
                 <li class="ui-addList">
-                    <input #addNodes type="text" placeholder="Search, Add Resources" name="multiInTerm" (keyup)="onInputMultiSearch($event)" [(ngModel)]="multiInTerm" autocomplete="off">
+                    <input #addNodes type="text" placeholder={{placeholderText}} name="multiInTerm" (keyup)="onInputMultiSearch($event)" [(ngModel)]="multiInTerm" autocomplete="off">
                 </li>
             </ul>
         </div>

@@ -4,6 +4,9 @@ import { NgForm, NgControl } from "@angular/forms";
 import { OrgNodeModel, OrgSearchModel, OrgService, DomElementHelper } from "../shared/index";
 
 const HeaderTitle = "NAME";
+const AddResource = "Search, Add Resources";
+const AddJobTitle = "Search, Add Job Title";
+const SaveData = "Press enter to save";
 declare let jQuery;
 
 @Component({
@@ -27,6 +30,7 @@ export class SamrtBarComponent implements OnChanges {
     private newOrgNode: OrgNodeModel;
     private isDescriptionText: boolean = false;
     private isDescriptionselected: boolean = false;
+    private placeholderText: any;
 
     @Input() treeJsonData: any;
     @Input() selectedOrgNode: OrgNodeModel;
@@ -41,8 +45,10 @@ export class SamrtBarComponent implements OnChanges {
 
     constructor(private elementRef: ElementRef, private domHelper: DomElementHelper, private renderer: Renderer, private orgService: OrgService) {
         this.searchHeader = `BY ${HeaderTitle}`;
+        this.placeholderText = `${AddResource}`;
         this.newOrgNode = new OrgNodeModel();
         this.isSmartBarEnabled.emit(false);
+
     }
 
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
@@ -360,6 +366,14 @@ export class SamrtBarComponent implements OnChanges {
     }
 
     private onInputMultiSearch(event: Event) {
+        if (!this.newNodeValue || (this.newNodeValue && this.newNodeValue.length < 1)) {
+            this.placeholderText = `${AddResource}`;
+        } else if (this.newNodeValue && this.newNodeValue.length === 1) {
+            this.placeholderText = `${AddJobTitle}`;
+        } else {
+            this.placeholderText = `${SaveData}`;
+        }
+
         if (!this.isEditMenuEnable) {
             if (this.selectedOrgNode && this.selectedOrgNode.NodeID === -1) {
                 let islastName = this.checkSpaceInName(this.multiInTerm);
