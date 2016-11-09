@@ -4,6 +4,12 @@ import { NgForm, NgControl } from "@angular/forms";
 import { OrgNodeModel, OrgSearchModel, OrgService, DomElementHelper } from "../shared/index";
 
 const HeaderTitle = "NAME";
+const AddResource = "Search, Add Resources";
+const AddJobTitle = "Search, Add Job Title";
+const SaveData = "Press enter to save";
+const SELECTED = "selected";
+const SEARCH_CONTAINER = "#searchSelection";
+const TITLE_SEARCH_CONTAINER = "#titleSearchSelection";
 declare let jQuery;
 
 @Component({
@@ -27,6 +33,7 @@ export class SamrtBarComponent implements OnChanges {
     private newOrgNode: OrgNodeModel;
     private isDescriptionText: boolean = false;
     private isDescriptionselected: boolean = false;
+    private placeholderText: any;
 
     @Input() treeJsonData: any;
     @Input() selectedOrgNode: OrgNodeModel;
@@ -41,6 +48,7 @@ export class SamrtBarComponent implements OnChanges {
 
     constructor(private elementRef: ElementRef, private domHelper: DomElementHelper, private renderer: Renderer, private orgService: OrgService) {
         this.searchHeader = `BY ${HeaderTitle}`;
+        this.placeholderText = `${AddResource}`;
         this.newOrgNode = new OrgNodeModel();
         this.isSmartBarEnabled.emit(false);
         this.newNodeValue = null;
@@ -87,54 +95,54 @@ export class SamrtBarComponent implements OnChanges {
     public OnKeyDown(event) {
         let searchContainer;
         if (this.isDescriptionText) {
-            searchContainer = document.getElementById("titleSearchSelection");
+            searchContainer = TITLE_SEARCH_CONTAINER;
         } else {
-            searchContainer = document.getElementById("searchSelection");
+            searchContainer = SEARCH_CONTAINER;
         }
 
+        let curSelected = jQuery(searchContainer).find("li." + SELECTED);
         if ((event as KeyboardEvent).keyCode === 38) {
-            let jQueryelement = jQuery(searchContainer).find("li.selected").prev();
+            let newSelected = jQuery(searchContainer).find("li." + SELECTED).prev();
             if (this.selectedOrgNode) {
-                if (jQuery(searchContainer).find("li.selected").hasClass("addNode") && !jQueryelement.hasClass("addNode")) {
-                    jQueryelement = jQueryelement.prev();
+                if (curSelected.hasClass("addNode") && !newSelected.hasClass("addNode")) {
+                    newSelected = newSelected.prev();
                 }
             } else {
-                if (jQuery(searchContainer).find("li.selected").hasClass("titleFilter") && !jQueryelement.hasClass("titleFilter")) {
-                    jQueryelement = jQueryelement.prev();
+                if (curSelected.hasClass("titleFilter") && !newSelected.hasClass("titleFilter")) {
+                    newSelected = newSelected.prev();
                 }
             }
 
-            if (jQuery(searchContainer).find("li.selected").hasClass("nodeSearch") && !jQueryelement.hasClass("nodeSearch")) {
-                jQueryelement = null;
+            if (curSelected.hasClass("nodeSearch") && !newSelected.hasClass("nodeSearch")) {
+                newSelected = null;
             }
-            if (jQueryelement && jQueryelement[0] && jQueryelement[0].tagName === "LI") {
-                jQuery(searchContainer).find("li.selected").removeClass("selected");
-                jQueryelement.addClass("selected");
-                jQuery(searchContainer).scrollTop(jQuery(searchContainer).scrollTop() + jQueryelement.position().top);
+
+            if (newSelected && newSelected[0] && newSelected[0].tagName === "LI") {
+                curSelected.removeClass(SELECTED);
+                newSelected.addClass(SELECTED);
+                jQuery(searchContainer).scrollTop(jQuery(searchContainer).scrollTop() + newSelected.position().top);
             }
         }
         else if ((event as KeyboardEvent).keyCode === 40) {
-            let jQueryelement = jQuery(searchContainer).find("li.selected").next();
-            if (jQuery(searchContainer).find("li.selected").hasClass("nodeSearch") && !jQueryelement.hasClass("nodeSearch")) {
-                jQueryelement = jQueryelement.next();
+            let newSelected = jQuery(searchContainer).find("li." + SELECTED).next();
+            if (curSelected.hasClass("nodeSearch") && !newSelected.hasClass("nodeSearch")) {
+                newSelected = newSelected.next();
             }
 
             if (this.selectedOrgNode) {
-                if (jQuery(searchContainer).find("li.selected").hasClass("addNode") && !jQueryelement.hasClass("addNode")) {
-                    jQueryelement = null;
+                if (curSelected.hasClass("addNode") && !newSelected.hasClass("addNode")) {
+                    newSelected = null;
                 }
-            } else {
-                if (jQuery(searchContainer).find("li.selected").hasClass("titleFilter") && !jQueryelement.hasClass("titleFilter")) {
-                    jQueryelement = null;
+
+                if (curSelected.hasClass("titleFilter") && !newSelected.hasClass("titleFilter")) {
+                    newSelected = newSelected.next();
                 }
             }
 
-            if (jQueryelement && jQueryelement[0] && jQueryelement[0].tagName === "LI") {
-                if (jQueryelement.hasClass("addNode") || jQueryelement.hasClass("titleFilter") || jQueryelement.hasClass("nodeSearch")) {
-                    jQuery(searchContainer).find("li.selected").removeClass("selected");
-                    jQueryelement.addClass("selected");
-                    jQuery(searchContainer).scrollTop(jQuery(searchContainer).scrollTop() + jQueryelement.position().top);
-                }
+            if (newSelected && newSelected[0] && newSelected[0].tagName === "LI") {
+                curSelected.removeClass(SELECTED);
+                newSelected.addClass(SELECTED);
+                jQuery(searchContainer).scrollTop(jQuery(searchContainer).scrollTop() + newSelected.position().top);
             }
 
         } else if ((event as KeyboardEvent).keyCode === 13) {
@@ -142,7 +150,7 @@ export class SamrtBarComponent implements OnChanges {
                 return;
             }
             if (this.isDescriptionText) {
-                let element = document.querySelector("#titleSearchSelection li.selected");
+                let element = document.querySelector(TITLE_SEARCH_CONTAINER + " li." + SELECTED);
                 if (element) {
                     this.renderer.invokeElementMethod(element, "click", []);
                     this.multiInTerm = "";
@@ -151,7 +159,7 @@ export class SamrtBarComponent implements OnChanges {
                     this.onAddNode();
                 }
             } else {
-                let element = document.querySelector("#searchSelection li.selected");
+                let element = document.querySelector(SEARCH_CONTAINER + " li." + SELECTED);
                 if (element)
                     this.renderer.invokeElementMethod(element, "click", []);
             }
@@ -363,6 +371,14 @@ export class SamrtBarComponent implements OnChanges {
     }
 
     private onInputMultiSearch(event: Event) {
+        if (!this.newNodeValue || (this.newNodeValue && this.newNodeValue.length < 1)) {
+            this.placeholderText = `${AddResource}`;
+        } else if (this.newNodeValue && this.newNodeValue.length === 1) {
+            this.placeholderText = `${AddJobTitle}`;
+        } else {
+            this.placeholderText = `${SaveData}`;
+        }
+
         if (!this.isEditMenuEnable) {
             if (this.selectedOrgNode && this.selectedOrgNode.NodeID === -1) {
                 let islastName = this.checkSpaceInName(this.multiInTerm);
@@ -445,17 +461,17 @@ export class SamrtBarComponent implements OnChanges {
             this.searchTitleData(searchTerm);
             if (this.selectedOrgNode) {
                 setTimeout(() => {
-                    let jQueryelement = jQuery("#titleSearchSelection li.addNode").addClass("selected");
+                    let jQueryelement = jQuery(TITLE_SEARCH_CONTAINER).find("li.addNode").addClass(SELECTED);
                     if (jQueryelement) {
                         let position = jQueryelement.position();
-                        jQueryelement.scrollTop(jQuery("#titleSearchSelection").scrollTop() + (position ? position.top : 0));
+                        jQueryelement.scrollTop(jQuery(TITLE_SEARCH_CONTAINER).scrollTop() + (position ? position.top : 0));
                     }
                 }, 100);
             } else {
                 setTimeout(() => {
                     if (this.titleFilterList.length > 0) {
-                        let jQueryelement = jQuery("#titleSearchSelection li.titleFilter").first();
-                        jQueryelement.addClass("selected").scrollTop(jQuery("#titleSearchSelection").scrollTop() + jQueryelement.position().top);
+                        let jQueryelement = jQuery(TITLE_SEARCH_CONTAINER).find("li.titleFilter").first();
+                        jQueryelement.addClass(SELECTED).scrollTop(jQuery(TITLE_SEARCH_CONTAINER).scrollTop() + jQueryelement.position().top);
                     }
                 }, 100);
             }
@@ -477,9 +493,9 @@ export class SamrtBarComponent implements OnChanges {
         if (data) {
             let node = this.getNode(data.NodeID, this.treeJsonData[0]);
             if (node) {
-                jQuery("#searchSelection").find("li.selected").removeClass("selected");
+                jQuery(SEARCH_CONTAINER).find("li." + SELECTED).removeClass(SELECTED);
                 let jQueryelement = jQuery(event.target).closest("li.nodeSearch");
-                jQueryelement.addClass("selected").scrollTop(jQuery("#searchSelection").scrollTop() + jQueryelement.position().top);
+                jQueryelement.addClass(SELECTED).scrollTop(jQuery(SEARCH_CONTAINER).scrollTop() + jQueryelement.position().top);
                 this.isSmartBarEnabled.emit(false);
                 this.clearSearch();
                 this.nodeSearched.emit(node);
@@ -531,9 +547,9 @@ export class SamrtBarComponent implements OnChanges {
 
             if (this.selectedOrgNode) {
                 setTimeout(() => {
-                    let jQueryelement = jQuery("#searchSelection li.addNode").addClass("selected");
+                    let jQueryelement = jQuery(SEARCH_CONTAINER + " li.addNode").addClass(SELECTED);
                     if (jQueryelement) {
-                        jQuery("#searchSelection").scrollTop(1000);
+                        jQuery(SEARCH_CONTAINER).scrollTop(1000);
                     }
 
                 }, 100);
@@ -541,14 +557,14 @@ export class SamrtBarComponent implements OnChanges {
                 this.searchTitleData(searchTerm);
                 setTimeout(() => {
                     if (this.nodeSearchedList.length > 0) {
-                        let jQueryelement = jQuery("#searchSelection li.nodeSearch").first();
+                        let jQueryelement = jQuery(SEARCH_CONTAINER + " li.nodeSearch").first();
                         let position = jQueryelement.position();
-                        jQueryelement.addClass("selected").scrollTop(jQuery("#searchSelection").scrollTop() + (position ? position.top : 0));
+                        jQueryelement.addClass(SELECTED).scrollTop(jQuery(SEARCH_CONTAINER).scrollTop() + (position ? position.top : 0));
                     }
                     else if (this.titleFilterList.length > 0) {
-                        let jQueryelement = jQuery("#searchSelection li.titleFilter").first();
+                        let jQueryelement = jQuery(SEARCH_CONTAINER + " li.titleFilter").first();
                         let position = jQueryelement.position();
-                        jQueryelement.addClass("selected").scrollTop(jQuery("#searchSelection").scrollTop() + (position ? position.top : 0));
+                        jQueryelement.addClass(SELECTED).scrollTop(jQuery(SEARCH_CONTAINER).scrollTop() + (position ? position.top : 0));
                     }
                 }, 100);
             }

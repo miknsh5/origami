@@ -271,7 +271,8 @@ export class SideMenuComponent implements OnChanges {
                 this.selectedNode.NodeFirstName = this.editNodeDetails.NodeFirstName;
                 this.selectedNode.NodeLastName = this.editNodeDetails.NodeLastName;
                 this.selectedNode.Description = this.editNodeDetails.Description;
-                this.emitUpdateNodeNotification(this.selectedNode);
+                this.editNodeDetails = null;
+                this.isEditEnabled.emit(false);
             }
         }
 
