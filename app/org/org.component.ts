@@ -453,6 +453,9 @@ export class OrgComponent implements OnDestroy {
         }
         this.enableViewModesNav(this.currentChartMode);
         this.treeJson = JSON.parse(JSON.stringify(this.orgNodes));
+        this.isSmartBarEnabled = false;
+        this.isEditMenuEnable = false;
+        this.onAddOrEditModeValueSet(false);
     }
 
     onCompanySelected(data: any) {

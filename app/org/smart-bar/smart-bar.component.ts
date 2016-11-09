@@ -41,6 +41,7 @@ export class SamrtBarComponent implements OnChanges {
     @Input() selectedOrgNode: OrgNodeModel;
     @Input() isEditModeEnabled: boolean;
     @Input() isEditMenuEnable: boolean;
+    @Input() orgGroupID: number;
     @Output() nodeSearched = new EventEmitter<OrgNodeModel>();
     @Output() deleteNode = new EventEmitter<OrgNodeModel>();
     @Output() addNode = new EventEmitter<OrgNodeModel>();
@@ -57,6 +58,9 @@ export class SamrtBarComponent implements OnChanges {
     }
 
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
+        if (changes["orgGroupID"]) {
+            this.clearSearch();
+        }
         if (changes["treeJsonData"]) {
             if (this.treeJsonData) {
                 this.orgSearchData = new Array<any>();
@@ -194,6 +198,10 @@ export class SamrtBarComponent implements OnChanges {
                 this.clearSearch();
             }
         } else if ((event as KeyboardEvent).keyCode === 8) {
+            if (this.searchTerm === "" && this.isSearchEnabled) {
+                this.clearSearch();
+                this.isSearchEnabled = false;
+            }
             if (this.isEditModeEnabled) {
                 if (this.multiInTerm === "" && this.newNodeValue && this.newNodeValue.length > 0) {
                     if (this.newNodeValue.length === 1) {
@@ -559,11 +567,13 @@ export class SamrtBarComponent implements OnChanges {
                     }
                 });
             }
-            if (!this.selectedOrgNode && this.nodeSearchedList.length > 0) {
-                let jQueryelement = jQuery("#searchSelection li.nodeSearch").first();
-                let position = jQueryelement.position();
-                jQueryelement.addClass("selected").scrollTop(jQuery("#searchSelection").scrollTop() + (position ? position.top : 0));
-            }
+            setTimeout(() => {
+                if (!this.selectedOrgNode && this.nodeSearchedList.length > 0) {
+                    let jQueryelement = jQuery("#searchSelection li.nodeSearch").first();
+                    let position = jQueryelement.position();
+                    jQueryelement.addClass("selected").scrollTop(jQuery("#searchSelection").scrollTop() + (position ? position.top : 0));
+                }
+            }, 100);
         }, 100);
     }
 
