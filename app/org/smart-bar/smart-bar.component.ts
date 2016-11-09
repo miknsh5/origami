@@ -33,12 +33,15 @@ export class SamrtBarComponent implements OnChanges {
     private newOrgNode: OrgNodeModel;
     private isDescriptionText: boolean = false;
     private isDescriptionselected: boolean = false;
+    private exsitingSearchList: OrgSearchModel[];
+    private isSearchEnabled: boolean = false;
     private placeholderText: any;
 
     @Input() treeJsonData: any;
     @Input() selectedOrgNode: OrgNodeModel;
     @Input() isEditModeEnabled: boolean;
     @Input() isEditMenuEnable: boolean;
+    @Input() orgGroupID: number;
     @Output() nodeSearched = new EventEmitter<OrgNodeModel>();
     @Output() deleteNode = new EventEmitter<OrgNodeModel>();
     @Output() addNode = new EventEmitter<OrgNodeModel>();
@@ -55,6 +58,9 @@ export class SamrtBarComponent implements OnChanges {
     }
 
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
+        if (changes["orgGroupID"]) {
+            this.clearSearch();
+        }
         if (changes["treeJsonData"]) {
             if (this.treeJsonData) {
                 this.orgSearchData = new Array<any>();
@@ -162,6 +168,7 @@ export class SamrtBarComponent implements OnChanges {
                 let element = document.querySelector(SEARCH_CONTAINER + " li." + SELECTED);
                 if (element)
                     this.renderer.invokeElementMethod(element, "click", []);
+                this.isSearchEnabled = true;
             }
         } else if ((event as KeyboardEvent).keyCode === 27) {
             if (this.isEditModeEnabled && this.selectedOrgNode) {
@@ -348,16 +355,24 @@ export class SamrtBarComponent implements OnChanges {
     }
 
     private onInputSearch() {
-        if (!this.isEditMenuEnable) {
-            if (this.searchTerm) {
-                this.isSmartBarEnabled.emit(true);
-                this.processSearch(this.searchTerm);
+        if (this.searchTerm) {
+            if (!this.isEditMenuEnable) {
+                if (this.searchTerm) {
+                    this.isSmartBarEnabled.emit(true);
+                    this.processSearch(this.searchTerm);
+                } else {
+                    this.isSmartBarEnabled.emit(false);
+                    this.clearSearch();
+                }
             } else {
-                this.isSmartBarEnabled.emit(false);
-                this.clearSearch();
+                this.multiInTerm = "";
             }
         } else {
-            this.multiInTerm = "";
+            if (!this.isSearchEnabled) {
+                this.clearSearch();
+                this.exsitingSearchList = null;
+            }
+            this.isSearchEnabled = false;
         }
     }
 
@@ -483,6 +498,15 @@ export class SamrtBarComponent implements OnChanges {
             this.prevSearchTerm = searchTerm;
             if (this.isDescriptionText) {
                 this.onDescritptionSearch(searchTerm.toLowerCase());
+            } else if (this.isTitleSelected) {
+                this.isSearchEnabled = true;
+                if (!this.exsitingSearchList) {
+                    this.exsitingSearchList = new Array<OrgSearchModel>();
+                    this.nodeSearchedList.forEach((data) => {
+                        this.exsitingSearchList.push(data);
+                    });
+                }
+                this.searchTitleList(searchTerm.toLowerCase(), this.exsitingSearchList);
             } else {
                 this.searchList(searchTerm.toLowerCase());
             }
@@ -508,6 +532,7 @@ export class SamrtBarComponent implements OnChanges {
         this.titleFilterList = null;
         this.searchHeader = `BY ${data.Name.toUpperCase()}`;
         this.searchList(data.Name.toLowerCase(), true);
+        this.searchTerm = "";
     }
 
     private selectTitle(event: any, data: any) {
@@ -523,6 +548,29 @@ export class SamrtBarComponent implements OnChanges {
         this.multiInTerm = "";
         this.titleFilterList = null;
         this.isDescriptionselected = true;
+    }
+
+    private searchTitleList(searchTerm: string, searchList) {
+        searchTerm = searchTerm.trim();
+        this.searchInProgress = true;
+        this.nodeSearchedList = new Array<OrgSearchModel>();
+        this.titleFilterList = new Array();
+        setTimeout(() => {
+            if (!this.selectedOrgNode || (this.selectedOrgNode && this.selectedOrgNode.NodeID !== -1)) {
+                searchList.forEach((data, index) => {
+                    if (data.Name.toLowerCase().includes(searchTerm)) {
+                        this.nodeSearchedList.push(data);
+                    }
+                });
+            }
+            setTimeout(() => {
+                if (!this.selectedOrgNode && this.nodeSearchedList.length > 0) {
+                    let jQueryelement = jQuery("#searchSelection li.nodeSearch").first();
+                    let position = jQueryelement.position();
+                    jQueryelement.addClass("selected").scrollTop(jQuery("#searchSelection").scrollTop() + (position ? position.top : 0));
+                }
+            }, 100);
+        }, 100);
     }
 
     private searchList(searchTerm: string, isTitleSearch?: boolean) {

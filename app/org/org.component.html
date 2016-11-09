@@ -16,7 +16,7 @@
         </sg-org-tree>
         <div *ngIf="currentChartMode===1">
             <sg-smart-bar [treeJsonData]="orgGroup.OrgNodes" (nodeSearched)="onNodeSearched($event)" [selectedOrgNode]="selectedNode" [isEditModeEnabled]="detailAddOrEditMode" (deleteNode)="onNodeDeleted($event)" (updateNode)="onNodeUpdated($event)" (addNode)="onNodeAdded($event)"
-                (chartStructureUpdated)="onChartUpdated($event)" (isSmartBarEnabled)="smartBarEnabled($event)" [isEditMenuEnable]="isEditMenuEnable">
+                (chartStructureUpdated)="onChartUpdated($event)" (isSmartBarEnabled)="smartBarEnabled($event)" [isEditMenuEnable]="isEditMenuEnable" [orgGroupID]="groupID">
             </sg-smart-bar>
         </div>
     </div>

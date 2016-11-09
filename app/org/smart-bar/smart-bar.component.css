@@ -111,6 +111,10 @@
     margin: 3px;
 }
 
+.ui-addList>input {
+    width: 100% !important;
+}
+
 .ui-addList:nth-child(2)>i {
     display: none;
 }
