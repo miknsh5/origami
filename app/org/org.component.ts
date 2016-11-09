@@ -1,20 +1,18 @@
 import { Component, Output, EventEmitter, OnDestroy, HostListener } from "@angular/core";
 import { tokenNotExpired } from "angular2-jwt";
 
-import { OrgNodeModel, ChartMode, OrgCompanyModel, OrgGroupModel, OrgNodeStatus } from "./shared/index";
+import { OrgNodeModel, ChartMode, OrgCompanyModel, OrgGroupModel, OrgNodeStatus, DomElementHelper } from "./shared/index";
 
 const MIN_HEIGHT: number = 480;
 const MAX_HEIGHT: number = 768;
-
 const MIN_WIDTH: number = 540;
 const MAX_WIDTH: number = 1366;
-
 const DEFAULT_OFFSET: number = 55;
 
 declare var svgPanZoom: any;
 
 @Component({
-    selector: "sg-origami-org",
+    selector: "sg-org",
     templateUrl: "app/org/org.component.html",
     styleUrls: ["app/org/org.component.css"]
 })
@@ -45,8 +43,11 @@ export class OrgComponent implements OnDestroy {
     @Output() isOrgNodeEmpty: boolean;
     @Output() currentOrgNodeStatus: OrgNodeStatus;
     @Output() isMenuSettingsEnabled: boolean;
+    @Output() searchedNode: OrgNodeModel;
+    @Output() isSmartBarEnabled: boolean;
+    @Output() isEditMenuEnable: boolean;
 
-    constructor() {
+    constructor(public domHelper: DomElementHelper) {
         this.currentChartMode = ChartMode.build;
         this.enableLabels();
         this.svgWidth = this.getSvgWidth();
@@ -77,12 +78,15 @@ export class OrgComponent implements OnDestroy {
     enableFirstNameLabel(data) {
         this.displayFirstNameLabel = data;
     }
+
     enableLastNameLabel(data) {
         this.displayLastNameLabel = data;
     }
+
     enableDescriptionLabel(data) {
         this.displayDescriptionLabel = data;
     }
+
     enableLabels() {
         this.displayFirstNameLabel = true;
         this.displayLastNameLabel = true;
@@ -128,19 +132,31 @@ export class OrgComponent implements OnDestroy {
         }
     }
 
+    smartBarEnabled(value: boolean) {
+        this.isSmartBarEnabled = value;
+        this.onAddOrEditModeValueSet(value);
+    }
+
+    isEditEnabled(value: boolean) {
+        this.isEditMenuEnable = value;
+        this.onAddOrEditModeValueSet(value);
+    }
+
     onNodeSelected(node) {
-        let prevNode = this.selectedNode ? this.selectedNode : new OrgNodeModel();
-        this.selectedNode = node;
-        if (this.selectedNode) {
-            if (node.NodeID === -1) {
-                this.isAddOrEditMode = true;
-                this.detailAddOrEditMode = true;
-            } else if ((this.isAddOrEditMode || !this.isAddOrEditMode && prevNode.IsNewRoot) && prevNode.NodeID !== node.NodeID) {
-                this.isAddOrEditMode = false;
-                this.detailAddOrEditMode = false;
+        if (!this.isSmartBarEnabled) {
+            let prevNode = this.selectedNode ? this.selectedNode : new OrgNodeModel();
+            this.selectedNode = node;
+            if (this.selectedNode) {
+                if (node.NodeID === -1) {
+                    this.isAddOrEditMode = true;
+                    this.detailAddOrEditMode = true;
+                } else if ((this.isAddOrEditMode || !this.isAddOrEditMode && prevNode.IsNewRoot) && prevNode.NodeID !== node.NodeID) {
+                    this.isAddOrEditMode = false;
+                    this.detailAddOrEditMode = false;
+                }
             }
+            this.currentOrgNodeStatus = OrgNodeStatus.None;
         }
-        this.currentOrgNodeStatus = OrgNodeStatus.None;
     }
 
     onNodeAdded(addedNode: OrgNodeModel) {
@@ -149,13 +165,17 @@ export class OrgComponent implements OnDestroy {
         this.isOrgNodeEmpty = true;
         if (addedNode.NodeID !== -1) {
             // gets the stagged node and deleting it
-            let node = this.getNode(-1, this.orgNodes[0]);
-            this.deleteNodeFromArray(node, this.orgNodes);
+            if (this.orgNodes[0]) {
+                let node = this.getNode(-1, this.orgNodes[0]);
+                this.deleteNodeFromArray(node, this.orgNodes);
+            }
             this.selectedNode = addedNode;
+            this.searchedNode = addedNode;
             this.detailAddOrEditMode = false;
             this.isOrgNodeEmpty = false;
             this.currentOrgNodeStatus = OrgNodeStatus.Add;
         }
+
         if (addedNode.IsNewRoot) {
             this.orgNodes.splice(0, 1, addedNode);
             this.isOrgNodeEmpty = false;
@@ -164,7 +184,12 @@ export class OrgComponent implements OnDestroy {
         else {
             this.addChildToSelectedOrgNode(addedNode, this.orgNodes[0]);
         }
-        this.updateJSON();
+
+        if (this.selectedNode && this.selectedNode.NodeID !== addedNode.NodeID) {
+            this.updateJSON(addedNode);
+        } else {
+            this.updateJSON();
+        }
     }
 
     onSwitchedToAddMode(node: OrgNodeModel) {
@@ -235,10 +260,14 @@ export class OrgComponent implements OnDestroy {
         }
     }
 
-    updateJSON() {
+    updateJSON(addedNode?: OrgNodeModel) {
         this.removeCircularRef(this.orgNodes[0]);
         this.orgGroup.OrgNodes = JSON.parse(JSON.stringify(this.orgNodes));
         this.treeJson = JSON.parse(JSON.stringify(this.orgNodes));
+        if (addedNode && addedNode.NodeID === -1) {
+            this.searchedNode = this.getNode(addedNode.NodeID, this.treeJson[0]);
+            this.selectedNode = this.searchedNode;
+        }
         if ((this.treeJson && this.treeJson.length === 0) || (this.selectedNode && this.selectedNode.NodeID === -1)) {
             this.disableViewAndExploreModesNav();
         }
@@ -292,12 +321,6 @@ export class OrgComponent implements OnDestroy {
         this.updateJSON();
     }
 
-    onNodeTextChange(selected) {
-        if (selected) {
-            this.selectedNode = selected;
-        }
-    }
-
     onNodeUpdated(selected) {
         // since while updating data to server we send children as null so refreshing the value
         if (selected && !selected.children && selected.NodeID === this.selectedNode.NodeID && this.selectedNode.children) {
@@ -308,9 +331,9 @@ export class OrgComponent implements OnDestroy {
         }
         if (selected.NodeID !== -1 && selected.IsStaging) {
             // updating local changes
-            let nodes = JSON.parse(JSON.stringify(this.orgNodes));
-            this.updateOrgNode(nodes[0], selected);
-            this.treeJson = JSON.parse(JSON.stringify(nodes));
+            this.orgGroup.OrgNodes = JSON.parse(JSON.stringify(this.orgNodes));
+            this.updateOrgNode(this.orgNodes[0], selected);
+            this.treeJson = JSON.parse(JSON.stringify(this.orgNodes));
         } else {
             // updating submitted or saved changes
             this.updateOrgNode(this.orgNodes[0], selected);
@@ -362,11 +385,8 @@ export class OrgComponent implements OnDestroy {
 
     private getSvgHeight() {
         let height = window.innerHeight;
-
         // applies min height
         height = height < MIN_HEIGHT ? MIN_HEIGHT : height;
-        // applies max height
-        height = height > MAX_HEIGHT ? MAX_HEIGHT : height;
 
         // temporarily applied wiil be removed after standard and organization mode added
         if (this.svgWidth < 993 && height > MIN_HEIGHT) {
@@ -374,18 +394,13 @@ export class OrgComponent implements OnDestroy {
         } else {
             height = height - DEFAULT_OFFSET;
         }
-
         return height;
     }
 
     private getSvgWidth() {
         let width = window.innerWidth;
-
         // applies min width
         width = width < MIN_WIDTH ? MIN_WIDTH : width;
-        // applies max width
-        width = width > MAX_WIDTH ? MAX_WIDTH : width;
-
         return width;
     }
 
@@ -438,6 +453,9 @@ export class OrgComponent implements OnDestroy {
         }
         this.enableViewModesNav(this.currentChartMode);
         this.treeJson = JSON.parse(JSON.stringify(this.orgNodes));
+        this.isSmartBarEnabled = false;
+        this.isEditMenuEnable = false;
+        this.onAddOrEditModeValueSet(false);
     }
 
     onCompanySelected(data: any) {
@@ -452,6 +470,10 @@ export class OrgComponent implements OnDestroy {
         } else {
             this.isMenuSettingsEnabled = data;
         }
+    }
+
+    onNodeSearched(data: OrgNodeModel) {
+        this.searchedNode = data;
     }
 
     ngOnDestroy() {
