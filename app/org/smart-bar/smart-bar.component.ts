@@ -106,6 +106,7 @@ export class SamrtBarComponent implements OnChanges {
     bodyClicked(event: any) {
         if (this.searchTerm || this.isSearchEnabled) {
             this.clearSearch();
+            this.isSearchEnabled = this.isTitleSelected = false;
             console.log("body!!");
         }
     }
@@ -407,6 +408,7 @@ export class SamrtBarComponent implements OnChanges {
             if (!this.isSearchEnabled) {
                 this.clearSearch();
                 this.exsitingSearchList = null;
+                this.isTitleSelected = false;
             }
             if (!this.isTitleSelected) {
                 this.isSearchEnabled = false;
