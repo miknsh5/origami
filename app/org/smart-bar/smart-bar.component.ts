@@ -102,13 +102,23 @@ export class SamrtBarComponent implements OnChanges {
             return;
         }
     };
-    @HostListener("window:click", ["$event"])
-    bodyClicked(event: any) {
-        if (this.searchTerm || this.isSearchEnabled) {
-            this.clearSearch();
-            this.isSearchEnabled = this.isTitleSelected = false;
-            console.log("body!!");
+    deselectSearchBox(event: any) {
+        if (this.selectedOrgNode) {
+            this.isTitleSelected = this.searchInProgress = false;
+            this.nodeSearchedList = new Array<OrgSearchModel>();
+            this.titleFilterList = new Array();
+            this.searchHeader = `BY ${HeaderTitle}`;
+
+        } else {
+            if (this.searchTerm || this.isSearchEnabled) {
+                this.isTitleSelected = this.searchInProgress = false;
+                this.nodeSearchedList = new Array<OrgSearchModel>();
+                this.titleFilterList = new Array();
+                this.searchHeader = `BY ${HeaderTitle}`;
+                this.isSearchEnabled = this.isTitleSelected = false;
+            }
         }
+
     }
 
     @HostListener("window:keydown", ["$event"])
