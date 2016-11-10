@@ -70,10 +70,14 @@ export class SamrtBarComponent implements OnChanges {
             }
         }
         if (changes["selectedOrgNode"]) {
-            if (this.selectedOrgNode === null) {
-                this.nodeSearched.emit(this.selectedOrgNode);
-            } else {
+            if (this.selectedOrgNode) {
+                if (!this.isEditMenuEnable && changes["selectedOrgNode"].previousValue === null) {
+                    this.isSmartBarEnabled.emit(false);
+                    this.clearSearch();
+                }
                 this.nodeSearched.emit(null);
+            } else {
+                this.nodeSearched.emit(this.selectedOrgNode);
             }
             this.setInputFocus();
         }
@@ -116,7 +120,25 @@ export class SamrtBarComponent implements OnChanges {
         }
 
         let curSelected = jQuery(searchContainer).find("li." + SELECTED);
-        if ((event as KeyboardEvent).keyCode === 38) {
+
+        // left arrow
+        if ((event as KeyboardEvent).keyCode === 37) {
+            if (this.selectedOrgNode && this.selectedOrgNode.IsStaging && !this.selectedOrgNode.IsNewRoot) {
+                this.deleteNode.emit(this.selectedOrgNode);
+            }
+        }
+        // right arrow
+        if ((event as KeyboardEvent).keyCode === 39) {
+            if (this.selectedOrgNode && this.selectedOrgNode.IsStaging && this.selectedOrgNode.children) {
+                this.deleteNode.emit(this.selectedOrgNode);
+            }
+        }
+        // top arrow
+        else if ((event as KeyboardEvent).keyCode === 38) {
+            if (this.selectedOrgNode && this.selectedOrgNode.IsStaging && !this.selectedOrgNode.IsNewRoot) {
+                this.deleteNode.emit(this.selectedOrgNode);
+                return;
+            }
             let newSelected = jQuery(searchContainer).find("li." + SELECTED).prev();
             if (this.selectedOrgNode) {
                 if (curSelected.hasClass("addNode") && !newSelected.hasClass("addNode")) {
@@ -138,6 +160,7 @@ export class SamrtBarComponent implements OnChanges {
                 jQuery(searchContainer).scrollTop(jQuery(searchContainer).scrollTop() + newSelected.position().top);
             }
         }
+        // bottom arrow
         else if ((event as KeyboardEvent).keyCode === 40) {
             let newSelected = jQuery(searchContainer).find("li." + SELECTED).next();
             if (curSelected.hasClass("nodeSearch") && !newSelected.hasClass("nodeSearch")) {
@@ -160,7 +183,9 @@ export class SamrtBarComponent implements OnChanges {
                 jQuery(searchContainer).scrollTop(jQuery(searchContainer).scrollTop() + newSelected.position().top);
             }
 
-        } else if ((event as KeyboardEvent).keyCode === 13) {
+        }
+        // enter
+        else if ((event as KeyboardEvent).keyCode === 13) {
             if (this.newNodeValue && this.newNodeValue.length === 0 && this.multiInTerm === "") {
                 return;
             }
@@ -179,7 +204,9 @@ export class SamrtBarComponent implements OnChanges {
                     this.renderer.invokeElementMethod(element, "click", []);
                 this.isSearchEnabled = true;
             }
-        } else if ((event as KeyboardEvent).keyCode === 27) {
+        }
+        // esc
+        else if ((event as KeyboardEvent).keyCode === 27) {
             if (this.isEditModeEnabled && this.selectedOrgNode) {
                 this.newOrgNode.Description = "";
                 this.newOrgNode.NodeFirstName = "";
