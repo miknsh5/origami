@@ -113,7 +113,7 @@ export class SideMenuComponent implements OnChanges {
 
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
         if (changes["orgChart"]) {
-            if (changes["orgChart"].currentValue) {
+            if (this.orgChart) {
                 this.isClosed = false;
                 this.openPanel();
             } else {
@@ -122,13 +122,13 @@ export class SideMenuComponent implements OnChanges {
             }
         }
 
-        if (changes["isSmartBarAddEnabled"] && changes["isSmartBarAddEnabled"].currentValue === false && this.isCollapsed && changes["isAddOrEditModeEnabled"] && changes["isAddOrEditModeEnabled"].currentValue === false) {
+        if (changes["isSmartBarAddEnabled"] && !changes["isSmartBarAddEnabled"].currentValue && this.isCollapsed) {
             this.openPanel();
             this.isCollapsed = false;
         }
 
         if (changes["selectedOrgNode"]) {
-            if (changes["isSmartBarAddEnabled"] && changes["isSmartBarAddEnabled"].currentValue === false && this.isCollapsed) {
+            if (changes["isSmartBarAddEnabled"] && !changes["isSmartBarAddEnabled"].currentValue && this.isCollapsed) {
                 this.openPanel();
                 this.isCollapsed = false;
             }
@@ -141,7 +141,7 @@ export class SideMenuComponent implements OnChanges {
                     this.isEditOrDeleteDisabled = true;
                     this.closePanel();
                     this.isCollapsed = true;
-                } else if ((this.isCollapsed || !this.isClosed)) {
+                } else if (this.isCollapsed || !this.isClosed) {
                     this.isEditOrDeleteDisabled = false;
                     this.openPanel();
                 }
