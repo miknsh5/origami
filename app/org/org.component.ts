@@ -5,7 +5,7 @@ import { OrgNodeModel, ChartMode, OrgCompanyModel, OrgGroupModel, OrgNodeStatus,
 
 const MIN_HEIGHT: number = 480;
 const MAX_HEIGHT: number = 768;
-const MIN_WIDTH: number = 540;
+const MIN_WIDTH: number = 600;
 const MAX_WIDTH: number = 1366;
 const DEFAULT_OFFSET: number = 55;
 
@@ -143,14 +143,15 @@ export class OrgComponent implements OnDestroy {
     }
 
     onNodeSelected(node) {
-        if (!this.isSmartBarEnabled) {
+        if (!this.isSmartBarEnabled || (!this.selectedNode && node)) {
             let prevNode = this.selectedNode ? this.selectedNode : new OrgNodeModel();
             this.selectedNode = node;
             if (this.selectedNode) {
                 if (node.NodeID === -1) {
                     this.isAddOrEditMode = true;
                     this.detailAddOrEditMode = true;
-                } else if ((this.isAddOrEditMode || !this.isAddOrEditMode && prevNode.IsNewRoot) && prevNode.NodeID !== node.NodeID) {
+                } else if ((this.isAddOrEditMode || !this.isAddOrEditMode && prevNode && prevNode.IsNewRoot)
+                    && prevNode && prevNode.NodeID !== node.NodeID) {
                     this.isAddOrEditMode = false;
                     this.detailAddOrEditMode = false;
                 }
