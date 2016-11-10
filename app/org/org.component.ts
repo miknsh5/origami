@@ -7,7 +7,7 @@ const MIN_HEIGHT: number = 480;
 const MAX_HEIGHT: number = 768;
 const MIN_WIDTH: number = 600;
 const MAX_WIDTH: number = 1366;
-const DEFAULT_OFFSET: number = 55;
+const DEFAULT_OFFSET: number = 61;
 
 declare var svgPanZoom: any;
 

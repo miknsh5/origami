@@ -5,7 +5,7 @@ import { OrgNodeModel, OrgSearchModel, OrgService, DomElementHelper } from "../s
 
 const HeaderTitle = "NAME";
 const AddResource = "Search, Add Resources";
-const AddJobTitle = "Search, Add Job Title";
+const AddJobTitle = "Add Job Title";
 const SaveData = "Press enter to save";
 const SELECTED = "selected";
 const SEARCH_CONTAINER = "#searchSelection";
