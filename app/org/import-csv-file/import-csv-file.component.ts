@@ -15,7 +15,7 @@ const ImportElementName = {
 };
 
 @Component({
-    selector: "sg-org-import-csv-file",
+    selector: "sg-import-csv-file",
     templateUrl: "app/org/import-csv-file/import-csv-file.component.html",
     styleUrls: ["app/org/import-csv-file/import-csv-file.component.css", "app/org/menu-panel/menu-panel.component.css"],
     providers: [CSVConversionHelper]
@@ -54,7 +54,11 @@ export class ImportCsvFileComponent {
         this.csvHelper.DownloadTemplate();
     }
 
-    private onImport(event) {
+    private onImportClick(event) {
+        (event.srcElement || event.target).value = null;
+    }
+
+    private onImportChange(event) {
         let files = (event.srcElement || event.target).files[0];
         if (files) {
             this.domHelper.hideElements(ImportElementName.importfile);

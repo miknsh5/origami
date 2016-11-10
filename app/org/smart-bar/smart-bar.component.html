@@ -1,0 +1,65 @@
+<div class="smart_bar_wrap">
+    <form>
+        <div center class="input-field">
+            <input *ngIf="!selectedOrgNode" id="searchNodes" type="text" placeholder="Search" name="searchTerm" (blur)="deselectSearchBox($event)" (keyup)="onInputSearch($event)" [(ngModel)]="searchTerm" autocomplete="off">
+            <ul *ngIf="selectedOrgNode" (click)="addNodes.focus()">
+                <li *ngFor="let newNode of newNodeValue" class="ui-addList">
+                    <span>{{newNode}}</span>
+                    <i class="material-icons right">keyboard_arrow_right</i>
+                </li>
+                <li class="ui-addList">
+                    <input #addNodes type="text" placeholder={{placeholderText}} name="multiInTerm" (blur)="deselectSearchBox($event)" (keyup)="onInputMultiSearch($event)" [(ngModel)]="multiInTerm" autocomplete="off">
+                </li>
+            </ul>
+        </div>
+    </form>
+    <div *ngIf="searchInProgress && !isDescriptionText" class="search">
+        <ul id="searchSelection">
+            <li *ngIf="!selectedOrgNode" style="font-size: 65%; padding: 2px 10px;">FIND</li>
+            <li *ngIf="!selectedOrgNode" class="header">{{ searchHeader }}</li>
+            <li *ngFor="let nodeData of nodeSearchedList" class="nodeSearch" (click)="onNodeSelected($event,nodeData)">
+                <a>
+                    <i class="material-icons">search</i> {{nodeData.Name}} <span class="title"> {{nodeData.Title}}</span>
+                </a>
+            </li>
+            <li *ngIf="nodeSearchedList.length===0">
+                <i class="material-icons">search</i> No Results
+            </li>
+            <li *ngIf="!selectedOrgNode && !isTitleSelected" class="header">BY TITLE</li>
+            <li *ngFor="let titleData of titleFilterList" class="titleFilter" (click)="onTitleFilterSelected($event,titleData)">
+                <a>
+                    <i class="material-icons">search</i> {{titleData.Name}} <i class="material-icons right">keyboard_arrow_right</i>
+                    <span class="badge right"> {{titleData.Count}}</span>
+                </a>
+            </li>
+            <li *ngIf="!selectedOrgNode && !isTitleSelected && titleFilterList.length===0">
+                <i class="material-icons">search</i> No Results
+            </li>
+            <li *ngIf="selectedOrgNode && multiInTerm" class="header">ADD A RESOURCE</li>
+            <li *ngIf="selectedOrgNode && multiInTerm" class="addNode" (click)="onAddNode($event)">
+                <a>
+                    <i class="material-icons">add_circle</i> {{multiInTerm}} <i class="material-icons right">keyboard_arrow_right</i>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <div *ngIf="searchInProgress && isDescriptionText " class="search">
+        <ul id="titleSearchSelection">
+            <li *ngIf=" titleFilterList && titleFilterList.length===0">
+                <i class="material-icons">search</i> No Results
+            </li>
+            <li *ngFor="let titleData of titleFilterList" class="titleFilter" (click)="selectTitle($event,titleData.Name)">
+                <a>
+                    <i class="material-icons">folder_shared</i> {{titleData.Name}}
+                </a>
+            </li>
+            <li *ngIf="selectedOrgNode && multiInTerm" class="header">CREATE NEW TITLE</li>
+            <li *ngIf="selectedOrgNode && multiInTerm" class="addNode" (click)="onAddNode($event)">
+                <a>
+                    <i class="material-icons">add_circle</i> {{multiInTerm}} <i class="material-icons right">keyboard_arrow_right</i>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>

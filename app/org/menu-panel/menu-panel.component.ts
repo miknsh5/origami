@@ -234,7 +234,8 @@ export class MenuPanelComponent implements OnChanges {
             } else {
                 this.domHelper.showElements(MenuElement.exportData);
                 this.domHelper.hideElements(MenuElement.downloadTemplate);
-            } element = document.querySelector("input[name=existingGroupName]");
+            }
+            element = document.querySelector("input[name=existingGroupName]");
         } else if (name === "newGroup") {
             this.groupSelectedMode = "AddNewGroup";
             this.groupSettingTitle = "Add New Group";
@@ -389,9 +390,9 @@ export class MenuPanelComponent implements OnChanges {
 
     private onClickOnImport() {
         if (!this.isImportDisabled) {
+            this.domHelper.hideElements(MenuElement.groupSaveOrEdit);
             this.groupSettingTitle = "Import";
             this.isImport = true;
-            this.domHelper.hideElements(MenuElement.groupSaveOrEdit);
         }
     }
 

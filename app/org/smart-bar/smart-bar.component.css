@@ -1,0 +1,140 @@
+.smart_bar_wrap {
+    height: 55px;
+    position: fixed;
+    background-color: #607D8B;
+    background-color: var(--blue-grey);
+    bottom: 15px;
+    left: 0;
+    right: 0;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
+    box-shadow: 0 2px 4px 0 var(--black-50);
+    min-width: 240px;
+    max-width: 720px;
+    margin: 0 auto;
+    width: 95%;
+}
+
+.smart_bar_wrap .input-field input[type=text] {
+    padding: 0 2%;
+    margin: 0px 3%;
+    border: #58727F;
+    background-color: #58727F;
+    height: 30px;
+    width: 90%;
+    border-radius: 10px;
+    box-shadow: 0 1px 0 0 #58727F;
+    color: #ffffff;
+    color: var(--white-text);
+}
+
+.smart_bar_wrap .search {
+    bottom: 65px;
+    position: absolute;
+    height: auto;
+    width: 50%;
+    min-width: 240px;
+    max-width: 440px;
+    background-color: #fafafa;
+    background-color: var(--white)
+}
+
+.smart_bar_wrap .search ul {
+    border: 1px solid #cfd8dc;
+    border: 1px solid var(--silver);
+    max-height: 200px;
+    overflow-y: auto;
+    margin: 0;
+}
+
+.smart_bar_wrap .search ul li {
+    font-size: 85%;
+    color: #949494;
+}
+
+.smart_bar_wrap .search ul li.header {
+    padding: 2px 10px;
+    background-color: #cfd8dc;
+    background-color: var(--silver);
+    font-size: 60%;
+    font-weight: bolder;
+}
+
+.smart_bar_wrap .search ul li a {
+    padding: 2px 10px;
+    color: #949494;
+    cursor: pointer;
+    display: block;
+}
+
+.smart_bar_wrap .search ul li.selected a {
+    background: #0097ff;
+    background: var(--azure);
+    color: #ffffff;
+    color: var(--white-text);
+}
+
+.smart_bar_wrap .search ul li i {
+    font-size: 15px;
+    vertical-align: text-top;
+}
+
+.smart_bar_wrap .search ul li span.badge {
+    font-size: 90%;
+    padding: 0 10px;
+}
+
+.smart_bar_wrap .search ul li span.badge {
+    color: #0097ff;
+    color: var(--azure);
+    background-color: #ffffff;
+    background-color: var(--white-text);
+    border-radius: 50%;
+    position: initial;
+    padding: 0 4px;
+    min-width: 20px;
+}
+
+.ui-addList {
+    display: inline-block;
+    margin-top: 0px;
+}
+
+.ui-addList>span {
+    border: 1px solid white;
+    padding: 0 5px;
+    font-size: 90%;
+    vertical-align: bottom;
+}
+
+.ui-addList>i {
+    font-size: 18px;
+    margin: 3px;
+}
+
+.ui-addList>input {
+    width: 100% !important;
+}
+
+.ui-addList:nth-child(2)>i {
+    display: none;
+}
+
+.smart_bar_wrap .input-field ul {
+    padding: 0 2%;
+    margin: 0px 3%;
+    border: #58727F;
+    background-color: #58727F;
+    height: 30px;
+    width: 94%;
+    border-radius: 10px;
+    box-shadow: 0 1px 0 0 #58727F;
+    color: #ffffff;
+    color: var(--white-text);
+}
+
+::-webkit-input-placeholder,
+ :-moz-placeholder,
+ ::-moz-placeholder,
+ :-ms-input-placeholder {
+    color: #879AA3;
+}
