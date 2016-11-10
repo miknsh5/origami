@@ -103,22 +103,23 @@ export class SamrtBarComponent implements OnChanges {
         }
     };
     deselectSearchBox(event: any) {
-        if (this.selectedOrgNode) {
-            this.isTitleSelected = this.searchInProgress = false;
-            this.nodeSearchedList = new Array<OrgSearchModel>();
-            this.titleFilterList = new Array();
-            this.searchHeader = `BY ${HeaderTitle}`;
-
-        } else {
-            if (this.searchTerm || this.isSearchEnabled) {
+        setTimeout(() => {
+            if (this.selectedOrgNode) {
                 this.isTitleSelected = this.searchInProgress = false;
                 this.nodeSearchedList = new Array<OrgSearchModel>();
                 this.titleFilterList = new Array();
                 this.searchHeader = `BY ${HeaderTitle}`;
-                this.isSearchEnabled = this.isTitleSelected = false;
-            }
-        }
 
+            } else {
+                if (this.searchTerm || this.isSearchEnabled) {
+                    this.isTitleSelected = this.searchInProgress = false;
+                    this.nodeSearchedList = new Array<OrgSearchModel>();
+                    this.titleFilterList = new Array();
+                    this.searchHeader = `BY ${HeaderTitle}`;
+                    this.isSearchEnabled = this.isTitleSelected = false;
+                }
+            }
+        }, 500);
     }
 
     @HostListener("window:keydown", ["$event"])
