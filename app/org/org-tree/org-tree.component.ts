@@ -256,6 +256,11 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 }
             }
 
+            if (changes["isMenuSettingsEnabled"] && changes["treeData"]) {
+                this.root = this.treeData[0];
+                this.selectedOrgNode = this.root;
+            }
+
             if (changes["isAddOrEditModeEnabled"] && changes["isAddOrEditModeEnabled"].currentValue && !changes["treeData"]) {
                 return;
             }

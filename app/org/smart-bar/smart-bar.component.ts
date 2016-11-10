@@ -415,13 +415,19 @@ export class SamrtBarComponent implements OnChanges {
                 this.multiInTerm = "";
             }
         } else {
-            if (!this.isSearchEnabled) {
+            if (!this.isTitleSelected) {
                 this.clearSearch();
                 this.exsitingSearchList = null;
-                this.isTitleSelected = false;
-            }
-            if (!this.isTitleSelected) {
-                this.isSearchEnabled = false;
+            } else {
+                if (!this.searchTerm && this.searchTerm !== this.prevSearchTerm) {
+                    if (!this.prevSearchTerm) {
+                        this.clearSearch();
+                        this.exsitingSearchList = null;
+                        return;
+                    }
+                    this.processSearch(this.searchTerm);
+                    this.prevSearchTerm = this.searchTerm;
+                }
             }
         }
     }
@@ -582,7 +588,7 @@ export class SamrtBarComponent implements OnChanges {
         this.titleFilterList = null;
         this.searchHeader = `BY ${data.Name.toUpperCase()}`;
         this.searchList(data.Name.toLowerCase(), true);
-        this.searchTerm = "";
+        this.prevSearchTerm = this.searchTerm = "";
     }
 
     private selectTitle(event: any, data: any) {
@@ -608,7 +614,9 @@ export class SamrtBarComponent implements OnChanges {
         setTimeout(() => {
             if (!this.selectedOrgNode || (this.selectedOrgNode && this.selectedOrgNode.NodeID !== -1)) {
                 searchList.forEach((data, index) => {
-                    if (data.Name.toLowerCase().includes(searchTerm)) {
+                    if (!searchTerm) {
+                        this.nodeSearchedList.push(data);
+                    } else if (data.Name.toLowerCase().includes(searchTerm)) {
                         this.nodeSearchedList.push(data);
                     }
                 });

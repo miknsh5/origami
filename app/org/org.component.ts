@@ -206,7 +206,7 @@ export class OrgComponent implements OnDestroy {
         if (value) {
             this.disableViewAndExploreModesNav();
         } else {
-            this.enableViewModesNav(ChartMode.build);
+            this.enableViewModesNav(this.currentChartMode);
         }
     }
 
