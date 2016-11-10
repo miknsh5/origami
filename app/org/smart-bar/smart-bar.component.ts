@@ -98,6 +98,13 @@ export class SamrtBarComponent implements OnChanges {
             return;
         }
     };
+    @HostListener("window:click", ["$event"])
+    bodyClicked(event: any) {
+        if (this.searchTerm || this.isSearchEnabled) {
+            this.clearSearch();
+            console.log("body!!");
+        }
+    }
 
     @HostListener("window:keydown", ["$event"])
     public OnKeyDown(event) {
@@ -374,7 +381,9 @@ export class SamrtBarComponent implements OnChanges {
                 this.clearSearch();
                 this.exsitingSearchList = null;
             }
-            this.isSearchEnabled = false;
+            if (!this.isTitleSelected) {
+                this.isSearchEnabled = false;
+            }
         }
     }
 
