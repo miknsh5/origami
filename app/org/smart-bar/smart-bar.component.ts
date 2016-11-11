@@ -467,6 +467,7 @@ export class SamrtBarComponent implements OnChanges {
                 if (!this.newNodeValue || this.newNodeValue.length === 0) {
                     if (islastName) {
                         this.selectedOrgNode.NodeLastName = this.multiInTerm.substring(index + 1, this.multiInTerm.length);
+                        this.selectedOrgNode.NodeFirstName = this.multiInTerm.substring(0, index);
                     }
                     else {
                         this.selectedOrgNode.NodeFirstName = this.multiInTerm;
