@@ -112,10 +112,13 @@ export class SamrtBarComponent implements OnChanges {
 
             } else {
                 if (this.searchTerm || this.isSearchEnabled) {
-                    this.searchInProgress =  this.isSearchEnabled = false;
+                    this.searchInProgress = this.isSearchEnabled = false;
                     this.nodeSearchedList = new Array<OrgSearchModel>();
                     this.titleFilterList = new Array();
                     this.searchHeader = `BY ${HeaderTitle}`;
+                }
+                if (this.searchTerm === "") {
+                    this.isTitleSelected = false;
                 }
             }
         }, 500);
@@ -244,7 +247,9 @@ export class SamrtBarComponent implements OnChanges {
                 this.newNodeValue = this.titleFilterList = null;
                 this.clearSearch();
             }
-        } else if ((event as KeyboardEvent).keyCode === 8) {
+        }
+        // backspace
+        else if ((event as KeyboardEvent).keyCode === 8) {
             if (this.isEditModeEnabled) {
                 if (this.multiInTerm === "" && this.newNodeValue && this.newNodeValue.length > 0) {
                     if (this.newNodeValue.length === 1) {
@@ -255,6 +260,11 @@ export class SamrtBarComponent implements OnChanges {
                     this.isSmartBarEnabled.emit(false);
                     this.multiInTerm = "";
                     this.newNodeValue = null;
+                } else if (this.searchTerm === "") {
+                    this.searchInProgress = this.isSearchEnabled = this.isTitleSelected = false;
+                    this.nodeSearchedList = new Array<OrgSearchModel>();
+                    this.titleFilterList = new Array();
+                    this.searchHeader = `BY ${HeaderTitle}`;
                 }
             }
         }
