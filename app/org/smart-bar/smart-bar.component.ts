@@ -112,11 +112,10 @@ export class SamrtBarComponent implements OnChanges {
 
             } else {
                 if (this.searchTerm || this.isSearchEnabled) {
-                    this.searchInProgress = false;
+                    this.searchInProgress =  this.isSearchEnabled = false;
                     this.nodeSearchedList = new Array<OrgSearchModel>();
                     this.titleFilterList = new Array();
                     this.searchHeader = `BY ${HeaderTitle}`;
-                    this.isSearchEnabled = false;
                 }
             }
         }, 500);
