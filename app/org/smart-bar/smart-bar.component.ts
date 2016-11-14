@@ -149,6 +149,9 @@ export class SamrtBarComponent implements OnChanges {
         }
         // top arrow
         else if ((event as KeyboardEvent).keyCode === 38) {
+            if (this.selectedOrgNode && this.selectedOrgNode.NodeID === -1 && !this.isDescriptionText) {
+                return;
+            }
             if (this.selectedOrgNode && this.selectedOrgNode.IsStaging && !this.selectedOrgNode.IsNewRoot) {
                 this.deleteNode.emit(this.selectedOrgNode);
                 return;
@@ -176,6 +179,9 @@ export class SamrtBarComponent implements OnChanges {
         }
         // bottom arrow
         else if ((event as KeyboardEvent).keyCode === 40) {
+            if (this.selectedOrgNode && this.selectedOrgNode.NodeID === -1 && !this.isDescriptionText) {
+                return;
+            }
             let newSelected = jQuery(searchContainer).find("li." + SELECTED).next();
             if (curSelected.hasClass("nodeSearch") && !newSelected.hasClass("nodeSearch")) {
                 newSelected = newSelected.next();
@@ -197,27 +203,6 @@ export class SamrtBarComponent implements OnChanges {
                 jQuery(searchContainer).scrollTop(jQuery(searchContainer).scrollTop() + newSelected.position().top);
             }
 
-        }
-        // enter
-        else if ((event as KeyboardEvent).keyCode === 13) {
-            if (this.newNodeValue && this.newNodeValue.length === 0 && this.multiInTerm === "") {
-                return;
-            }
-            if (this.isDescriptionText) {
-                let element = document.querySelector(TITLE_SEARCH_CONTAINER + " li." + SELECTED);
-                if (element) {
-                    this.renderer.invokeElementMethod(element, "click", []);
-                    this.multiInTerm = "";
-                }
-                else if (this.isDescriptionselected || (this.newNodeValue && this.newNodeValue.length === 2) || (this.newNodeValue && this.newNodeValue.length <= 2)) {
-                    this.onAddNode();
-                }
-            } else {
-                let element = document.querySelector(SEARCH_CONTAINER + " li." + SELECTED);
-                if (element)
-                    this.renderer.invokeElementMethod(element, "click", []);
-                this.isSearchEnabled = true;
-            }
         }
         // esc
         else if ((event as KeyboardEvent).keyCode === 27) {
@@ -260,7 +245,7 @@ export class SamrtBarComponent implements OnChanges {
                     this.isSmartBarEnabled.emit(false);
                     this.multiInTerm = "";
                     this.newNodeValue = null;
-                } else if (this.searchTerm === "") {
+                } else if (this.searchTerm === "" && !this.multiInTerm) {
                     this.searchInProgress = this.isSearchEnabled = this.isTitleSelected = false;
                     this.nodeSearchedList = new Array<OrgSearchModel>();
                     this.titleFilterList = new Array();
@@ -371,6 +356,28 @@ export class SamrtBarComponent implements OnChanges {
         }
     }
 
+    onSearchOrAddEnterKeypress(event) {
+        if (this.newNodeValue && this.newNodeValue.length === 0 && this.multiInTerm === "") {
+            return;
+        }
+        if (this.isDescriptionText) {
+            let element = document.querySelector(TITLE_SEARCH_CONTAINER + " li." + SELECTED);
+            if (element) {
+                this.renderer.invokeElementMethod(element, "click", []);
+                this.multiInTerm = "";
+            }
+            else if (this.isDescriptionselected || (this.newNodeValue && this.newNodeValue.length === 2) || (this.newNodeValue && this.newNodeValue.length <= 2)) {
+                this.onAddNode();
+            }
+        } else {
+            let element = document.querySelector(SEARCH_CONTAINER + " li." + SELECTED);
+            if (element) {
+                this.renderer.invokeElementMethod(element, "click", []);
+            }
+            this.isSearchEnabled = true;
+        }
+    }
+
     private addNewParentNode(node: OrgNodeModel) {
         if (!node) { return; }
         // we don"t really need to send any child info to the server at this point
@@ -464,13 +471,32 @@ export class SamrtBarComponent implements OnChanges {
             if (this.selectedOrgNode && this.selectedOrgNode.NodeID === -1) {
                 let islastName = this.checkSpaceInName(this.multiInTerm);
                 let index = this.multiInTerm.indexOf(" ");
+                if (!this.newNodeValue || this.newNodeValue.length === 0 && this.multiInTerm === "") {
+                    this.selectedOrgNode.NodeFirstName = "";
+                    this.selectedOrgNode.NodeLastName = "";
+                    this.selectedOrgNode.Description = "";
+
+                }
                 if (!this.newNodeValue || this.newNodeValue.length === 0) {
                     if (islastName) {
                         this.selectedOrgNode.NodeLastName = this.multiInTerm.substring(index + 1, this.multiInTerm.length);
-                        this.selectedOrgNode.NodeFirstName = this.multiInTerm.substring(0, index);
+
+                        if (this.multiInTerm.substring(0, index) === "") {
+                            console.log(index);
+                            this.multiInTerm = this.multiInTerm.trim();
+                            this.selectedOrgNode.NodeFirstName = this.multiInTerm.substring(index, this.multiInTerm.length).trim();
+                            this.selectedOrgNode.NodeLastName = "";
+                        } else {
+                            this.selectedOrgNode.NodeFirstName = this.multiInTerm.substring(0, index);
+                        }
                     }
                     else {
                         this.selectedOrgNode.NodeFirstName = this.multiInTerm;
+                        if (index !== -1) {
+                            this.selectedOrgNode.NodeLastName = this.multiInTerm.substring(index + 1, this.multiInTerm.length);
+                        } else {
+                            this.selectedOrgNode.NodeLastName = "";
+                        }
                     }
                 } else {
                     if (this.newNodeValue.length !== 0 && this.newNodeValue.length < 2) {
