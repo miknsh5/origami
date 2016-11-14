@@ -85,4 +85,26 @@
             </div>
         </div>
     </div>
+    <div id="deleteNodeModal" class="modal">
+        <div class="modal-content">
+            <div class="modaltitle">
+                <div class="title">
+                    <i class="Small material-icons left">mode_edit</i>
+                    <label>Delete Node Confirmation</label>
+                </div>
+                <div class="close" (click)="dismissPopup()"><i class="material-icons">clear</i></div>
+            </div>
+            <div class="divider"></div>
+            <div id="deleteNodeConfirm" class="center">
+                <sg-menu-confirm-button [hideMessage]="false" [titleName]="name" [deleteTitle]="deleteTitle" (onConfirmClick)="onNodeDeleteConfirm($event)" (onCancelClick)="onNodeDeleteCancel($event)">
+                </sg-menu-confirm-button>
+            </div>
+            <div id="deleteChildNodeConfirm" class="center">
+                Delete Child Node First!
+                <div>
+                    <button class="waves-effect waves-light btn" (click)="onNodeDeleteCancel($event)">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

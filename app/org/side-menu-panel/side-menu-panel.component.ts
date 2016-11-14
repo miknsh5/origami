@@ -12,13 +12,15 @@ const DELETE_ICON = `delete`;
 const SAVE_ICON = `save`;
 const CLOSE_ICON = `close`;
 
-
 const MenuElement = {
     sidePanelExportData: "#sidePanelExportData",
     publishData: "#publishData",
     menuPanel: "#menuPanel",
     sideNavfixed: ".sideNav.fixed",
-    feedbackPanel: "#feedbackPanel"
+    feedbackPanel: "#feedbackPanel",
+    deleteNodeModal: "#deleteNodeModal",
+    deleteNodeConfirm: "#deleteNodeConfirm",
+    deleteChildNodeConfirm: "#deleteChildNodeConfirm"
 };
 
 @Component({
@@ -65,6 +67,8 @@ export class SideMenuComponent implements OnChanges {
     @Output() showLastNameLabel = new EventEmitter<boolean>();
     @Output() showDescriptionLabel = new EventEmitter<boolean>();
     @Output() isEditEnabled = new EventEmitter<boolean>();
+    @Output() deleteTitle: string;
+    @Output() name: string;
 
     @HostListener("window:keydown", ["$event"])
     onKeyDown(event: any) {
@@ -249,21 +253,39 @@ export class SideMenuComponent implements OnChanges {
         this.domHelper.showElements(MenuElement.sidePanelExportData);
         this.domHelper.hideElements(MenuElement.publishData);
     }
+
+    onNodeDeleteConfirm(data: boolean) {
+        if (this.selectedNode.NodeID === -1) {
+            this.deleteNode.emit(this.selectedNode);
+        } else {
+            if (this.selectedNode.children && this.selectedNode.children.length > 0) {
+                this.domHelper.hideElements(MenuElement.deleteNodeConfirm);
+                this.domHelper.showElements(MenuElement.deleteChildNodeConfirm);
+            } else {
+                this.orgService.deleteNode(this.selectedNode.NodeID)
+                    .subscribe(data => this.emitDeleteNodeNotification(data),
+                    error => this.handleError(error),
+                    () => console.log("Deleted node."));
+            }
+        }
+    }
+    onNodeDeleteCancel(data: boolean) {
+        this.deleteTitle = "";
+        this.name = "";
+        this.domHelper.hideElements([MenuElement.deleteNodeModal, MenuElement.deleteChildNodeConfirm, MenuElement.deleteNodeConfirm]);
+    }
+    dismissPopup() {
+        this.deleteTitle = "";
+        this.name = "";
+        this.domHelper.hideElements([MenuElement.deleteNodeModal, MenuElement.deleteChildNodeConfirm, MenuElement.deleteNodeConfirm]);
+    }
+
     onDeleteOrCancelNodeClicked() {
         if (this.selectedNode.NodeID !== -1) {
             if (this.deleteOrClose === DELETE_ICON) {
-                if (this.selectedNode.NodeID === -1) {
-                    this.deleteNode.emit(this.selectedNode);
-                } else {
-                    if (this.selectedNode.children && this.selectedNode.children.length > 0) {
-                        alert("Delete Child Node First!");
-                    } else {
-                        this.orgService.deleteNode(this.selectedNode.NodeID)
-                            .subscribe(data => this.emitDeleteNodeNotification(data),
-                            error => this.handleError(error),
-                            () => console.log("Deleted node."));
-                    }
-                }
+                this.deleteTitle = "Node";
+                this.name = this.selectedOrgNode.NodeFirstName + " " + this.selectedOrgNode.NodeLastName;
+                this.domHelper.showElements([MenuElement.deleteNodeModal, MenuElement.deleteNodeConfirm]);
             } else if (this.deleteOrClose === CLOSE_ICON) {
                 this.editOrSave = EDIT_ICON;
                 this.deleteOrClose = DELETE_ICON;
@@ -280,6 +302,7 @@ export class SideMenuComponent implements OnChanges {
     private emitDeleteNodeNotification(data) {
         if (data === true) {
             this.deleteNode.emit(this.selectedNode);
+            this.domHelper.hideElements([MenuElement.deleteNodeModal, MenuElement.deleteChildNodeConfirm, MenuElement.deleteNodeConfirm]);
         }
     }
 
