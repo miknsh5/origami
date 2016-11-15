@@ -149,7 +149,7 @@ export class SamrtBarComponent implements OnChanges {
         }
         // top arrow
         else if ((event as KeyboardEvent).keyCode === 38) {
-            if (this.selectedOrgNode && this.selectedOrgNode.NodeID === -1 && !this.isDescriptionText) {
+            if (this.selectedOrgNode && this.selectedOrgNode.NodeID === -1 && !this.isDescriptionText && this.multiInTerm !== "") {
                 return;
             }
             if (this.selectedOrgNode && this.selectedOrgNode.IsStaging && !this.selectedOrgNode.IsNewRoot) {
@@ -157,17 +157,20 @@ export class SamrtBarComponent implements OnChanges {
                 return;
             }
             let newSelected = jQuery(searchContainer).find("li." + SELECTED).prev();
+            console.log(newSelected);
+
             if (this.selectedOrgNode) {
                 if (curSelected.hasClass("addNode") && !newSelected.hasClass("addNode")) {
                     newSelected = newSelected.prev();
                 }
+
             } else {
                 if (curSelected.hasClass("titleFilter") && !newSelected.hasClass("titleFilter")) {
                     newSelected = newSelected.prev();
                 }
             }
 
-            if (curSelected.hasClass("nodeSearch") && !newSelected.hasClass("nodeSearch")) {
+            if ((curSelected.hasClass("nodeSearch")) && !newSelected.hasClass("nodeSearch")) {
                 newSelected = null;
             }
 
@@ -179,7 +182,7 @@ export class SamrtBarComponent implements OnChanges {
         }
         // bottom arrow
         else if ((event as KeyboardEvent).keyCode === 40) {
-            if (this.selectedOrgNode && this.selectedOrgNode.NodeID === -1 && !this.isDescriptionText) {
+            if (this.selectedOrgNode && this.selectedOrgNode.NodeID === -1 && !this.isDescriptionText && this.multiInTerm !== "") {
                 return;
             }
             let newSelected = jQuery(searchContainer).find("li." + SELECTED).next();
