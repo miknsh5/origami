@@ -149,16 +149,11 @@ export class SamrtBarComponent implements OnChanges {
         }
         // top arrow
         else if ((event as KeyboardEvent).keyCode === 38) {
-            if (this.selectedOrgNode && this.selectedOrgNode.NodeID === -1 && !this.isDescriptionText && this.multiInTerm !== "") {
-                return;
-            }
             if (this.selectedOrgNode && this.selectedOrgNode.IsStaging && !this.selectedOrgNode.IsNewRoot) {
                 this.deleteNode.emit(this.selectedOrgNode);
                 return;
             }
             let newSelected = jQuery(searchContainer).find("li." + SELECTED).prev();
-            console.log(newSelected);
-
             if (this.selectedOrgNode) {
                 if (curSelected.hasClass("addNode") && !newSelected.hasClass("addNode")) {
                     newSelected = newSelected.prev();
@@ -174,6 +169,10 @@ export class SamrtBarComponent implements OnChanges {
                 newSelected = null;
             }
 
+            if (newSelected.hasClass("")) {
+                newSelected = null;
+            }
+
             if (newSelected && newSelected[0] && newSelected[0].tagName === "LI") {
                 curSelected.removeClass(SELECTED);
                 newSelected.addClass(SELECTED);
@@ -182,9 +181,6 @@ export class SamrtBarComponent implements OnChanges {
         }
         // bottom arrow
         else if ((event as KeyboardEvent).keyCode === 40) {
-            if (this.selectedOrgNode && this.selectedOrgNode.NodeID === -1 && !this.isDescriptionText && this.multiInTerm !== "") {
-                return;
-            }
             let newSelected = jQuery(searchContainer).find("li." + SELECTED).next();
             if (curSelected.hasClass("nodeSearch") && !newSelected.hasClass("nodeSearch")) {
                 newSelected = newSelected.next();
@@ -199,7 +195,9 @@ export class SamrtBarComponent implements OnChanges {
                     newSelected = newSelected.next();
                 }
             }
-
+            if (newSelected.hasClass("")) {
+                newSelected = null;
+            }
             if (newSelected && newSelected[0] && newSelected[0].tagName === "LI") {
                 curSelected.removeClass(SELECTED);
                 newSelected.addClass(SELECTED);
