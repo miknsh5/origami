@@ -14,7 +14,7 @@
             </div>
             <label class="menuTitle">Resource</label>
             <div class="detail_wrap">
-                <form #orgform="ngForm" *ngIf="selectedOrgNode" (ngSubmit)="onSubmit()">
+                <form #orgform="ngForm" *ngIf="selectedOrgNode" (keyup.enter)="onEditOrSaveNodeClicked()" (ngSubmit)="onSubmit()">
                     <div *ngIf="selectedNode && isEditModeEnabled" class="form-group text-wrap">
                         <div class="edit-name">
                             <input type="text" class="h-1 title-name-edit form-control firstName" (keyup)="onInputKeyDownOrUp($event,firstName)" ngControl="firstName" #firstName="ngModel" [ngModel]="selectedNode.NodeFirstName" placeholder="First Name" name="firstName" autocomplete="off"
@@ -82,6 +82,28 @@
                     <button class="waves-effect waves-light btn right" (click)="onFeedbackSend()"> 
                       <i class="material-icons left">send</i>SEND</button>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="deleteNodeModal" class="modal">
+    <div class="modal-content">
+        <div class="modaltitle">
+            <div class="title">
+                <i class="Small material-icons left">mode_edit</i>
+                <label>Delete Node Confirmation</label>
+            </div>
+            <div class="close" (click)="dismissPopup()"><i class="material-icons">clear</i></div>
+        </div>
+        <div class="divider"></div>
+        <div id="deleteNodeConfirm" class="center">
+            <sg-menu-confirm-button [hideMessage]="false" [titleName]="name" [deleteTitle]="deleteTitle" (onConfirmClick)="onNodeDeleteConfirm($event)" (onCancelClick)="onNodeDeleteCancel($event)">
+            </sg-menu-confirm-button>
+        </div>
+        <div id="deleteChildNodeConfirm" class="center">
+            Delete Child Node First!
+            <div>
+                <button class="waves-effect waves-light btn" (click)="onNodeDeleteCancel($event)">OK</button>
             </div>
         </div>
     </div>
