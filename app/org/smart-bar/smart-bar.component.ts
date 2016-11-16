@@ -63,6 +63,7 @@ export class SamrtBarComponent implements OnChanges {
             this.newNodeValue = null;
             this.multiInTerm = "";
             this.placeholderText = `${AddResource}`;
+            this.isDescriptionText = false;
         }
         if (changes["treeJsonData"]) {
             if (this.treeJsonData) {
