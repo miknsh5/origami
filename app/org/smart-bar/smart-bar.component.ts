@@ -73,6 +73,9 @@ export class SamrtBarComponent implements OnChanges {
         }
         if (changes["selectedOrgNode"]) {
             if (this.selectedOrgNode) {
+                if (this.newNodeValue && this.newNodeValue.length === 1) {
+                    this.isSmartBarEnabled.emit(true);
+                }
                 if (!this.isEditMenuEnable && changes["selectedOrgNode"].previousValue === null) {
                     this.isSmartBarEnabled.emit(false);
                     this.clearSearch();
