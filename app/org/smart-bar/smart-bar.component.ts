@@ -169,7 +169,7 @@ export class SamrtBarComponent implements OnChanges {
                 newSelected = null;
             }
 
-            if (newSelected.hasClass("")) {
+            if (newSelected && newSelected.hasClass("")) {
                 newSelected = null;
             }
 
@@ -195,7 +195,7 @@ export class SamrtBarComponent implements OnChanges {
                     newSelected = newSelected.next();
                 }
             }
-            if (newSelected.hasClass("")) {
+            if (newSelected && newSelected.hasClass("")) {
                 newSelected = null;
             }
             if (newSelected && newSelected[0] && newSelected[0].tagName === "LI") {
