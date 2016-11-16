@@ -308,7 +308,7 @@ export class SamrtBarComponent implements OnChanges {
             this.newNodeValue = null;
         }
         else {
-            if (!this.newNodeValue) {
+            if (!this.newNodeValue || (this.newNodeValue && this.newNodeValue.length === 0)) {
                 this.newNodeValue = new Array();
                 this.newNodeValue.push(firstName + " " + lastName);
                 this.multiInTerm = "";
