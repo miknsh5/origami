@@ -1,8 +1,6 @@
 <div id="wrapper">
     <sg-menu-panel (groupSelected)="onGroupSelected($event)" (companySelected)="onCompanySelected($event)" [noNodeExsit]="isOrgNodeEmpty" [currentOrgNodeStatus]="currentOrgNodeStatus" (isMenuEnable)="onMenuSettingsChange($event)">
     </sg-menu-panel>
-    <sg-side-menu-panel [selectedOrgNode]="selectedNode" [currentMode]="currentChartMode" [companyName]="companyName" (showFirstNameLabel)="enableFirstNameLabel($event)" (showLastNameLabel)="enableLastNameLabel($event)" (showDescriptionLabel)="enableDescriptionLabel($event)"
-        [svgWidth]="svgWidth" [svgHeight]="svgHeight" [orgChart]="orgGroup" (deleteNode)="onNodeDeleted($event)" (updateNode)="onNodeUpdated($event)" [isMenuSettingsEnabled]="isMenuSettingsEnabled" [isSmartBarAddEnabled]="isSmartBarEnabled" (isEditEnabled)="isEditEnabled($event)"></sg-side-menu-panel>
     <div class="modes_wrap">
         <ul>
             <li [ngClass]="buildView" class="nav_build" (click)="changeViewModeNav(1)"><a> Build</a></li>
@@ -20,4 +18,6 @@
             </sg-smart-bar>
         </div>
     </div>
+    <sg-side-menu-panel [selectedOrgNode]="selectedNode" [currentMode]="currentChartMode" [companyName]="companyName" (showFirstNameLabel)="enableFirstNameLabel($event)" (showLastNameLabel)="enableLastNameLabel($event)" (showDescriptionLabel)="enableDescriptionLabel($event)"
+        [svgWidth]="svgWidth" [svgHeight]="svgHeight" [orgChart]="orgGroup" (deleteNode)="onNodeDeleted($event)" (updateNode)="onNodeUpdated($event)" [isMenuSettingsEnabled]="isMenuSettingsEnabled" [isSmartBarAddEnabled]="isSmartBarEnabled" (isEditEnabled)="isEditEnabled($event)"></sg-side-menu-panel>
 </div>
