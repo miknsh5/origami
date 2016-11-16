@@ -14,7 +14,7 @@
             </div>
             <label class="menuTitle">Resource</label>
             <div class="detail_wrap">
-                <form #orgform="ngForm" *ngIf="selectedOrgNode" (ngSubmit)="onSubmit()">
+                <form #orgform="ngForm" *ngIf="selectedOrgNode" (keyup.enter)="onEditOrSaveNodeClicked()" (ngSubmit)="onSubmit()">
                     <div *ngIf="selectedNode && isEditModeEnabled" class="form-group text-wrap">
                         <div class="edit-name">
                             <input type="text" class="h-1 title-name-edit form-control firstName" (keyup)="onInputKeyDownOrUp($event,firstName)" ngControl="firstName" #firstName="ngModel" [ngModel]="selectedNode.NodeFirstName" placeholder="First Name" name="firstName" autocomplete="off"
