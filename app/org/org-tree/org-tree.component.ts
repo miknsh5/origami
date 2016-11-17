@@ -1006,6 +1006,9 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         nodeUpdate.select("g.label")
             .style({ "visibility": "visible", "fill": "#979797" });
 
+        nodeUpdate.select("#abbr")
+            .style("visibility", "visible");
+
         let nodeExit = node.exit().transition().delay(100).
             duration(DURATION)
             .attr("transform", (d) => {
