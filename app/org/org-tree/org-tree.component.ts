@@ -837,42 +837,76 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         nodeEnter.select("g.label").append(TEXT)
             .attr("data-id", "description");
 
-        node.select("g.label text[data-id='name']").text((d) => {
-            let name = "";
-            if (this.showFirstNameLabel && this.showLastNameLabel) {
-                name = d.NodeFirstName + " " + d.NodeLastName;
-            } else if (this.showFirstNameLabel) {
-                name = d.NodeFirstName;
-            } else if (this.showLastNameLabel) {
-                name = d.NodeLastName;
-            }
+        if (this.currentMode === ChartMode.report) {
+            node.select("g.label text[data-id='name']").text("").attr("text-anchor", (d) => {
+                if (this.currentMode === ChartMode.report) { return "middle"; }
+            }).attr("dy", "0em").attr("transform", "rotate(0)");
 
-            if (this.currentMode === ChartMode.explore) {
-                name = d.NodeFirstName;
-            }
+            node.select("g.label text[data-id='name']").append("tspan")
+                .attr("data-id", "firstname").text((d) => {
+                    let name = "";
+                    if (this.showFirstNameLabel) {
+                        name = d.NodeFirstName;
+                    }
+                    return name;
+                }).attr("text-anchor", "middle")
+                .attr("transform", "rotate(0)");
+            node.select("g.label text[data-id='name']").append("tspan")
+                .attr("data-id", "lastname").text((d) => {
+                    let name = "";
+                    if (this.showLastNameLabel) {
+                        name = " " + d.NodeLastName;
+                    }
+                    return name;
+                }).attr("text-anchor", "middle").attr("x", (d) => {
+                    if (d.NodeFirstName && d.NodeFirstName.length > 15) {
+                        return "0em";
+                    }
+                })
+                .attr("transform", "rotate(0)").attr("dy", (d) => {
+                    if (d.NodeFirstName && d.NodeFirstName.length > 15) {
+                        return "1em";
+                    }
+                    return "0em";
+                });
+        } else {
+            node.select("g.label text[data-id='name']").text((d) => {
+                let name = "";
+                if (this.showFirstNameLabel && this.showLastNameLabel) {
+                    name = d.NodeFirstName + " " + d.NodeLastName;
+                } else if (this.showFirstNameLabel) {
+                    name = d.NodeFirstName;
+                } else if (this.showLastNameLabel) {
+                    name = d.NodeLastName;
+                }
 
-            if (name.length > 15) {
-                return name.substring(0, 15) + "..";
-            }
-            return name;
-        }).attr("text-anchor", (d) => {
-            if (this.currentMode === ChartMode.build) { return "start"; }
-            else if (this.currentMode === ChartMode.report) { return "middle"; }
-            else {
-                if (d.NodeID === this.root.NodeID && this.currentMode === ChartMode.explore) {
-                    return "start";
+                if (this.currentMode === ChartMode.explore) {
+                    name = d.NodeFirstName;
                 }
-                return Number.isNaN(d.x) || d.x < DEPTH ? "start" : "end";
-            }
-        }).attr("transform", (d) => {
-            if (this.currentMode === ChartMode.explore) {
-                if (d.NodeID === this.root.NodeID && this.currentMode === ChartMode.explore) {
-                    return "rotate(0)";
+
+                if (name.length > 15) {
+                    return name.substring(0, 15) + "..";
                 }
-                return Number.isNaN(d.x) || d.x < DEPTH ? "rotate(0)" : "rotate(180)";
-            }
-            return "rotate(0)";
-        });
+                return name;
+            }).attr("text-anchor", (d) => {
+                if (this.currentMode === ChartMode.build) { return "start"; }
+                else if (this.currentMode === ChartMode.report) { return "middle"; }
+                else {
+                    if (d.NodeID === this.root.NodeID && this.currentMode === ChartMode.explore) {
+                        return "start";
+                    }
+                    return Number.isNaN(d.x) || d.x < DEPTH ? "start" : "end";
+                }
+            }).attr("transform", (d) => {
+                if (this.currentMode === ChartMode.explore) {
+                    if (d.NodeID === this.root.NodeID && this.currentMode === ChartMode.explore) {
+                        return "rotate(0)";
+                    }
+                    return Number.isNaN(d.x) || d.x < DEPTH ? "rotate(0)" : "rotate(180)";
+                }
+                return "rotate(0)";
+            });
+        }
 
         node.select("g.label text[data-id='description']").text((d) => {
             if (d.Description.length > 15) {
@@ -891,6 +925,8 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         }).attr("dy", (d) => {
             if (this.showDescriptionLabel && !this.showFirstNameLabel && !this.showLastNameLabel) {
                 return "0em";
+            } else if (d.NodeFirstName && d.NodeFirstName.length > 15) {
+                return "2.5em";
             }
             return "1em";
         }).attr("transform", (d) => {
