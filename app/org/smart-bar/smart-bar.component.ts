@@ -61,12 +61,15 @@ export class SamrtBarComponent implements OnChanges {
         if (changes["orgGroupID"]) {
             this.clearSearch();
             this.newNodeValue = null;
-            this.multiInTerm = "";
+            this.multiInTerm = this.searchTerm = "";
             this.placeholderText = `${AddResource}`;
             this.isDescriptionText = false;
         }
         if (changes["treeJsonData"]) {
             if (this.treeJsonData) {
+                if (!this.newNodeValue && this.newNodeValue !== null) {
+                    this.multiInTerm = this.searchTerm = "";
+                }
                 this.orgSearchData = new Array<any>();
                 this.convertToFlatData(this.treeJsonData);
             }
@@ -107,6 +110,8 @@ export class SamrtBarComponent implements OnChanges {
             return;
         }
     };
+
+    @HostListener("focusout", ["$event"])
     deselectSearchBox(event: any) {
         setTimeout(() => {
             if (this.selectedOrgNode) {
@@ -126,7 +131,7 @@ export class SamrtBarComponent implements OnChanges {
                     this.isTitleSelected = false;
                 }
             }
-        }, 500);
+        }, 250);
     }
 
     @HostListener("window:keydown", ["$event"])
@@ -421,6 +426,35 @@ export class SamrtBarComponent implements OnChanges {
             this.isDescriptionselected = false;
             this.isSmartBarEnabled.emit(false);
             this.addNode.emit(data);
+        }
+    }
+
+    @HostListener("focus", ["$event"])
+    private onFocusOnSmartbar() {
+        if ((this.multiInTerm && this.multiInTerm !== "") || (this.searchTerm && this.searchTerm !== "")) {
+            let searchTerm = "";
+            if (this.multiInTerm) {
+                searchTerm = this.multiInTerm;
+            } else if (this.searchTerm) {
+                searchTerm = this.searchTerm;
+            }
+            if (this.prevSearchTerm === searchTerm) {
+                this.prevSearchTerm = searchTerm;
+                if (this.isDescriptionText) {
+                    this.onDescritptionSearch(searchTerm.toLowerCase());
+                } else if (this.isTitleSelected) {
+                    this.isSearchEnabled = true;
+                    if (!this.exsitingSearchList) {
+                        this.exsitingSearchList = new Array<OrgSearchModel>();
+                        this.nodeSearchedList.forEach((data) => {
+                            this.exsitingSearchList.push(data);
+                        });
+                    }
+                    this.searchTitleList(searchTerm.toLowerCase(), this.exsitingSearchList);
+                } else {
+                    this.searchList(searchTerm.toLowerCase());
+                }
+            }
         }
     }
 
