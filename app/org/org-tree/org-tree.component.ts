@@ -925,7 +925,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         }).attr("dy", (d) => {
             if (this.showDescriptionLabel && !this.showFirstNameLabel && !this.showLastNameLabel) {
                 return "0em";
-            } else if (d.NodeFirstName && d.NodeFirstName.length > 15) {
+            } else if (d.NodeFirstName && d.NodeFirstName.length > 15 && this.currentMode === ChartMode.report) {
                 return "2.5em";
             }
             return "1em";
