@@ -133,7 +133,7 @@ export class SamrtBarComponent implements OnChanges {
             }
         }, 250);
     }
-   
+
     @HostListener("window:keydown", ["$event"])
     public OnKeyDown(event) {
         let searchContainer;
