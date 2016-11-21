@@ -134,6 +134,7 @@ export class SamrtBarComponent implements OnChanges {
         }, 250);
     }
 
+    @HostListener("focus", ["$event"])
     @HostListener("window:keydown", ["$event"])
     public OnKeyDown(event) {
         let searchContainer;
