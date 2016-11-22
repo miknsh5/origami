@@ -885,7 +885,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 }
 
                 let selectedName = " ";
-                if (this.selectedOrgNode && (this.selectedOrgNode.NodeFirstName || this.selectedOrgNode.NodeLastName)) {
+                if (this.selectedOrgNode && (this.selectedOrgNode && this.selectedOrgNode.NodeFirstName || this.selectedOrgNode.NodeLastName)) {
                     selectedName = this.selectedOrgNode.NodeFirstName + " " + this.selectedOrgNode.NodeLastName;
                 }
                 if (name.length > 15 && (this.selectedOrgNode._children || this.selectedOrgNode.children) || (name === selectedName && selectedName.length > 15)) {
