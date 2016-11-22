@@ -888,7 +888,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 if (this.selectedOrgNode && (this.selectedOrgNode && this.selectedOrgNode.NodeFirstName || this.selectedOrgNode.NodeLastName)) {
                     selectedName = this.selectedOrgNode.NodeFirstName + " " + this.selectedOrgNode.NodeLastName;
                 }
-                if (name.length > 15 && (this.selectedOrgNode._children || this.selectedOrgNode.children) || (name === selectedName && selectedName.length > 15)) {
+                if (name.length > 15 && ((this.selectedOrgNode && this.selectedOrgNode._children) || (this.selectedOrgNode && this.selectedOrgNode.children)) || (name === selectedName && selectedName.length > 15)) {
                     return name.substring(0, 15) + "..";
                 }
                 return name;
