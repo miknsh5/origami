@@ -871,24 +871,17 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 });
         } else {
             node.select("g.label text[data-id='name']").text((d) => {
-                let name = "";
-                if (this.showFirstNameLabel && this.showLastNameLabel) {
-                    name = d.NodeFirstName + " " + d.NodeLastName;
-                } else if (this.showFirstNameLabel) {
-                    name = d.NodeFirstName;
-                } else if (this.showLastNameLabel) {
-                    name = d.NodeLastName;
-                }
-
+                let name = d.NodeFirstName + " " + d.NodeLastName;
                 if (this.currentMode === ChartMode.explore) {
                     name = d.NodeFirstName;
                 }
 
-                let selectedName = " ";
-                if (this.selectedOrgNode && (this.selectedOrgNode && this.selectedOrgNode.NodeFirstName || this.selectedOrgNode.NodeLastName)) {
-                    selectedName = this.selectedOrgNode.NodeFirstName + " " + this.selectedOrgNode.NodeLastName;
+                if (this.selectedOrgNode && (!this.selectedOrgNode.children && this.selectedOrgNode.ParentNodeID === d.ParentNodeID)
+                    || this.selectedOrgNode.NodeID === d.ParentNodeID) {
+                    return name;
                 }
-                if (name.length > 15 && ((this.selectedOrgNode && this.selectedOrgNode._children) || (this.selectedOrgNode && this.selectedOrgNode.children)) || (name === selectedName && selectedName.length > 15)) {
+
+                if (name.length > 15) {
                     return name.substring(0, 15) + "..";
                 }
                 return name;
