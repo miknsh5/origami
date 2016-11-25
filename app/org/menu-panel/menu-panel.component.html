@@ -1,4 +1,4 @@
-<div class="auth-panel">
+<div class="auth_panel">
     <!-- User Dropdown Structure -->
     <ul id="userDropdown" class="dropdown-content">
         <li class="collection-item avatar">
@@ -144,7 +144,7 @@
                 </form>
             </div>
             <div id="importAndTemplate">
-                <div *ngIf="(enableImport && !isImport) || groupSettingTitle=== 'Add New Group'">
+                <div *ngIf="(!isImport) || groupSettingTitle=== 'Add New Group'">
                     <div class="import">
                         <div class="inlineblock titlewithdivider">
                             <div class="divider"> </div>
@@ -156,7 +156,7 @@
                         <button class="waves-effect waves-light btn" [ngClass]='{disabled: isImportDisabled}' (click)="onClickOnImport()">
                     <i class="material-icons">file_upload</i>Import</button>
                     </div>
-                    <div class="template">
+                    <div class="template" id="downloadTemplate">
                         <div class="import">
                             <div class="inlineblock titlewithdivider">
                                 <div class="divider"> </div>
@@ -168,15 +168,26 @@
                             </div>
                         </div>
                     </div>
+                    <div class="template" id="exportData">
+                        <div class="import">
+                            <div class="inlineblock titlewithdivider">
+                                <div class="divider"> </div>
+                                <label class="lbl">Export</label>
+                            </div>
+                            <div class="template" id="export" *ngIf="selectedCompany && selectedCompany.CompanyName && selectedGroup">
+                                <sg-csv [orgChartData]="selectedGroup" [orgName]="selectedCompany.CompanyName"></sg-csv>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div *ngIf="isImport">
-                    <sg-org-import-csv-file (newOrgNodes)="updateNewOrgGroup($event)" [selectedGroup]="selectedGroup"></sg-org-import-csv-file>
+                    <sg-import-csv-file (newOrgNodes)="updateNewOrgGroup($event)" [selectedGroup]="selectedGroup"></sg-import-csv-file>
                 </div>
             </div>
             <div id="deleteGroupConfirm" class="center">
-                <sg-org-menu-confirm-button [hideMessage]="false" [titleName]="name" [deleteTitle]="deleteTitle" (onConfirmClick)="onGroupDeleteConfirm($event)" (onCancelClick)="onGroupDeleteCancel($event)">
-                </sg-org-menu-confirm-button>
+                <sg-menu-confirm-button [hideMessage]="false" [titleName]="name" [deleteTitle]="deleteTitle" (onConfirmClick)="onGroupDeleteConfirm($event)" (onCancelClick)="onGroupDeleteCancel($event)">
+                </sg-menu-confirm-button>
             </div>
             <div id="groupDeleteLoader" class="loadscreen center">
                 <div>
@@ -228,8 +239,8 @@
                         </div>
                     </div>
                     <div id="deleteCompanyConfirm" class="center">
-                        <sg-org-menu-confirm-button [hideMessage]="false" [titleName]="name" [deleteTitle]="deleteTitle" (onConfirmClick)="onCompanyDeleteConfirm($event)" (onCancelClick)="onCompanyDeleteCancel($event)">
-                        </sg-org-menu-confirm-button>
+                        <sg-menu-confirm-button [hideMessage]="false" [titleName]="name" [deleteTitle]="deleteTitle" (onConfirmClick)="onCompanyDeleteConfirm($event)" (onCancelClick)="onCompanyDeleteCancel($event)">
+                        </sg-menu-confirm-button>
                     </div>
                     <div id="companyDeleteLoader" class="loadscreen center">
                         <div>

@@ -3,7 +3,7 @@ import { Component } from "@angular/core";
 import "rxjs/add/operator/map";
 
 @Component({
-    selector: "sg-origami",
+    selector: "sg-app",
     template: "<router-outlet></router-outlet>"
 })
 

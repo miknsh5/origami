@@ -42,6 +42,37 @@
     position: absolute;
     right: 0;
     z-index: 0;
+    width: 30px;
+}
+
+.sideNav .menuButton a {
+    color: #fff;
+    background: #607D8B;
+    border: none;
+    font-weight: bold;
+    display: inline-block;
+    position: relative;
+    overflow: initial;
+    padding: 0;
+}
+
+.sideNav .menuButton a>i {
+    padding: 0 5px;
+}
+
+.sideNav .menuButton a::after {
+    content: '';
+    display: block;
+    position: absolute;
+    left: -35%;
+    top: 0;
+    width: 0;
+    height: 0;
+    border-top: 14px solid transparent;
+    border-left: 10px solid #607D8B;
+    border-bottom: 14px solid transparent;
+    border-right: 0;
+    transform: rotate(180deg);
 }
 
 .sideNav #menuPanel {
@@ -61,6 +92,25 @@
     background-color: #607d8b;
     background-color: var(--blue-grey);
     border: 0;
+}
+
+.sideNav .editbtn,
+.deletebtn {
+    width: 30px;
+    height: 30px;
+    background-color: #607d8b;
+    background-color: var(--blue-grey);
+    border: 0;
+}
+
+.sideNav .editbtn i,
+.deletebtn i {
+    font-size: 0.99rem;
+    line-height: 1.53em;
+}
+
+.editbtn {
+    right: 1px;
 }
 
 .sideNav .menuTitle {
@@ -276,4 +326,154 @@ ul.tabs .tab {
     line-height: 1.53em;
     margin: 3px 8px;
     color: #FBFBFC;
+}
+
+#publishData {
+    display: none;
+    text-align: center;
+    margin-top: 15px;
+}
+
+#publishData .title {
+    color: #B6B6B6;
+    font-size: 1.278em;
+}
+
+.ng-valid[required] {
+    border-left: 5px solid #42A948;
+    /* green */
+}
+
+.ng-invalid {
+    border-left: 5px solid #a94442;
+    /* red */
+}
+
+.edit-name {
+    padding: 20px 0 0 30px;
+    max-width: 238px;
+}
+
+.title-name-edit {
+    width: 90px;
+    border: none;
+    display: inline-block;
+    padding: 1px 2px;
+    margin: 0px;
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.title-position-edit {
+    width: 187px;
+    border: none;
+    padding: 1px 2px;
+    display: block;
+    margin-top: 2px;
+    margin-left: 30px;
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+
+/* The Modal (background) */
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 10000;
+    left: 0;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    max-height: 100%;
+    overflow: auto;
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+
+/* Modal Content */
+
+.modal-content {
+    background-color: #fefefe;
+    padding: 0px;
+    border: 0px solid #888;
+    width: 22%;
+    min-width: 325px;
+    height: 400px;
+    top: 18.5%;
+    margin: 10px auto;
+    position: relative;
+    box-shadow: 0px 2px 2px 3px rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+}
+
+
+/* The Close Button */
+
+.close {
+    float: right;
+    color: #ffffff;
+    color: var(--white-text);
+    background-color: #607d8b;
+    background-color: var(--blue-grey);
+    border: none;
+    height: 30px;
+    width: 30px;
+    cursor: pointer;
+}
+
+.close i {
+    padding: 3px 6.5px;
+}
+
+.modaltitle {
+    color: #979797 !important;
+    color: var(--warm-grey) !important;
+    display: block;
+    height: 40px;
+}
+
+.modaltitle .title {
+    display: inline-block;
+    margin: 12px 10px 5px;
+}
+
+.modaltitle .title .material-icons {
+    margin: 4px 15px 0 5px;
+    font-size: 1em;
+}
+
+.modaltitle .title label {
+    font-size: 1.15em;
+    font-weight: 100;
+    color: #979797;
+    color: var(--warm-grey);
+}
+
+.divider {
+    margin-bottom: 1px;
+    overflow: none !important;
+}
+
+#deleteNodeConfirm,
+#deleteChildNodeConfirm {
+    display: none;
+    padding: 8em 2em;
+}
+
+#deleteChildNodeConfirm .waves-effect {
+    background-color: #0097FF;
+    padding: 0px 0.8rem !important;
+    margin: 5px 0 0 !important;
+    font-size: 0.99rem;
+    border-radius: 0px;
+    font-weight: bolder;
+    height: 33px;
+    display: inline-block;
+    width: 70px;
+    line-height: 12px;
+}
+
+#deleteChildNodeConfirm .btn i {
+    font-size: 1rem;
+    line-height: inherit;
+    margin-right: 8px;
 }

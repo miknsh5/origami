@@ -11,7 +11,7 @@
             <button class="waves-effect waves-light btn" (click)="onImport()">
                 <i class="material-icons">file_upload</i>Browse
             </button>
-            <input type="file" (change)="onImport($event)" accept=".csv" />
+            <input type="file" (click)="onImportClick($event)" (change)="onImportChange($event)" accept=".csv" />
         </span>
     </div>
 </div>
@@ -76,7 +76,7 @@
         </div>
     </div>
     <div>
-        <sg-org-menu-confirm-button [hideMessage]="true" (onConfirmClick)="onConfirm($event)" (onCancelClick)="onCancelImport($event)">
-        </sg-org-menu-confirm-button>
+        <sg-menu-confirm-button [hideMessage]="true" (onConfirmClick)="onConfirm($event)" (onCancelClick)="onCancelImport($event)">
+        </sg-menu-confirm-button>
     </div>
 </div>
