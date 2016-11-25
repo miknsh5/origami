@@ -99,9 +99,7 @@ export class OrgComponent implements OnDestroy {
                 this.enableLabels();
                 this.currentChartMode = ChartMode.build;
                 this.enableViewModesNav(ChartMode.build);
-                if (this.svgPan) {
-                    this.svgPan.disablePan();
-                }
+                this.disablePan();
             } else {
                 if (viewMode === ChartMode.report) {
                     this.currentChartMode = ChartMode.report;
@@ -110,25 +108,10 @@ export class OrgComponent implements OnDestroy {
                 }
                 this.enableViewModesNav(this.currentChartMode);
                 this.enableLabels();
-                if (!this.svgPan) {
-                    let elem = document.getElementsByTagName("svg")[0];
-                    this.svgPan = svgPanZoom(elem, {
-                        viewportSelector: ".svg-pan-zoom_viewport",
-                        panEnabled: true,
-                        controlIconsEnabled: false,
-                        zoomEnabled: false,
-                        dblClickZoomEnabled: false,
-                        mouseWheelZoomEnabled: false,
-                        preventMouseEventsDefault: true
-                    });
-                } else {
-                    this.svgPan.enablePan();
-                }
+                this.enablePan();
             }
         } else {
-            if (this.svgPan) {
-                this.svgPan.disablePan();
-            }
+            this.disablePan();
         }
     }
 
@@ -363,6 +346,46 @@ export class OrgComponent implements OnDestroy {
         }
     }
 
+    onChartUpdated(data: any) {
+        this.onGroupSelected(data);
+    }
+
+    onGroupSelected(data: any) {
+        this.orgGroup = data;
+        this.orgNodes = JSON.parse(JSON.stringify(this.orgGroup.OrgNodes));
+        this.companyID = this.orgGroup.CompanyID;
+        if (this.groupID !== this.orgGroup.OrgGroupID)
+            this.groupID = this.orgGroup.OrgGroupID;
+        if (this.orgNodes && this.orgNodes.length === 0) {
+            this.disableViewAndExploreModesNav();
+            this.currentChartMode = ChartMode.build;
+            this.disablePan();
+        }
+        this.enableViewModesNav(this.currentChartMode);
+        this.treeJson = JSON.parse(JSON.stringify(this.orgNodes));
+        this.isSmartBarEnabled = false;
+        this.isEditMenuEnable = false;
+        this.onAddOrEditModeValueSet(false);
+    }
+
+    onCompanySelected(data: any) {
+        if (data) {
+            this.companyName = data.CompanyName;
+        }
+    }
+
+    onMenuSettingsChange(data: boolean) {
+        if (data) {
+            this.isMenuSettingsEnabled = data;
+        } else {
+            this.isMenuSettingsEnabled = data;
+        }
+    }
+
+    onNodeSearched(data: OrgNodeModel) {
+        this.searchedNode = data;
+    }
+
     private enableViewModesNav(viewMode) {
         if (viewMode === ChartMode.explore) {
             this.exploreView = "active";
@@ -379,7 +402,7 @@ export class OrgComponent implements OnDestroy {
         }
     }
 
-    disableViewAndExploreModesNav() {
+    private disableViewAndExploreModesNav() {
         this.reportView = "inactive";
         this.exploreView = "inactive";
     }
@@ -438,43 +461,27 @@ export class OrgComponent implements OnDestroy {
         }
     }
 
-    onChartUpdated(data: any) {
-        this.onGroupSelected(data);
-    }
-
-    onGroupSelected(data: any) {
-        this.orgGroup = data;
-        this.orgNodes = JSON.parse(JSON.stringify(this.orgGroup.OrgNodes));
-        this.companyID = this.orgGroup.CompanyID;
-        if (this.groupID !== this.orgGroup.OrgGroupID)
-            this.groupID = this.orgGroup.OrgGroupID;
-        if (this.orgNodes && this.orgNodes.length === 0) {
-            this.disableViewAndExploreModesNav();
-            this.currentChartMode = ChartMode.build;
-        }
-        this.enableViewModesNav(this.currentChartMode);
-        this.treeJson = JSON.parse(JSON.stringify(this.orgNodes));
-        this.isSmartBarEnabled = false;
-        this.isEditMenuEnable = false;
-        this.onAddOrEditModeValueSet(false);
-    }
-
-    onCompanySelected(data: any) {
-        if (data) {
-            this.companyName = data.CompanyName;
+    private disablePan() {
+        if (this.svgPan) {
+            this.svgPan.disablePan();
         }
     }
 
-    onMenuSettingsChange(data: boolean) {
-        if (data) {
-            this.isMenuSettingsEnabled = data;
+    private enablePan() {
+        if (!this.svgPan) {
+            let elem = document.getElementsByTagName("svg")[0];
+            this.svgPan = svgPanZoom(elem, {
+                viewportSelector: ".svg-pan-zoom_viewport",
+                panEnabled: true,
+                controlIconsEnabled: false,
+                zoomEnabled: false,
+                dblClickZoomEnabled: false,
+                mouseWheelZoomEnabled: false,
+                preventMouseEventsDefault: true
+            });
         } else {
-            this.isMenuSettingsEnabled = data;
+            this.svgPan.enablePan();
         }
-    }
-
-    onNodeSearched(data: OrgNodeModel) {
-        this.searchedNode = data;
     }
 
     ngOnDestroy() {

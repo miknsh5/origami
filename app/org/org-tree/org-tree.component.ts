@@ -23,12 +23,13 @@ const LABEL_POINTS = "18 5 18 -5 21 0";
 const ARROW_POINTS = "55 33 55 21 59 27";
 const NAVIGATION_ARROW_FILL = "#D8D8D8";
 const CHILD_ARROW_FILL = "#929292";
+const PATH_STORKE_COLOR = "#979797";
 const TRANSPARENT_COLOR = "transparent";
 
 const NODE_HEIGHT = 70;
 const NODE_WIDTH = 95;
-const DEPTH = 180;
 const RADIAL_DEPTH = 90;
+const DEPTH = 180;
 const RADIAL_VALUE = 360;
 
 const DEFAULT_CIRCLE = "defaultCircle";
@@ -38,7 +39,8 @@ const SELECTED_CIRCLE = "selectedCircle";
 const POLYGON = "polygon";
 const CIRCLE = "circle";
 const TEXT = "text";
-
+const PATH = "path";
+const G_LABEL = "g.label";
 
 const DEFAULT_FONTSIZE = 11;
 const SIBLING_FONTSIZE = 17.3;
@@ -82,6 +84,12 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     @Output() selectNode = new EventEmitter<OrgNodeModel>();
     @Output() addNode = new EventEmitter<OrgNodeModel>();
     @Output() switchToAddMode = new EventEmitter<OrgNodeModel>();
+
+    constructor(private orgService: OrgService,
+        @Inject(ElementRef) elementRef: ElementRef) {
+        let el: any = elementRef.nativeElement;
+        this.graph = d3.select(el);
+    }
 
     ngOnInit() {
         //  Todo:- We need to use the values coming from the host instead of our own
@@ -133,6 +141,127 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         this.calculateLevelDepth();
         this.resizeLinesArrowsAndSvg();
         this.centerNode(this.root);
+    }
+
+    // TODO:- we should refactor this method to work depending on the kind of change that has taken place.
+    // It re-renders on all kinds of changes
+    ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
+        if (this.tree != null) {
+            this.previousRoot = this.root;
+            this.root = this.treeData[0];
+            this.treeWidth = this.width;
+            this.treeHeight = this.height;
+
+            if (changes["searchNode"]) {
+                if (changes["searchNode"].currentValue) {
+                    this.selectedOrgNode = this.searchNode;
+                    this.highlightAndCenterNode(this.selectedOrgNode);
+                    this.lastSelectedNode = this.selectedOrgNode;
+                } else {
+                    return;
+                }
+            }
+            if (changes["orgGroupID"]) {
+                if (this.root) {
+                    this.selectedOrgNode = this.root;
+                } else if (!this.root || changes["currentMode"]) {
+                    this.addEmptyRootNode();
+                    this.selectedOrgNode = this.root;
+                }
+            }
+
+            if (changes["isMenuSettingsEnabled"]) {
+                if (!changes["treeData"]) {
+                    if (this.isAddOrEditModeEnabled && this.selectedOrgNode.NodeID === -1) {
+                        return;
+                    }
+                } else {
+                    this.root = this.treeData[0];
+                    this.selectedOrgNode = this.root;
+                }
+            }
+
+            if (changes["isAddOrEditModeEnabled"] && this.isAddOrEditModeEnabled && !changes["treeData"]) {
+                return;
+            }
+
+            if (changes["currentMode"] || (changes["orgGroupID"] && this.currentMode === ChartMode.explore)) {
+                this.initializeTreeAsPerMode();
+                let node = this.selectedOrgNode;
+                if (!node && this.lastSelectedNode) {
+                    node = this.lastSelectedNode;
+                }
+                this.expandTree(node);
+                this.calculateLevelDepth();
+                this.resizeLinesArrowsAndSvg();
+                this.setNodeLabelVisiblity();
+                this.highlightAndCenterNode(node);
+                return;
+            }
+
+            let raiseSelectedEvent: boolean = true;
+            if (changes["isAddOrEditModeEnabled"]) {
+                // We don't need to raise a selectednode change event if the only change happening is entering/leaving edit node
+                if (this.isAddOrEditModeEnabled)
+                    raiseSelectedEvent = false;
+            }
+
+            if (!this.root) {
+                if (this.selectedOrgNode.NodeID === -1) {
+                    this.root = this.selectedOrgNode;
+                } else {
+                    this.addEmptyRootNode();
+                    this.selectedOrgNode = this.root;
+                }
+            }
+
+            this.calculateLevelDepth();
+            this.resizeLinesArrowsAndSvg();
+            if (this.currentMode !== ChartMode.build) {
+                this.setNodeLabelVisiblity();
+                if (this.currentMode === ChartMode.report)
+                    this.root = this.selectedOrgNode;
+            }
+
+            if (this.selectedOrgNode != null) {
+                this.selectedOrgNode.IsSelected = false;
+                if (this.selectedOrgNode.NodeID === -1) {
+                    if (this.root && this.root.NodeID !== -1) {
+                        this.selectedOrgNode = this.getPreviousNodeIfAddedOrDeleted();
+                    }
+                    raiseSelectedEvent = true;
+                    this.highlightSelectedNode(this.selectedOrgNode, raiseSelectedEvent);
+                } else {
+                    let node = this.getNode(this.selectedOrgNode.NodeID, this.root);
+                    // if the selected node is deleted it highlights previous sibling or parent node
+                    if (!node) {
+                        this.selectedOrgNode = this.getPreviousSiblingNode(this.selectedOrgNode, this.previousRoot);
+                        if (this.selectedOrgNode.NodeID === -1) { raiseSelectedEvent = true; }
+                    }
+                    this.updateSelectedOrgNode(this.root);
+                    this.highlightSelectedNode(this.selectedOrgNode, raiseSelectedEvent);
+                }
+
+                if (this.selectedOrgNode != null) {
+                    if (this.currentMode !== ChartMode.explore) {
+                        this.render(this.root);
+                        this.showUpdatePeerReporteeNode(this.selectedOrgNode);
+                        this.centerNode(this.selectedOrgNode);
+                    }
+                    if (this.isAddOrEditModeEnabled) {
+                        this.hideAllArrows();
+                    } else {
+                        this.hideTopArrow(this.selectedOrgNode);
+                    }
+                } else {
+                    // check whether the width or height property has changed or not
+                    if (changes["width"] || changes["height"]) {
+                        // centers the last selected node
+                        this.centerNode(this.lastSelectedNode);
+                    }
+                }
+            }
+        }
     }
 
     private childCount(level, node) {
@@ -215,141 +344,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         });
     }
 
-    // TODO:- we should refactor this method to work depending on the kind of change that has taken place.
-    // It re-renders on all kinds of changes
-    ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
-        if (this.tree != null) {
-            this.previousRoot = this.root;
-            this.root = this.treeData[0];
-            this.treeWidth = this.width;
-            this.treeHeight = this.height;
-
-            if (changes["searchNode"]) {
-                if (changes["searchNode"].currentValue) {
-                    this.selectedOrgNode = this.searchNode;
-                    this.highlightAndCenterNode(this.selectedOrgNode);
-                    this.lastSelectedNode = this.selectedOrgNode;
-                } else {
-                    return;
-                }
-            }
-            if (changes["orgGroupID"]) {
-                if (this.root) {
-                    this.selectedOrgNode = this.root;
-                }
-                if (!this.root) {
-                    this.addEmptyRootNode();
-                    this.selectedOrgNode = this.root;
-                }
-            }
-
-            if (changes["orgGroupID"] && changes["currentMode"] && changes["currentMode"].currentValue) {
-                if (!this.root) {
-                    this.addEmptyRootNode();
-                    this.selectedOrgNode = this.root;
-                }
-            }
-
-            if (changes["isMenuSettingsEnabled"] && !changes["treeData"]) {
-                if (this.isAddOrEditModeEnabled && this.selectedOrgNode.NodeID === -1) {
-                    return;
-                }
-            }
-
-            if (changes["isMenuSettingsEnabled"] && changes["treeData"]) {
-                this.root = this.treeData[0];
-                this.selectedOrgNode = this.root;
-            }
-
-            if (changes["isAddOrEditModeEnabled"] && changes["isAddOrEditModeEnabled"].currentValue && !changes["treeData"]) {
-                return;
-            }
-
-            if (changes["currentMode"] || (changes["orgGroupID"] && this.currentMode === ChartMode.explore)) {
-                this.initializeTreeAsPerMode();
-                let node = this.selectedOrgNode;
-                if (!node && this.lastSelectedNode) {
-                    node = this.lastSelectedNode;
-                }
-                this.expandTree(node);
-                this.calculateLevelDepth();
-                this.resizeLinesArrowsAndSvg();
-                this.setNodeLabelVisiblity();
-                this.highlightAndCenterNode(node);
-                return;
-            }
-
-            if (!this.root) {
-                if (this.selectedOrgNode.NodeID === -1) {
-                    this.root = this.selectedOrgNode;
-                } else {
-                    this.addEmptyRootNode();
-                    this.selectedOrgNode = this.root;
-                }
-            }
-
-            let raiseSelectedEvent: boolean = true;
-            if (changes["isAddOrEditModeEnabled"]) {
-                // We don't need to raise a selectednode change event if the only change happening is entering/leaving edit node
-                if (this.isAddOrEditModeEnabled)
-                    raiseSelectedEvent = false;
-            }
-
-            this.calculateLevelDepth();
-            this.resizeLinesArrowsAndSvg();
-            if (this.currentMode !== ChartMode.build) {
-                this.setNodeLabelVisiblity();
-                if (this.currentMode === ChartMode.report)
-                    this.root = this.selectedOrgNode;
-            }
-
-            if (this.selectedOrgNode != null) {
-                this.selectedOrgNode.IsSelected = false;
-                if (this.selectedOrgNode.NodeID === -1) {
-                    if (this.root && this.root.NodeID !== -1) {
-                        this.selectedOrgNode = this.getPreviousNodeIfAddedOrDeleted();
-                    }
-                    raiseSelectedEvent = true;
-                    this.highlightSelectedNode(this.selectedOrgNode, raiseSelectedEvent);
-                } else {
-                    let node = this.getNode(this.selectedOrgNode.NodeID, this.root);
-                    // if the selected node is deleted it highlights previous sibling or parent node
-                    if (!node) {
-                        this.selectedOrgNode = this.getPreviousSiblingNode(this.selectedOrgNode, this.previousRoot);
-                        if (this.selectedOrgNode.NodeID === -1) { raiseSelectedEvent = true; }
-                    }
-                    this.updateSelectedOrgNode(this.root);
-                    this.highlightSelectedNode(this.selectedOrgNode, raiseSelectedEvent);
-                }
-            }
-
-            if (this.selectedOrgNode != null) {
-                if (this.currentMode !== ChartMode.explore) {
-                    this.render(this.root);
-                    this.showUpdatePeerReporteeNode(this.selectedOrgNode);
-                    this.centerNode(this.selectedOrgNode);
-                }
-                if (this.isAddOrEditModeEnabled) {
-                    this.hideAllArrows();
-                } else {
-                    this.hideTopArrow(this.selectedOrgNode);
-                }
-            } else {
-                // check whether the width or height property has changed or not
-                if (changes["width"] || changes["height"]) {
-                    // centers the last selected node
-                    this.centerNode(this.lastSelectedNode);
-                }
-            }
-        }
-    }
-
-    constructor(private orgService: OrgService,
-        @Inject(ElementRef) elementRef: ElementRef) {
-        let el: any = elementRef.nativeElement;
-        this.graph = d3.select(el);
-    }
-
     private addEmptyRootNode() {
         this.root = new OrgNodeModel();
         this.root.children = new Array<OrgNodeModel>();
@@ -383,20 +377,20 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             .x(function (d) { return d[0]; })
             .y(function (d) { return d[1]; });
         if (this.currentMode === ChartMode.build) {
-            d3.select("path.vertical")
+            d3.select(PATH + ".vertical")
                 .attr("d", line(verticalLine))
-                .attr("stroke", "#979797");
+                .attr("stroke", PATH_STORKE_COLOR);
 
-            d3.select("path.horizontal")
+            d3.select(PATH + ".horizontal")
                 .attr("d", line(horizontalLine))
-                .attr("stroke", "#979797");
+                .attr("stroke", PATH_STORKE_COLOR);
 
             this.arrows.attr("transform", "translate(" + ((this.treeWidth / 2) - SIBLING_RADIUS * 1.35) + "," + ((this.treeHeight / 2) - SIBLING_RADIUS * 1.275) + ")");
             d3.select("#viewport").attr("transform", "");
         } else {
-            d3.select("path.vertical")
+            d3.select(PATH + ".vertical")
                 .attr("stroke", TRANSPARENT_COLOR);
-            d3.select("path.horizontal")
+            d3.select(PATH + ".horizontal")
                 .attr("stroke", TRANSPARENT_COLOR);
         }
 
@@ -526,9 +520,9 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             .x(function (d) { return d[0]; })
             .y(function (d) { return d[1]; });
 
-        this.svg.append("path")
+        this.svg.append(PATH)
             .attr("d", line(lineData))
-            .attr("stroke", "#979797")
+            .attr("stroke", PATH_STORKE_COLOR)
             .attr("stroke-width", 0.4)
             .attr("fill", "none")
             .attr("class", className);
@@ -767,10 +761,78 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
         let i: number = 0;
 
-        // Update the nodes…
         let node = this.svg.selectAll("g.node")
             .data(this.nodes, function (d) { return d.NodeID || (++i); });
 
+        // Create the nodes…
+        this.createNodes(node, source);
+
+        // Set the text to the nodes…
+        this.setNodeTextLabel(node);
+
+        // css class is applied on polygon if a node have child(s) and the polygon is transformed to the position given
+        node.select("polygon[data-id='childIndicator']").attr("fill", function (d) {
+            if (d._children && d._children.length > 0 && !d.IsSelceted) {
+                return CHILD_ARROW_FILL;
+            }
+            return TRANSPARENT_COLOR;
+        }).attr("transform", (d, index) => {
+            let x = Math.round(this.labelWidths[0][index].getBoundingClientRect()["width"]);
+            if (d.IsSibling) {
+                x += (DEFAULT_MARGIN * 2) + (SIBLING_RADIUS - PARENTCHILD_RADIUS);
+            } else {
+                x += (DEFAULT_MARGIN * 2);
+            }
+            return "translate(" + x + ",0)";
+        });
+
+        node.select(CIRCLE).attr("class", (d) => {
+            return d.IsSelected ? SELECTED_CIRCLE : DEFAULT_CIRCLE;
+        }).attr("transform", (d) => {
+            let transformString = "rotate(0)";
+            if (this.currentMode === ChartMode.explore && d.ParentNodeID !== null) {
+                if (d.x > RADIAL_DEPTH) {
+                    transformString = "rotate(" + -Math.abs((d.x || 0) - RADIAL_DEPTH) + ")";
+                } else {
+                    transformString = "rotate(" + Math.abs((d.x || 0) - RADIAL_DEPTH) + ")";
+                }
+            }
+            return transformString;
+        });
+
+        // Update the nodes…
+        this.updateNodes(node, source);
+
+        // Remove the nodes…
+        let nodeExit = node.exit().transition().delay(100).
+            duration(DURATION)
+            .attr("transform", (d) => {
+                if (this.currentMode === ChartMode.build) {
+                    return "translate(" + (source.y || 0) + "," + (source.x || 0) + ")";
+                } else if (this.currentMode === ChartMode.report) {
+                    return "translate(" + source.x + "," + source.y + ")";
+                } else {
+                    return "translate(" + this.transformNode(source.x0, source.y0) + ")";
+                }
+            })
+            .remove();
+
+        nodeExit.select(CIRCLE)
+            .attr("r", 1e-6);
+
+        nodeExit.select("#abbr")
+            .style("visibility", "hidden");
+
+        nodeExit.select(G_LABEL)
+            .style("visibility", "hidden");
+
+        node.each(function (d) {
+            if (d.IsFakeRoot)
+                d3.select(this).remove();
+        });
+    }
+
+    private createNodes(node, source) {
         // Enter any new nodes at the parent"s previous position.
         let nodeEnter = node.enter().append("g")
             .attr("class", "node")
@@ -795,7 +857,22 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             .attr("dy", ".4em")
             .attr("text-anchor", "middle");
 
+        nodeEnter.append("g")
+            .attr("class", "label");
 
+        nodeEnter.select(G_LABEL).append(TEXT)
+            .attr("data-id", "name");
+
+        nodeEnter.select(G_LABEL).append(TEXT)
+            .attr("data-id", "description");
+
+        // creates a polygon to indicate it has child(s)
+        nodeEnter.append(POLYGON)
+            .attr("points", LABEL_POINTS)
+            .attr("data-id", "childIndicator");
+    }
+
+    private setNodeTextLabel(node) {
         node.select("#abbr").text((d) => {
             if (d.IsStaging && d.NodeID === -1) { return "+"; }
             let fn = "", ln = "";
@@ -828,21 +905,12 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             return transformString;
         }).style("visibility", "visible");
 
-        nodeEnter.append("g")
-            .attr("class", "label");
-
-        nodeEnter.select("g.label").append(TEXT)
-            .attr("data-id", "name");
-
-        nodeEnter.select("g.label").append(TEXT)
-            .attr("data-id", "description");
-
         if (this.currentMode === ChartMode.report) {
-            node.select("g.label text[data-id='name']").text("").attr("text-anchor", (d) => {
+            node.select(G_LABEL + " text[data-id='name']").text("").attr("text-anchor", (d) => {
                 if (this.currentMode === ChartMode.report) { return "middle"; }
             }).attr("dy", "0em").attr("transform", "rotate(0)");
 
-            node.select("g.label text[data-id='name']").append("tspan")
+            node.select(G_LABEL + " text[data-id='name']").append("tspan")
                 .attr("data-id", "firstname").text((d) => {
                     let name = "";
                     if (this.showFirstNameLabel) {
@@ -851,7 +919,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                     return name;
                 }).attr("text-anchor", "middle")
                 .attr("transform", "rotate(0)");
-            node.select("g.label text[data-id='name']").append("tspan")
+            node.select(G_LABEL + " text[data-id='name']").append("tspan")
                 .attr("data-id", "lastname").text((d) => {
                     let name = "";
                     if (this.showLastNameLabel) {
@@ -870,7 +938,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                     return "0em";
                 });
         } else {
-            node.select("g.label text[data-id='name']").text((d) => {
+            node.select(G_LABEL + " text[data-id='name']").text((d) => {
                 let name = d.NodeFirstName + " " + d.NodeLastName;
                 if (this.currentMode === ChartMode.explore) {
                     name = d.NodeFirstName;
@@ -905,7 +973,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             });
         }
 
-        node.select("g.label text[data-id='description']").text((d) => {
+        node.select(G_LABEL + " text[data-id='description']").text((d) => {
             if (d.Description.length > 15) {
                 return d.Description.substring(0, 15) + "..";
             }
@@ -937,20 +1005,20 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         });
 
         if (this.currentMode === ChartMode.build) {
-            node.select("g.label").attr("x", function (d) {
+            node.select(G_LABEL).attr("x", function (d) {
                 if (d.IsParent === true || d.IsChild === true) { return PARENTCHILD_RADIUS + DEFAULT_MARGIN; }
                 else { return SIBLING_RADIUS + DEFAULT_MARGIN; }
             });
         } else {
-            node.select("g.label").attr("y", 30);
+            node.select(G_LABEL).attr("y", 30);
         }
 
         // used to get the label width of each node
-        this.labelWidths = node.select("g.label").each(function (d) {
+        this.labelWidths = node.select(G_LABEL).each(function (d) {
             return d3.select(this).node();
         });
 
-        node.select("g.label").attr("transform", (d, index) => {
+        node.select(G_LABEL).attr("transform", (d, index) => {
             let margin = DEFAULT_MARGIN * 4;
             if (this.currentMode === ChartMode.build) {
                 if (!d.IsSibling) {
@@ -966,41 +1034,9 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             }
         });
 
-        // creates a polygon to indicate it has child(s)
-        nodeEnter.append(POLYGON)
-            .attr("points", LABEL_POINTS)
-            .attr("data-id", "childIndicator");
+    }
 
-        // css class is applied on polygon if a node have child(s) and the polygon is transformed to the position given
-        node.select("polygon[data-id='childIndicator']").attr("fill", function (d) {
-            if (d._children && d._children.length > 0 && !d.IsSelceted) {
-                return CHILD_ARROW_FILL;
-            }
-            return TRANSPARENT_COLOR;
-        }).attr("transform", (d, index) => {
-            let x = Math.round(this.labelWidths[0][index].getBoundingClientRect()["width"]);
-            if (d.IsSibling) {
-                x += (DEFAULT_MARGIN * 2) + (SIBLING_RADIUS - PARENTCHILD_RADIUS);
-            } else {
-                x += (DEFAULT_MARGIN * 2);
-            }
-            return "translate(" + x + ",0)";
-        });
-
-        node.select(CIRCLE).attr("class", (d) => {
-            return d.IsSelected ? SELECTED_CIRCLE : DEFAULT_CIRCLE;
-        }).attr("transform", (d) => {
-            let transformString = "rotate(0)";
-            if (this.currentMode === ChartMode.explore && d.ParentNodeID !== null) {
-                if (d.x > RADIAL_DEPTH) {
-                    transformString = "rotate(" + -Math.abs((d.x || 0) - RADIAL_DEPTH) + ")";
-                } else {
-                    transformString = "rotate(" + Math.abs((d.x || 0) - RADIAL_DEPTH) + ")";
-                }
-            }
-            return transformString;
-        });
-
+    private updateNodes(node, source) {
         // Transition nodes to their new position.
         let nodeUpdate = node.transition()
             .duration(DURATION)
@@ -1036,8 +1072,8 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 return d.IsStaging && d.NodeID === -1 ? " " : "url(home#drop-shadow)";
             });
 
-        nodeUpdate.select("g.label")
-            .style("fill", "#979797")
+        nodeUpdate.select(G_LABEL)
+            .style("fill", PATH_STORKE_COLOR)
             .style("visibility", (d) => {
                 if (d.IsGrandParent) {
                     return "hidden";
@@ -1047,33 +1083,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
         nodeUpdate.select("#abbr")
             .style("visibility", "visible");
-
-        let nodeExit = node.exit().transition().delay(100).
-            duration(DURATION)
-            .attr("transform", (d) => {
-                if (this.currentMode === ChartMode.build) {
-                    return "translate(" + (source.y || 0) + "," + (source.x || 0) + ")";
-                } else if (this.currentMode === ChartMode.report) {
-                    return "translate(" + source.x + "," + source.y + ")";
-                } else {
-                    return "translate(" + this.transformNode(source.x0, source.y0) + ")";
-                }
-            })
-            .remove();
-
-        nodeExit.select(CIRCLE)
-            .attr("r", 1e-6);
-
-        nodeExit.select("#abbr")
-            .style("visibility", "hidden");
-
-        nodeExit.select("g.label")
-            .style("visibility", "hidden");
-
-        node.each(function (d) {
-            if (d.IsFakeRoot)
-                d3.select(this).remove();
-        });
     }
 
     private renderOrUpdateLinks(source) {
@@ -1084,7 +1093,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         let diagCoords2 = this.diagonal({ source: sourceCoords2, target: sourceCoords2 });
 
         // Update the links…
-        let link = this.svg.selectAll("path.link")
+        let link = this.svg.selectAll(PATH + ".link")
             .data(this.links, function (d) { return d.target.NodeID; });
 
         let x = function (d) {
@@ -1100,7 +1109,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             return 0;
         };
         // Enter any new links at the parent"s previous position.
-        link.enter().insert("path", "g")
+        link.enter().insert(PATH, "g")
             .attr("class", "link")
             .attr("id", function (d) {
                 return ("link" + d.source.NodeID + "-" + d.target.NodeID);
@@ -1484,7 +1493,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
     private nodeClicked(d) {
         if (this.currentMode === ChartMode.build) {
-            if (this.selectedOrgNode && this.selectedOrgNode.NodeID === -1) {
+            if (this.selectedOrgNode && this.selectedOrgNode.NodeID === -1 || this.isAddOrEditModeEnabled) {
                 return;
             }
             this.expandCollapse(d);
