@@ -1,7 +1,7 @@
 import { Component, Output, EventEmitter, OnDestroy, HostListener } from "@angular/core";
 import { tokenNotExpired } from "angular2-jwt";
 
-import { OrgNodeModel, ChartMode, OrgCompanyModel, OrgGroupModel, OrgNodeStatus, DomElementHelper } from "./shared/index";
+import { DraggedNode, OrgNodeModel, ChartMode, OrgCompanyModel, OrgGroupModel, OrgNodeStatus, DomElementHelper } from "./shared/index";
 
 const MIN_HEIGHT: number = 480;
 const MAX_HEIGHT: number = 768;
@@ -384,6 +384,32 @@ export class OrgComponent implements OnDestroy {
 
     onNodeSearched(data: OrgNodeModel) {
         this.searchedNode = data;
+    }
+
+    onNodeMoved(data: DraggedNode) {
+        if (data) {
+            let node = this.getNode(data.NodeID, this.orgNodes[0]);
+            this.deleteNodeFromArray(node, this.orgNodes);
+            node.ParentNodeID = data.PushTo;
+            this.addChildToSelectedOrgNode(node, this.orgNodes[0]);
+            this.updateJSON();
+        }
+
+        // now remove the element from the parent, and insert it into the new elements children
+        /*let index = this.draggingNode.parent.children.indexOf(this.draggingNode);
+        if (index > -1) {
+            this.draggingNode.parent.children.splice(index, 1);
+        }
+        if (typeof this.selectedNode.children !== "undefined" || typeof this.selectedNode._children !== "undefined") {
+            if (typeof this.selectedNode.children !== "undefined") {
+                this.selectedNode.children.push(this.draggingNode);
+            } else {
+                this.selectedNode._children.push(this.draggingNode);
+            }
+        } else {
+            this.selectedNode.children = [];
+            this.selectedNode.children.push(this.draggingNode);
+        }*/
     }
 
     private enableViewModesNav(viewMode) {
