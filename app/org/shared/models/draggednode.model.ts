@@ -1,4 +1,6 @@
 export class DraggedNode {
     NodeID: number;
-    PushTo: number;
+    OrgGroupID: number;
+    CompanyID: number;
+    ParentNodeID: number;
 }

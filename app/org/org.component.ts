@@ -1,7 +1,7 @@
 import { Component, Output, EventEmitter, OnDestroy, HostListener } from "@angular/core";
 import { tokenNotExpired } from "angular2-jwt";
 
-import { DraggedNode, OrgNodeModel, ChartMode, OrgCompanyModel, OrgGroupModel, OrgNodeStatus, DomElementHelper } from "./shared/index";
+import { DraggedNode, OrgNodeModel, ChartMode, OrgCompanyModel, OrgGroupModel, OrgNodeStatus, DomElementHelper, OrgService } from "./shared/index";
 
 const MIN_HEIGHT: number = 480;
 const MAX_HEIGHT: number = 768;
@@ -47,7 +47,7 @@ export class OrgComponent implements OnDestroy {
     @Output() isSmartBarEnabled: boolean;
     @Output() isEditMenuEnable: boolean;
 
-    constructor(public domHelper: DomElementHelper) {
+    constructor(private orgService: OrgService, public domHelper: DomElementHelper) {
         this.currentChartMode = ChartMode.build;
         this.enableLabels();
         this.svgWidth = this.getSvgWidth();
@@ -390,9 +390,10 @@ export class OrgComponent implements OnDestroy {
         if (data) {
             let node = this.getNode(data.NodeID, this.orgNodes[0]);
             this.deleteNodeFromArray(node, this.orgNodes);
-            node.ParentNodeID = data.PushTo;
+            node.ParentNodeID = data.ParentNodeID;
             this.addChildToSelectedOrgNode(node, this.orgNodes[0]);
-            this.updateJSON();
+            this.orgService.changeParent(node).subscribe(data => this.updateJSON(),
+                err => this.orgService.logError(err));
         }
 
         // now remove the element from the parent, and insert it into the new elements children

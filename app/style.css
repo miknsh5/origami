@@ -231,6 +231,21 @@ path.horizontal {
     animation: loader-label 1.15s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
 }
 
+.templink {
+    fill: none;
+    stroke: red;
+    stroke-width: 3px;
+}
+
+.ghostCircle.show {
+    display: block;
+}
+
+.ghostCircle,
+.activeDrag .ghostCircle {
+    display: none;
+}
+
 @-webkit-keyframes loader-figure {
     0% {
         height: 0;
@@ -327,34 +342,34 @@ path.horizontal {
 
 /* Scroll bar */
 
- ::-webkit-scrollbar {
+::-webkit-scrollbar {
     width: 2px;
     height: 7px;
 }
 
- ::-webkit-scrollbar-button {
+::-webkit-scrollbar-button {
     width: 0px;
     height: 0px;
 }
 
- ::-webkit-scrollbar-thumb {
+::-webkit-scrollbar-thumb {
     background: #e1e1e1;
     border: 0px none #696969;
     border: 0px none var(--dim-grey);
     border-radius: 50px;
 }
 
- ::-webkit-scrollbar-thumb:hover {
+::-webkit-scrollbar-thumb:hover {
     background: #696969;
     background: var(--dim-grey);
 }
 
- ::-webkit-scrollbar-thumb:active {
+::-webkit-scrollbar-thumb:active {
     background: #696969;
     background: var(--dim-grey);
 }
 
- ::-webkit-scrollbar-track {
+::-webkit-scrollbar-track {
     background: #696969;
     background: var(--dim-grey);
     border: 0px none #696969;
@@ -362,17 +377,17 @@ path.horizontal {
     border-radius: 50px;
 }
 
- ::-webkit-scrollbar-track:hover {
+::-webkit-scrollbar-track:hover {
     background: #ffffff;
     background: var(--white-text);
 }
 
- ::-webkit-scrollbar-track:active {
+::-webkit-scrollbar-track:active {
     background: #ffffff;
     background: var(--white-text);
 }
 
- ::-webkit-scrollbar-corner {
+::-webkit-scrollbar-corner {
     background: transparent;
 }
 

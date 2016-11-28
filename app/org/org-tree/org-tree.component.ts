@@ -730,6 +730,9 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         nodeExit.select(G_LABEL)
             .style("visibility", "hidden");
 
+        nodeExit.select("ghostCircle")
+            .attr("pointer-events", "");
+
         node.each(function (d) {
             if (d.IsFakeRoot)
                 d3.select(this).remove();
@@ -1131,7 +1134,8 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             return;
         }
         if (this.dragStarted) {
-            this.initiateDrag(d, event.target);
+            let parentElement = event.target["parentNode"];
+            this.initiateDrag(d, parentElement);
         }
         this.updateTempConnector();
     }
@@ -1143,9 +1147,11 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         if (this.selectedNode) {
             if (this.draggingNode) {
                 let draggedNode = new DraggedNode();
-                draggedNode.PushTo = this.selectedNode.NodeID;
+                draggedNode.ParentNodeID = this.selectedNode.NodeID;
                 draggedNode.NodeID = this.draggingNode.NodeID;
-                this.moveNode.emit(draggedNode);
+                if (draggedNode.NodeID !== this.selectedNode.NodeID) {
+                    this.moveNode.emit(draggedNode);
+                }
             }
             this.endDrag(event.target);
         } else {
@@ -1158,6 +1164,11 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         d3.select(domNode).select(".ghostCircle").attr("pointer-events", "none");
         d3.selectAll(".ghostCircle").attr("class", "ghostCircle show");
         d3.select(domNode).attr("class", "node activeDrag");
+
+        // this.svg.selectAll("g.node").sort((a, b) => {console.log(a); // select the parent and sort the path's
+        //     if (a.NodeID !== this.draggingNode.NodeID) return 1; // a is not the hovered element, send "a" to the back
+        //     else return -1; // a is the hovered element, bring "a" to the front
+        // });
 
         // if nodes has children, remove the links and nodes
         if (this.nodes.length > 1) {
@@ -1194,9 +1205,10 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     endDrag(domNode) {
         this.selectedNode = null;
         d3.selectAll(".ghostCircle").attr("class", "ghostCircle");
-        d3.select(domNode).attr("class", "node");
+        let element = event.target["parentNode"];
+        d3.select(element).attr("class", "node");
         // now restore the mouseover event or we won't be able to drag a 2nd time
-        d3.select(domNode).select(".ghostCircle").attr("pointer-events", "");
+        d3.select(element).select(".ghostCircle").attr("pointer-events", "");
         this.updateTempConnector();
         if (this.draggingNode !== null) {
             this.selectedOrgNode = this.draggingNode;
