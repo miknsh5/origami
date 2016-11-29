@@ -393,22 +393,6 @@ export class OrgComponent implements OnDestroy {
             this.orgService.changeParent(node).subscribe(data => this.updateJSON(),
                 err => this.orgService.logError(err));
         }
-
-        // now remove the element from the parent, and insert it into the new elements children
-        /*let index = this.draggingNode.parent.children.indexOf(this.draggingNode);
-        if (index > -1) {
-            this.draggingNode.parent.children.splice(index, 1);
-        }
-        if (typeof this.selectedNode.children !== "undefined" || typeof this.selectedNode._children !== "undefined") {
-            if (typeof this.selectedNode.children !== "undefined") {
-                this.selectedNode.children.push(this.draggingNode);
-            } else {
-                this.selectedNode._children.push(this.draggingNode);
-            }
-        } else {
-            this.selectedNode.children = [];
-            this.selectedNode.children.push(this.draggingNode);
-        }*/
     }
 
     private enableViewModesNav(viewMode) {
