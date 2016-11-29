@@ -3,10 +3,8 @@ import { tokenNotExpired } from "angular2-jwt";
 
 import { DraggedNode, OrgNodeModel, ChartMode, OrgCompanyModel, OrgGroupModel, OrgNodeStatus, DomElementHelper, OrgService } from "./shared/index";
 
-const MIN_HEIGHT: number = 480;
-const MAX_HEIGHT: number = 768;
-const MIN_WIDTH: number = 600;
-const MAX_WIDTH: number = 1366;
+const MIN_HEIGHT: number = 420;
+const MIN_WIDTH: number = 640;
 const DEFAULT_OFFSET: number = 61;
 
 declare var svgPanZoom: any;
@@ -436,23 +434,17 @@ export class OrgComponent implements OnDestroy {
 
     private getSvgHeight() {
         let height = window.innerHeight;
-        // applies min height
-        height = height < MIN_HEIGHT ? MIN_HEIGHT : height;
-
-        // temporarily applied wiil be removed after standard and organization mode added
-        if (this.svgWidth < 993 && height > MIN_HEIGHT) {
-            height = height - DEFAULT_OFFSET;
-        } else {
-            height = height - DEFAULT_OFFSET;
+        if (height > MIN_HEIGHT) {
+            if (window.innerWidth < MIN_WIDTH) {
+                return height - (DEFAULT_OFFSET * 2);
+            }
+            return height - DEFAULT_OFFSET;
         }
-        return height;
+        return MIN_HEIGHT;
     }
 
     private getSvgWidth() {
-        let width = window.innerWidth;
-        // applies min width
-        width = width < MIN_WIDTH ? MIN_WIDTH : width;
-        return width;
+        return window.innerWidth;
     }
 
     private getNode(nodeID: number, rootNode: any) {
