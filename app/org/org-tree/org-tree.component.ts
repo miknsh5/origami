@@ -1238,12 +1238,13 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                     this.selectedOrgNode = this.draggingNode;
                     this.showChildren(this.selectedOrgNode);
                     this.highlightSelectedNode(this.selectedOrgNode, true);
+                    this.render(this.selectedOrgNode);
+                    this.centerNode(this.selectedOrgNode);
                     this.draggingNode = null;
                 }
             } else {
                 this.showChildren(this.selectedOrgNode);
                 this.highlightAndCenterNode(this.selectedOrgNode);
-                console.log(this.draggingNode)
             }
         }
     }
