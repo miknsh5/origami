@@ -273,6 +273,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
     @HostListener("window:click", ["$event"])
     bodyClicked(event: any) {
+        if (event.defaultPrevented) return; // click suppressed
         // event.stopPropagation();
         if (this.currentMode === ChartMode.build && !this.isAddOrEditModeEnabled) {
             if (event.target.nodeName === "svg") {
@@ -1206,14 +1207,18 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         this.selectedNode = null;
         d3.selectAll(".ghostCircle").attr("class", "ghostCircle");
         let element = event.target["parentNode"];
-        d3.select(element).attr("class", "node");
-        // now restore the mouseover event or we won't be able to drag a 2nd time
-        d3.select(element).select(".ghostCircle").attr("pointer-events", "");
-        this.updateTempConnector();
-        if (this.draggingNode !== null) {
-            this.selectedOrgNode = this.draggingNode;
-            this.highlightSelectedNode(this.selectedOrgNode, true);
-            this.draggingNode = null;
+        if (element.tagName === "g") {
+            d3.select(element).attr("class", "node");
+            // now restore the mouseover event or we won't be able to drag a 2nd time
+            d3.select(element).select(".ghostCircle").attr("pointer-events", "");
+            this.updateTempConnector();
+            if (this.draggingNode !== null) {
+                this.selectedOrgNode = this.draggingNode;
+                this.highlightSelectedNode(this.selectedOrgNode, true);
+                this.draggingNode = null;
+            }
+        } else {
+            this.highlightSelectedNode(this.selectedOrgNode);
         }
     }
 
