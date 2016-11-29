@@ -1170,7 +1170,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             return;
         }
         if (this.selectedNode) {
-            if (this.draggingNode) {
+            if (this.draggingNode && this.draggingNode.ParentNodeID !== this.selectedNode.NodeID) {
                 let draggedNode = new DraggedNode();
                 draggedNode.ParentNodeID = this.selectedNode.NodeID;
                 draggedNode.NodeID = this.draggingNode.NodeID;
@@ -1185,64 +1185,67 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     }
 
     initiateDrag(d, domNode) {
-        this.draggingNode = d;
-        d3.select(domNode).select(".ghostCircle").attr("pointer-events", "none");
-        d3.selectAll(".ghostCircle").attr("class", "ghostCircle show");
-        d3.select(domNode).attr("class", "node activeDrag");
+        if (this.selectedOrgNode) {
+            this.draggingNode = d;
+            d3.select(domNode).select(".ghostCircle").attr("pointer-events", "none");
+            d3.selectAll(".ghostCircle").attr("class", "ghostCircle show");
+            d3.select(domNode).attr("class", "node activeDrag");
 
-        // this.svg.selectAll("g.node").sort((a, b) => {console.log(a); // select the parent and sort the path's
-        //     if (a.NodeID !== this.draggingNode.NodeID) return 1; // a is not the hovered element, send "a" to the back
-        //     else return -1; // a is the hovered element, bring "a" to the front
-        // });
-
-        // if nodes has children, remove the links and nodes
-        if (this.nodes.length > 1) {
-            // remove link paths
-            let links = this.tree.links(this.nodes);
-            let nodePaths = this.svg.selectAll("path.link")
-                .data(links, function(d) {
-                    return d.target.NodeID;
-                }).remove();
-            // remove child nodes
-            let nodesExit = this.svg.selectAll("g.node")
-                .data(this.nodes, function(d) {
-                    return d.NodeID;
-                }).filter((d, i) => {
-                    if (d.NodeID === this.draggingNode.NodeID) {
-                        return false;
-                    }
-                    return true;
-                }).remove();
-        }
-
-        // remove parent link
-        let parentLink = this.tree.links(this.tree.nodes(this.draggingNode.parent));
-        this.svg.selectAll("path.link").filter((d, i) => {
-            if (d.target.NodeID === this.draggingNode.NodeID) {
-                return true;
+            // if nodes has children, remove the links and nodes
+            if (this.nodes.length > 1) {
+                // remove link paths
+                let links = this.tree.links(this.nodes);
+                let nodePaths = this.svg.selectAll("path.link")
+                    .data(links, function(d) {
+                        return d.target.NodeID;
+                    }).remove();
+                // remove child nodes
+                let nodesExit = this.svg.selectAll("g.node")
+                    .data(this.nodes, function(d) {
+                        return d.NodeID;
+                    }).filter((d, i) => {
+                        if (d.NodeID === this.draggingNode.NodeID) {
+                            return false;
+                        }
+                        return true;
+                    }).remove();
             }
-            return false;
-        }).remove();
+
+            // remove parent link
+            let parentLink = this.tree.links(this.tree.nodes(this.draggingNode.parent));
+            this.svg.selectAll("path.link").filter((d, i) => {
+                if (d.target.NodeID === this.draggingNode.NodeID) {
+                    return true;
+                }
+                return false;
+            }).remove();
+        }
 
         this.dragStarted = null;
     }
 
     endDrag(domNode) {
-        this.selectedNode = null;
-        d3.selectAll(".ghostCircle").attr("class", "ghostCircle");
-        let element = event.target["parentNode"];
-        if (element.tagName === "g") {
-            d3.select(element).attr("class", "node");
-            // now restore the mouseover event or we won't be able to drag a 2nd time
-            d3.select(element).select(".ghostCircle").attr("pointer-events", "");
-            this.updateTempConnector();
-            if (this.draggingNode !== null) {
-                this.selectedOrgNode = this.draggingNode;
-                this.highlightSelectedNode(this.selectedOrgNode, true);
-                this.draggingNode = null;
+        if (this.selectedOrgNode) {
+            this.selectedNode = null;
+            d3.selectAll(".ghostCircle").attr("class", "ghostCircle");
+            let element = event.target["parentNode"];
+            if (element.tagName === "g") {
+                d3.select(element).attr("class", "node");
+                // now restore the mouseover event or we won't be able to drag a 2nd time
+                d3.select(element).select(".ghostCircle").attr("pointer-events", "");
+                this.updateTempConnector();
+                if (this.draggingNode !== null) {
+                    this.selectedOrgNode = this.draggingNode;
+                    this.showChildren(this.selectedOrgNode);
+                    this.highlightSelectedNode(this.selectedOrgNode, true);
+                    this.render(this.selectedOrgNode);
+                    this.centerNode(this.selectedOrgNode);
+                    this.draggingNode = null;
+                }
+            } else {
+                this.showChildren(this.selectedOrgNode);
+                this.highlightAndCenterNode(this.selectedOrgNode);
             }
-        } else {
-            this.highlightSelectedNode(this.selectedOrgNode);
         }
     }
 
