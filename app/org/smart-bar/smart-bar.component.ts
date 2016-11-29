@@ -326,7 +326,6 @@ export class SamrtBarComponent implements OnChanges {
                 if (this.selectedOrgNode.NodeID !== -1) {
                     this.newOrgNode.NodeID = -1;
                     this.newOrgNode.IsChild = false;
-                    this.newOrgNode.IsGrandParent = false;
                     this.newOrgNode.IsParent = false;
                     this.newOrgNode.IsSelected = false;
                     this.newOrgNode.IsSibling = true;

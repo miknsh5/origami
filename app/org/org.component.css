@@ -10,6 +10,10 @@
     left: 30px
 }
 
+.modes_wrap ul {
+    margin-bottom: 0;
+}
+
 .modes_wrap li {
     width: 4rem;
     height: 4rem;
@@ -64,7 +68,18 @@
         height: auto;
     }
     .modes_wrap {
-        top: 65px;
-        left: 10px;
+        position: relative;
+        left: 0;
+        width: 100%;
+    }
+    .modes_wrap li {
+        background-size: contain;
+        background-position: 0;
+        width: auto;
+        display: inline-block;
+    }
+    .modes_wrap li>a {
+        width: auto;
+        display: inline-block;
     }
 }

@@ -31,7 +31,7 @@ const NODE_WIDTH = 95;
 const RADIAL_DEPTH = 90;
 const DEPTH = 180;
 const RADIAL_VALUE = 360;
-const VIEWBOX_MIN_WIDTH = 800;
+const VIEWBOX_MIN_WIDTH = 560;
 const VIEWBOX_MIN_HEIGHT = 540;
 const VIEWBOX_MAX_WIDTH = 1366;
 const VIEWBOX_MAX_HEIGHT = 768;
@@ -810,6 +810,9 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             } else {
                 x += (DEFAULT_MARGIN * 2);
             }
+            if (this.treeHeight === (VIEWBOX_MIN_HEIGHT - RIGHTLEFT_MARGIN)) {
+                x += TOPBOTTOM_MARGIN;
+            }
             return "translate(" + x + ",0)";
         });
 
@@ -847,10 +850,10 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         nodeExit.select(CIRCLE)
             .attr("r", 1e-6);
 
-        nodeExit.select("#abbr")
+        nodeExit.select(G_LABEL)
             .style("visibility", "hidden");
 
-        nodeExit.select(G_LABEL)
+        nodeExit.select("#abbr")
             .style("visibility", "hidden");
 
         node.each(function(d) {
@@ -905,12 +908,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             let fn = "", ln = "";
             if (d.NodeFirstName) { fn = d.NodeFirstName.slice(0, 1); }
             if (d.NodeLastName) { ln = d.NodeLastName.slice(0, 1); }
-            if (d.IsGrandParent) {
-                if (this.currentMode === ChartMode.explore) {
-                    return fn + ln;
-                }
-                return "";
-            }
             return fn + ln;
         }).style("fill", function(d) {
             return d.IsStaging && d.NodeID === -1 ? "#0097FF" : "#FFFFFF";
@@ -1102,7 +1099,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         nodeUpdate.select(G_LABEL)
             .style("fill", PATH_STORKE_COLOR)
             .style("visibility", (d) => {
-                if (d.IsGrandParent) {
+                if (!d.Show) {
                     return "hidden";
                 }
                 return "visible";
@@ -1610,7 +1607,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     private isAncestorOrRelated(node: OrgNodeModel) {
         node.IsChild = false;
         node.IsParent = false;
-        node.IsGrandParent = false;
         node.IsSibling = false;
         node.IsSelected = false;
         node.Show = false;
