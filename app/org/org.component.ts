@@ -1,7 +1,7 @@
 import { Component, Output, EventEmitter, OnDestroy, HostListener } from "@angular/core";
 import { tokenNotExpired } from "angular2-jwt";
 
-import { OrgNodeModel, ChartMode, OrgCompanyModel, OrgGroupModel, OrgNodeStatus, DomElementHelper } from "./shared/index";
+import { DraggedNode, OrgNodeModel, ChartMode, OrgCompanyModel, OrgGroupModel, OrgNodeStatus, DomElementHelper, OrgService } from "./shared/index";
 
 const MIN_HEIGHT: number = 420;
 const MIN_WIDTH: number = 640;
@@ -45,7 +45,7 @@ export class OrgComponent implements OnDestroy {
     @Output() isSmartBarEnabled: boolean;
     @Output() isEditMenuEnable: boolean;
 
-    constructor(public domHelper: DomElementHelper) {
+    constructor(private orgService: OrgService, public domHelper: DomElementHelper) {
         this.currentChartMode = ChartMode.build;
         this.enableLabels();
         this.svgWidth = this.getSvgWidth();
@@ -382,6 +382,17 @@ export class OrgComponent implements OnDestroy {
 
     onNodeSearched(data: OrgNodeModel) {
         this.searchedNode = data;
+    }
+
+    onNodeMoved(data: DraggedNode) {
+        if (data) {
+            let node = this.getNode(data.NodeID, this.orgNodes[0]);
+            this.deleteNodeFromArray(node, this.orgNodes);
+            node.ParentNodeID = data.ParentNodeID;
+            this.addChildToSelectedOrgNode(node, this.orgNodes[0]);
+            this.orgService.changeParent(node).subscribe(data => this.updateJSON(),
+                err => this.orgService.logError(err));
+        }
     }
 
     private enableViewModesNav(viewMode) {
