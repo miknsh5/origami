@@ -240,6 +240,7 @@ export class SamrtBarComponent implements OnChanges {
                 this.isSmartBarEnabled.emit(false);
                 this.newNodeValue = this.titleFilterList = null;
             } else {
+                this.isSmartBarEnabled.emit(false);
                 this.newNodeValue = this.titleFilterList = null;
                 this.clearSearch();
             }
@@ -256,8 +257,9 @@ export class SamrtBarComponent implements OnChanges {
                     this.isSmartBarEnabled.emit(false);
                     this.multiInTerm = "";
                     this.newNodeValue = null;
-                } else if (this.searchTerm === "" && !this.multiInTerm) {
+                } else if ((this.searchTerm === "" || this.searchTerm.length === 1 ) && !this.multiInTerm) {
                     this.searchInProgress = this.isSearchEnabled = this.isTitleSelected = false;
+                    this.isSmartBarEnabled.emit(false);
                     this.nodeSearchedList = new Array<OrgSearchModel>();
                     this.titleFilterList = new Array();
                     this.searchHeader = `BY ${HeaderTitle}`;
@@ -326,7 +328,6 @@ export class SamrtBarComponent implements OnChanges {
                 if (this.selectedOrgNode.NodeID !== -1) {
                     this.newOrgNode.NodeID = -1;
                     this.newOrgNode.IsChild = false;
-                    this.newOrgNode.IsGrandParent = false;
                     this.newOrgNode.IsParent = false;
                     this.newOrgNode.IsSelected = false;
                     this.newOrgNode.IsSibling = true;

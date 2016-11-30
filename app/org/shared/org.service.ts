@@ -152,6 +152,15 @@ export class OrgService {
             .map(node => node.json());
     }
 
+    changeParent(childNode) {
+        let changeParentLink = `api/Org/ChangeParent`;
+        let node = JSON.stringify(childNode);
+        let options = new RequestOptions({ headers: this.headers });
+        let url = this.origamiUrl + changeParentLink;
+        return this.http.post(url, node, options)
+            .map(res => res.json());
+    }
+
     logError(err: any) {
         console.error(err);
     }

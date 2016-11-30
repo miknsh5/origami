@@ -7,4 +7,5 @@ export * from "./models/orgnode.model";
 export * from "./models/userfeedback.model";
 export * from "./dom-element-helper";
 export * from "./models/orgsearch.model";
+export * from "./models/draggednode.model";
 export * from "./org.service";

@@ -1,12 +1,10 @@
 import { Component, Output, EventEmitter, OnDestroy, HostListener } from "@angular/core";
 import { tokenNotExpired } from "angular2-jwt";
 
-import { OrgNodeModel, ChartMode, OrgCompanyModel, OrgGroupModel, OrgNodeStatus, DomElementHelper } from "./shared/index";
+import { DraggedNode, OrgNodeModel, ChartMode, OrgCompanyModel, OrgGroupModel, OrgNodeStatus, DomElementHelper, OrgService } from "./shared/index";
 
-const MIN_HEIGHT: number = 480;
-const MAX_HEIGHT: number = 768;
-const MIN_WIDTH: number = 600;
-const MAX_WIDTH: number = 1366;
+const MIN_HEIGHT: number = 420;
+const MIN_WIDTH: number = 640;
 const DEFAULT_OFFSET: number = 61;
 
 declare var svgPanZoom: any;
@@ -47,7 +45,7 @@ export class OrgComponent implements OnDestroy {
     @Output() isSmartBarEnabled: boolean;
     @Output() isEditMenuEnable: boolean;
 
-    constructor(public domHelper: DomElementHelper) {
+    constructor(private orgService: OrgService, public domHelper: DomElementHelper) {
         this.currentChartMode = ChartMode.build;
         this.enableLabels();
         this.svgWidth = this.getSvgWidth();
@@ -386,6 +384,17 @@ export class OrgComponent implements OnDestroy {
         this.searchedNode = data;
     }
 
+    onNodeMoved(data: DraggedNode) {
+        if (data) {
+            let node = this.getNode(data.NodeID, this.orgNodes[0]);
+            this.deleteNodeFromArray(node, this.orgNodes);
+            node.ParentNodeID = data.ParentNodeID;
+            this.addChildToSelectedOrgNode(node, this.orgNodes[0]);
+            this.orgService.changeParent(node).subscribe(data => this.updateJSON(),
+                err => this.orgService.logError(err));
+        }
+    }
+
     private enableViewModesNav(viewMode) {
         if (viewMode === ChartMode.explore) {
             this.exploreView = "active";
@@ -409,23 +418,17 @@ export class OrgComponent implements OnDestroy {
 
     private getSvgHeight() {
         let height = window.innerHeight;
-        // applies min height
-        height = height < MIN_HEIGHT ? MIN_HEIGHT : height;
-
-        // temporarily applied wiil be removed after standard and organization mode added
-        if (this.svgWidth < 993 && height > MIN_HEIGHT) {
-            height = height - DEFAULT_OFFSET;
-        } else {
-            height = height - DEFAULT_OFFSET;
+        if (height > MIN_HEIGHT) {
+            if (window.innerWidth < MIN_WIDTH) {
+                return height - (DEFAULT_OFFSET * 2);
+            }
+            return height - DEFAULT_OFFSET;
         }
-        return height;
+        return MIN_HEIGHT;
     }
 
     private getSvgWidth() {
-        let width = window.innerWidth;
-        // applies min width
-        width = width < MIN_WIDTH ? MIN_WIDTH : width;
-        return width;
+        return window.innerWidth;
     }
 
     private getNode(nodeID: number, rootNode: any) {
