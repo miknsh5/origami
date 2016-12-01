@@ -14,10 +14,11 @@
         </sg-org-tree>
         <div *ngIf="currentChartMode===1">
             <sg-smart-bar [treeJsonData]="orgGroup.OrgNodes" (nodeSearched)="onNodeSearched($event)" [selectedOrgNode]="selectedNode" [isEditModeEnabled]="detailAddOrEditMode" (deleteNode)="onNodeDeleted($event)" (updateNode)="onNodeUpdated($event)" (addNode)="onNodeAdded($event)"
-                (chartStructureUpdated)="onChartUpdated($event)" (isSmartBarEnabled)="smartBarEnabled($event)" [isEditMenuEnable]="isEditMenuEnable" [orgGroupID]="groupID">
+                (chartStructureUpdated)="onChartUpdated($event)" (isSmartBarEnabled)="smartBarEnabled($event)" [isEditMenuEnable]="isEditMenuEnable" [orgGroupID]="groupID" [isMoveNodeOn]="isMoveNodeOn">
             </sg-smart-bar>
         </div>
     </div>
     <sg-side-menu-panel [selectedOrgNode]="selectedNode" [currentMode]="currentChartMode" [companyName]="companyName" (showFirstNameLabel)="enableFirstNameLabel($event)" (showLastNameLabel)="enableLastNameLabel($event)" (showDescriptionLabel)="enableDescriptionLabel($event)"
-        [svgWidth]="svgWidth" [svgHeight]="svgHeight" [orgChart]="orgGroup" (deleteNode)="onNodeDeleted($event)" (updateNode)="onNodeUpdated($event)" [isMenuSettingsEnabled]="isMenuSettingsEnabled" [isSmartBarAddEnabled]="isSmartBarEnabled" (isEditEnabled)="isEditEnabled($event)"></sg-side-menu-panel>
+        [svgWidth]="svgWidth" [svgHeight]="svgHeight" [orgChart]="orgGroup" (deleteNode)="onNodeDeleted($event)" (updateNode)="onNodeUpdated($event)" [isMenuSettingsEnabled]="isMenuSettingsEnabled" [isSmartBarAddEnabled]="isSmartBarEnabled" (isEditEnabled)="isEditEnabled($event)"
+        (isNodeMoveOn)="moveNode($event)"></sg-side-menu-panel>
 </div>

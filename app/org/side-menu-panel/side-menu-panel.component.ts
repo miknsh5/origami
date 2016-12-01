@@ -69,6 +69,7 @@ export class SideMenuComponent implements OnChanges {
     @Output() isEditEnabled = new EventEmitter<boolean>();
     @Output() deleteTitle: string;
     @Output() name: string;
+    @Output() isNodeMoveOn = new EventEmitter<boolean>();
 
     @HostListener("window:keydown", ["$event"])
     onKeyDown(event: any) {
@@ -113,6 +114,7 @@ export class SideMenuComponent implements OnChanges {
         this.editOrSave = EDIT_ICON;
         this.deleteOrClose = DELETE_ICON;
         this.isEditOrDeleteDisabled = false;
+        this.isNodeMoveOn.emit(false);
     }
 
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
@@ -311,6 +313,12 @@ export class SideMenuComponent implements OnChanges {
             return false;
         }
         return true;
+    }
+
+    onMoveNodeClicked() {
+        if (this.selectedOrgNode && this.selectedOrgNode.ParentNodeID !== null) {
+            this.isNodeMoveOn.emit(true);
+        }
     }
 
     onEditOrSaveNodeClicked() {

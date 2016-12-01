@@ -42,6 +42,7 @@ export class SamrtBarComponent implements OnChanges {
     @Input() isEditModeEnabled: boolean;
     @Input() isEditMenuEnable: boolean;
     @Input() orgGroupID: number;
+    @Input() isMoveNodeOn: boolean;
     @Output() nodeSearched = new EventEmitter<OrgNodeModel>();
     @Output() deleteNode = new EventEmitter<OrgNodeModel>();
     @Output() addNode = new EventEmitter<OrgNodeModel>();
@@ -88,6 +89,9 @@ export class SamrtBarComponent implements OnChanges {
                 this.nodeSearched.emit(this.selectedOrgNode);
             }
             this.setInputFocus();
+        }
+        if (changes["isMoveNodeOn"] && changes["isMoveNodeOn"].currentValue) {
+            this.placeholderText = "Assign to...";
         }
     }
 
@@ -257,7 +261,7 @@ export class SamrtBarComponent implements OnChanges {
                     this.isSmartBarEnabled.emit(false);
                     this.multiInTerm = "";
                     this.newNodeValue = null;
-                } else if ((this.searchTerm === "" || this.searchTerm.length === 1 ) && !this.multiInTerm) {
+                } else if ((this.searchTerm === "" || this.searchTerm.length === 1) && !this.multiInTerm) {
                     this.searchInProgress = this.isSearchEnabled = this.isTitleSelected = false;
                     this.isSmartBarEnabled.emit(false);
                     this.nodeSearchedList = new Array<OrgSearchModel>();
@@ -269,101 +273,103 @@ export class SamrtBarComponent implements OnChanges {
     }
 
     onAddNode() {
-        let firstName: any;
-        let lastName: any;
-        let index = this.multiInTerm.indexOf(" ");
-        this.isSmartBarEnabled.emit(true);
-        if (index !== -1 && this.multiInTerm && (!this.newNodeValue || this.newNodeValue.length === 0)) {
-            firstName = this.multiInTerm.substring(0, index);
-            lastName = this.multiInTerm.substring(index + 1, this.multiInTerm.length);
-            this.newOrgNode.NodeFirstName = firstName;
-            this.newOrgNode.NodeLastName = lastName;
-            this.newOrgNode.Description = "";
-        } else if (index === -1 && this.multiInTerm && (!this.newNodeValue || this.newNodeValue.length === 0)) {
-            firstName = this.multiInTerm;
-            lastName = "";
-            this.newOrgNode.NodeFirstName = firstName;
-            this.newOrgNode.NodeLastName = lastName;
-            this.newOrgNode.Description = "";
-        }
-        this.newOrgNode.OrgGroupID = this.selectedOrgNode.OrgGroupID;
-        this.newOrgNode.CompanyID = this.selectedOrgNode.CompanyID;
+        if (!this.isMoveNodeOn) {
+            let firstName: any;
+            let lastName: any;
+            let index = this.multiInTerm.indexOf(" ");
+            this.isSmartBarEnabled.emit(true);
+            if (index !== -1 && this.multiInTerm && (!this.newNodeValue || this.newNodeValue.length === 0)) {
+                firstName = this.multiInTerm.substring(0, index);
+                lastName = this.multiInTerm.substring(index + 1, this.multiInTerm.length);
+                this.newOrgNode.NodeFirstName = firstName;
+                this.newOrgNode.NodeLastName = lastName;
+                this.newOrgNode.Description = "";
+            } else if (index === -1 && this.multiInTerm && (!this.newNodeValue || this.newNodeValue.length === 0)) {
+                firstName = this.multiInTerm;
+                lastName = "";
+                this.newOrgNode.NodeFirstName = firstName;
+                this.newOrgNode.NodeLastName = lastName;
+                this.newOrgNode.Description = "";
+            }
+            this.newOrgNode.OrgGroupID = this.selectedOrgNode.OrgGroupID;
+            this.newOrgNode.CompanyID = this.selectedOrgNode.CompanyID;
 
-        if (this.newNodeValue && this.newNodeValue.length >= 1) {
-            if (this.newNodeValue.length === 2) {
-                this.newOrgNode.Description = this.newNodeValue[1];
-            } else {
-                this.newOrgNode.Description = this.multiInTerm;
-                this.newNodeValue.push(this.multiInTerm);
-            }
-            if (!this.selectedOrgNode.ParentNodeID && this.selectedOrgNode.NodeID === -1) {
-                if (this.selectedOrgNode.IsNewRoot) {
-                    this.newOrgNode.ParentNodeID = null;
-                    this.newOrgNode.children = new Array<OrgNodeModel>();
-                    this.newOrgNode.children.push(this.selectedOrgNode);
-                    this.addNewParentNode(this.newOrgNode);
-                }
-                else {
-                    this.newOrgNode.ParentNodeID = null;
-                    this.addNewNode(this.newOrgNode);
-                }
-            }
-            else {
-                if (this.selectedOrgNode.NodeID === -1) {
-                    this.newOrgNode.ParentNodeID = this.selectedOrgNode.ParentNodeID;
+            if (this.newNodeValue && this.newNodeValue.length >= 1) {
+                if (this.newNodeValue.length === 2) {
+                    this.newOrgNode.Description = this.newNodeValue[1];
                 } else {
-                    this.newOrgNode.ParentNodeID = this.selectedOrgNode.NodeID;
+                    this.newOrgNode.Description = this.multiInTerm;
+                    this.newNodeValue.push(this.multiInTerm);
                 }
-                this.addNewNode(this.newOrgNode);
-            }
-            this.multiInTerm = "";
-            this.newNodeValue = null;
-        }
-        else {
-            if (!this.newNodeValue || (this.newNodeValue && this.newNodeValue.length === 0)) {
-                this.newNodeValue = new Array();
-                this.newNodeValue.push(firstName + " " + lastName);
-                this.multiInTerm = "";
-                this.isDescriptionText = true;
-                if (this.selectedOrgNode.NodeID !== -1) {
-                    this.newOrgNode.NodeID = -1;
-                    this.newOrgNode.IsChild = false;
-                    this.newOrgNode.IsParent = false;
-                    this.newOrgNode.IsSelected = false;
-                    this.newOrgNode.IsSibling = true;
-
-                    if (!this.selectedOrgNode.ParentNodeID && this.selectedOrgNode.NodeID === -1) {
-                        if (this.selectedOrgNode.IsNewRoot) {
-                            this.newOrgNode.ParentNodeID = null;
-                            this.newOrgNode.children = new Array<OrgNodeModel>();
-                            this.newOrgNode.children.push(this.selectedOrgNode);
-                        }
-                        else {
-                            this.newOrgNode.ParentNodeID = null;
-                        }
+                if (!this.selectedOrgNode.ParentNodeID && this.selectedOrgNode.NodeID === -1) {
+                    if (this.selectedOrgNode.IsNewRoot) {
+                        this.newOrgNode.ParentNodeID = null;
+                        this.newOrgNode.children = new Array<OrgNodeModel>();
+                        this.newOrgNode.children.push(this.selectedOrgNode);
+                        this.addNewParentNode(this.newOrgNode);
                     }
                     else {
-                        if (this.selectedOrgNode.NodeID === -1) {
-                            this.newOrgNode.ParentNodeID = this.selectedOrgNode.ParentNodeID;
-                        } else {
-                            this.newOrgNode.ParentNodeID = this.selectedOrgNode.NodeID;
-                        }
-                    }
-
-                    if (!this.newOrgNode.IsStaging && this.newOrgNode.NodeID === -1) {
-                        if (this.newNodeValue && this.newNodeValue.length !== 0) {
-                            this.newOrgNode.IsStaging = false;
-                            this.addNode.emit(this.newOrgNode);
-                        }
-                    } else {
-                        this.updateNode.emit(this.newOrgNode);
+                        this.newOrgNode.ParentNodeID = null;
+                        this.addNewNode(this.newOrgNode);
                     }
                 }
-            } else {
-                this.updateNode.emit(this.newOrgNode);
-                this.newNodeValue.push(firstName + " " + lastName);
+                else {
+                    if (this.selectedOrgNode.NodeID === -1) {
+                        this.newOrgNode.ParentNodeID = this.selectedOrgNode.ParentNodeID;
+                    } else {
+                        this.newOrgNode.ParentNodeID = this.selectedOrgNode.NodeID;
+                    }
+                    this.addNewNode(this.newOrgNode);
+                }
                 this.multiInTerm = "";
-                this.isDescriptionText = true;
+                this.newNodeValue = null;
+            }
+            else {
+                if (!this.newNodeValue || (this.newNodeValue && this.newNodeValue.length === 0)) {
+                    this.newNodeValue = new Array();
+                    this.newNodeValue.push(firstName + " " + lastName);
+                    this.multiInTerm = "";
+                    this.isDescriptionText = true;
+                    if (this.selectedOrgNode.NodeID !== -1) {
+                        this.newOrgNode.NodeID = -1;
+                        this.newOrgNode.IsChild = false;
+                        this.newOrgNode.IsParent = false;
+                        this.newOrgNode.IsSelected = false;
+                        this.newOrgNode.IsSibling = true;
+
+                        if (!this.selectedOrgNode.ParentNodeID && this.selectedOrgNode.NodeID === -1) {
+                            if (this.selectedOrgNode.IsNewRoot) {
+                                this.newOrgNode.ParentNodeID = null;
+                                this.newOrgNode.children = new Array<OrgNodeModel>();
+                                this.newOrgNode.children.push(this.selectedOrgNode);
+                            }
+                            else {
+                                this.newOrgNode.ParentNodeID = null;
+                            }
+                        }
+                        else {
+                            if (this.selectedOrgNode.NodeID === -1) {
+                                this.newOrgNode.ParentNodeID = this.selectedOrgNode.ParentNodeID;
+                            } else {
+                                this.newOrgNode.ParentNodeID = this.selectedOrgNode.NodeID;
+                            }
+                        }
+
+                        if (!this.newOrgNode.IsStaging && this.newOrgNode.NodeID === -1) {
+                            if (this.newNodeValue && this.newNodeValue.length !== 0) {
+                                this.newOrgNode.IsStaging = false;
+                                this.addNode.emit(this.newOrgNode);
+                            }
+                        } else {
+                            this.updateNode.emit(this.newOrgNode);
+                        }
+                    }
+                } else {
+                    this.updateNode.emit(this.newOrgNode);
+                    this.newNodeValue.push(firstName + " " + lastName);
+                    this.multiInTerm = "";
+                    this.isDescriptionText = true;
+                }
             }
         }
     }

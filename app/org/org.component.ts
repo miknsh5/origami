@@ -44,6 +44,7 @@ export class OrgComponent implements OnDestroy {
     @Output() searchedNode: OrgNodeModel;
     @Output() isSmartBarEnabled: boolean;
     @Output() isEditMenuEnable: boolean;
+    @Output() isMoveNodeOn: boolean;
 
     constructor(private orgService: OrgService, public domHelper: DomElementHelper) {
         this.currentChartMode = ChartMode.build;
@@ -111,6 +112,11 @@ export class OrgComponent implements OnDestroy {
         } else {
             this.disablePan();
         }
+    }
+
+    moveNode(value: boolean) {
+        console.log(value);
+        this.isMoveNodeOn = value;
     }
 
     smartBarEnabled(value: boolean) {
