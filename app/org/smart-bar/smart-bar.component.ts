@@ -1,7 +1,7 @@
 import { Component, ElementRef, Input, Output, EventEmitter, OnChanges, SimpleChange, HostListener, Renderer } from "@angular/core";
 import { NgForm, NgControl } from "@angular/forms";
 
-import { OrgNodeModel, OrgSearchModel, OrgService, DomElementHelper } from "../shared/index";
+import { DraggedNode, OrgNodeModel, OrgSearchModel, OrgService, DomElementHelper } from "../shared/index";
 
 const HeaderTitle = "NAME";
 const AddResource = "Search, Add Resources";
@@ -49,6 +49,8 @@ export class SamrtBarComponent implements OnChanges {
     @Output() chartStructureUpdated = new EventEmitter<any>();
     @Output() updateNode = new EventEmitter<OrgNodeModel>();
     @Output() isSmartBarEnabled = new EventEmitter<boolean>();
+    @Output() isMoveNodeDisabled = new EventEmitter<boolean>();
+    @Output() moveNode = new EventEmitter<DraggedNode>();
 
     constructor(private elementRef: ElementRef, private domHelper: DomElementHelper, private renderer: Renderer, private orgService: OrgService) {
         this.searchHeader = `BY ${HeaderTitle}`;
@@ -118,6 +120,11 @@ export class SamrtBarComponent implements OnChanges {
     @HostListener("focusout", ["$event"])
     deselectSearchBox(event: any) {
         setTimeout(() => {
+            if (this.isMoveNodeOn && this.multiInTerm !== "") {
+                this.isMoveNodeDisabled.emit(true);
+                this.searchTerm = this.multiInTerm = "";
+
+            }
             if (this.selectedOrgNode) {
                 this.isTitleSelected = this.searchInProgress = false;
                 this.nodeSearchedList = new Array<OrgSearchModel>();
@@ -661,7 +668,18 @@ export class SamrtBarComponent implements OnChanges {
                 jQueryelement.addClass(SELECTED).scrollTop(jQuery(SEARCH_CONTAINER).scrollTop() + jQueryelement.position().top);
                 this.isSmartBarEnabled.emit(false);
                 this.clearSearch();
-                this.nodeSearched.emit(node);
+                if (this.isMoveNodeOn) {
+                    let draggedNode = new DraggedNode();
+                    draggedNode.ParentNodeID = node.NodeID;
+                    draggedNode.NodeID = this.selectedOrgNode.NodeID;
+                    if (draggedNode.ParentNodeID !== this.selectedOrgNode.ParentNodeID) {
+                        this.moveNode.emit(draggedNode);
+                        this.isMoveNodeDisabled.emit(true);
+                        this.isMoveNodeOn = false;
+                    }
+                } else {
+                    this.nodeSearched.emit(node);
+                }
             }
         }
     }
@@ -734,7 +752,7 @@ export class SamrtBarComponent implements OnChanges {
                 });
             }
 
-            if (this.selectedOrgNode) {
+            if (this.selectedOrgNode && !this.isMoveNodeOn) {
                 setTimeout(() => {
                     let jQueryelement = jQuery(SEARCH_CONTAINER + " li.addNode").addClass(SELECTED);
                     if (jQueryelement) {
@@ -743,7 +761,9 @@ export class SamrtBarComponent implements OnChanges {
 
                 }, 100);
             } else {
-                this.searchTitleData(searchTerm);
+                if (!this.isMoveNodeOn) {
+                    this.searchTitleData(searchTerm);
+                }
                 setTimeout(() => {
                     if (this.nodeSearchedList.length > 0) {
                         let jQueryelement = jQuery(SEARCH_CONTAINER + " li.nodeSearch").first();

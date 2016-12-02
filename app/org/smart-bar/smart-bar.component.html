@@ -37,8 +37,8 @@
             <li *ngIf="!selectedOrgNode && !isTitleSelected && titleFilterList.length===0">
                 <i class="material-icons">search</i> No Results
             </li>
-            <li *ngIf="selectedOrgNode && multiInTerm" class="header">ADD A RESOURCE</li>
-            <li *ngIf="selectedOrgNode && multiInTerm" class="addNode" (click)="onAddNode($event)">
+            <li *ngIf="selectedOrgNode && multiInTerm && !isMoveNodeOn" class="header">ADD A RESOURCE</li>
+            <li *ngIf="selectedOrgNode && multiInTerm  && !isMoveNodeOn" class="addNode" (click)="onAddNode($event)">
                 <a>
                     <i class="material-icons">add_circle</i> {{multiInTerm}} <i class="material-icons right">keyboard_arrow_right</i>
                 </a>

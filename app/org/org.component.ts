@@ -114,9 +114,13 @@ export class OrgComponent implements OnDestroy {
         }
     }
 
-    moveNode(value: boolean) {
-        console.log(value);
+    moveNodeEnabled(value: boolean) {
         this.isMoveNodeOn = value;
+    }
+    moveNodeDisabled(value: boolean) {
+        let moveEnabled = !value;
+        this.moveNodeEnabled(moveEnabled);
+
     }
 
     smartBarEnabled(value: boolean) {

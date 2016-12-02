@@ -90,6 +90,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     @Input() CompanyID: number;
     @Input() isMenuSettingsEnabled: boolean;
     @Input() searchNode: OrgNodeModel;
+    @Input() isMoveNodeOn: boolean;
 
     @Output() selectNode = new EventEmitter<OrgNodeModel>();
     @Output() addNode = new EventEmitter<OrgNodeModel>();
@@ -272,6 +273,10 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                         // centers the last selected node
                         this.centerNode(this.lastSelectedNode);
                     }
+                }
+
+                if (changes["isMoveNodeOn"] && changes["isMoveNodeOn"].currentValue) {
+
                 }
             }
         }
