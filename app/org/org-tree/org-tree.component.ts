@@ -90,12 +90,13 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     @Input() CompanyID: number;
     @Input() isMenuSettingsEnabled: boolean;
     @Input() searchNode: OrgNodeModel;
-    @Input() isMoveNodeOn: boolean;
+    @Input() isNodeMoveEnabledOrDisabled: boolean;
 
     @Output() selectNode = new EventEmitter<OrgNodeModel>();
     @Output() addNode = new EventEmitter<OrgNodeModel>();
     @Output() switchToAddMode = new EventEmitter<OrgNodeModel>();
     @Output() moveNode = new EventEmitter<DraggedNode>();
+    @Output() isNodeMoveDisabled = new EventEmitter<boolean>();
 
     constructor(private orgService: OrgService,
         @Inject(ElementRef) elementRef: ElementRef) {
@@ -289,6 +290,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         if (this.currentMode === ChartMode.build && !this.isAddOrEditModeEnabled) {
             if (event.target.nodeName === "svg") {
                 if (!this.isAddOrEditModeEnabled && this.selectedOrgNode) {
+                    this.isNodeMoveDisabled.emit(false);
                     this.deselectNode();
                     this.selectNode.emit(this.selectedOrgNode);
                 }

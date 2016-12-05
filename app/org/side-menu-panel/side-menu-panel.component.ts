@@ -69,7 +69,7 @@ export class SideMenuComponent implements OnChanges {
     @Output() isEditEnabled = new EventEmitter<boolean>();
     @Output() deleteTitle: string;
     @Output() name: string;
-    @Output() isNodeMoveOn = new EventEmitter<boolean>();
+    @Output() isNodeMoveEnabledOrDisabled = new EventEmitter<boolean>();
 
     @HostListener("window:keydown", ["$event"])
     onKeyDown(event: any) {
@@ -114,7 +114,7 @@ export class SideMenuComponent implements OnChanges {
         this.editOrSave = EDIT_ICON;
         this.deleteOrClose = DELETE_ICON;
         this.isEditOrDeleteDisabled = false;
-        this.isNodeMoveOn.emit(false);
+        this.isNodeMoveEnabledOrDisabled.emit(false);
     }
 
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
@@ -198,6 +198,7 @@ export class SideMenuComponent implements OnChanges {
             this.deleteOrClose = CLOSE_ICON;
             this.onDeleteOrCancelNodeClicked();
         }
+        this.isNodeMoveEnabledOrDisabled.emit(false);
     }
 
     private childCount(level, node) {
@@ -284,6 +285,7 @@ export class SideMenuComponent implements OnChanges {
 
     onDeleteOrCancelNodeClicked() {
         if (this.selectedNode.NodeID !== -1) {
+            this.isNodeMoveEnabledOrDisabled.emit(false);
             if (this.deleteOrClose === DELETE_ICON) {
                 this.deleteTitle = "Node";
                 this.name = this.selectedOrgNode.NodeFirstName + " " + this.selectedOrgNode.NodeLastName;
@@ -317,12 +319,15 @@ export class SideMenuComponent implements OnChanges {
 
     onMoveNodeClicked() {
         if (this.selectedOrgNode && this.selectedOrgNode.ParentNodeID !== null) {
-            this.isNodeMoveOn.emit(true);
+            if (this.editOrSave !== SAVE_ICON) {
+            this.isNodeMoveEnabledOrDisabled.emit(true);
+            }
         }
     }
 
     onEditOrSaveNodeClicked() {
         if (this.selectedNode.NodeID !== -1) {
+            this.isNodeMoveEnabledOrDisabled.emit(false);
             if (this.editOrSave === EDIT_ICON) {
                 this.isEditEnabled.emit(true);
                 this.isEditModeEnabled = true;
@@ -416,6 +421,7 @@ export class SideMenuComponent implements OnChanges {
     }
 
     openOrCloseFeedBackPanel() {
+        this.isNodeMoveEnabledOrDisabled.emit(false);
         if (this.feedbackIcon === FEEDBACK_ICON_OPEN) {
             this.isFeedbackOpen = true;
             this.feedbackIcon = FEEDBACK_ICON_CLOSE;
