@@ -118,6 +118,10 @@
     right: 2px;
 }
 
+.sideNav button.movebtn.active {
+    background-color: #CFD8DC;
+}
+
 .sideNav .menuTitle {
     padding-left: 15px;
     font-size: 1em;

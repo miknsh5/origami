@@ -11,7 +11,7 @@
             <div *ngIf="currentMode===1">
                 <button class="waves-effect waves-light deletebtn right" (click)="onDeleteOrCancelNodeClicked()"> <i class="material-icons">{{deleteOrClose}}</i></button>
                 <button class="waves-effect waves-light editbtn right" (click)="onEditOrSaveNodeClicked()"><i class="material-icons">{{editOrSave}}</i></button>
-                <button class="waves-effect waves-light movebtn right" (click)="onMoveNodeClicked()"><i class="material-icons">shuffle</i></button>
+                <button [ngClass]="moveActive" class="waves-effect waves-light movebtn right" (click)="onMoveNodeClicked()"><i class="material-icons">shuffle</i></button>
             </div>
             <label class="menuTitle">Resource</label>
             <div class="detail_wrap">

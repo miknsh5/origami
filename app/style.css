@@ -126,6 +126,13 @@ node circle {
     fill: var(--azure);
 }
 
+.buildMode .moveNodeCircle {
+    fill: #ffffff;
+    stroke: #0097FF;
+    stroke: var(--azure);
+    stroke-width: 2px;
+}
+
 .reportMode .selectedCircle {
     fill: #ffffff;
     stroke-width: 1px;

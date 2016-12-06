@@ -135,7 +135,7 @@ export class SamrtBarComponent implements OnChanges {
 
     @HostListener("focusout", ["$event"])
     deselectSearchBox(event: any) {
-        if (this.isNodeMoveEnabledOrDisabled && this.multiInTerm !== "") {
+        if (this.isNodeMoveEnabledOrDisabled) {
             this.searchTerm = this.multiInTerm = "";
             this.isNodeMoveDisabled.emit(false);
             this.isSmartBarEnabled.emit(false);
@@ -245,6 +245,12 @@ export class SamrtBarComponent implements OnChanges {
         // esc
         else if ((event as KeyboardEvent).keyCode === 27) {
             if (this.isEditModeEnabled && this.selectedOrgNode) {
+                if (this.isNodeMoveEnabledOrDisabled) {
+                    this.searchTerm = this.multiInTerm = "";
+                    this.isNodeMoveDisabled.emit(false);
+                    this.isSmartBarEnabled.emit(false);
+                    this.clearSearch();
+                }
                 this.newOrgNode.Description = "";
                 this.newOrgNode.NodeFirstName = "";
                 this.newOrgNode.NodeLastName = "";
@@ -276,6 +282,12 @@ export class SamrtBarComponent implements OnChanges {
         }
         // backspace
         else if ((event as KeyboardEvent).keyCode === 8) {
+            if (this.isNodeMoveEnabledOrDisabled && this.multiInTerm === "") {
+                this.searchTerm = this.multiInTerm = "";
+                this.isNodeMoveDisabled.emit(false);
+                this.isSmartBarEnabled.emit(false);
+                this.clearSearch();
+            }
             if (this.isEditModeEnabled) {
                 if (this.multiInTerm === "" && this.newNodeValue && this.newNodeValue.length > 0) {
                     if (this.newNodeValue.length === 1) {
@@ -694,15 +706,15 @@ export class SamrtBarComponent implements OnChanges {
                     draggedNode.NodeID = this.selectedOrgNode.NodeID;
                     if (draggedNode.ParentNodeID !== this.selectedOrgNode.ParentNodeID) {
                         this.moveNode.emit(draggedNode);
-                        this.isNodeMoveDisabled.emit(false);
-                        this.isTitleSelected = this.searchInProgress = false;
-                        this.nodeSearchedList = new Array<OrgSearchModel>();
-                        this.titleFilterList = new Array();
-                        this.searchHeader = `BY ${HeaderTitle}`;
                     }
-                } else {
-                    this.nodeSearched.emit(node);
+                    this.isNodeMoveDisabled.emit(false);
+                    this.clearSearch();
+                    this.isTitleSelected = this.searchInProgress = false;
+                    this.nodeSearchedList = new Array<OrgSearchModel>();
+                    this.titleFilterList = new Array();
+                    this.searchHeader = `BY ${HeaderTitle}`;
                 }
+                this.nodeSearched.emit(node);
             }
         }
     }

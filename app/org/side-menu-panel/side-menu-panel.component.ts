@@ -47,6 +47,7 @@ export class SideMenuComponent implements OnChanges {
     private feedbackIcon: any;
     private feedback: UserFeedBack;
     private isEditOrDeleteDisabled: boolean;
+    private moveActive: any;
 
     @ViewChild("firstName") firstName;
     @ViewChild("lastName") lastName;
@@ -60,6 +61,7 @@ export class SideMenuComponent implements OnChanges {
     @Input() svgHeight: any;
     @Input() isMenuSettingsEnabled: boolean;
     @Input() isSmartBarAddEnabled: boolean;
+    @Input() isNodeMoveDisabled: boolean;
 
     @Output() updateNode = new EventEmitter<OrgNodeModel>();
     @Output() deleteNode = new EventEmitter<OrgNodeModel>();
@@ -118,6 +120,9 @@ export class SideMenuComponent implements OnChanges {
     }
 
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
+        if (changes["isNodeMoveDisabled"] && !changes["isNodeMoveDisabled"].currentValue) {
+            this.moveActive = "";
+        }
         if (changes["orgChart"]) {
             if (this.orgChart) {
                 this.isClosed = false;
@@ -320,7 +325,8 @@ export class SideMenuComponent implements OnChanges {
     onMoveNodeClicked() {
         if (this.selectedOrgNode && this.selectedOrgNode.ParentNodeID !== null) {
             if (this.editOrSave !== SAVE_ICON) {
-            this.isNodeMoveEnabledOrDisabled.emit(true);
+                this.moveActive = "active";
+                this.isNodeMoveEnabledOrDisabled.emit(true);
             }
         }
     }

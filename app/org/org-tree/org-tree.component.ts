@@ -39,6 +39,7 @@ const VIEWBOX_MAX_HEIGHT = 768;
 const DEFAULT_CIRCLE = "defaultCircle";
 const STAGED_CIRCLE = "stagedCircle";
 const SELECTED_CIRCLE = "selectedCircle";
+const MOVE_CIRCLE = "moveNodeCircle";
 
 const POLYGON = "polygon";
 const CIRCLE = "circle";
@@ -166,6 +167,10 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             this.root = this.treeData[0];
             this.treeWidth = this.width;
             this.treeHeight = this.height;
+
+            if (changes["isNodeMoveEnabledOrDisabled"]) {
+                this.render(this.selectedOrgNode);
+            }
 
             if (changes["searchNode"]) {
                 if (changes["searchNode"].currentValue) {
@@ -729,7 +734,15 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         });
 
         node.select(CIRCLE).attr("class", (d) => {
-            return d.IsSelected ? SELECTED_CIRCLE : DEFAULT_CIRCLE;
+            if (d.IsSelected) {
+                if (this.isNodeMoveEnabledOrDisabled) {
+                    return MOVE_CIRCLE;
+                } else {
+                    return SELECTED_CIRCLE;
+                }
+            } else {
+                return DEFAULT_CIRCLE;
+            }
         }).attr("transform", (d) => {
             let transformString = "rotate(0)";
             if (this.currentMode === ChartMode.explore && d.ParentNodeID !== null) {
@@ -846,8 +859,12 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             if (d.NodeFirstName) { fn = d.NodeFirstName.slice(0, 1); }
             if (d.NodeLastName) { ln = d.NodeLastName.slice(0, 1); }
             return fn + ln;
-        }).style("fill", function (d) {
-            return d.IsStaging && d.NodeID === -1 ? "#0097FF" : "#FFFFFF";
+        }).style("fill", (d) => {
+            if (this.isNodeMoveEnabledOrDisabled && d.IsSelected) {
+                return "#0097FF";
+            } else {
+                return d.IsStaging && d.NodeID === -1 ? "#0097FF" : "#FFFFFF";
+            }
         }).style("font-size", (d) => {
             if (this.currentMode === ChartMode.explore) {
                 return DEFAULT_FONTSIZE + "px";
@@ -1024,7 +1041,13 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             })
             .attr("class", (d) => {
                 if (d.IsSelected && d.IsStaging && d.NodeID === -1) { return STAGED_CIRCLE; }
-                if (d.IsSelected) { return SELECTED_CIRCLE; }
+                if (d.IsSelected) {
+                    if (this.isNodeMoveEnabledOrDisabled) {
+                        return MOVE_CIRCLE;
+                    } else {
+                        return SELECTED_CIRCLE;
+                    }
+                }
                 else if (d.IsSibling) { return DEFAULT_CIRCLE + " sibling"; }
                 else { return DEFAULT_CIRCLE; }
             })
