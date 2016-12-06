@@ -282,7 +282,7 @@ export class SamrtBarComponent implements OnChanges {
         }
         // backspace
         else if ((event as KeyboardEvent).keyCode === 8) {
-            if (this.isNodeMoveEnabledOrDisabled && this.multiInTerm === "") {
+            if (this.isNodeMoveEnabledOrDisabled && (this.multiInTerm === "" || this.multiInTerm.length === 1)) {
                 this.searchTerm = this.multiInTerm = "";
                 this.isNodeMoveDisabled.emit(false);
                 this.isSmartBarEnabled.emit(false);
