@@ -94,7 +94,8 @@
 }
 
 .sideNav .editbtn,
-.deletebtn {
+.deletebtn,
+.movebtn {
     width: 30px;
     height: 30px;
     background-color: #607d8b;
@@ -103,13 +104,22 @@
 }
 
 .sideNav .editbtn i,
-.deletebtn i {
+.deletebtn i,
+.movebtn i {
     font-size: 0.99rem;
     line-height: 1.53em;
 }
 
 .editbtn {
     right: 1px;
+}
+
+.movebtn {
+    right: 2px;
+}
+
+.sideNav button.movebtn.active {
+    background-color: #CFD8DC;
 }
 
 .sideNav .menuTitle {
