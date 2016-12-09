@@ -78,6 +78,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     draggingNode = null;
     dragStarted: any;
     dragListener: any;
+    domNode: any;
 
     @Input() currentMode: ChartMode;
     @Input() isAddOrEditModeEnabled: boolean;
@@ -828,7 +829,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             .attr("class", "ghostCircle")
             .attr("r", 22)
             .attr("opacity", 0.2) // change this to zero to hide the target area
-            .style("fill", "#757575")
+            .style("fill", TRANSPARENT_COLOR)
             .attr("pointer-events", "mouseover")
             .on("mouseover", (d) => {
                 this.overCircle(d);
@@ -1181,6 +1182,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         }
         this.dragStarted = true;
         this.nodes = this.tree.nodes(d);
+        (d3.event as d3.DragEvent).sourceEvent.stopPropagation();
     }
 
     onNodeDrag(d) {
@@ -1188,12 +1190,17 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             return;
         }
         if (this.dragStarted) {
-            let domNode = typeof event !== "undefined" ? event.target["parentNode"] : (d3.event as MouseEvent)["sourceEvent"].target["parentNode"];
+            this.domNode = typeof event !== "undefined" ? event.target["parentNode"] : (d3.event as MouseEvent)["sourceEvent"].target["parentNode"];
             this.selectedNode = d;
-            this.initiateDrag(d, domNode);
+            this.initiateDrag(d, this.domNode);
+        } else {
+            if (!this.domNode) {
+                this.domNode = typeof event !== "undefined" ? event.target["parentNode"] : (d3.event as MouseEvent)["sourceEvent"].target["parentNode"]
+            }
         }
         d.x0 += (d3.event as d3.DragEvent).dy;
         d.y0 += (d3.event as d3.DragEvent).dx;
+        d3.select(this.domNode).attr("transform", "translate(" + d.y0 + "," + d.x0 + ")");
         this.updateTempConnector();
     }
 
@@ -1224,6 +1231,11 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             d3.selectAll(".ghostCircle").attr("class", "ghostCircle show");
             d3.select(domNode).attr("class", "node activeDrag");
 
+            this.svg.selectAll("g.node").sort((a, b) => { // select the parent and sort the path's
+                if (a.NodeID !== this.draggingNode.NodeID) return 1; // a is not the hovered element, send "a" to the back
+                else return -1; // a is the hovered element, bring "a" to the front
+            });
+
             // if nodes has children, remove the links and nodes
             if (this.nodes.length > 1) {
                 // remove link paths
@@ -1253,13 +1265,12 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 return false;
             }).remove();
         }
-
         this.dragStarted = false;
     }
 
     endDrag(domNode) {
         if (this.selectedOrgNode) {
-            this.selectedNode = null;
+            this.domNode = this.selectedNode = null;
             d3.selectAll("g .node").attr("class", "node");
             d3.selectAll(".ghostCircle").attr("class", "ghostCircle");
             // now restore the mouseover event or we won't be able to drag a 2nd time
@@ -1295,11 +1306,15 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     updateTempConnector() {
         let data = [];
         if (this.draggingNode !== null && this.selectedNode !== null) {
+            let x0 = this.selectedNode.x0;
+            if (this.selectedNode.NodeID === this.selectedOrgNode.ParentNodeID) {
+                x0 = this.selectedOrgNode.x0;
+            }
             // have to flip the source coordinates since we did this for the existing connectors on the original tree
             data = [{
                 source: {
                     x: this.selectedNode.y0,
-                    y: this.selectedNode.x0
+                    y: x0
                 },
                 target: {
                     x: this.draggingNode.y0,
