@@ -1195,7 +1195,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             this.initiateDrag(d, this.domNode);
         } else {
             if (!this.domNode) {
-                this.domNode = typeof event !== "undefined" ? event.target["parentNode"] : (d3.event as MouseEvent)["sourceEvent"].target["parentNode"]
+                this.domNode = typeof event !== "undefined" ? event.target["parentNode"] : (d3.event as MouseEvent)["sourceEvent"].target["parentNode"];
             }
         }
         d.x0 += (d3.event as d3.DragEvent).dy;
