@@ -1188,9 +1188,12 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             return;
         }
         if (this.dragStarted) {
-            let parentElement = typeof event !== "undefined" ? event.target["parentNode"] : (d3.event as MouseEvent)["sourceEvent"].target["parentNode"];
-            this.initiateDrag(d, parentElement);
+            let domNode = typeof event !== "undefined" ? event.target["parentNode"] : (d3.event as MouseEvent)["sourceEvent"].target["parentNode"];
+            this.selectedNode = d;
+            this.initiateDrag(d, domNode);
         }
+        d.x0 += (d3.event as d3.DragEvent).dy;
+        d.y0 += (d3.event as d3.DragEvent).dx;
         this.updateTempConnector();
     }
 
@@ -1215,7 +1218,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     }
 
     initiateDrag(d, domNode) {
-        if (this.selectedOrgNode) {
+        if (this.selectedNode) {
             this.draggingNode = d;
             d3.select(domNode).select(".ghostCircle").attr("pointer-events", "none");
             d3.selectAll(".ghostCircle").attr("class", "ghostCircle show");
@@ -1251,7 +1254,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             }).remove();
         }
 
-        this.dragStarted = null;
+        this.dragStarted = false;
     }
 
     endDrag(domNode) {
@@ -1305,7 +1308,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             }];
         }
         let link = this.svg.selectAll(".templink").data(data);
-
         link.enter().append("path")
             .attr("class", "templink")
             .attr("d", d3.svg.diagonal())
