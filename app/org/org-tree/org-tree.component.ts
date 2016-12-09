@@ -828,7 +828,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             .attr("class", "ghostCircle")
             .attr("r", 22)
             .attr("opacity", 0.2) // change this to zero to hide the target area
-            .style("fill", "red")
+            .style("fill", "#757575")
             .attr("pointer-events", "mouseover")
             .on("mouseover", (d) => {
                 this.overCircle(d);
@@ -1056,7 +1056,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             });
 
         nodeUpdate.select(CIRCLE + ".ghostCircle")
-            .attr("r", 30);
+            .attr("r", 27.5);
 
         nodeUpdate.select(G_LABEL)
             .style("fill", PATH_STORKE_COLOR)
