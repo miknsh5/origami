@@ -240,8 +240,8 @@ path.horizontal {
 
 .templink {
     fill: none;
-    stroke: #4682B4;
-    stroke: var(--steelblue);
+    stroke: #1565c0;
+    stroke: var(--nice-blue);
     stroke-width: 3px;
 }
 
