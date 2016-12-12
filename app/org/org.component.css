@@ -5,14 +5,18 @@
 }
 
 .modes_wrap {
-    width: 140px;
+    width: 10rem;
     position: absolute;
     left: 30px
 }
 
+.modes_wrap ul {
+    margin-bottom: 0;
+}
+
 .modes_wrap li {
-    width: 50px;
-    height: 50px;
+    width: 4rem;
+    height: 4rem;
     object-fit: contain;
     background-repeat: no-repeat;
     background-position: center;
@@ -45,13 +49,13 @@
 }
 
 .modes_wrap li>a {
-    width: 80px;
-    line-height: 43px;
+    width: 6.5rem;
+    line-height: 4rem;
     font-family: Roboto, HelveticaNeue;
-    font-size: 12px;
+    font-size: 1em;
     font-weight: 400;
     color: #607d8b;
-    margin-left: 55px;
+    margin-left: 4.25rem;
     display: block;
 }
 
@@ -64,7 +68,18 @@
         height: auto;
     }
     .modes_wrap {
-        top: 65px;
-        left: 10px;
+        position: relative;
+        left: 0;
+        width: 100%;
+    }
+    .modes_wrap li {
+        background-size: contain;
+        background-position: 0;
+        width: auto;
+        display: inline-block;
+    }
+    .modes_wrap li>a {
+        width: auto;
+        display: inline-block;
     }
 }

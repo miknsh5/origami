@@ -1,7 +1,7 @@
 import { Component, ElementRef, Input, Output, EventEmitter, OnChanges, SimpleChange, HostListener, Renderer } from "@angular/core";
 import { NgForm, NgControl } from "@angular/forms";
 
-import { OrgNodeModel, OrgSearchModel, OrgService, DomElementHelper } from "../shared/index";
+import { DraggedNode, OrgNodeModel, OrgSearchModel, OrgService, DomElementHelper } from "../shared/index";
 
 const HeaderTitle = "NAME";
 const AddResource = "Search, Add Resources";
@@ -42,12 +42,15 @@ export class SamrtBarComponent implements OnChanges {
     @Input() isEditModeEnabled: boolean;
     @Input() isEditMenuEnable: boolean;
     @Input() orgGroupID: number;
+    @Input() isNodeMoveEnabledOrDisabled: boolean;
     @Output() nodeSearched = new EventEmitter<OrgNodeModel>();
     @Output() deleteNode = new EventEmitter<OrgNodeModel>();
     @Output() addNode = new EventEmitter<OrgNodeModel>();
     @Output() chartStructureUpdated = new EventEmitter<any>();
     @Output() updateNode = new EventEmitter<OrgNodeModel>();
     @Output() isSmartBarEnabled = new EventEmitter<boolean>();
+    @Output() isNodeMoveDisabled = new EventEmitter<boolean>();
+    @Output() moveNode = new EventEmitter<DraggedNode>();
 
     constructor(private elementRef: ElementRef, private domHelper: DomElementHelper, private renderer: Renderer, private orgService: OrgService) {
         this.searchHeader = `BY ${HeaderTitle}`;
@@ -58,6 +61,22 @@ export class SamrtBarComponent implements OnChanges {
     }
 
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
+        if (changes["isNodeMoveEnabledOrDisabled"]) {
+            if (changes["isNodeMoveEnabledOrDisabled"].currentValue) {
+                this.clearSearch();
+                this.placeholderText = "Assign to...";
+                this.searchTerm = this.multiInTerm = "";
+                this.setInputFocus();
+                this.orgSearchData = new Array<any>();
+                this.convertToFlatData(this.treeJsonData);
+            } else {
+                this.clearSearch();
+                this.placeholderText = `${AddResource}`;
+                this.setInputFocus();
+                this.orgSearchData = new Array<any>();
+                this.convertToFlatData(this.treeJsonData);
+            }
+        }
         if (changes["orgGroupID"]) {
             this.clearSearch();
             this.newNodeValue = null;
@@ -89,17 +108,20 @@ export class SamrtBarComponent implements OnChanges {
             }
             this.setInputFocus();
         }
+
     }
 
     convertToFlatData(inputArray, ischild?: boolean) {
         ischild = ischild || false;
         let index = 0, length = inputArray.length;
         for (index = 0; index < length; index++) {
+            if (this.isNodeMoveEnabledOrDisabled && this.selectedOrgNode.NodeID === inputArray[index].NodeID) {
+                continue;
+            }
             let searchModel = new OrgSearchModel();
             searchModel.NodeID = inputArray[index].NodeID;
             searchModel.Title = inputArray[index].Description;
             searchModel.Name = inputArray[index].NodeFirstName + " " + inputArray[index].NodeLastName;
-
             this.orgSearchData.push(searchModel);
 
             if (inputArray[index].children && typeof inputArray[index].children === typeof []) {
@@ -113,6 +135,11 @@ export class SamrtBarComponent implements OnChanges {
 
     @HostListener("focusout", ["$event"])
     deselectSearchBox(event: any) {
+        if (this.isNodeMoveEnabledOrDisabled) {
+            this.searchTerm = this.multiInTerm = "";
+            this.isNodeMoveDisabled.emit(false);
+            this.isSmartBarEnabled.emit(false);
+        }
         setTimeout(() => {
             if (this.selectedOrgNode) {
                 this.isTitleSelected = this.searchInProgress = false;
@@ -218,6 +245,12 @@ export class SamrtBarComponent implements OnChanges {
         // esc
         else if ((event as KeyboardEvent).keyCode === 27) {
             if (this.isEditModeEnabled && this.selectedOrgNode) {
+                if (this.isNodeMoveEnabledOrDisabled) {
+                    this.searchTerm = this.multiInTerm = "";
+                    this.isNodeMoveDisabled.emit(false);
+                    this.isSmartBarEnabled.emit(false);
+                    this.clearSearch();
+                }
                 this.newOrgNode.Description = "";
                 this.newOrgNode.NodeFirstName = "";
                 this.newOrgNode.NodeLastName = "";
@@ -238,14 +271,23 @@ export class SamrtBarComponent implements OnChanges {
                 }
                 this.isDescriptionText = false;
                 this.isSmartBarEnabled.emit(false);
+                this.isNodeMoveDisabled.emit(false);
                 this.newNodeValue = this.titleFilterList = null;
             } else {
+                this.isSmartBarEnabled.emit(false);
+                this.isNodeMoveDisabled.emit(false);
                 this.newNodeValue = this.titleFilterList = null;
                 this.clearSearch();
             }
         }
         // backspace
         else if ((event as KeyboardEvent).keyCode === 8) {
+            if (this.isNodeMoveEnabledOrDisabled && (this.multiInTerm === "" || this.multiInTerm.length === 1)) {
+                this.searchTerm = this.multiInTerm = "";
+                this.isNodeMoveDisabled.emit(false);
+                this.isSmartBarEnabled.emit(false);
+                this.clearSearch();
+            }
             if (this.isEditModeEnabled) {
                 if (this.multiInTerm === "" && this.newNodeValue && this.newNodeValue.length > 0) {
                     if (this.newNodeValue.length === 1) {
@@ -254,10 +296,13 @@ export class SamrtBarComponent implements OnChanges {
                     this.multiInTerm = this.newNodeValue.pop();
                 } else if (this.multiInTerm === "" && (this.newNodeValue && this.newNodeValue.length === 0)) {
                     this.isSmartBarEnabled.emit(false);
+                    this.isNodeMoveDisabled.emit(false);
                     this.multiInTerm = "";
                     this.newNodeValue = null;
-                } else if (this.searchTerm === "" && !this.multiInTerm) {
+                } else if ((this.searchTerm === "" || this.searchTerm.length === 1) && !this.multiInTerm) {
                     this.searchInProgress = this.isSearchEnabled = this.isTitleSelected = false;
+                    this.isSmartBarEnabled.emit(false);
+                    this.isNodeMoveDisabled.emit(false);
                     this.nodeSearchedList = new Array<OrgSearchModel>();
                     this.titleFilterList = new Array();
                     this.searchHeader = `BY ${HeaderTitle}`;
@@ -267,102 +312,103 @@ export class SamrtBarComponent implements OnChanges {
     }
 
     onAddNode() {
-        let firstName: any;
-        let lastName: any;
-        let index = this.multiInTerm.indexOf(" ");
-        this.isSmartBarEnabled.emit(true);
-        if (index !== -1 && this.multiInTerm && (!this.newNodeValue || this.newNodeValue.length === 0)) {
-            firstName = this.multiInTerm.substring(0, index);
-            lastName = this.multiInTerm.substring(index + 1, this.multiInTerm.length);
-            this.newOrgNode.NodeFirstName = firstName;
-            this.newOrgNode.NodeLastName = lastName;
-            this.newOrgNode.Description = "";
-        } else if (index === -1 && this.multiInTerm && (!this.newNodeValue || this.newNodeValue.length === 0)) {
-            firstName = this.multiInTerm;
-            lastName = "";
-            this.newOrgNode.NodeFirstName = firstName;
-            this.newOrgNode.NodeLastName = lastName;
-            this.newOrgNode.Description = "";
-        }
-        this.newOrgNode.OrgGroupID = this.selectedOrgNode.OrgGroupID;
-        this.newOrgNode.CompanyID = this.selectedOrgNode.CompanyID;
+        if (!this.isNodeMoveEnabledOrDisabled) {
+            let firstName: any;
+            let lastName: any;
+            let index = this.multiInTerm.indexOf(" ");
+            this.isSmartBarEnabled.emit(true);
+            if (index !== -1 && this.multiInTerm && (!this.newNodeValue || this.newNodeValue.length === 0)) {
+                firstName = this.multiInTerm.substring(0, index);
+                lastName = this.multiInTerm.substring(index + 1, this.multiInTerm.length);
+                this.newOrgNode.NodeFirstName = firstName;
+                this.newOrgNode.NodeLastName = lastName;
+                this.newOrgNode.Description = "";
+            } else if (index === -1 && this.multiInTerm && (!this.newNodeValue || this.newNodeValue.length === 0)) {
+                firstName = this.multiInTerm;
+                lastName = "";
+                this.newOrgNode.NodeFirstName = firstName;
+                this.newOrgNode.NodeLastName = lastName;
+                this.newOrgNode.Description = "";
+            }
+            this.newOrgNode.OrgGroupID = this.selectedOrgNode.OrgGroupID;
+            this.newOrgNode.CompanyID = this.selectedOrgNode.CompanyID;
 
-        if (this.newNodeValue && this.newNodeValue.length >= 1) {
-            if (this.newNodeValue.length === 2) {
-                this.newOrgNode.Description = this.newNodeValue[1];
-            } else {
-                this.newOrgNode.Description = this.multiInTerm;
-                this.newNodeValue.push(this.multiInTerm);
-            }
-            if (!this.selectedOrgNode.ParentNodeID && this.selectedOrgNode.NodeID === -1) {
-                if (this.selectedOrgNode.IsNewRoot) {
-                    this.newOrgNode.ParentNodeID = null;
-                    this.newOrgNode.children = new Array<OrgNodeModel>();
-                    this.newOrgNode.children.push(this.selectedOrgNode);
-                    this.addNewParentNode(this.newOrgNode);
-                }
-                else {
-                    this.newOrgNode.ParentNodeID = null;
-                    this.addNewNode(this.newOrgNode);
-                }
-            }
-            else {
-                if (this.selectedOrgNode.NodeID === -1) {
-                    this.newOrgNode.ParentNodeID = this.selectedOrgNode.ParentNodeID;
+            if (this.newNodeValue && this.newNodeValue.length >= 1) {
+                if (this.newNodeValue.length === 2) {
+                    this.newOrgNode.Description = this.newNodeValue[1];
                 } else {
-                    this.newOrgNode.ParentNodeID = this.selectedOrgNode.NodeID;
+                    this.newOrgNode.Description = this.multiInTerm;
+                    this.newNodeValue.push(this.multiInTerm);
                 }
-                this.addNewNode(this.newOrgNode);
-            }
-            this.multiInTerm = "";
-            this.newNodeValue = null;
-        }
-        else {
-            if (!this.newNodeValue || (this.newNodeValue && this.newNodeValue.length === 0)) {
-                this.newNodeValue = new Array();
-                this.newNodeValue.push(firstName + " " + lastName);
-                this.multiInTerm = "";
-                this.isDescriptionText = true;
-                if (this.selectedOrgNode.NodeID !== -1) {
-                    this.newOrgNode.NodeID = -1;
-                    this.newOrgNode.IsChild = false;
-                    this.newOrgNode.IsGrandParent = false;
-                    this.newOrgNode.IsParent = false;
-                    this.newOrgNode.IsSelected = false;
-                    this.newOrgNode.IsSibling = true;
-
-                    if (!this.selectedOrgNode.ParentNodeID && this.selectedOrgNode.NodeID === -1) {
-                        if (this.selectedOrgNode.IsNewRoot) {
-                            this.newOrgNode.ParentNodeID = null;
-                            this.newOrgNode.children = new Array<OrgNodeModel>();
-                            this.newOrgNode.children.push(this.selectedOrgNode);
-                        }
-                        else {
-                            this.newOrgNode.ParentNodeID = null;
-                        }
+                if (!this.selectedOrgNode.ParentNodeID && this.selectedOrgNode.NodeID === -1) {
+                    if (this.selectedOrgNode.IsNewRoot) {
+                        this.newOrgNode.ParentNodeID = null;
+                        this.newOrgNode.children = new Array<OrgNodeModel>();
+                        this.newOrgNode.children.push(this.selectedOrgNode);
+                        this.addNewParentNode(this.newOrgNode);
                     }
                     else {
-                        if (this.selectedOrgNode.NodeID === -1) {
-                            this.newOrgNode.ParentNodeID = this.selectedOrgNode.ParentNodeID;
-                        } else {
-                            this.newOrgNode.ParentNodeID = this.selectedOrgNode.NodeID;
-                        }
-                    }
-
-                    if (!this.newOrgNode.IsStaging && this.newOrgNode.NodeID === -1) {
-                        if (this.newNodeValue && this.newNodeValue.length !== 0) {
-                            this.newOrgNode.IsStaging = false;
-                            this.addNode.emit(this.newOrgNode);
-                        }
-                    } else {
-                        this.updateNode.emit(this.newOrgNode);
+                        this.newOrgNode.ParentNodeID = null;
+                        this.addNewNode(this.newOrgNode);
                     }
                 }
-            } else {
-                this.updateNode.emit(this.newOrgNode);
-                this.newNodeValue.push(firstName + " " + lastName);
+                else {
+                    if (this.selectedOrgNode.NodeID === -1) {
+                        this.newOrgNode.ParentNodeID = this.selectedOrgNode.ParentNodeID;
+                    } else {
+                        this.newOrgNode.ParentNodeID = this.selectedOrgNode.NodeID;
+                    }
+                    this.addNewNode(this.newOrgNode);
+                }
                 this.multiInTerm = "";
-                this.isDescriptionText = true;
+                this.newNodeValue = null;
+            }
+            else {
+                if (!this.newNodeValue || (this.newNodeValue && this.newNodeValue.length === 0)) {
+                    this.newNodeValue = new Array();
+                    this.newNodeValue.push(firstName + " " + lastName);
+                    this.multiInTerm = "";
+                    this.isDescriptionText = true;
+                    if (this.selectedOrgNode.NodeID !== -1) {
+                        this.newOrgNode.NodeID = -1;
+                        this.newOrgNode.IsChild = false;
+                        this.newOrgNode.IsParent = false;
+                        this.newOrgNode.IsSelected = false;
+                        this.newOrgNode.IsSibling = true;
+
+                        if (!this.selectedOrgNode.ParentNodeID && this.selectedOrgNode.NodeID === -1) {
+                            if (this.selectedOrgNode.IsNewRoot) {
+                                this.newOrgNode.ParentNodeID = null;
+                                this.newOrgNode.children = new Array<OrgNodeModel>();
+                                this.newOrgNode.children.push(this.selectedOrgNode);
+                            }
+                            else {
+                                this.newOrgNode.ParentNodeID = null;
+                            }
+                        }
+                        else {
+                            if (this.selectedOrgNode.NodeID === -1) {
+                                this.newOrgNode.ParentNodeID = this.selectedOrgNode.ParentNodeID;
+                            } else {
+                                this.newOrgNode.ParentNodeID = this.selectedOrgNode.NodeID;
+                            }
+                        }
+
+                        if (!this.newOrgNode.IsStaging && this.newOrgNode.NodeID === -1) {
+                            if (this.newNodeValue && this.newNodeValue.length !== 0) {
+                                this.newOrgNode.IsStaging = false;
+                                this.addNode.emit(this.newOrgNode);
+                            }
+                        } else {
+                            this.updateNode.emit(this.newOrgNode);
+                        }
+                    }
+                } else {
+                    this.updateNode.emit(this.newOrgNode);
+                    this.newNodeValue.push(firstName + " " + lastName);
+                    this.multiInTerm = "";
+                    this.isDescriptionText = true;
+                }
             }
         }
     }
@@ -654,6 +700,20 @@ export class SamrtBarComponent implements OnChanges {
                 jQueryelement.addClass(SELECTED).scrollTop(jQuery(SEARCH_CONTAINER).scrollTop() + jQueryelement.position().top);
                 this.isSmartBarEnabled.emit(false);
                 this.clearSearch();
+                if (this.isNodeMoveEnabledOrDisabled) {
+                    let draggedNode = new DraggedNode();
+                    draggedNode.ParentNodeID = node.NodeID;
+                    draggedNode.NodeID = this.selectedOrgNode.NodeID;
+                    if (draggedNode.ParentNodeID !== this.selectedOrgNode.ParentNodeID) {
+                        this.moveNode.emit(draggedNode);
+                    }
+                    this.isNodeMoveDisabled.emit(false);
+                    this.clearSearch();
+                    this.isTitleSelected = this.searchInProgress = false;
+                    this.nodeSearchedList = new Array<OrgSearchModel>();
+                    this.titleFilterList = new Array();
+                    this.searchHeader = `BY ${HeaderTitle}`;
+                }
                 this.nodeSearched.emit(node);
             }
         }
@@ -727,7 +787,7 @@ export class SamrtBarComponent implements OnChanges {
                 });
             }
 
-            if (this.selectedOrgNode) {
+            if (this.selectedOrgNode && !this.isNodeMoveEnabledOrDisabled) {
                 setTimeout(() => {
                     let jQueryelement = jQuery(SEARCH_CONTAINER + " li.addNode").addClass(SELECTED);
                     if (jQueryelement) {
@@ -736,7 +796,9 @@ export class SamrtBarComponent implements OnChanges {
 
                 }, 100);
             } else {
-                this.searchTitleData(searchTerm);
+                if (!this.isNodeMoveEnabledOrDisabled) {
+                    this.searchTitleData(searchTerm);
+                }
                 setTimeout(() => {
                     if (this.nodeSearchedList.length > 0) {
                         let jQueryelement = jQuery(SEARCH_CONTAINER + " li.nodeSearch").first();

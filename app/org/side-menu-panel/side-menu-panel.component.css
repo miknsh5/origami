@@ -5,7 +5,6 @@
     height: 100%;
     width: 0;
     transition: 0.5s;
-    font-size: 13px;
     max-width: 240px;
 }
 
@@ -95,7 +94,8 @@
 }
 
 .sideNav .editbtn,
-.deletebtn {
+.deletebtn,
+.movebtn {
     width: 30px;
     height: 30px;
     background-color: #607d8b;
@@ -104,7 +104,8 @@
 }
 
 .sideNav .editbtn i,
-.deletebtn i {
+.deletebtn i,
+.movebtn i {
     font-size: 0.99rem;
     line-height: 1.53em;
 }
@@ -113,9 +114,17 @@
     right: 1px;
 }
 
+.movebtn {
+    right: 2px;
+}
+
+.sideNav button.movebtn.active {
+    background-color: #CFD8DC;
+}
+
 .sideNav .menuTitle {
     padding-left: 15px;
-    font-size: 0.9em;
+    font-size: 1em;
     font-weight: 700;
     color: #607d8b;
     color: var(--blue-grey);
@@ -123,7 +132,7 @@
 
 .sideNav p.lblName {
     margin: 0;
-    font-size: 1.3em;
+    font-size: 1.2em;
     font-weight: 500;
     color: #cfd8dc;
     color: var(--silver);
@@ -139,8 +148,8 @@
 }
 
 .sideNav .labelWrap {
-    padding: 15px 30px 15px 50px;
-    width: 250px;
+    padding: 15px 10px 15px 50px;
+    width: 100%;
 }
 
 .sideNav .labelWrap .collection {
@@ -166,7 +175,8 @@
 .sideNav .lblReport {
     color: #b6b6b6;
     color: var(--greyish);
-    width: 115px;
+    width: 50%;
+    min-width: 115px;
     display: inline-block;
 }
 
@@ -351,14 +361,13 @@ ul.tabs .tab {
 
 .edit-name {
     padding: 20px 0 0 30px;
-    max-width: 238px;
+    max-width: 95%;
 }
 
 .title-name-edit {
-    width: 90px;
+    width: 48%;
     border: none;
     display: inline-block;
-    padding: 1px 2px;
     margin: 0px;
     background-color: rgba(0, 0, 0, 0.2);
 }
@@ -476,4 +485,10 @@ ul.tabs .tab {
     font-size: 1rem;
     line-height: inherit;
     margin-right: 8px;
+}
+
+@media only screen and (min-width: 1440px) {
+    .sideNav {
+        max-width: 320px;
+    }
 }
