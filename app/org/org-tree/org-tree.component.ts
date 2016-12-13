@@ -802,9 +802,27 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     private createNodes(node, source) {
         if (!this.dragListener) {
             this.dragListener = d3.behavior.drag()
-                .on("dragstart", (evt) => this.onNodeDragStart(evt))
-                .on("drag", (evt) => this.onNodeDrag(evt))
-                .on("dragend", (evt) => this.onNodeDragEnd(evt));
+                .on("dragstart", (evt) => {
+                    if (this.currentMode === ChartMode.build && !this.isAddOrEditModeEnabled) {
+                        if (!this.isAddOrEditModeEnabled && this.selectedOrgNode) {
+                            this.onNodeDragStart(evt);
+                        }
+                    }
+                })
+                .on("drag", (evt) => {
+                    if (this.currentMode === ChartMode.build && !this.isAddOrEditModeEnabled) {
+                        if (!this.isAddOrEditModeEnabled && this.selectedOrgNode) {
+                            this.onNodeDrag(evt);
+                        }
+                    }
+                })
+                .on("dragend", (evt) => {
+                    if (this.currentMode === ChartMode.build && !this.isAddOrEditModeEnabled) {
+                        if (!this.isAddOrEditModeEnabled && this.selectedOrgNode) {
+                            this.onNodeDragEnd(evt);
+                        }
+                    }
+                });
         }
 
         // Enter any new nodes at the parent"s previous position.
