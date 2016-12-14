@@ -784,20 +784,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         nodeExit.selectAll(CIRCLE)
             .attr("r", 1e-6);
 
-        nodeExit.select(G_LABEL + " text[data-id='name']")
-            .style("visibility", (d) => {
-                if (d.IsAncestor) {
-                    return "hidden";
-                }
-            });
-             nodeExit.select(G_LABEL + " text[data-id='description']")
-            .style("visibility", (d) => {
-                if (d.IsAncestor) {
-                    return "hidden";
-                }
-            });
-
-
         nodeExit.select(G_LABEL)
             .style("visibility", "hidden");
 
@@ -1107,6 +1093,19 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                     return "hidden";
                 }
                 return "visible";
+            });
+
+        nodeUpdate.select(G_LABEL + " text[data-id='name']")
+            .style("visibility", (d) => {
+                if (!d.Show) {
+                    return "hidden";
+                }
+            });
+        nodeUpdate.select(G_LABEL + " text[data-id='description']")
+            .style("visibility", (d) => {
+                if (!d.Show) {
+                    return "hidden";
+                }
             });
 
         nodeUpdate.select("#abbr")
