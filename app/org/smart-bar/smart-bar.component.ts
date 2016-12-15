@@ -759,9 +759,9 @@ export class SamrtBarComponent implements OnChanges {
             }
             setTimeout(() => {
                 if (!this.selectedOrgNode && this.nodeSearchedList.length > 0) {
-                    let jQueryelement = jQuery("#searchSelection li.nodeSearch").first();
+                    let jQueryelement = jQuery(SEARCH_CONTAINER + " li.nodeSearch").first();
                     let position = jQueryelement.position();
-                    jQueryelement.addClass("selected").scrollTop(jQuery("#searchSelection").scrollTop() + (position ? position.top : 0));
+                    jQueryelement.addClass("selected").scrollTop(jQuery(SEARCH_CONTAINER).scrollTop() + (position ? position.top : 0));
                 }
             }, 100);
         }, 100);

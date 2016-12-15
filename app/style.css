@@ -155,6 +155,30 @@ node circle {
     fill: #CFD8DC;
 }
 
+.activeDrag circle {
+    fill: #ffffff !important;
+    fill: var(--white-text) !important;
+    stroke: #0097FF;
+    stroke: var(--azure);
+    stroke-width: 2;
+}
+
+.activeDrag #abbr {
+    fill: #0097FF !important;
+    fill: var(--azure) !important;
+}
+
+.draggedNode>.selectedCircle,
+.draggedNode>.defaultCircle {
+    fill: #0097FF !important;
+    fill: var(--azure) !important;
+}
+
+.draggedNode #abbr {
+    fill: #ffffff !important;
+    fill: var(--white-text) !important;
+}
+
 .new-peer_reportee-circle {
     fill: #FAFAFA;
     fill: var(--white);
@@ -240,8 +264,7 @@ path.horizontal {
 
 .templink {
     fill: none;
-    stroke: #1565c0;
-    stroke: var(--nice-blue);
+    stroke: transparent;
     stroke-width: 3px;
 }
 

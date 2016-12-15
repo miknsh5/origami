@@ -345,7 +345,6 @@ export class SideMenuComponent implements OnChanges {
                 this.editNodeDetails.Description = this.selectedNode.Description;
             } else if (this.editOrSave === SAVE_ICON) {
                 if (!this.isNullOrEmpty(this.firstName.value)) {
-                    //    this.isFormSubmitted = true;
                     this.editNodeDetails = new OrgNodeModel();
                     this.editNodeDetails.NodeFirstName = (this.firstName.value).trim();
                     this.editNodeDetails.NodeLastName = (this.lastName.value).trim();
