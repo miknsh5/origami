@@ -1250,44 +1250,46 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
     initiateDrag(d, domNode) {
         if (this.selectedNode) {
-            this.draggingNode = d;
-            d3.select(domNode).select(".ghostCircle").attr("pointer-events", "");
-            d3.selectAll(".ghostCircle").attr(CLASS, "ghostCircle show");
-            d3.select(domNode).attr(CLASS, "node activeDrag");
+            if (domNode.tagName === "g") {
+                this.draggingNode = d;
+                d3.select(domNode).select(".ghostCircle").attr("pointer-events", "");
+                d3.selectAll(".ghostCircle").attr(CLASS, "ghostCircle show");
+                d3.select(domNode).attr(CLASS, "node activeDrag");
 
-            this.svg.selectAll("g.node").sort((a, b) => { // select the parent and sort the path's
-                if (a.NodeID !== this.draggingNode.NodeID) return 1; // a is not the hovered element, send "a" to the back
-                else return -1; // a is the hovered element, bring "a" to the front
-            });
+                this.svg.selectAll("g.node").sort((a, b) => { // select the parent and sort the path's
+                    if (a.NodeID !== this.draggingNode.NodeID) return 1; // a is not the hovered element, send "a" to the back
+                    else return -1; // a is the hovered element, bring "a" to the front
+                });
 
-            // if nodes has children, remove the links and nodes
-            if (this.nodes.length > 1) {
-                // remove link paths
-                let links = this.tree.links(this.nodes);
-                let nodePaths = this.svg.selectAll("path.link")
-                    .data(links, function (d) {
-                        return d.target.NodeID;
-                    }).remove();
-                // remove child nodes
-                let nodesExit = this.svg.selectAll("g.node")
-                    .data(this.nodes, function (d) {
-                        return d.NodeID;
-                    }).filter((d, i) => {
-                        if (d.NodeID === this.draggingNode.NodeID) {
-                            return false;
-                        }
-                        return true;
-                    }).remove();
-            }
-
-            // remove parent link
-            let parentLink = this.tree.links(this.tree.nodes(this.draggingNode.parent));
-            this.svg.selectAll("path.link").filter((d, i) => {
-                if (d.target.NodeID === this.draggingNode.NodeID) {
-                    return true;
+                // if nodes has children, remove the links and nodes
+                if (this.nodes.length > 1) {
+                    // remove link paths
+                    let links = this.tree.links(this.nodes);
+                    let nodePaths = this.svg.selectAll("path.link")
+                        .data(links, function (d) {
+                            return d.target.NodeID;
+                        }).remove();
+                    // remove child nodes
+                    let nodesExit = this.svg.selectAll("g.node")
+                        .data(this.nodes, function (d) {
+                            return d.NodeID;
+                        }).filter((d, i) => {
+                            if (d.NodeID === this.draggingNode.NodeID) {
+                                return false;
+                            }
+                            return true;
+                        }).remove();
                 }
-                return false;
-            }).remove();
+
+                // remove parent link
+                let parentLink = this.tree.links(this.tree.nodes(this.draggingNode.parent));
+                this.svg.selectAll("path.link").filter((d, i) => {
+                    if (d.target.NodeID === this.draggingNode.NodeID) {
+                        return true;
+                    }
+                    return false;
+                }).remove();
+            }
         }
         this.dragStarted = false;
     }
