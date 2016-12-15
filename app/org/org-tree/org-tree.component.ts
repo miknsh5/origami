@@ -1347,6 +1347,22 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                     y: this.draggingNode.x0
                 }
             }];
+            this.svg.selectAll("g.node")
+                .filter((d) => {
+                    if (d.NodeID === this.selectedNode.NodeID && this.draggingNode.NodeID !== this.selectedNode.NodeID) {
+                        console.log(d);
+                        return true;
+                    }
+                    return false;
+                }).attr(CLASS, "node draggedNode");
+        } else {
+            this.svg.selectAll("g.node")
+                .filter((d) => {
+                    if (this.draggingNode && d.NodeID !== this.draggingNode.NodeID) {
+                        return true;
+                    }
+                    return false;
+                }).attr(CLASS, "node");
         }
         let link = this.svg.selectAll(".templink").data(data);
         link.enter().append("path")
