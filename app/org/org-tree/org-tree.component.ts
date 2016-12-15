@@ -1350,7 +1350,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             this.svg.selectAll("g.node")
                 .filter((d) => {
                     if (d.NodeID === this.selectedNode.NodeID && this.draggingNode.NodeID !== this.selectedNode.NodeID) {
-                        console.log(d);
                         return true;
                     }
                     return false;
