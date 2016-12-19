@@ -1087,7 +1087,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             });
         nodeUpdate.select(G_LABEL + " text[data-id='description']")
             .style("visibility", (d) => {
-                if (!d.Show) {
+                if (!d.Show || !this.showDescriptionLabel) {
                     return "hidden";
                 }
             });
