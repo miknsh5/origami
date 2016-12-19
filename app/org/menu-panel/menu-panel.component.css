@@ -88,6 +88,24 @@ nav ul a i.left {
     padding: 0;
 }
 
+nav ul a:hover {
+    background-color: transparent !important;
+}
+
+.editgroup i {
+    margin-top: -15px !important;
+    margin-left: 0 !important;
+    margin-right: 10px !important;
+    text-align: center;
+    width: 30px !important;
+    height: 35px !important;
+    line-height: 35px !important;
+}
+
+.editgroupname {
+    margin: 0px;
+}
+
 .caption {
     color: #757575;
     color: var(--warm-grey-three);
@@ -101,7 +119,7 @@ nav ul a i.left {
 }
 
 .dropdown-content li>a {
-    padding: 15px 13px;
+    padding: 15px 10px;
     font-size: 13px;
     display: block;
     line-height: 5px;

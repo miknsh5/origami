@@ -213,7 +213,7 @@ export class MenuPanelComponent implements OnChanges {
         }
     }
 
-    private onAddOrSettingsClick(name) {
+    private onAddOrSettingsClick(name: any, groupData?: OrgNodeModel) {
         this.isMenuEnable.emit(true);
         let element = null;
         if (name === "company") {
@@ -224,6 +224,7 @@ export class MenuPanelComponent implements OnChanges {
         } else if (name === "group") {
             this.groupSelectedMode = "Settings";
             this.groupSettingTitle = "Settings";
+            this.onGroupSelection(groupData);
             this.isImportDisabled = false;
             this.groupName = this.selectedGroup.GroupName;
             this.domHelper.showElements([MenuElement.groupModal, MenuElement.deleteGroup]);
@@ -238,8 +239,10 @@ export class MenuPanelComponent implements OnChanges {
             element = document.querySelector("input[name=existingGroupName]");
         } else if (name === "newGroup") {
             this.groupSelectedMode = "AddNewGroup";
-            this.groupSettingTitle = "Add New Group";
-            this.groupName = "Group " + (this.selectedCompany.OrgGroups.length + 1);
+            //   this.groupSettingTitle = "Add New Group";
+            this.groupSettingTitle = "Add New Organization";
+            // this.groupName = "Group " + (this.selectedCompany.OrgGroups.length + 1);
+            this.groupName = "Organization " + (this.selectedCompany.OrgGroups.length + 1);
             this.isImportDisabled = true;
             this.domHelper.showElements([MenuElement.groupModal, MenuElement.importTemplate, MenuElement.downloadTemplate]);
             this.domHelper.hideElements([MenuElement.deleteGroup, MenuElement.groupDeleteLoader, MenuElement.exportData]);
@@ -457,7 +460,8 @@ export class MenuPanelComponent implements OnChanges {
     }
 
     private onDeleteGroupClicked() {
-        this.deleteTitle = "Group";
+        //   this.deleteTitle = "Group";
+        this.deleteTitle = "Organization";
         this.name = this.selectedGroup.GroupName;
         this.domHelper.hideElements([MenuElement.groupName, MenuElement.importTemplate, MenuElement.deleteGroup, MenuElement.groupSaveOrEdit]);
         this.domHelper.showElements(MenuElement.confirmGroupDelete);

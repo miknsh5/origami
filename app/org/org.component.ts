@@ -356,6 +356,7 @@ export class OrgComponent implements OnDestroy {
 
     onGroupSelected(data: any) {
         this.orgGroup = data;
+        this.companyName = this.orgGroup.GroupName;
         this.orgNodes = JSON.parse(JSON.stringify(this.orgGroup.OrgNodes));
         this.companyID = this.orgGroup.CompanyID;
         if (this.groupID !== this.orgGroup.OrgGroupID)
@@ -372,11 +373,11 @@ export class OrgComponent implements OnDestroy {
         this.onAddOrEditModeValueSet(false);
     }
 
-    onCompanySelected(data: any) {
-        if (data) {
-            this.companyName = data.CompanyName;
-        }
-    }
+    // onCompanySelected(data: any) {
+    //     if (data) {
+    //     //   this.companyName = data.CompanyName;
+    //     }
+    // }
 
     onMenuSettingsChange(data: boolean) {
         if (data) {
