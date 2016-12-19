@@ -8,11 +8,11 @@
         </li>
         <li class="divider"></li>
         <li (click)="auth.logout()"><a><i class="material-icons left">remove_circle</i>Logout</a></li>
-        <li class="divider"></li>
-        <li><a><i class="material-icons left">folder_shared</i>Account</a></li>
+        <!--<li class="divider"></li>
+        <li><a><i class="material-icons left">folder_shared</i>Account</a></li>-->
     </ul>
 
-    <ul id="companyDropdown" class="dropdown-content collection">
+    <!--<ul id="companyDropdown" class="dropdown-content collection">
         <li (click)="onAddOrSettingsClick('company')">
             <a><i class="Small material-icons left">mode_edit</i><span class="lbl">Settings</span>
             </a>
@@ -45,9 +45,9 @@
             </a>
         </li>
         <li (click)="onAddOrSettingsClick('newCompany')"><a><i class="material-icons left">add</i><span class="lbl">Add New</span></a></li>
-    </ul>
+    </ul>-->
 
-    <ul id="groupDropdown" class="dropdown-content">
+    <!--<ul id="groupDropdown" class="dropdown-content">
         <li (click)="onAddOrSettingsClick('group')">
             <a>
                 <i class="Small material-icons left">mode_edit</i><span class="lbl ">Settings</span>
@@ -83,19 +83,39 @@
             </a>
         </li>
         <li><a (click)="onAddOrSettingsClick('newGroup')"><i class="material-icons left">add</i><span class="lbl">Add New</span></a></li>
+    </ul>-->
+
+    <ul id="groupDropdown" class="dropdown-content">
+        <li *ngFor="let company of orgCompanies">
+            <label *ngIf="company && company.IsDefaultCompany && company.CompanyID === selectedCompany.CompanyID" class="defaultlbl">{{company.CompanyName}}</label>
+        </li>
+        <li *ngFor="let group of orgCompanyGroups" (click)="onGroupSelection(group)">
+            <a *ngIf="group && group.IsDefaultGroup && group.OrgGroupID === selectedGroup.OrgGroupID" class="active">
+                <span class="editgroup" (click)="onAddOrSettingsClick('group',group)"><i class="Small material-icons left">mode_edit</i></span>
+                <p class="editgroupname" (click)="onGroupSelection(group)"> <span class="active">{{group.GroupName}} </span>
+                    <span class="lblCount right">{{group.OrgNodeCounts}}</span></p>
+            </a>
+
+            <a *ngIf="group && !group.IsDefaultGroup && group.OrgGroupID !== selectedGroup.OrgGroupID">
+                <span class="editgroup" (click)="onAddOrSettingsClick('group',group)"><i class="Small material-icons left">mode_edit</i></span>
+                <p class="editgroupname" (click)="onGroupSelection(group)"> <span class="active">{{group.GroupName}} </span>
+                    <span class="lblCount right">{{group.OrgNodeCounts}}</span></p>
+            </a>
+        </li>
+        <li><a (click)="onAddOrSettingsClick('newGroup')"><i class="material-icons left">add</i><span class="lbl">Add New</span></a></li>
     </ul>
 
     <nav class="fixed">
         <div class="nav-wrapper">
             <a href="/" class="brand-logo"><strong>PEOPLE</strong>TREE</a>
             <ul class="right">
-                <li *ngIf="selectedCompany">
+                <!--<li *ngIf="selectedCompany">
                     <a class="dropdown-button organization" data-activates="companyDropdown">
                         <i class="material-icons left">label</i>
                         <span class="hide-on-small-only">{{selectedCompany.CompanyName }}</span>
                         <i class="material-icons right">arrow_drop_down</i>
                     </a>
-                </li>
+                </li>-->
                 <li *ngIf="selectedGroup">
                     <a class="dropdown-button group" data-activates="groupDropdown">
                         <i class="material-icons left">apps</i>
@@ -134,7 +154,8 @@
                         <i class="material-icons left">label_outline</i>
                         <input required ngControl="existingGroupName" #existingGroupName="ngModel" [(ngModel)]="groupName" name="existingGroupName" autocomplete="off" />
                         <div>
-                            <label class="modaldefaultlabel"> Name Of Group </label>
+                            <!--<label class="modaldefaultlabel"> Name Of Group </label>-->
+                            <label class="modaldefaultlabel"> Name Of Organization </label>
                         </div>
                     </div>
 
@@ -149,7 +170,8 @@
                         <div class="inlineblock titlewithdivider">
                             <div class="divider"> </div>
                             <label class="lbl">Import</label>
-                            <label class="modallbl"> Load resources from CSV or Excel file to populate the <label class="lblgroupname"> {{groupName}} </label> group.</label>
+                            <!--<label class="modallbl"> Load resources from CSV or Excel file to populate the <label class="lblgroupname"> {{groupName}} </label> groupgroup.</label>-->
+                            <label class="modallbl"> Load resources from CSV or Excel file to populate the <label class="lblgroupname"> {{groupName}} </label> organization.</label>
                         </div>
                     </div>
                     <div>
@@ -174,8 +196,11 @@
                                 <div class="divider"> </div>
                                 <label class="lbl">Export</label>
                             </div>
-                            <div class="template" id="export" *ngIf="selectedCompany && selectedCompany.CompanyName && selectedGroup">
+                            <!--<div class="template" id="export" *ngIf="selectedCompany && selectedCompany.CompanyName && selectedGroup">
                                 <sg-csv [orgChartData]="selectedGroup" [orgName]="selectedCompany.CompanyName"></sg-csv>
+                            </div>-->
+                            <div class="template" id="export" *ngIf="selectedGroup && selectedGroup.GroupName">
+                                <sg-csv [orgChartData]="selectedGroup" [orgName]="selectedGroup.GroupName"></sg-csv>
                             </div>
                         </div>
                     </div>
@@ -208,7 +233,7 @@
 </div>
 
 <!--modal for company settings and Add new company-->
-<div id="companyModal" class="modal">
+<!--<div id="companyModal" class="modal">
     <div id="companySettingsModal">
         <div class="modal-content">
             <div class="modaltitle">
@@ -258,10 +283,10 @@
             <i class="material-icons">delete</i>Delete</button>
             </div>
         </div>
-    </div>
+    </div>-->
 
-    <!--Add new Company-->
-    <div id="addNewCompany">
+<!--Add new Company-->
+<!--<div id="addNewCompany">
         <div class="modal-content">
             <div class="modaltitle">
                 <div class="title">
@@ -288,4 +313,4 @@
             </form>
         </div>
     </div>
-</div>
+</div>-->
