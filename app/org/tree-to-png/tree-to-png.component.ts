@@ -50,7 +50,7 @@ export class TreeToPNGComponent {
             svg.setAttribute("width", width.toString());
             svg.setAttribute("height", height.toString());
             if (width > 5000) {
-                nodes.setAttribute("transform", "translate(" + (width / 2) + ", 95)scale(0.75)");
+                nodes.setAttribute("transform", "translate(" + (width / 2) + ", 95)scale(0.65)");
             } else {
                 nodes.setAttribute("transform", "translate(" + (width / 2) + ", 95)");
             }
