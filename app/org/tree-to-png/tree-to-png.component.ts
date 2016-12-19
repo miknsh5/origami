@@ -35,11 +35,13 @@ export class TreeToPNGComponent {
             let circles = svg.getElementsByTagName("circle");
             let nodes = svg.getElementsByClassName("nodes")[0];
             let nodesTransform = nodes.getAttribute("transform");
+            let viewBox = svg.getAttribute("viewBox");
 
             // sets attributes to  svg for exporting
             for (let i = 0; i < circles.length; i++) {
                 circles[i].setAttribute("style", "filter: url('#drop-shadow')");
             }
+            svg.removeAttribute("viewBox");
             svg.setAttribute("style", "background-color:white");
             svg.setAttribute("width", width.toString());
             svg.setAttribute("height", height.toString());
@@ -50,6 +52,7 @@ export class TreeToPNGComponent {
             saveSvgAsPng.saveSvgAsPng(svg, this.orgName + DEFAULT_EXT);
 
             // sets attributes to  svg for exporting
+            svg.setAttribute("viewBox", viewBox);
             svg.setAttribute("width", this.width);
             svg.setAttribute("height", this.height);
             nodes.setAttribute("transform", nodesTransform);
