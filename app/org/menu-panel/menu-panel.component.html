@@ -64,12 +64,12 @@
             <a *ngIf="group && group.IsDefaultGroup && group.OrgGroupID === selectedGroup.OrgGroupID" class="active">
                 <i class="material-icons left">apps</i>
                 <span class="active">{{group.GroupName}} </span>
-                <span class="lblCount right">{{group.OrgNodeCounts}}</span>
+                <span class="lblCount">{{group.OrgNodeCounts}}</span>
             </a>
             <a *ngIf="group && group.IsDefaultGroup && group.OrgGroupID !== selectedGroup.OrgGroupID">
                 <i class="material-icons left">apps</i>
                 <span class="active">{{group.GroupName}} </span>
-                <span class="lblCount right">{{group.OrgNodeCounts}}</span>
+                <span class="lblCount">{{group.OrgNodeCounts}}</span>
             </a>
         </li>
         <li class="divider"></li>
@@ -78,12 +78,12 @@
             <a *ngIf="group && !group.IsDefaultGroup && group.OrgGroupID === selectedGroup.OrgGroupID" class="active">
                 <i class="material-icons left ">apps</i>
                 <span>{{group.GroupName}}</span>
-                <span class="lblCount right">{{group.OrgNodeCounts}}</span>
+                <span class="lblCount">{{group.OrgNodeCounts}}</span>
             </a>
             <a *ngIf="group && !group.IsDefaultGroup && group.OrgGroupID !== selectedGroup.OrgGroupID">
                 <i class="material-icons left ">apps</i>
                 <span>{{group.GroupName}}</span>
-                <span class="lblCount right">{{group.OrgNodeCounts}}</span>
+                <span class="lblCount">{{group.OrgNodeCounts}}</span>
             </a>
         </li>
         <li><a (click)="onAddOrSettingsClick('newGroup')"><i class="material-icons left">add</i><span class="lbl">Add New</span></a></li>
@@ -97,13 +97,13 @@
             <a *ngIf="group && group.IsDefaultGroup && group.OrgGroupID === selectedGroup.OrgGroupID" class="active">
                 <i class="Small material-icons left" (click)="onAddOrSettingsClick('group',group)">mode_edit</i>
                 <p class="editgroupname" (click)="onGroupSelection(group)"> <span>{{group.GroupName}} </span>
-                    <span class="lblCount right">{{group.OrgNodeCounts}}</span></p>
+                    <span class="lblCount">{{group.OrgNodeCounts}}</span></p>
             </a>
 
             <a *ngIf="group && !group.IsDefaultGroup && group.OrgGroupID !== selectedGroup.OrgGroupID">
                 <i class="Small material-icons left" (click)="onAddOrSettingsClick('group',group)">mode_edit</i>
                 <p class="editgroupname" (click)="onGroupSelection(group)"> <span>{{group.GroupName}} </span>
-                    <span class="lblCount right">{{group.OrgNodeCounts}}</span></p>
+                    <span class="lblCount">{{group.OrgNodeCounts}}</span></p>
             </a>
         </li>
         <li><a class="hover" (click)="onAddOrSettingsClick('newGroup')"><i class="material-icons left">add</i><span class="lbl">Add New</span></a></li>

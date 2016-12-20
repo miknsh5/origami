@@ -109,10 +109,27 @@ nav ul a.dropdown-button:hover,
 .editgroupname {
     margin-top: 0;
     margin-bottom: 0;
-    margin-left: 40px;
+    margin-left: 37px;
     line-height: normal;
     cursor: pointer;
-    padding: 12px 10px 12px 0;
+    padding: 10px 5px 10px 0;
+    width: 170px;
+}
+
+.editgroupname>span {
+    white-space: nowrap;
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.editgroupname>span:first-child {
+    width: 128px;
+}
+
+.editgroupname>span.lblCount {
+    width: 28px;
+    text-align: right;
 }
 
 .caption {
@@ -138,7 +155,7 @@ nav ul a.dropdown-button:hover,
     cursor: pointer;
     height: inherit !important;
     line-height: inherit !important;
-    margin-right: 15px !important;
+    margin-right: 5px !important;
     margin-left: 0px !important;
     padding: 10px;
 }
@@ -148,7 +165,7 @@ nav ul a.dropdown-button:hover,
 }
 
 #groupDropdown.dropdown-content li>a {
-    width: 200px;
+    width: 210px;
 }
 
 #groupDropdown.dropdown-content {

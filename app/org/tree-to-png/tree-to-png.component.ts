@@ -24,13 +24,15 @@ export class TreeToPNGComponent {
         if (this.selectedOrgNode) {
             this.depth = [1];
             this.childCount(0, this.selectedOrgNode);
-            let maxCount = d3.max(this.depth);
+            let maxCount = d3.max(this.depth),
+                treeDepth = this.depth.length;
+
             let width = maxCount * 240;
             width = width > 1024 ? width : 1024;
             if (width > 5000) {
                 width = maxCount * 360;
             }
-            let height = (this.depth.length * 120);
+            let height = (treeDepth * 120);
             height = height > 768 ? height : 768;
 
             let viewPort = document.getElementsByClassName("svg-pan-zoom_viewport")[0];
