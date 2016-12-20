@@ -309,6 +309,20 @@ export class OrgComponent implements OnDestroy {
         this.updateJSON();
     }
 
+    onUpdateNodeAndDeleteNode(childNode: OrgNodeModel) {
+        let node: OrgNodeModel = this.getNode(this.selectedNode.ParentNodeID, this.orgNodes[0]);
+        if (node) {
+            node.children.push(childNode);
+            this.updateOrgNode(this.orgNodes[0], node);
+            this.deleteNodeFromArray(this.selectedNode, this.orgNodes);
+        } else if (this.selectedNode.ParentNodeID === null) {
+            this.deleteNodeFromArray(this.selectedNode, this.orgNodes);
+            this.orgNodes.push(childNode);
+        }
+        this.searchedNode = childNode;
+        this.updateJSON();
+    }
+
     onNodeUpdated(selected) {
         // since while updating data to server we send children as null so refreshing the value
         if (selected && !selected.children && selected.NodeID === this.selectedNode.NodeID && this.selectedNode.children) {

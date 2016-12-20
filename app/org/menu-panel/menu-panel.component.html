@@ -90,8 +90,8 @@
     </ul>-->
 
     <ul id="groupDropdown" class="dropdown-content">
-        <li *ngFor="let company of orgCompanies">
-            <label *ngIf="company && company.IsDefaultCompany && company.CompanyID === selectedCompany.CompanyID" class="defaultlbl">{{company.CompanyName}}</label>
+        <li>
+            <label class="defaultlbl">My Organizations</label>
         </li>
         <li *ngFor="let group of orgCompanyGroups" (click)="onGroupSelection(group)">
             <a *ngIf="group && group.IsDefaultGroup && group.OrgGroupID === selectedGroup.OrgGroupID" class="active">
