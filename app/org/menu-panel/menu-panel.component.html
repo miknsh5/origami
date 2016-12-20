@@ -7,11 +7,14 @@
             <p class="caption">{{userModel.Email}}</p>
         </li>
         <li class="divider"></li>
-        <li (click)="auth.logout()"><a><i class="material-icons left">remove_circle</i>Logout</a></li>
-        <!--<li class="divider"></li>
-        <li><a><i class="material-icons left">folder_shared</i>Account</a></li>-->
+        <li (click)="auth.logout()">
+            <a class="hover">
+                <i class="material-icons left">remove_circle</i> Logout
+            </a>
+        </li>
     </ul>
 
+    <!-- Organization Menu -->
     <!--<ul id="companyDropdown" class="dropdown-content collection">
         <li (click)="onAddOrSettingsClick('company')">
             <a><i class="Small material-icons left">mode_edit</i><span class="lbl">Settings</span>
@@ -47,6 +50,7 @@
         <li (click)="onAddOrSettingsClick('newCompany')"><a><i class="material-icons left">add</i><span class="lbl">Add New</span></a></li>
     </ul>-->
 
+    <!-- Group Menu -->
     <!--<ul id="groupDropdown" class="dropdown-content">
         <li (click)="onAddOrSettingsClick('group')">
             <a>
@@ -91,18 +95,18 @@
         </li>
         <li *ngFor="let group of orgCompanyGroups" (click)="onGroupSelection(group)">
             <a *ngIf="group && group.IsDefaultGroup && group.OrgGroupID === selectedGroup.OrgGroupID" class="active">
-                <span class="editgroup" (click)="onAddOrSettingsClick('group',group)"><i class="Small material-icons left">mode_edit</i></span>
-                <p class="editgroupname" (click)="onGroupSelection(group)"> <span class="active">{{group.GroupName}} </span>
+                <i class="Small material-icons left" (click)="onAddOrSettingsClick('group',group)">mode_edit</i>
+                <p class="editgroupname" (click)="onGroupSelection(group)"> <span>{{group.GroupName}} </span>
                     <span class="lblCount right">{{group.OrgNodeCounts}}</span></p>
             </a>
 
             <a *ngIf="group && !group.IsDefaultGroup && group.OrgGroupID !== selectedGroup.OrgGroupID">
-                <span class="editgroup" (click)="onAddOrSettingsClick('group',group)"><i class="Small material-icons left">mode_edit</i></span>
-                <p class="editgroupname" (click)="onGroupSelection(group)"> <span class="active">{{group.GroupName}} </span>
+                <i class="Small material-icons left" (click)="onAddOrSettingsClick('group',group)">mode_edit</i>
+                <p class="editgroupname" (click)="onGroupSelection(group)"> <span>{{group.GroupName}} </span>
                     <span class="lblCount right">{{group.OrgNodeCounts}}</span></p>
             </a>
         </li>
-        <li><a (click)="onAddOrSettingsClick('newGroup')"><i class="material-icons left">add</i><span class="lbl">Add New</span></a></li>
+        <li><a class="hover" (click)="onAddOrSettingsClick('newGroup')"><i class="material-icons left">add</i><span class="lbl">Add New</span></a></li>
     </ul>
 
     <nav class="fixed">
