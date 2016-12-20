@@ -54,7 +54,7 @@ export class TreeToPNGComponent {
             if (width > 5000) {
                 nodes.setAttribute("transform", "translate(" + (width / 2) + ", 95)scale(0.65)");
             } else {
-                nodes.setAttribute("transform", "translate(" + (width / 2) + ", 95)");
+                nodes.setAttribute("transform", "translate(" + (width / 2) + ", 95)scale(0.9)");
             }
             viewPort.setAttribute("transform", DEFAULT_MATTRIX);
 
