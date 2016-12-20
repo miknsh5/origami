@@ -35,7 +35,7 @@ body {
 .h-1 {
     font-family: Roboto, sans-serif;
     font-size: 18px;
-    height: 21px !important;
+    height: 30px !important;
     font-weight: bold;
     color: #ffffff;
     color: var(--white-text);

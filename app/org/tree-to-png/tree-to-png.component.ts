@@ -24,8 +24,12 @@ export class TreeToPNGComponent {
         if (this.selectedOrgNode) {
             this.depth = [1];
             this.childCount(0, this.selectedOrgNode);
-            let width = d3.max(this.depth) * 240;
+            let maxCount = d3.max(this.depth);
+            let width = maxCount * 240;
             width = width > 1024 ? width : 1024;
+            if (width > 5000) {
+                width = maxCount * 360;
+            }
             let height = (this.depth.length * 120);
             height = height > 768 ? height : 768;
 
@@ -35,21 +39,28 @@ export class TreeToPNGComponent {
             let circles = svg.getElementsByTagName("circle");
             let nodes = svg.getElementsByClassName("nodes")[0];
             let nodesTransform = nodes.getAttribute("transform");
+            let viewBox = svg.getAttribute("viewBox");
 
             // sets attributes to  svg for exporting
             for (let i = 0; i < circles.length; i++) {
                 circles[i].setAttribute("style", "filter: url('#drop-shadow')");
             }
+            svg.removeAttribute("viewBox");
             svg.setAttribute("style", "background-color:white");
             svg.setAttribute("width", width.toString());
             svg.setAttribute("height", height.toString());
-            nodes.setAttribute("transform", "translate(" + (width / 2) + ", 95)");
+            if (width > 5000) {
+                nodes.setAttribute("transform", "translate(" + (width / 2) + ", 95)scale(0.65)");
+            } else {
+                nodes.setAttribute("transform", "translate(" + (width / 2) + ", 95)");
+            }
             viewPort.setAttribute("transform", DEFAULT_MATTRIX);
 
             // exports svg to png
             saveSvgAsPng.saveSvgAsPng(svg, this.orgName + DEFAULT_EXT);
 
             // sets attributes to  svg for exporting
+            svg.setAttribute("viewBox", viewBox);
             svg.setAttribute("width", this.width);
             svg.setAttribute("height", this.height);
             nodes.setAttribute("transform", nodesTransform);
