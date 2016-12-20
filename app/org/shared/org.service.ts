@@ -66,9 +66,10 @@ export class OrgService {
             .map(res => res.json());
     }
 
-    deleteNode(orgNodeID) {
+    deleteNode(orgNodeID, childNodeID?) {
         let options = new RequestOptions({ headers: this.headers });
-        let url = this.origamiUrl + this.deleteUrl + orgNodeID;
+        let childData = `&childNodeID=` + childNodeID;
+        let url = this.origamiUrl + this.deleteUrl + orgNodeID + childData;
         return this.http.delete(url, options)
             .map(res => res.json());
     }
