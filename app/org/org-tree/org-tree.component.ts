@@ -174,10 +174,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             this.treeWidth = this.width;
             this.treeHeight = this.height;
 
-            if (changes["isNodeMoveEnabledOrDisabled"]) {
-                this.render(this.selectedOrgNode);
-            }
-
             if (changes["searchNode"]) {
                 if (changes["searchNode"].currentValue) {
                     this.selectedOrgNode = this.searchNode;
@@ -280,12 +276,12 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                     } else {
                         this.hideTopArrow(this.selectedOrgNode);
                     }
-                } else {
-                    // check whether the width or height property has changed or not
-                    if (changes["width"] || changes["height"]) {
-                        // centers the last selected node
-                        this.centerNode(this.lastSelectedNode);
-                    }
+                }
+            } else {
+                // check whether the width or height property has changed or not
+                if (changes["width"] || changes["height"]) {
+                    // centers the last selected node
+                    this.centerNode(this.lastSelectedNode);
                 }
             }
         }

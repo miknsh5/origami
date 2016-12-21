@@ -226,31 +226,24 @@ export class SideMenuComponent implements OnChanges {
         if (event.target.id === "FirstName") {
             if (event.target.checked === true) {
                 this.showFirstNameLabel.emit(true);
-            }
-            else {
+            } else {
                 this.showFirstNameLabel.emit(false);
             }
         }
         else if (event.target.id === "LastName") {
             if (event.target.checked === true) {
                 this.showLastNameLabel.emit(true);
-            }
-            else {
+            } else {
                 this.showLastNameLabel.emit(false);
             }
         }
         else if (event.target.id === "JobTitle") {
             if (event.target.checked === true) {
                 this.showDescriptionLabel.emit(true);
-            }
-            else {
+            } else {
                 this.showDescriptionLabel.emit(false);
             }
         }
-    }
-
-    private enableTabControl() {
-        this.domHelper.initTabControl();
     }
 
     OnPublish() {
@@ -283,11 +276,13 @@ export class SideMenuComponent implements OnChanges {
             }
         }
     }
-    onNodeDeleteCancel(data: boolean) {
+
+    onCancelDelete(data: boolean) {
         this.deleteTitle = "";
         this.name = "";
         this.domHelper.hideElements([MenuElement.deleteNodeModal, MenuElement.deleteChildNodeConfirm, MenuElement.deleteNodeConfirm]);
     }
+
     dismissPopup() {
         this.deleteTitle = "";
         this.name = "";
@@ -312,8 +307,12 @@ export class SideMenuComponent implements OnChanges {
                 this.isEditEnabled.emit(false);
             }
         }
-
     }
+
+    private enableTabControl() {
+        this.domHelper.initTabControl();
+    }
+
     private emitDeleteNodeNotification(data, childNode?: OrgNodeModel) {
         if (data) {
             if (childNode) {
@@ -334,7 +333,7 @@ export class SideMenuComponent implements OnChanges {
         return true;
     }
 
-    onMoveNodeClicked() {
+    private onMoveNodeClicked() {
         if (this.selectedOrgNode && this.selectedOrgNode.ParentNodeID !== null) {
             if (this.editOrSave !== SAVE_ICON) {
                 this.moveActive = "active";
@@ -343,7 +342,7 @@ export class SideMenuComponent implements OnChanges {
         }
     }
 
-    onEditOrSaveNodeClicked() {
+    private onEditOrSaveNodeClicked() {
         if (this.selectedNode.NodeID !== -1) {
             this.isNodeMoveEnabledOrDisabled.emit(false);
             if (this.editOrSave === EDIT_ICON) {
@@ -395,7 +394,7 @@ export class SideMenuComponent implements OnChanges {
         }
     }
 
-    private onInputKeyDownOrUp(event: KeyboardEvent, ngControl: NgControl) {
+    private onEditInputKeyUp(event: KeyboardEvent, ngControl: NgControl) {
         if (this.selectedNode) {
             let target = (<HTMLInputElement>event.target);
             let node = new OrgNodeModel();
@@ -417,8 +416,7 @@ export class SideMenuComponent implements OnChanges {
                 node.NodeFirstName = this.selectedNode.NodeFirstName;
                 this.selectedNode.NodeLastName = node.NodeLastName = ngControl.value;
                 node.Description = this.selectedNode.Description;
-            }
-            else if (ngControl.name === "description") {
+            } else if (ngControl.name === "description") {
                 node.NodeFirstName = this.selectedNode.NodeFirstName;
                 node.NodeLastName = this.selectedNode.NodeLastName;
                 this.selectedNode.Description = node.Description = ngControl.value;
@@ -462,8 +460,8 @@ export class SideMenuComponent implements OnChanges {
                 this.feedback.UserID = this.userModel.UserID;
                 this.feedback.UserName = this.userModel.Name;
             }
-            this.feedback.Description = this.feedbackDescriptionText;
 
+            this.feedback.Description = this.feedbackDescriptionText;
             this.orgService.sendFeedback(this.feedback)
                 .subscribe(data => { this.feedbackDescriptionText = ""; },
                 err => this.orgService.logError(err));

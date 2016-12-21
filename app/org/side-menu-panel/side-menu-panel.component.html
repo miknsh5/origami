@@ -18,11 +18,9 @@
                 <form #orgform="ngForm" *ngIf="selectedOrgNode" (keyup.enter)="onEditOrSaveNodeClicked()" (ngSubmit)="onSubmit()">
                     <div *ngIf="selectedNode && isEditModeEnabled" class="form-group text-wrap">
                         <div class="edit-name">
-                            <input type="text" class="h-1 title-name-edit form-control firstName" (keyup)="onInputKeyDownOrUp($event,firstName)" ngControl="firstName" #firstName="ngModel" [ngModel]="selectedNode.NodeFirstName" placeholder="First Name" name="firstName" autocomplete="off"
-                            />
-                            <input type="text" class="h-1 title-name-edit form-control" (keyup)="onInputKeyDownOrUp($event,lastName)" ngControl="lastName" #lastName="ngModel" [ngModel]="selectedNode.NodeLastName" placeholder="Last Name" name="lastName" autocomplete="off" />
-                            <input type="text" class="h-3 title-position-edit form-control" (keyup)="onInputKeyDownOrUp($event,description)" ngControl="description" #description="ngModel" [ngModel]="selectedNode.Description" placeholder="Description" name="description" autocomplete="off"
-                            />
+                            <input type="text" class="h-1 title-name-edit form-control firstName" (keyup)="onEditInputKeyUp($event,firstName)" ngControl="firstName" #firstName="ngModel" [ngModel]="selectedNode.NodeFirstName" placeholder="First Name" name="firstName" autocomplete="off">
+                            <input type="text" class="h-1 title-name-edit form-control" (keyup)="onEditInputKeyUp($event,lastName)" ngControl="lastName" #lastName="ngModel" [ngModel]="selectedNode.NodeLastName" placeholder="Last Name" name="lastName" autocomplete="off" />
+                            <input type="text" class="h-3 title-position-edit form-control" (keyup)="onEditInputKeyUp($event,description)" ngControl="description" #description="ngModel" [ngModel]="selectedNode.Description" placeholder="Description" name="description" autocomplete="off">
                         </div>
                     </div>
                 </form>
@@ -98,13 +96,13 @@
         </div>
         <div class="divider"></div>
         <div id="deleteNodeConfirm" class="center">
-            <sg-menu-confirm-button [hideMessage]="false" [titleName]="name" [deleteTitle]="deleteTitle" (onConfirmClick)="onNodeDeleteConfirm($event)" (onCancelClick)="onNodeDeleteCancel($event)">
+            <sg-menu-confirm-button [hideMessage]="false" [titleName]="name" [deleteTitle]="deleteTitle" (onConfirmClick)="onNodeDeleteConfirm($event)" (onCancelClick)="onCancelDelete($event)">
             </sg-menu-confirm-button>
         </div>
         <div id="deleteChildNodeConfirm" class="center">
             Delete Child Node First!
             <div>
-                <button class="waves-effect waves-light btn" (click)="onNodeDeleteCancel($event)">OK</button>
+                <button class="waves-effect waves-light btn" (click)="onCancelDelete($event)">OK</button>
             </div>
         </div>
     </div>
