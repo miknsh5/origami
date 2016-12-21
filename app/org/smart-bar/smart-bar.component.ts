@@ -141,7 +141,7 @@ export class SamrtBarComponent implements OnChanges {
     }
 
     @HostListener("focus", ["$event"])
-    private onSmartbarFocus() {
+    onSmartbarFocus() {
         if (this.multiInTerm !== EMPTYSTRING || this.searchTerm !== EMPTYSTRING) {
             let searchTerm = EMPTYSTRING;
             if (this.multiInTerm) {
@@ -245,7 +245,6 @@ export class SamrtBarComponent implements OnChanges {
                 newSelected.addClass(SELECTED);
                 jQuery(searchContainer).scrollTop(jQuery(searchContainer).scrollTop() + newSelected.position().top);
             }
-
         }
         // esc
         else if ((event as KeyboardEvent).keyCode === 27) {
@@ -290,7 +289,7 @@ export class SamrtBarComponent implements OnChanges {
     }
 
     onEnterKeypress(event) {
-        if (this.newNodeValue && this.newNodeValue.length === 0 && this.multiInTerm === EMPTYSTRING) {
+        if (this.newNodeValue && this.newNodeValue.length === 0 && !this.multiInTerm) {
             return;
         }
         if (this.isDescriptionText) {

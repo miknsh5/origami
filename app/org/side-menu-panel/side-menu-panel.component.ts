@@ -65,6 +65,7 @@ export class SideMenuComponent implements OnChanges {
 
     @Output() updateNode = new EventEmitter<OrgNodeModel>();
     @Output() deleteNode = new EventEmitter<OrgNodeModel>();
+    @Output() updateNodeAndDeleteNode = new EventEmitter<OrgNodeModel>();
     @Output() showFirstNameLabel = new EventEmitter<boolean>();
     @Output() showLastNameLabel = new EventEmitter<boolean>();
     @Output() showDescriptionLabel = new EventEmitter<boolean>();
@@ -255,11 +256,16 @@ export class SideMenuComponent implements OnChanges {
         this.domHelper.hideElements(MenuElement.publishData);
     }
 
-    onNodeDeleteConfirm(data: boolean) {
+    onNodeDeleteConfirm() {
         if (this.selectedNode.NodeID === -1) {
             this.deleteNode.emit(this.selectedNode);
         } else {
-            if (this.selectedNode.children && this.selectedNode.children.length > 0) {
+            if (this.selectedNode.children && this.selectedNode.children.length === 1) {
+                this.orgService.deleteNode(this.selectedNode.NodeID, this.selectedNode.children[0].NodeID)
+                    .subscribe(data => this.emitDeleteNodeNotification(data, this.selectedNode.children[0]),
+                    error => this.handleError(error),
+                    () => console.log("Deleted node."));
+            } else if (this.selectedNode.children && this.selectedNode.children.length > 0) {
                 this.domHelper.hideElements(MenuElement.deleteNodeConfirm);
                 this.domHelper.showElements(MenuElement.deleteChildNodeConfirm);
             } else {
@@ -307,9 +313,15 @@ export class SideMenuComponent implements OnChanges {
         this.domHelper.initTabControl();
     }
 
-    private emitDeleteNodeNotification(data) {
-        if (data === true) {
-            this.deleteNode.emit(this.selectedNode);
+    private emitDeleteNodeNotification(data, childNode?: OrgNodeModel) {
+        if (data) {
+            if (childNode) {
+                childNode.ParentNodeID = this.selectedNode.ParentNodeID;
+                this.updateNodeAndDeleteNode.emit(childNode);
+            }
+            else {
+                this.deleteNode.emit(this.selectedNode);
+            }
             this.domHelper.hideElements([MenuElement.deleteNodeModal, MenuElement.deleteChildNodeConfirm, MenuElement.deleteNodeConfirm]);
         }
     }

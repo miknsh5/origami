@@ -23,6 +23,6 @@
         </div>
     </div>
     <sg-side-menu-panel [selectedOrgNode]="selectedNode" [currentMode]="currentChartMode" [companyName]="companyName" (showFirstNameLabel)="enableFirstNameLabel($event)" (showLastNameLabel)="enableLastNameLabel($event)" (showDescriptionLabel)="enableDescriptionLabel($event)"
-        [svgWidth]="svgWidth" [svgHeight]="svgHeight" [orgChart]="orgGroup" (deleteNode)="onNodeDeleted($event)" (updateNode)="onNodeUpdated($event)" [isMenuSettingsEnabled]="isMenuSettingsEnabled" [isSmartBarAddEnabled]="isSmartBarEnabled" (isEditEnabled)="isEditEnabled($event)"
-        (isNodeMoveEnabledOrDisabled)="moveNodeEnabledOrDisabled($event)" [isNodeMoveDisabled]="isNodeMoveEnabledOrDisabled"></sg-side-menu-panel>
+        [svgWidth]="svgWidth" [svgHeight]="svgHeight" [orgChart]="orgGroup" (deleteNode)="onNodeDeleted($event)" (updateNode)="onNodeUpdated($event)" (updateNodeAndDeleteNode)="onUpdateNodeAndDeleteNode($event)" [isMenuSettingsEnabled]="isMenuSettingsEnabled"
+        [isSmartBarAddEnabled]="isSmartBarEnabled" (isEditEnabled)="isEditEnabled($event)" (isNodeMoveEnabledOrDisabled)="moveNodeEnabledOrDisabled($event)" [isNodeMoveDisabled]="isNodeMoveEnabledOrDisabled"></sg-side-menu-panel>
 </div>

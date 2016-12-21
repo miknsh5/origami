@@ -90,8 +90,8 @@
     </ul>-->
 
     <ul id="groupDropdown" class="dropdown-content">
-        <li *ngFor="let company of orgCompanies">
-            <label *ngIf="company && company.IsDefaultCompany && company.CompanyID === selectedCompany.CompanyID" class="defaultlbl">{{company.CompanyName}}</label>
+        <li>
+            <label class="defaultlbl">My Organizations</label>
         </li>
         <li *ngFor="let group of orgCompanyGroups" (click)="onGroupSelection(group)">
             <a *ngIf="group && group.IsDefaultGroup && group.OrgGroupID === selectedGroup.OrgGroupID" class="active">
@@ -113,13 +113,6 @@
         <div class="nav-wrapper">
             <a href="/" class="brand-logo"><strong>PEOPLE</strong>TREE</a>
             <ul class="right">
-                <!--<li *ngIf="selectedCompany">
-                    <a class="dropdown-button organization" data-activates="companyDropdown">
-                        <i class="material-icons left">label</i>
-                        <span class="hide-on-small-only">{{selectedCompany.CompanyName }}</span>
-                        <i class="material-icons right">arrow_drop_down</i>
-                    </a>
-                </li>-->
                 <li *ngIf="selectedGroup">
                     <a class="dropdown-button group" data-activates="groupDropdown">
                         <i class="material-icons left">apps</i>
@@ -158,7 +151,6 @@
                         <i class="material-icons left">label_outline</i>
                         <input required ngControl="existingGroupName" #existingGroupName="ngModel" [(ngModel)]="groupName" name="existingGroupName" autocomplete="off" />
                         <div>
-                            <!--<label class="modaldefaultlabel"> Name Of Group </label>-->
                             <label class="modaldefaultlabel"> Name Of Organization </label>
                         </div>
                     </div>
@@ -174,7 +166,6 @@
                         <div class="inlineblock titlewithdivider">
                             <div class="divider"> </div>
                             <label class="lbl">Import</label>
-                            <!--<label class="modallbl"> Load resources from CSV or Excel file to populate the <label class="lblgroupname"> {{groupName}} </label> groupgroup.</label>-->
                             <label class="modallbl"> Load resources from CSV or Excel file to populate the <label class="lblgroupname"> {{groupName}} </label> organization.</label>
                         </div>
                     </div>
@@ -200,9 +191,6 @@
                                 <div class="divider"> </div>
                                 <label class="lbl">Export</label>
                             </div>
-                            <!--<div class="template" id="export" *ngIf="selectedCompany && selectedCompany.CompanyName && selectedGroup">
-                                <sg-csv [orgChartData]="selectedGroup" [orgName]="selectedCompany.CompanyName"></sg-csv>
-                            </div>-->
                             <div class="template" id="export" *ngIf="selectedGroup && selectedGroup.GroupName">
                                 <sg-csv [orgChartData]="selectedGroup" [orgName]="selectedGroup.GroupName"></sg-csv>
                             </div>
