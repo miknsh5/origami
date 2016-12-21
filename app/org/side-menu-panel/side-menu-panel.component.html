@@ -98,13 +98,13 @@
         </div>
         <div class="divider"></div>
         <div id="deleteNodeConfirm" class="center">
-            <sg-menu-confirm-button [hideMessage]="false" [titleName]="name" [deleteTitle]="deleteTitle" (onConfirmClick)="onNodeDeleteConfirm($event)" (onCancelClick)="onNodeDeleteCancel($event)">
+            <sg-menu-confirm-button [hideMessage]="false" [titleName]="name" [deleteTitle]="deleteTitle" (onConfirmClick)="onNodeDeleteConfirm($event)" (onCancelClick)="onCancelDelete($event)">
             </sg-menu-confirm-button>
         </div>
         <div id="deleteChildNodeConfirm" class="center">
             Delete Child Node First!
             <div>
-                <button class="waves-effect waves-light btn" (click)="onNodeDeleteCancel($event)">OK</button>
+                <button class="waves-effect waves-light btn" (click)="onCancelDelete($event)">OK</button>
             </div>
         </div>
     </div>

@@ -174,10 +174,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             this.treeWidth = this.width;
             this.treeHeight = this.height;
 
-            if (changes["isNodeMoveEnabledOrDisabled"]) {
-                this.render(this.selectedOrgNode);
-            }
-
             if (changes["searchNode"]) {
                 if (changes["searchNode"].currentValue) {
                     this.selectedOrgNode = this.searchNode;
