@@ -382,7 +382,7 @@ export class SideMenuComponent implements OnChanges {
         }
     }
 
-    private onInputKeyDownOrUp(event: KeyboardEvent, ngControl: NgControl) {
+    private onEditInputKeyUp(event: KeyboardEvent, ngControl: NgControl) {
         if (this.selectedNode) {
             let target = (<HTMLInputElement>event.target);
             let node = new OrgNodeModel();
