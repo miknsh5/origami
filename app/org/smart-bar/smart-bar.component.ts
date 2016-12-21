@@ -256,9 +256,9 @@ export class SamrtBarComponent implements OnChanges {
                     this.clearSearch();
                 }
 
-                this.selectedOrgNode.NodeFirstName =
-                    this.selectedOrgNode.NodeLastName =
-                    this.selectedOrgNode.Description = EMPTYSTRING;
+                // this.selectedOrgNode.NodeFirstName =
+                //     this.selectedOrgNode.NodeLastName =
+                //     this.selectedOrgNode.Description = EMPTYSTRING;
 
                 if (this.selectedOrgNode.IsNewRoot || (this.selectedOrgNode.ParentNodeID && this.selectedOrgNode.NodeID === -1)) {
                     if (this.selectedOrgNode.NodeID === -1) {
@@ -750,9 +750,9 @@ export class SamrtBarComponent implements OnChanges {
     private searchList(searchTerm: string, isTitleSearch?: boolean) {
         searchTerm = searchTerm.trim();
         this.searchInProgress = true;
-        this.nodeSearchedList = new Array<OrgSearchModel>();
-        this.titleFilterList = new Array();
         setTimeout(() => {
+            this.nodeSearchedList = new Array<OrgSearchModel>();
+            this.titleFilterList = new Array();
             if (!this.selectedOrgNode || isTitleSearch || (this.selectedOrgNode && this.selectedOrgNode.NodeID !== -1)) {
                 this.orgSearchData.forEach((data, index) => {
                     if (isTitleSearch) {
