@@ -256,9 +256,9 @@ export class SamrtBarComponent implements OnChanges {
                     this.clearSearch();
                 }
 
-                // this.selectedOrgNode.NodeFirstName =
-                //     this.selectedOrgNode.NodeLastName =
-                //     this.selectedOrgNode.Description = EMPTYSTRING;
+                this.newOrgNode.NodeFirstName =
+                    this.newOrgNode.NodeLastName =
+                    this.newOrgNode.Description = EMPTYSTRING;
 
                 if (this.selectedOrgNode.IsNewRoot || (this.selectedOrgNode.ParentNodeID && this.selectedOrgNode.NodeID === -1)) {
                     if (this.selectedOrgNode.NodeID === -1) {
