@@ -20,7 +20,8 @@ const MenuElement = {
     feedbackPanel: "#feedbackPanel",
     deleteNodeModal: "#deleteNodeModal",
     deleteNodeConfirm: "#deleteNodeConfirm",
-    deleteChildNodeConfirm: "#deleteChildNodeConfirm"
+    deleteChildNodeConfirm: "#deleteChildNodeConfirm",
+    sendFeedback: "#sendFeedback"
 };
 
 @Component({
@@ -190,7 +191,7 @@ export class SideMenuComponent implements OnChanges {
             this.domHelper.setWidth(MenuElement.menuPanel, "100%");
             this.domHelper.setWidth(MenuElement.sideNavfixed, "100%");
             this.domHelper.hideElements(MenuElement.publishData);
-            this.domHelper.showElements(MenuElement.sidePanelExportData);
+            this.domHelper.showElements([MenuElement.sidePanelExportData , MenuElement.sendFeedback]);
         }
     }
 
@@ -207,6 +208,7 @@ export class SideMenuComponent implements OnChanges {
             this.onDeleteOrCancelNodeClicked();
         }
         this.isNodeMoveEnabledOrDisabled.emit(false);
+         this.domHelper.hideElements(MenuElement.sendFeedback);
     }
 
     private childCount(level, node) {
