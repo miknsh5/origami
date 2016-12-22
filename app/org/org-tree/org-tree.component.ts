@@ -98,6 +98,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     @Input() isMenuSettingsEnabled: boolean;
     @Input() searchNode: OrgNodeModel;
     @Input() isNodeMoveEnabledOrDisabled: boolean;
+    @Input() isFeedbackInEditMode: boolean;
 
     @Output() selectNode = new EventEmitter<OrgNodeModel>();
     @Output() addNode = new EventEmitter<OrgNodeModel>();
@@ -324,7 +325,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 // left arrow
                 if ((event as KeyboardEvent).keyCode === 37) {
                     let node = this.selectedOrgNode as d3.layout.tree.Node;
-                    if (this.isBuildMode()) {
+                    if (this.isBuildMode() && !this.isFeedbackInEditMode) {
                         if (node.parent != null) {
                             let parentNode = node.parent;
                             this.highlightAndCenterNode(parentNode);
@@ -343,7 +344,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 }
                 // right arrow
                 else if ((event as KeyboardEvent).keyCode === 39) {
-                    if (this.isBuildMode()) {
+                    if (this.isBuildMode() && !this.isFeedbackInEditMode) {
                         if (this.selectedOrgNode.children && this.selectedOrgNode.children.length > 0) {
                             let node = this.selectedOrgNode.children[0];
                             this.highlightAndCenterNode(node);
@@ -361,7 +362,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 // top arrow
                 else if ((event as KeyboardEvent).keyCode === 38) {
                     let node = this.selectedOrgNode as d3.layout.tree.Node;
-                    if (this.isBuildMode()) {
+                    if (this.isBuildMode() && !this.isFeedbackInEditMode) {
                         if (node.parent != null) {
                             let siblings = node.parent.children;
                             let index = siblings.indexOf(node);
@@ -389,7 +390,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 // bottom arrow
                 else if ((event as KeyboardEvent).keyCode === 40) {
                     let node = this.selectedOrgNode as d3.layout.tree.Node;
-                    if (this.isBuildMode()) {
+                    if (this.isBuildMode() && !this.isFeedbackInEditMode) {
                         if (node.parent != null) {
                             let siblings = node.parent.children;
                             let index = siblings.indexOf(node);

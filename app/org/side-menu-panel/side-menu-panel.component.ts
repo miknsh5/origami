@@ -73,6 +73,7 @@ export class SideMenuComponent implements OnChanges {
     @Output() deleteTitle: string;
     @Output() name: string;
     @Output() isNodeMoveEnabledOrDisabled = new EventEmitter<boolean>();
+    @Output() isFeedbackInEditMode = new EventEmitter<boolean>();
 
     @HostListener("window:keydown", ["$event"])
     onKeyDown(event: any) {
@@ -118,6 +119,7 @@ export class SideMenuComponent implements OnChanges {
         this.deleteOrClose = DELETE_ICON;
         this.isEditOrDeleteDisabled = false;
         this.isNodeMoveEnabledOrDisabled.emit(false);
+        this.isFeedbackInEditMode.emit(false);
     }
 
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
@@ -435,6 +437,15 @@ export class SideMenuComponent implements OnChanges {
         }
     }
 
+    public OnKeyDown(event) {
+        if (this.feedbackDescriptionText !== "") {
+            this.isFeedbackInEditMode.emit(true);
+        } else {
+            this.isFeedbackInEditMode.emit(false);
+        }
+
+    }
+
     openOrCloseFeedBackPanel() {
         this.isNodeMoveEnabledOrDisabled.emit(false);
         if (this.feedbackIcon === FEEDBACK_ICON_OPEN) {
@@ -443,6 +454,7 @@ export class SideMenuComponent implements OnChanges {
             this.domHelper.setHeight(MenuElement.feedbackPanel, "220px");
             document.querySelector("textarea").focus();
         } else if (this.feedbackIcon === FEEDBACK_ICON_CLOSE) {
+            this.isFeedbackInEditMode.emit(false);
             this.feedbackIcon = FEEDBACK_ICON_OPEN;
             this.feedbackDescriptionText = "";
             this.domHelper.setHeight(MenuElement.feedbackPanel, 0);
