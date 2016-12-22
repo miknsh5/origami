@@ -979,7 +979,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             } else if (d.NodeFirstName && d.NodeFirstName.length > 15 && this.isReportMode()) {
                 return "2.5em";
             }
-            return "1em";
+            return "1.2em";
         }).attr(TRANSFORM, (d) => {
             if (this.isExploreMode()) {
                 if (d.NodeID === this.root.NodeID) {
