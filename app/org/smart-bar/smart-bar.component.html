@@ -1,7 +1,7 @@
 <div class="smart_bar_wrap">
     <form>
         <div center class="input-field">
-            <input *ngIf="!selectedOrgNode" id="searchNodes" type="text" placeholder="Search" name="searchTerm" (keyup.enter)="onEnterKeypress($event)" (keyup.backspace)="onSearchBackspasePressed($event)" (focusout)="onInputFocusOut($event)" (focus)="onSmartbarFocus($event)"
+            <input *ngIf="!selectedOrgNode" id="searchNodes" type="text" placeholder="Search" name="searchTerm" (keyup.enter)="onEnterKeypress($event)" (keyup.backspace)="onSearchBackspacePressed($event)" (focusout)="onInputFocusOut($event)" (focus)="onSmartbarFocus($event)"
                 (keyup)="onInputSearch($event)" [(ngModel)]="searchTerm" autocomplete="off">
             <ul *ngIf="selectedOrgNode" (click)="addNodes.focus()">
                 <li *ngFor="let newNode of newNodeValue" class="ui-addList">
@@ -9,7 +9,7 @@
                     <i class="material-icons right">keyboard_arrow_right</i>
                 </li>
                 <li class="ui-addList">
-                    <input type="text" placeholder={{placeholderText}} name="multiInTerm" (keyup.enter)="onEnterKeypress($event)" (keyup.backspace)="onSmartbarBackSpasePressed($event)" (focusout)="onInputFocusOut($event)" (focus)="onSmartbarFocus($event)" (keyup)="onInputMultiSearch($event)"
+                    <input type="text" placeholder={{placeholderText}} name="multiInTerm" (keyup.enter)="onEnterKeypress($event)" (keyup.backspace)="onSmartbarBackspacePressed($event)" (focusout)="onInputFocusOut($event)" (focus)="onSmartbarFocus($event)" (keyup)="onInputMultiSearch($event)"
                         [(ngModel)]="multiInTerm" autocomplete="off" #addNodes>
                 </li>
             </ul>
