@@ -310,7 +310,7 @@ export class SamrtBarComponent implements OnChanges {
         }
     }
 
-    onSmartbarBackSpasePressed(event) {
+    onSmartbarBackspacePressed(event) {
         if (this.isNodeMoveEnabledOrDisabled && (this.multiInTerm === EMPTYSTRING || this.multiInTerm.length === 1)) {
             this.searchTerm = this.multiInTerm = EMPTYSTRING;
             this.isNodeMoveDisabled.emit(false);
@@ -333,7 +333,7 @@ export class SamrtBarComponent implements OnChanges {
         }
     }
 
-    onSearchBackspasePressed(event) {
+    onSearchBackspacePressed(event) {
         if (!this.searchTerm || this.searchTerm.length === 1) {
             this.searchInProgress = this.isSearchEnabled = this.isTitleSelected = false;
             this.isSmartBarEnabled.emit(false);
