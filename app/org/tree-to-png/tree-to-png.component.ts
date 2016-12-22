@@ -38,17 +38,14 @@ export class TreeToPNGComponent {
             this.treeLength = this.leftNodeInitials = this.rightNodeInitials = 0;
             this.getNodesPositionOfVerticalTree();
 
-            console.log(this.leftNodeInitials, this.rightNodeInitials);
-
-            let width = this.leftNodeInitials + this.rightNodeInitials + MIN_HEIGHT;
-            let height = this.treeLength + DEFAULT_HEIGHT_VALUE;
-            height = height > MIN_HEIGHT ? height : MIN_HEIGHT;
-
             // gets previous attributes of the element's for reassigning after export.
             this.getPrevAttributes();
 
+            let width = this.leftNodeInitials + this.rightNodeInitials + MIN_HEIGHT;
+            this.treeLength += DEFAULT_HEIGHT_VALUE;
+
             // sets default attributes of exporting.
-            this.setDefaultAttributes(width, height);
+            this.setDefaultAttributes(width, this.treeLength);
 
             // exports svg to png
             saveSvgAsPng.saveSvgAsPng(this.svg, this.orgName + DEFAULT_EXT);
