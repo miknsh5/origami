@@ -628,9 +628,9 @@ export class SamrtBarComponent implements OnChanges {
     onDescritptionSearch(searchTerm: string) {
         searchTerm = searchTerm.trim();
         this.searchInProgress = true;
-        this.nodeSearchedList = new Array<OrgSearchModel>();
-        this.titleFilterList = new Array();
         setTimeout(() => {
+            this.nodeSearchedList = new Array<OrgSearchModel>();
+            this.titleFilterList = new Array();
             this.searchTitleData(searchTerm);
             if (this.selectedOrgNode) {
                 setTimeout(() => {
@@ -725,9 +725,9 @@ export class SamrtBarComponent implements OnChanges {
     private searchTitleList(searchTerm: string, searchList) {
         searchTerm = searchTerm.trim();
         this.searchInProgress = true;
-        this.nodeSearchedList = new Array<OrgSearchModel>();
-        this.titleFilterList = new Array();
         setTimeout(() => {
+            this.nodeSearchedList = new Array<OrgSearchModel>();
+            this.titleFilterList = new Array();
             if (!this.selectedOrgNode || (this.selectedOrgNode && this.selectedOrgNode.NodeID !== -1)) {
                 searchList.forEach((data, index) => {
                     if (!searchTerm) {
