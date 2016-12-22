@@ -75,11 +75,7 @@ export class TreeToPNGComponent {
         this.svg.setAttribute("width", width.toString());
         this.svg.setAttribute("height", height.toString());
         this.viewPort.setAttribute("transform", DEFAULT_MATTRIX);
-
-        if (this.leftNodeInitials > this.rightNodeInitials)
-            this.nodes.setAttribute("transform", "translate(" + (this.leftNodeInitials + DEFAULT_HEIGHT_VALUE) + ", 120)");
-        else
-            this.nodes.setAttribute("transform", "translate(" + (this.rightNodeInitials + DEFAULT_HEIGHT_VALUE) + ", 120)");
+        this.nodes.setAttribute("transform", "translate(" + (this.leftNodeInitials + DEFAULT_HEIGHT_VALUE) + ", 120)");
     }
 
     private setPrevAttributes() {
