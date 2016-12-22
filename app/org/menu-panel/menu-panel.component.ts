@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnChanges, SimpleChange, Renderer } from "@angular/core";
+import { Component, Input, Output, EventEmitter, OnChanges, SimpleChange, HostListener, Renderer } from "@angular/core";
 import { Router } from "@angular/router";
 
 import { OrgCompanyModel, OrgGroupModel, OrgNodeModel, OrgService, OrgNodeStatus, OrgNodeBaseModel, DomElementHelper } from "../shared/index";
@@ -236,6 +236,7 @@ export class MenuPanelComponent implements OnChanges {
                 this.domHelper.showElements(MenuElement.exportData);
                 this.domHelper.hideElements(MenuElement.downloadTemplate);
             }
+            this.setInputFocus();
             element = document.querySelector("input[name=existingGroupName]");
         } else if (name === "newGroup") {
             this.groupSelectedMode = "AddNewGroup";
@@ -279,6 +280,16 @@ export class MenuPanelComponent implements OnChanges {
         }
     }
 
+    private setInputFocus() {
+        setTimeout(() => {
+            let element = document.querySelector("input[name=existingGroupName]");
+            if (element) {
+                this.renderer.invokeElementMethod(element, "focus", []);
+            }
+        }, 1000);
+    }
+
+    @HostListener("focusout", ["$event"])
     private onGroupSave() {
         if (this.groupSelectedMode === "Settings") {
             let group = new OrgGroupModel();

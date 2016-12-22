@@ -146,17 +146,13 @@
         <div class="divider"></div>
         <div class="groupBody">
             <div id="groupSaveOrEdit">
-                <form (ngSubmit)="onGroupSave($event)">
+                <form>
                     <div class="company_groupDetails">
                         <i class="material-icons left">label_outline</i>
-                        <input required ngControl="existingGroupName" #existingGroupName="ngModel" [(ngModel)]="groupName" name="existingGroupName" autocomplete="off" />
+                        <input required ngControl="existingGroupName" #existingGroupName="ngModel" [(ngModel)]="groupName" name="existingGroupName" autocomplete="off" (focusout)="onGroupSave($event)" (keyup.enter)="onGroupSave($event)" />
                         <div>
                             <label class="modaldefaultlabel"> Name Of Organization </label>
                         </div>
-                    </div>
-
-                    <div class="innerdiv">
-                        <button class="waves-effect waves-light btn"><i class="material-icons">save</i>Save</button>
                     </div>
                 </form>
             </div>
