@@ -335,7 +335,10 @@ export class SamrtBarComponent implements OnChanges {
 
     onSearchBackspacePressed(event) {
         if (!this.searchTerm || this.searchTerm.length === 1) {
-            this.searchInProgress = this.isSearchEnabled = this.isTitleSelected = false;
+            if (!this.searchTerm) {
+                this.isTitleSelected = false;
+            }
+            this.searchInProgress = this.isSearchEnabled = false;
             this.isSmartBarEnabled.emit(false);
             this.isNodeMoveDisabled.emit(false);
             this.nodeSearchedList = new Array<OrgSearchModel>();
