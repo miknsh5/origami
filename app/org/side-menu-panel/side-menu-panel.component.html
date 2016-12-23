@@ -57,6 +57,14 @@
                     <input type="checkbox" class="filled-in" id="JobTitle" checked="checked" (change)="setLabelVisiblity($event)" />
                     <label for="JobTitle">Job Title</label>
                 </div>
+                <hr/>
+                <label class="menuTitle">View as </label>
+                <div class="radioboxList">
+                    <input class="with-gap" name="view" type="radio" id="verticalView" checked="checked" (change)="changeViewVericalOrHorizonatl($event)" />
+                    <label for="verticalView">Vertical</label>
+                    <input class="with-gap" name="view" type="radio" id="horizontalView" (change)="changeViewVericalOrHorizonatl($event)" />
+                    <label for="horizontalView">Horizontal</label>
+                </div>
                 <div class="tabControl">
                     <ul class="tabs">
                         <li class="tab" href="#publishData" (click)="OnPublish($data)"><a>Publish</a></li>

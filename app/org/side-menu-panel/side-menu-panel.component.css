@@ -93,6 +93,34 @@
     border: 0;
 }
 
+[type="radio"]:checked+label:after,
+[type="radio"].with-gap:checked+label:before,
+[type="radio"].with-gap:checked+label:after {
+    border: 2px solid #0097FF;
+}
+
+[type="radio"]:checked+label:after,
+[type="radio"].with-gap:checked+label:after {
+    background-color: #0097FF;
+    z-index: 0;
+}
+
+[type="radio"]:not(:checked)+label:before,
+[type="radio"]:not(:checked)+label:after {
+    border: 2px solid #0097FF;
+}
+
+[type="radio"]+label {
+    padding-left: 30px;
+    display: block;
+    font-size: 0.9rem;
+    line-height: 1.9em;
+}
+
+.radioboxList {
+    margin: 10px 35px;
+}
+
 .sideNav .editbtn,
 .deletebtn,
 .movebtn {
@@ -235,7 +263,7 @@ a {
 }
 
 .tabControl {
-    margin-top: 150px;
+    margin-top: 50px;
     z-index: 0;
 }
 

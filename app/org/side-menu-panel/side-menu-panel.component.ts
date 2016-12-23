@@ -1,4 +1,4 @@
-import { Component, HostListener, Input, Output, OnChanges, SimpleChange, EventEmitter, ViewChild } from "@angular/core";
+import { Component, HostListener, Input, Output, OnChanges, SimpleChange, EventEmitter, OnInit, ViewChild } from "@angular/core";
 import { NgForm, NgControl } from "@angular/forms";
 import { OrgGroupModel, OrgNodeModel, ChartMode, OrgService, UserFeedBack, DomElementHelper } from "../shared/index";
 import { UserModel } from "../../Shared/index";
@@ -30,7 +30,7 @@ const MenuElement = {
     styleUrls: ["app/org/side-menu-panel/side-menu-panel.component.css"]
 })
 
-export class SideMenuComponent implements OnChanges {
+export class SideMenuComponent implements OnInit, OnChanges {
     isCollapsed: boolean;
     isClosed: boolean;
     selectedNode: OrgNodeModel;
@@ -75,41 +75,7 @@ export class SideMenuComponent implements OnChanges {
     @Output() name: string;
     @Output() isNodeMoveEnabledOrDisabled = new EventEmitter<boolean>();
     @Output() isFeedbackInEditMode = new EventEmitter<boolean>();
-
-    @HostListener("window:keydown", ["$event"])
-    onKeyDown(event: any) {
-        event.stopPropagation();
-        if (!this.isMenuSettingsEnabled) {
-            if ((event as KeyboardEvent).keyCode === 27) {
-                if (this.isEditModeEnabled) {
-                    this.deleteOrClose = CLOSE_ICON;
-                    this.onDeleteOrCancelNodeClicked();
-                }
-            }
-        }
-    }
-
-    @HostListener("window:click", ["$event"])
-    onClick(event: any) {
-        if (!this.isMenuSettingsEnabled) {
-            event.stopPropagation();
-            if (event.target.nodeName === "svg") {
-                if (this.firstName && this.lastName && this.description) {
-                    if (this.firstName.value) {
-                        this.editOrSave = SAVE_ICON;
-                        this.onEditOrSaveNodeClicked();
-                    } else {
-                        this.deleteOrClose = CLOSE_ICON;
-                        this.onDeleteOrCancelNodeClicked();
-                        let node: any = this.selectedOrgNode;
-                        if (node.parent || this.firstName.value === "") {
-                            alert("Please enter FirstName.");
-                        }
-                    }
-                }
-            }
-        }
-    }
+    @Output() isHorizontalViewEnabled = new EventEmitter<boolean>();
 
     constructor(private orgService: OrgService, private domHelper: DomElementHelper) {
         this.feedbackIcon = FEEDBACK_ICON_OPEN;
@@ -119,8 +85,12 @@ export class SideMenuComponent implements OnChanges {
         this.editOrSave = EDIT_ICON;
         this.deleteOrClose = DELETE_ICON;
         this.isEditOrDeleteDisabled = false;
+    }
+
+    ngOnInit() {
         this.isNodeMoveEnabledOrDisabled.emit(false);
         this.isFeedbackInEditMode.emit(false);
+        this.isHorizontalViewEnabled.emit(false);
     }
 
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
@@ -184,6 +154,41 @@ export class SideMenuComponent implements OnChanges {
         }
     }
 
+    @HostListener("window:keydown", ["$event"])
+    onKeyDown(event: any) {
+        event.stopPropagation();
+        if (!this.isMenuSettingsEnabled) {
+            if ((event as KeyboardEvent).keyCode === 27) {
+                if (this.isEditModeEnabled) {
+                    this.deleteOrClose = CLOSE_ICON;
+                    this.onDeleteOrCancelNodeClicked();
+                }
+            }
+        }
+    }
+
+    @HostListener("window:click", ["$event"])
+    onClick(event: any) {
+        if (!this.isMenuSettingsEnabled) {
+            event.stopPropagation();
+            if (event.target.nodeName === "svg") {
+                if (this.firstName && this.lastName && this.description) {
+                    if (this.firstName.value) {
+                        this.editOrSave = SAVE_ICON;
+                        this.onEditOrSaveNodeClicked();
+                    } else {
+                        this.deleteOrClose = CLOSE_ICON;
+                        this.onDeleteOrCancelNodeClicked();
+                        let node: any = this.selectedOrgNode;
+                        if (node.parent || this.firstName.value === "") {
+                            alert("Please enter FirstName.");
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     openPanel() {
         if (this.selectedOrgNode && this.selectedOrgNode.NodeID !== -1 && !this.isSmartBarAddEnabled) {
             this.isCollapsed = true;
@@ -191,7 +196,7 @@ export class SideMenuComponent implements OnChanges {
             this.domHelper.setWidth(MenuElement.menuPanel, "100%");
             this.domHelper.setWidth(MenuElement.sideNavfixed, "100%");
             this.domHelper.hideElements(MenuElement.publishData);
-            this.domHelper.showElements([MenuElement.sidePanelExportData , MenuElement.sendFeedback]);
+            this.domHelper.showElements([MenuElement.sidePanelExportData, MenuElement.sendFeedback]);
         }
     }
 
@@ -208,7 +213,7 @@ export class SideMenuComponent implements OnChanges {
             this.onDeleteOrCancelNodeClicked();
         }
         this.isNodeMoveEnabledOrDisabled.emit(false);
-         this.domHelper.hideElements(MenuElement.sendFeedback);
+        this.domHelper.hideElements(MenuElement.sendFeedback);
     }
 
     private childCount(level, node) {
@@ -258,6 +263,18 @@ export class SideMenuComponent implements OnChanges {
     OnExport() {
         this.domHelper.showElements(MenuElement.sidePanelExportData);
         this.domHelper.hideElements(MenuElement.publishData);
+    }
+
+    changeViewVericalOrHorizonatl(event) {
+        if (event.target.id === "verticalView") {
+            if (event.target.checked === true) {
+                this.isHorizontalViewEnabled.emit(false);
+            }
+        } else if (event.target.id === "horizontalView") {
+            if (event.target.checked === true) {
+                this.isHorizontalViewEnabled.emit(true);
+            }
+        }
     }
 
     onNodeDeleteConfirm() {

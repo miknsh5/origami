@@ -99,6 +99,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     @Input() searchNode: OrgNodeModel;
     @Input() isNodeMoveEnabledOrDisabled: boolean;
     @Input() isFeedbackInEditMode: boolean;
+    @Input() isHorizontalViewEnabled: boolean;
 
     @Output() selectNode = new EventEmitter<OrgNodeModel>();
     @Output() addNode = new EventEmitter<OrgNodeModel>();
@@ -208,7 +209,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 return;
             }
 
-            if (changes["currentMode"] || (changes["orgGroupID"] && this.isExploreMode())) {
+            if (changes["isHorizontalViewEnabled"] || changes["currentMode"] || (changes["orgGroupID"] && this.isExploreMode())) {
                 this.initializeTreeAsPerMode();
                 let node = this.selectedOrgNode;
                 if (!node && this.lastSelectedNode) {
@@ -428,13 +429,23 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                     return [d.y, d.x];
                 });
         } else if (this.isReportMode()) {
-            this.tree = d3.layout.tree().nodeSize([RIGHTLEFT_MARGIN, NODE_HEIGHT]);
-            this.setNodeLabelVisiblity();
-            this.root = this.selectedOrgNode || this.lastSelectedNode;
-            this.diagonal = d3.svg.diagonal()
-                .projection(function (d) {
-                    return [d.x, d.y];
-                });
+            if (this.isHorizontalViewEnabled) {
+                this.tree = d3.layout.tree().nodeSize([RIGHTLEFT_MARGIN, NODE_WIDTH]);
+                this.setNodeLabelVisiblity();
+                this.root = this.selectedOrgNode || this.lastSelectedNode;
+                this.diagonal = d3.svg.diagonal()
+                    .projection(function (d) {
+                        return [d.y, d.x];
+                    });
+            } else {
+                this.tree = d3.layout.tree().nodeSize([RIGHTLEFT_MARGIN, NODE_HEIGHT]);
+                this.setNodeLabelVisiblity();
+                this.root = this.selectedOrgNode || this.lastSelectedNode;
+                this.diagonal = d3.svg.diagonal()
+                    .projection(function (d) {
+                        return [d.x, d.y];
+                    });
+            }
         } else {
             this.tree = d3.layout.tree().size([RADIAL_VALUE, RADIAL_VALUE])
                 .separation(function (a, b) {
@@ -573,10 +584,17 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             x = this.treeWidth / 2 - x;
             y = this.treeHeight / 2 - y;
         } else if (this.isReportMode()) {
-            x = source.x0 || 0;
-            y = source.y0 || 0;
-            x = this.treeWidth / 2 - x;
-            y = NODE_WIDTH;
+            if (this.isHorizontalViewEnabled) {
+                x = source.y0 || 0;
+                y = source.x0 || 0;
+                x = DEPTH;
+                y = this.treeHeight / 2;
+            } else {
+                x = source.x0 || 0;
+                y = source.y0 || 0;
+                x = this.treeWidth / 2 - x;
+                y = NODE_WIDTH;
+            }
         } else {
             x = source.x0 || 0;
             y = source.y0 || 0;
@@ -761,7 +779,11 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 if (this.isBuildMode()) {
                     return this.translate((source.y || 0), (source.x || 0));
                 } else if (this.isReportMode()) {
-                    return this.translate(source.x, source.y);
+                    if (this.isHorizontalViewEnabled) {
+                        return this.translate((source.y || 0), (source.x || 0));
+                    } else {
+                        return this.translate(source.x, source.y);
+                    }
                 }
                 return this.translate(source.x0, source.y0);
             })
@@ -818,7 +840,11 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             .attr(TRANSFORM, (d) => {
                 let transformString = this.translate((source.y0 || 0), (source.x0 || 0));
                 if (this.isReportMode()) {
-                    transformString = this.translate((source.x0 || 0), (source.y0 || 0));
+                    if (this.isHorizontalViewEnabled) {
+                        transformString = this.translate((source.y0 || 0), (source.x0 || 0));
+                    } else {
+                        transformString = this.translate((source.x0 || 0), (source.y0 || 0));
+                    }
                 } else if (this.isExploreMode()) {
                     transformString = "translate(" + this.transformNode((source.x0 || 0), (source.y0 || 0)) + ")";
                 }
@@ -918,12 +944,12 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                         name = " " + d.NodeLastName;
                     }
                     return name;
-                }).attr("text-anchor", "middle").attr("x", (d) => {
+                }).attr("text-anchor", "middle")
+                .attr("x", (d) => {
                     if (d.NodeFirstName && d.NodeFirstName.length > 15) {
                         return "0em";
                     }
-                })
-                .attr(TRANSFORM, "rotate(0)").attr("dy", (d) => {
+                }).attr(TRANSFORM, "rotate(0)").attr("dy", (d) => {
                     if (d.NodeFirstName && d.NodeFirstName.length > 15) {
                         return "1em";
                     }
@@ -969,7 +995,9 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             return d.Description;
         }).attr("text-anchor", (d) => {
             if (this.isBuildMode()) { return "start"; }
-            if (this.isReportMode()) { return "middle"; }
+            if (this.isReportMode()) {
+                return "middle";
+            }
             if (d.NodeID === this.root.NodeID) {
                 return "start";
             }
@@ -1030,7 +1058,11 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 if (this.isBuildMode()) {
                     return this.translate((d.y || 0), (d.x || 0));
                 } else if (this.isReportMode()) {
-                    return this.translate(d.x, d.y);
+                    if (this.isHorizontalViewEnabled) {
+                        return this.translate((d.y || 0), (d.x || 0));
+                    } else {
+                        return this.translate(d.x, d.y);
+                    }
                 } else {
                     if (d.ParentNodeID == null) {
                         return "rotate(0)";
