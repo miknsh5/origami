@@ -789,8 +789,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         nodeExit.selectAll(POLYGON)
             .style("visibility", "hidden");
 
-        console.log(nodeExit);
-
         node.each(function (d) {
             if (d.IsFakeRoot)
                 d3.select(this).remove();
@@ -802,6 +800,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             this.dragListener = d3.behavior.drag()
                 .on("dragstart", (evt) => {
                     if (this.isBuildMode() && !this.isAddOrEditModeEnabled) {
+                        this.endDrag(null);
                         if (!this.isAddOrEditModeEnabled && this.selectedOrgNode) {
                             this.onNodeDragStart(evt);
                         }
@@ -1310,7 +1309,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             d3.selectAll(".ghostCircle").attr(CLASS, "ghostCircle");
             // now restore the mouseover event or we won't be able to drag a 2nd time
             d3.select(domNode).select(".ghostCircle").attr("pointer-events", "");
-            if (domNode.tagName === "g" && domNode.className["baseVal"] === "node") {
+            if (domNode && domNode.tagName === "g" && domNode.className["baseVal"] === "node") {
                 this.updateTempConnector();
                 if (this.draggingNode !== null) {
                     this.selectedOrgNode = this.draggingNode;
@@ -1639,6 +1638,8 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     private deselectNode() {
         if (this.selectedOrgNode && !this.isAddOrEditModeEnabled) {
             if (this.selectedOrgNode.NodeID !== -1) {
+                this.endDrag(null);
+                this.selectedNode = this.draggingNode = null;
                 //  Save the last selection temp so that the graph maintains its position
                 this.lastSelectedNode = this.selectedOrgNode;
                 this.highlightSelectedNode(null);
