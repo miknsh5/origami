@@ -677,7 +677,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
             // Stash the old positions for transition.
             this.nodes.forEach((d) => {
-                if (this.selectedOrgNode && d.NodeID === this.selectedOrgNode.ParentNodeID) {
+                if (this.selectedOrgNode && d.NodeID === this.selectedOrgNode.ParentNodeID && this.isBuildMode()) {
                     d.x = this.selectedOrgNode.x;
                     d.x0 = this.selectedOrgNode.x;
                 }
