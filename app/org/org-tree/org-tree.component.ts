@@ -727,7 +727,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 x += TOPBOTTOM_MARGIN;
             }
             return this.translate(x, 0);
-        });
+        }).style("visibility", "visible");
 
         node.select(CIRCLE).attr(CLASS, (d) => {
             if (d.IsSelected) {
@@ -755,8 +755,9 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         this.updateNodes(node, source);
 
         // Remove the nodes…
-        let nodeExit = node.exit().transition().delay(100).
-            duration(DURATION)
+        let nodeExit = node.exit().transition()
+            .delay(100)
+            .duration(DURATION)
             .attr(TRANSFORM, (d) => {
                 if (this.isBuildMode()) {
                     return this.translate((source.y || 0), (source.x || 0));
@@ -770,14 +771,25 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         nodeExit.selectAll(CIRCLE)
             .attr("r", 1e-6);
 
-        nodeExit.select(G_LABEL)
+        nodeExit.selectAll(G_LABEL)
             .style("visibility", "hidden");
 
-        nodeExit.select("#abbr")
+        nodeExit.selectAll(G_LABEL + " text[data-id='name']")
             .style("visibility", "hidden");
 
-        nodeExit.select("ghostCircle")
+        nodeExit.selectAll(G_LABEL + " text[data-id='description']")
+            .style("visibility", "hidden");
+
+        nodeExit.selectAll("#abbr")
+            .style("visibility", "hidden");
+
+        nodeExit.selectAll(".ghostCircle")
             .attr("pointer-events", "");
+
+        nodeExit.selectAll(POLYGON)
+            .style("visibility", "hidden");
+
+        console.log(nodeExit);
 
         node.each(function (d) {
             if (d.IsFakeRoot)
@@ -1198,7 +1210,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     }
 
     onNodeDragStart(d) {
-        if (d === this.root || !this.isBuildMode()) {
+        if (d === this.root || !this.isBuildMode() || (this.selectedOrgNode && this.selectedOrgNode.ParentNodeID === d.NodeID)) {
             return;
         }
         this.dragStarted = true;
@@ -1207,7 +1219,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     }
 
     onNodeDrag(d) {
-        if (d === this.root || !this.isBuildMode()) {
+        if (d === this.root || !this.isBuildMode() || (this.selectedOrgNode && this.selectedOrgNode.ParentNodeID === d.NodeID)) {
             return;
         }
         if (this.dragStarted) {
@@ -1226,7 +1238,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     }
 
     onNodeDragEnd(d) {
-        if (d === this.root || !this.isBuildMode()) {
+        if (d === this.root || !this.isBuildMode() || (this.selectedOrgNode && this.selectedOrgNode.ParentNodeID === d.NodeID)) {
             return;
         }
         let element = typeof event !== "undefined" ? event.target["parentNode"] : (d3.event as MouseEvent)["sourceEvent"].target["parentNode"];
@@ -1667,7 +1679,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     private collapseExceptSelectedNode(d) {
         this.isAncestorOrRelated(d);
 
-        if ((d.Show === false && !d.IsAncestor) || (d.IsSibling && !d.IsSelected) || d.IsChild) {
+        if ((!d.Show && !d.IsAncestor) || (d.IsSibling && !d.IsSelected) || d.IsChild) {
             this.collapseTree(d);
         }
         if (d.children) {
