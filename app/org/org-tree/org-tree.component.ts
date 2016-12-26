@@ -745,7 +745,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 x += TOPBOTTOM_MARGIN;
             }
             return this.translate(x, 0);
-        });
+        }).style("visibility", "visible");
 
         node.select(CIRCLE).attr(CLASS, (d) => {
             if (d.IsSelected) {
@@ -773,8 +773,9 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         this.updateNodes(node, source);
 
         // Remove the nodes…
-        let nodeExit = node.exit().transition().delay(100).
-            duration(DURATION)
+        let nodeExit = node.exit().transition()
+            .delay(100)
+            .duration(DURATION)
             .attr(TRANSFORM, (d) => {
                 if (this.isBuildMode()) {
                     return this.translate((source.y || 0), (source.x || 0));
@@ -792,14 +793,23 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         nodeExit.selectAll(CIRCLE)
             .attr("r", 1e-6);
 
-        nodeExit.select(G_LABEL)
+        nodeExit.selectAll(G_LABEL)
             .style("visibility", "hidden");
 
-        nodeExit.select("#abbr")
+        nodeExit.selectAll(G_LABEL + " text[data-id='name']")
             .style("visibility", "hidden");
 
-        nodeExit.select("ghostCircle")
+        nodeExit.selectAll(G_LABEL + " text[data-id='description']")
+            .style("visibility", "hidden");
+
+        nodeExit.selectAll("#abbr")
+            .style("visibility", "hidden");
+
+        nodeExit.selectAll(".ghostCircle")
             .attr("pointer-events", "");
+
+        nodeExit.selectAll(POLYGON)
+            .style("visibility", "hidden");
 
         node.each(function (d) {
             if (d.IsFakeRoot)
@@ -812,6 +822,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             this.dragListener = d3.behavior.drag()
                 .on("dragstart", (evt) => {
                     if (this.isBuildMode() && !this.isAddOrEditModeEnabled) {
+                        this.endDrag(null);
                         if (!this.isAddOrEditModeEnabled && this.selectedOrgNode) {
                             this.onNodeDragStart(evt);
                         }
@@ -1230,7 +1241,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     }
 
     onNodeDragStart(d) {
-        if (d === this.root || !this.isBuildMode()) {
+        if (d === this.root || !this.isBuildMode() || (this.selectedOrgNode && this.selectedOrgNode.ParentNodeID === d.NodeID)) {
             return;
         }
         this.dragStarted = true;
@@ -1239,7 +1250,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     }
 
     onNodeDrag(d) {
-        if (d === this.root || !this.isBuildMode()) {
+        if (d === this.root || !this.isBuildMode() || (this.selectedOrgNode && this.selectedOrgNode.ParentNodeID === d.NodeID)) {
             return;
         }
         if (this.dragStarted) {
@@ -1258,7 +1269,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     }
 
     onNodeDragEnd(d) {
-        if (d === this.root || !this.isBuildMode()) {
+        if (d === this.root || !this.isBuildMode() || (this.selectedOrgNode && this.selectedOrgNode.ParentNodeID === d.NodeID)) {
             return;
         }
         let element = typeof event !== "undefined" ? event.target["parentNode"] : (d3.event as MouseEvent)["sourceEvent"].target["parentNode"];
@@ -1330,7 +1341,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             d3.selectAll(".ghostCircle").attr(CLASS, "ghostCircle");
             // now restore the mouseover event or we won't be able to drag a 2nd time
             d3.select(domNode).select(".ghostCircle").attr("pointer-events", "");
-            if (domNode.tagName === "g" && domNode.className["baseVal"] === "node") {
+            if (domNode && domNode.tagName === "g" && domNode.className["baseVal"] === "node") {
                 this.updateTempConnector();
                 if (this.draggingNode !== null) {
                     this.selectedOrgNode = this.draggingNode;
@@ -1659,6 +1670,8 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     private deselectNode() {
         if (this.selectedOrgNode && !this.isAddOrEditModeEnabled) {
             if (this.selectedOrgNode.NodeID !== -1) {
+                this.endDrag(null);
+                this.selectedNode = this.draggingNode = null;
                 //  Save the last selection temp so that the graph maintains its position
                 this.lastSelectedNode = this.selectedOrgNode;
                 this.highlightSelectedNode(null);
@@ -1699,7 +1712,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     private collapseExceptSelectedNode(d) {
         this.isAncestorOrRelated(d);
 
-        if ((d.Show === false && !d.IsAncestor) || (d.IsSibling && !d.IsSelected) || d.IsChild) {
+        if ((!d.Show && !d.IsAncestor) || (d.IsSibling && !d.IsSelected) || d.IsChild) {
             this.collapseTree(d);
         }
         if (d.children) {
