@@ -70,6 +70,11 @@
     display: block;
 }
 
+.smart_bar_wrap .search ul li a span.title {
+    font-weight: normal;
+    font-size: 80%;
+}
+
 .smart_bar_wrap .search ul li.selected a {
     background: #0097ff;
     background: var(--azure);
