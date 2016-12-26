@@ -20,6 +20,7 @@ export class TreeToPNGComponent {
     @Input() selectedOrgNode: any;
     @Input() width: any;
     @Input() height: any;
+    @Input() isHorizontalTree: any;
     private leftNodeInitials: number;
     private rightNodeInitials: number;
     private treeLength: number;
@@ -40,12 +41,17 @@ export class TreeToPNGComponent {
 
             // gets previous attributes of the element's for reassigning after export.
             this.getPrevAttributes();
-
-            let width = this.leftNodeInitials + this.rightNodeInitials + MIN_HEIGHT;
             this.treeLength += DEFAULT_HEIGHT_VALUE;
 
-            // sets default attributes of exporting.
-            this.setDefaultAttributes(width, this.treeLength);
+            if (this.isHorizontalTree) {
+                let height = this.leftNodeInitials + this.rightNodeInitials + MIN_HEIGHT;
+                // sets default attributes of exporting.            
+                this.setDefaultAttributes(this.treeLength, height);
+            } else {
+                let width = this.leftNodeInitials + this.rightNodeInitials + MIN_HEIGHT;
+                // sets default attributes of exporting.            
+                this.setDefaultAttributes(width, this.treeLength);
+            }
 
             // exports svg to png
             saveSvgAsPng.saveSvgAsPng(this.svg, this.orgName + DEFAULT_EXT);
@@ -75,7 +81,12 @@ export class TreeToPNGComponent {
         this.svg.setAttribute("width", width.toString());
         this.svg.setAttribute("height", height.toString());
         this.viewPort.setAttribute("transform", DEFAULT_MATTRIX);
-        this.nodes.setAttribute("transform", "translate(" + (this.leftNodeInitials + DEFAULT_HEIGHT_VALUE) + ", 120)");
+        if (this.isHorizontalTree) {
+            this.nodes.setAttribute("transform", "translate(120" + (this.leftNodeInitials + DEFAULT_HEIGHT_VALUE) + ")");
+        } else {
+            this.nodes.setAttribute("transform", "translate(" + (this.leftNodeInitials + DEFAULT_HEIGHT_VALUE) + ", 120)");
+        }
+        console.log(height, this.leftNodeInitials + DEFAULT_HEIGHT_VALUE);
     }
 
     private setPrevAttributes() {

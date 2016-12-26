@@ -49,6 +49,7 @@ export class SideMenuComponent implements OnInit, OnChanges {
     private feedback: UserFeedBack;
     private isEditOrDeleteDisabled: boolean;
     private moveActive: any;
+    private isHorizontalTree: boolean;
 
     @ViewChild("firstName") firstName;
     @ViewChild("lastName") lastName;
@@ -85,6 +86,7 @@ export class SideMenuComponent implements OnInit, OnChanges {
         this.editOrSave = EDIT_ICON;
         this.deleteOrClose = DELETE_ICON;
         this.isEditOrDeleteDisabled = false;
+        this.isHorizontalTree = false;
     }
 
     ngOnInit() {
@@ -152,6 +154,7 @@ export class SideMenuComponent implements OnInit, OnChanges {
         if (this.currentMode === ChartMode.report) {
             this.enableTabControl();
             this.isHorizontalViewEnabled.emit(false);
+            this.isHorizontalTree = false;
         }
     }
 
@@ -270,10 +273,12 @@ export class SideMenuComponent implements OnInit, OnChanges {
         if (event.target.id === "verticalView") {
             if (event.target.checked === true) {
                 this.isHorizontalViewEnabled.emit(false);
+                this.isHorizontalTree = false;
             }
         } else if (event.target.id === "horizontalView") {
             if (event.target.checked === true) {
                 this.isHorizontalViewEnabled.emit(true);
+                this.isHorizontalTree = true;
             }
         }
     }
