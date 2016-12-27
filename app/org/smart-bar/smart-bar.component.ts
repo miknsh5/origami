@@ -697,7 +697,13 @@ export class SamrtBarComponent implements OnChanges {
                     this.titleFilterList = new Array();
                     this.searchHeader = `BY ${HeaderTitle}`;
                 }
-                this.nodeSearched.emit(node);
+                if (this.selectedOrgNode) {
+                    if (this.selectedOrgNode.NodeID !== node.NodeID) {
+                        this.nodeSearched.emit(node);
+                    }
+                } else {
+                    this.nodeSearched.emit(node);
+                }
             }
         }
     }
