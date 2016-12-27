@@ -1263,7 +1263,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 this.domNode = typeof event !== "undefined" ? event.target["parentNode"] : (d3.event as MouseEvent)["sourceEvent"].target["parentNode"];
             }
         }
-        if (this.domNode.tagName === "g" && this.domNode.className["baseVal"] !== "label") {
+        if (this.domNode.tagName === "g" && this.domNode.className["baseVal"] === "node activeDrag") {
             d.x0 += (d3.event as d3.DragEvent).dy;
             d.y0 += (d3.event as d3.DragEvent).dx;
             d3.select(this.domNode).attr(TRANSFORM, this.translate(d.y0, d.x0));
