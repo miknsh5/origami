@@ -335,7 +335,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                             this.addNewRootNode(this.root);
                         }
                     } else if (this.isExploreMode()) {
-
                         if (node.parent != null) {
                             let parentNode = node.parent;
                             this.highlightSelectedNode(parentNode);
@@ -1258,17 +1257,17 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             if (this.domNode.tagName === "g" && this.domNode.className["baseVal"] === "node") {
                 this.selectedNode = d;
                 this.initiateDrag(d, this.domNode);
-            } else {
-                return;
             }
         } else {
             if (!this.domNode) {
                 this.domNode = typeof event !== "undefined" ? event.target["parentNode"] : (d3.event as MouseEvent)["sourceEvent"].target["parentNode"];
             }
         }
-        d.x0 += (d3.event as d3.DragEvent).dy;
-        d.y0 += (d3.event as d3.DragEvent).dx;
-        d3.select(this.domNode).attr(TRANSFORM, this.translate(d.y0, d.x0));
+        if (this.domNode.tagName === "g" && this.domNode.className["baseVal"] !== "label") {
+            d.x0 += (d3.event as d3.DragEvent).dy;
+            d.y0 += (d3.event as d3.DragEvent).dx;
+            d3.select(this.domNode).attr(TRANSFORM, this.translate(d.y0, d.x0));
+        }
         this.updateTempConnector();
     }
 
@@ -1294,34 +1293,36 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
     initiateDrag(d, domNode) {
         if (this.selectedNode) {
-            this.draggingNode = d;
-            d3.select(domNode).select(".ghostCircle").attr("pointer-events", "");
-            d3.selectAll(".ghostCircle").attr(CLASS, "ghostCircle show");
-            d3.select(domNode).attr(CLASS, "node activeDrag");
+            if (domNode.tagName === "g") {
+                this.draggingNode = d;
+                d3.select(domNode).select(".ghostCircle").attr("pointer-events", "");
+                d3.selectAll(".ghostCircle").attr(CLASS, "ghostCircle show");
+                d3.select(domNode).attr(CLASS, "node activeDrag");
 
-            this.svg.selectAll("g.node").sort((a, b) => { // select the parent and sort the path's
-                if (a.NodeID !== this.draggingNode.NodeID) return 1; // a is not the hovered element, send "a" to the back
-                else return -1; // a is the hovered element, bring "a" to the front
-            });
+                this.svg.selectAll("g.node").sort((a, b) => { // select the parent and sort the path's
+                    if (a.NodeID !== this.draggingNode.NodeID) return 1; // a is not the hovered element, send "a" to the back
+                    else return -1; // a is the hovered element, bring "a" to the front
+                });
 
-            // if nodes has children, remove the links and nodes
-            if (this.nodes.length > 1) {
-                // remove link paths
-                let links = this.tree.links(this.nodes);
-                let nodePaths = this.svg.selectAll("path.link")
-                    .data(links, function (d) {
-                        return d.target.NodeID;
-                    }).remove();
-                // remove child nodes
-                let nodesExit = this.svg.selectAll("g.node")
-                    .data(this.nodes, function (d) {
-                        return d.NodeID;
-                    }).filter((d, i) => {
-                        if (d.NodeID === this.draggingNode.NodeID) {
-                            return false;
-                        }
-                        return true;
-                    }).remove();
+                // if nodes has children, remove the links and nodes
+                if (this.nodes.length > 1) {
+                    // remove link paths
+                    let links = this.tree.links(this.nodes);
+                    let nodePaths = this.svg.selectAll("path.link")
+                        .data(links, function (d) {
+                            return d.target.NodeID;
+                        }).remove();
+                    // remove child nodes
+                    let nodesExit = this.svg.selectAll("g.node")
+                        .data(this.nodes, function (d) {
+                            return d.NodeID;
+                        }).filter((d, i) => {
+                            if (d.NodeID === this.draggingNode.NodeID) {
+                                return false;
+                            }
+                            return true;
+                        }).remove();
+                }
 
                 // remove parent link
                 let parentLink = this.tree.links(this.tree.nodes(this.draggingNode.parent));
@@ -1348,9 +1349,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 if (this.draggingNode !== null) {
                     this.selectedOrgNode = this.draggingNode;
                     this.showChildren(this.selectedOrgNode);
-                    this.highlightSelectedNode(this.selectedOrgNode, true);
-                    this.render(this.selectedOrgNode);
-                    this.centerNode(this.selectedOrgNode);
+                    this.highlightAndCenterNode(this.selectedOrgNode, true);
                     this.draggingNode = null;
                 }
             } else {
@@ -1595,8 +1594,8 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         return newNode;
     }
 
-    private highlightAndCenterNode(d) {
-        this.highlightSelectedNode(d);
+    private highlightAndCenterNode(d, raiseEvent: boolean = false) {
+        this.highlightSelectedNode(d, raiseEvent);
         this.render(d);
         this.centerNode(d);
         this.hideTopArrow(d);
@@ -1630,7 +1629,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             }
             this.expandCollapse(d);
             this.highlightAndCenterNode(d);
-            this.endDrag(null);
         } else if (this.isExploreMode()) {
             this.highlightSelectedNode(d);
             this.render(d);
