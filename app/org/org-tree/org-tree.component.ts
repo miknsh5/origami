@@ -338,6 +338,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                     if (this.isBuildMode() && !this.isFeedbackInEditMode) {
                         if (node.parent != null) {
                             let parentNode = node.parent;
+                            this.lastSelectedNode = this.selectedOrgNode;
                             this.highlightAndCenterNode(parentNode, true);
                         }
                         else {
@@ -356,6 +357,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                     if (this.isBuildMode() && !this.isFeedbackInEditMode) {
                         if (this.selectedOrgNode.children && this.selectedOrgNode.children.length > 0) {
                             let node = this.selectedOrgNode.children[0];
+                            this.lastSelectedNode = this.selectedOrgNode;
                             this.highlightAndCenterNode(node, true);
                         } else {
                             this.addNewNode(this.selectedOrgNode);
@@ -376,6 +378,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                             let siblings = node.parent.children;
                             let index = siblings.indexOf(node);
                             if (index > 0) {
+                                this.lastSelectedNode = this.selectedOrgNode;
                                 let elderSibling = siblings[index - 1];
                                 this.highlightAndCenterNode(elderSibling, true);
                             }
@@ -387,7 +390,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                             let elderSibling;
                             if (index > 0) {
                                 elderSibling = siblings[index - 1];
-
                             } else {
                                 elderSibling = siblings[siblings.length - 1];
                             }
@@ -405,6 +407,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                             let index = siblings.indexOf(node);
                             if (index < siblings.length - 1) {
                                 let youngerSibling = siblings[index + 1];
+                                this.lastSelectedNode = this.selectedOrgNode;
                                 this.highlightAndCenterNode(youngerSibling, true);
                             } else {
                                 this.addNewNode(node.parent);
