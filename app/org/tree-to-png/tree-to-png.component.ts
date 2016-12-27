@@ -82,11 +82,10 @@ export class TreeToPNGComponent {
         this.svg.setAttribute("height", height.toString());
         this.viewPort.setAttribute("transform", DEFAULT_MATTRIX);
         if (this.isHorizontalTree) {
-            this.nodes.setAttribute("transform", "translate(120" + (this.leftNodeInitials + DEFAULT_HEIGHT_VALUE) + ")");
+            this.nodes.setAttribute("transform", "translate(120," + (this.leftNodeInitials + DEFAULT_HEIGHT_VALUE) + ")");
         } else {
-            this.nodes.setAttribute("transform", "translate(" + (this.leftNodeInitials + DEFAULT_HEIGHT_VALUE) + ", 120)");
+            this.nodes.setAttribute("transform", "translate(" + (this.leftNodeInitials + DEFAULT_HEIGHT_VALUE) + ",120)");
         }
-        console.log(height, this.leftNodeInitials + DEFAULT_HEIGHT_VALUE);
     }
 
     private setPrevAttributes() {
