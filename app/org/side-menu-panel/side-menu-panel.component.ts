@@ -151,7 +151,7 @@ export class SideMenuComponent implements OnInit, OnChanges {
             }
         }
 
-        if (this.currentMode === ChartMode.report) {
+        if (changes["currentMode"] && this.currentMode === ChartMode.report) {
             this.enableTabControl();
             this.isHorizontalViewEnabled.emit(false);
             this.isHorizontalTree = false;
