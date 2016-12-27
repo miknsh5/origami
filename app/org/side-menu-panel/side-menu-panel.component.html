@@ -57,6 +57,14 @@
                     <input type="checkbox" class="filled-in" id="JobTitle" checked="checked" (change)="setLabelVisiblity($event)" />
                     <label for="JobTitle">Job Title</label>
                 </div>
+                <hr/>
+                <label class="menuTitle">View as </label>
+                <div class="radioboxList">
+                    <input class="with-gap" name="view" type="radio" id="verticalView" (change)="changeViewVericalOrHorizonatl($event)" />
+                    <label for="verticalView">Vertical</label>
+                    <input class="with-gap" name="view" type="radio" id="horizontalView" (change)="changeViewVericalOrHorizonatl($event)" />
+                    <label for="horizontalView">Horizontal</label>
+                </div>
                 <div class="tabControl">
                     <ul class="tabs">
                         <li class="tab" href="#publishData" (click)="OnPublish($data)"><a>Publish</a></li>
@@ -67,7 +75,7 @@
                     </div>
                     <div id="sidePanelExportData" class="col s12">
                         <sg-csv [orgChartData]="orgChart" [orgName]="companyName"></sg-csv>
-                        <sg-png [width]="svgWidth" [height]="svgHeight" [selectedOrgNode]="selectedNode" [orgName]="companyName"></sg-png>
+                        <sg-png [width]="svgWidth" [height]="svgHeight" [selectedOrgNode]="selectedNode" [orgName]="companyName" [isHorizontalTree]="isHorizontalTree"></sg-png>
                     </div>
                 </div>
             </div>

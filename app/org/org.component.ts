@@ -47,6 +47,7 @@ export class OrgComponent implements OnDestroy {
     @Output() isNodeMoveEnabledOrDisabled: boolean;
     @Output() moveNodeDisabled: boolean;
     @Output() isFeedbackInEditMode: boolean;
+    @Output() isHorizontalViewEnabled: boolean;
 
     constructor(private orgService: OrgService, public domHelper: DomElementHelper) {
         this.currentChartMode = ChartMode.build;
@@ -114,6 +115,10 @@ export class OrgComponent implements OnDestroy {
         } else {
             this.disablePan();
         }
+    }
+
+    onHorizontalViewChanged(value: boolean) {
+        this.isHorizontalViewEnabled = value;
     }
 
     feedbackPanelInEditMode(value: boolean) {
