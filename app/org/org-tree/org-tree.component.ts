@@ -338,7 +338,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                     if (this.isBuildMode() && !this.isFeedbackInEditMode) {
                         if (node.parent != null) {
                             let parentNode = node.parent;
-                            this.highlightAndCenterNode(parentNode);
+                            this.highlightAndCenterNode(parentNode, true);
                         }
                         else {
                             this.addNewRootNode(this.root);
@@ -356,7 +356,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                     if (this.isBuildMode() && !this.isFeedbackInEditMode) {
                         if (this.selectedOrgNode.children && this.selectedOrgNode.children.length > 0) {
                             let node = this.selectedOrgNode.children[0];
-                            this.highlightAndCenterNode(node);
+                            this.highlightAndCenterNode(node, true);
                         } else {
                             this.addNewNode(this.selectedOrgNode);
                         }
@@ -377,7 +377,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                             let index = siblings.indexOf(node);
                             if (index > 0) {
                                 let elderSibling = siblings[index - 1];
-                                this.highlightAndCenterNode(elderSibling);
+                                this.highlightAndCenterNode(elderSibling, true);
                             }
                         }
                     } else if (this.isExploreMode()) {
@@ -405,7 +405,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                             let index = siblings.indexOf(node);
                             if (index < siblings.length - 1) {
                                 let youngerSibling = siblings[index + 1];
-                                this.highlightAndCenterNode(youngerSibling);
+                                this.highlightAndCenterNode(youngerSibling, true);
                             } else {
                                 this.addNewNode(node.parent);
                             }
