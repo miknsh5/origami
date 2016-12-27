@@ -17,7 +17,7 @@
     <!-- Organization Menu -->
     <!--<ul id="companyDropdown" class="dropdown-content collection">
         <li (click)="onAddOrSettingsClick('company')">
-            <a><i class="Small material-icons left">mode_edit</i><span class="lbl">Settings</span>
+            <a><i class="small material-icons left">mode_edit</i><span class="lbl">Settings</span>
             </a>
         </li>
         <li class="divider"></li>
@@ -54,7 +54,7 @@
     <!--<ul id="groupDropdown" class="dropdown-content">
         <li (click)="onAddOrSettingsClick('group')">
             <a>
-                <i class="Small material-icons left">mode_edit</i><span class="lbl ">Settings</span>
+                <i class="small material-icons left">mode_edit</i><span class="lbl ">Settings</span>
             </a>
         </li>
         <li class="divider"></li>
@@ -95,13 +95,13 @@
         </li>
         <li *ngFor="let group of orgCompanyGroups" (click)="onGroupSelection(group)">
             <a *ngIf="group && group.IsDefaultGroup && group.OrgGroupID === selectedGroup.OrgGroupID" class="active">
-                <i class="Small material-icons left" (click)="onAddOrSettingsClick('group',group)">mode_edit</i>
+                <i class="small material-icons left" (click)="onAddOrSettingsClick('group',group)">mode_edit</i>
                 <p class="editgroupname" (click)="onGroupSelection(group)"> <span>{{group.GroupName}} </span>
                     <span class="lblCount">{{group.OrgNodeCounts}}</span></p>
             </a>
 
             <a *ngIf="group && !group.IsDefaultGroup && group.OrgGroupID !== selectedGroup.OrgGroupID">
-                <i class="Small material-icons left" (click)="onAddOrSettingsClick('group',group)">mode_edit</i>
+                <i class="small material-icons left" (click)="onAddOrSettingsClick('group',group)">mode_edit</i>
                 <p class="editgroupname" (click)="onGroupSelection(group)"> <span>{{group.GroupName}} </span>
                     <span class="lblCount">{{group.OrgNodeCounts}}</span></p>
             </a>
@@ -138,7 +138,7 @@
     <div class="modal-content">
         <div class="modaltitle">
             <div class="title">
-                <i class="Small material-icons left">mode_edit</i>
+                <i class="small material-icons left">mode_edit</i>
                 <label>{{groupSettingTitle}}</label>
             </div>
             <div class="close" (click)="dismissPopup('group')"><i class="material-icons">clear</i></div>
@@ -226,7 +226,7 @@
         <div class="modal-content">
             <div class="modaltitle">
                 <div class="title">
-                    <i class="Small material-icons left">mode_edit</i>
+                    <i class="small material-icons left">mode_edit</i>
                     <label>EDIT</label>
                 </div>
                 <div class="close" (click)="dismissPopup('company')"><i class="material-icons">clear</i></div>
@@ -278,7 +278,7 @@
         <div class="modal-content">
             <div class="modaltitle">
                 <div class="title">
-                    <i class="Small material-icons left">mode_edit</i>
+                    <i class="small material-icons left">mode_edit</i>
                     <label>Add New Company</label>
                 </div>
                 <div class="close" (click)="dismissPopup('newCompany')"><i class="material-icons">clear</i></div>
