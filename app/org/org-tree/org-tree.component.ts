@@ -1340,7 +1340,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     endDrag(domNode) {
         if (this.selectedOrgNode) {
             this.domNode = this.selectedNode = null;
-            d3.selectAll("g .node").attr(CLASS, "node");
+            d3.selectAll("g.node").attr(CLASS, "node");
             d3.selectAll(".ghostCircle").attr(CLASS, "ghostCircle");
             // now restore the mouseover event or we won't be able to drag a 2nd time
             d3.select(domNode).select(".ghostCircle").attr("pointer-events", "");
@@ -1353,6 +1353,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                     this.draggingNode = null;
                 }
             } else {
+                this.draggingNode = null;
                 this.showChildren(this.selectedOrgNode);
                 this.highlightAndCenterNode(this.selectedOrgNode);
             }
