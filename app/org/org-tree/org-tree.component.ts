@@ -180,11 +180,11 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 if (changes["searchNode"].currentValue) {
                     this.selectedOrgNode = this.searchNode;
                     this.highlightAndCenterNode(this.selectedOrgNode);
-                    this.lastSelectedNode = this.selectedOrgNode;
                 } else {
                     return;
                 }
             }
+
             if (changes["orgGroupID"]) {
                 if (this.root) {
                     this.selectedOrgNode = this.root;
@@ -277,6 +277,15 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                         this.hideAllArrows();
                     } else {
                         this.hideTopArrow(this.selectedOrgNode);
+                    }
+
+                    if (this.searchNode) {
+                        if (!this.lastSelectedNode || this.lastSelectedNode && this.lastSelectedNode.NodeID !== this.selectedOrgNode.NodeID) {
+                            setTimeout(() => { // implemented timeout for preventing the node gaps on searched
+                                this.nodeClicked(this.selectedOrgNode);
+                                this.lastSelectedNode = this.selectedOrgNode;
+                            }, 100);
+                        }
                     }
                 }
             } else {
@@ -1623,13 +1632,13 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     }
 
     private nodeClicked(d) {
-        if ((d3.event as Event).defaultPrevented) return; // click suppressed
+        if ((d3.event as Event) && (d3.event as Event).defaultPrevented) return; // click suppressed
         if (this.isBuildMode()) {
             if (this.selectedOrgNode && this.selectedOrgNode.NodeID === -1 || this.isAddOrEditModeEnabled) {
                 return;
             }
             this.expandCollapse(d);
-            this.highlightAndCenterNode(d);
+            this.highlightAndCenterNode(d, true);
         } else if (this.isExploreMode()) {
             this.highlightSelectedNode(d);
             this.render(d);
