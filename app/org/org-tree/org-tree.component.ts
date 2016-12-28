@@ -61,29 +61,30 @@ const SIBLING_FONTSIZE = 17.3;
 })
 
 export class OrgTreeComponent implements OnInit, OnChanges {
-    tree: any;
-    diagonal: any;
-    descriptionWidths: any;
-    svg: any;
-    graph: any;
-    root: any;
-    nodes: any;
-    links: any;
-    selectedOrgNode: any;
-    labelWidths: any;
-    treeWidth: number;
-    treeHeight: number;
-    previousRoot: any;
-    lastSelectedNode: any;
-    arrows: any;
-    levelDepth: any;
+    private tree: any;
+    private diagonal: any;
+    private descriptionWidths: any;
+    private svg: any;
+    private graph: any;
+    private root: any;
+    private nodes: any;
+    private links: any;
+    private selectedOrgNode: any;
+    private labelWidths: any;
+    private treeWidth: number;
+    private treeHeight: number;
+    private previousRoot: any;
+    private lastSelectedNode: any;
+    private arrows: any;
+    private levelDepth: any;
 
     // variables for drag/drop
-    selectedNode = null;
-    draggingNode = null;
-    dragStarted: any;
-    dragListener: any;
-    domNode: any;
+    private selectedNode = null;
+    private draggingNode = null;
+    private dragStarted: any;
+    private dragListener: any;
+    private domNode: any;
+    private isNodeMoved: boolean;
 
     @Input() currentMode: ChartMode;
     @Input() isAddOrEditModeEnabled: boolean;
@@ -120,6 +121,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         this.levelDepth = [1];
         this.treeWidth = this.width;
         this.treeHeight = this.height;
+        this.isNodeMoved = false;
         this.initializeTreeAsPerMode();
         this.svg = this.graph.append("svg")
             .attr("preserveAspectRatio", "xMidYMid meet")
@@ -249,6 +251,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             }
 
             if (this.selectedOrgNode != null) {
+                this.isNodeMoved = false;
                 this.selectedOrgNode.IsSelected = false;
                 if (this.selectedOrgNode.NodeID === -1) {
                     if (this.root && this.root.NodeID !== -1) {
@@ -301,7 +304,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     @HostListener("window:click", ["$event"])
     bodyClicked(event: any) {
         if (event.defaultPrevented) return; // click suppressed
-        if (this.isBuildMode() && !this.isAddOrEditModeEnabled) {
+        if (this.isBuildMode() && !this.isAddOrEditModeEnabled && !this.isNodeMoved) {
             if (event.target.nodeName === "svg") {
                 if (!this.isAddOrEditModeEnabled && this.selectedOrgNode) {
                     this.isNodeMoveDisabled.emit(false);
@@ -326,14 +329,14 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
                 // esc
                 if ((event as KeyboardEvent).keyCode === 27) {
-                    if (!this.isAddOrEditModeEnabled) {
+                    if (!this.isAddOrEditModeEnabled && !this.isNodeMoved) {
                         this.deselectNode();
                         this.selectNode.emit(this.selectedOrgNode);
                     }
                 }
 
                 // left arrow
-                if ((event as KeyboardEvent).keyCode === 37) {
+                if ((event as KeyboardEvent).keyCode === 37 && !this.draggingNode) {
                     let node = this.selectedOrgNode as d3.layout.tree.Node;
                     if (this.isBuildMode() && !this.isFeedbackInEditMode) {
                         if (node.parent != null) {
@@ -353,7 +356,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                     }
                 }
                 // right arrow
-                else if ((event as KeyboardEvent).keyCode === 39) {
+                else if ((event as KeyboardEvent).keyCode === 39 && !this.draggingNode) {
                     if (this.isBuildMode() && !this.isFeedbackInEditMode) {
                         if (this.selectedOrgNode.children && this.selectedOrgNode.children.length > 0) {
                             let node = this.selectedOrgNode.children[0];
@@ -371,7 +374,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                     }
                 }
                 // top arrow
-                else if ((event as KeyboardEvent).keyCode === 38) {
+                else if ((event as KeyboardEvent).keyCode === 38 && !this.draggingNode) {
                     let node = this.selectedOrgNode as d3.layout.tree.Node;
                     if (this.isBuildMode() && !this.isFeedbackInEditMode) {
                         if (node.parent != null) {
@@ -399,7 +402,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                     }
                 }
                 // bottom arrow
-                else if ((event as KeyboardEvent).keyCode === 40) {
+                else if ((event as KeyboardEvent).keyCode === 40 && !this.draggingNode) {
                     let node = this.selectedOrgNode as d3.layout.tree.Node;
                     if (this.isBuildMode() && !this.isFeedbackInEditMode) {
                         if (node.parent != null) {
@@ -1295,6 +1298,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 draggedNode.NodeID = this.draggingNode.NodeID;
                 if (draggedNode.NodeID !== this.selectedNode.NodeID) {
                     this.moveNode.emit(draggedNode);
+                    this.isNodeMoved = true;
                 }
             }
             this.endDrag(element);
@@ -1640,6 +1644,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             if (this.selectedOrgNode && this.selectedOrgNode.NodeID === -1 || this.isAddOrEditModeEnabled) {
                 return;
             }
+            this.isNodeMoved = false;
             this.expandCollapse(d);
             this.highlightAndCenterNode(d, true);
         } else if (this.isExploreMode()) {
