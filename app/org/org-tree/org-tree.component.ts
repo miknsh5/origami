@@ -1299,8 +1299,8 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 draggedNode.ParentNodeID = this.selectedNode.NodeID;
                 draggedNode.NodeID = this.draggingNode.NodeID;
                 if (draggedNode.NodeID !== this.selectedNode.NodeID) {
-                    this.moveNode.emit(draggedNode);
                     this.isNodeMoved = true;
+                    this.moveNode.emit(draggedNode);
                 }
             }
             this.endDrag(element);
@@ -1650,9 +1650,9 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             if (this.isNodeMoved || this.selectedOrgNode && this.selectedOrgNode.NodeID === -1 || this.isAddOrEditModeEnabled) {
                 return;
             }
-            this.isNodeMoved = false;
             this.expandCollapse(d);
             this.highlightAndCenterNode(d, true);
+            this.isNodeMoved = false;
         } else if (this.isExploreMode()) {
             this.highlightSelectedNode(d);
             this.render(d);
