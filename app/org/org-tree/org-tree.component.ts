@@ -855,6 +855,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                         if (!this.isAddOrEditModeEnabled && this.selectedOrgNode && !this.isNodeMoved) {
                             this.onNodeDragEnd(evt);
                         }
+                        this.resetDragNode(null);
                     }
                 });
         }
@@ -1646,7 +1647,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     private nodeClicked(d) {
         if ((d3.event as Event) && (d3.event as Event).defaultPrevented) return; // click suppressed
         if (this.isBuildMode()) {
-            if (this.selectedOrgNode && this.selectedOrgNode.NodeID === -1 || this.isAddOrEditModeEnabled) {
+            if (this.isNodeMoved || this.selectedOrgNode && this.selectedOrgNode.NodeID === -1 || this.isAddOrEditModeEnabled) {
                 return;
             }
             this.isNodeMoved = false;
