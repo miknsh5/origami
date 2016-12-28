@@ -838,21 +838,21 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 .on("dragstart", (evt) => {
                     if (this.isBuildMode() && !this.isAddOrEditModeEnabled) {
                         this.resetDragNode(null);
-                        if (!this.isAddOrEditModeEnabled && this.selectedOrgNode) {
+                        if (!this.isAddOrEditModeEnabled && this.selectedOrgNode && !this.isNodeMoved) {
                             this.onNodeDragStart(evt);
                         }
                     }
                 })
                 .on("drag", (evt) => {
                     if (this.isBuildMode() && !this.isAddOrEditModeEnabled) {
-                        if (!this.isAddOrEditModeEnabled && this.selectedOrgNode) {
+                        if (!this.isAddOrEditModeEnabled && this.selectedOrgNode && !this.isNodeMoved) {
                             this.onNodeDrag(evt);
                         }
                     }
                 })
                 .on("dragend", (evt) => {
                     if (this.isBuildMode() && !this.isAddOrEditModeEnabled) {
-                        if (!this.isAddOrEditModeEnabled && this.selectedOrgNode) {
+                        if (!this.isAddOrEditModeEnabled && this.selectedOrgNode && !this.isNodeMoved) {
                             this.onNodeDragEnd(evt);
                         }
                     }
