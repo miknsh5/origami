@@ -251,7 +251,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             }
 
             if (this.selectedOrgNode != null) {
-                this.isNodeMoved = false;
                 this.selectedOrgNode.IsSelected = false;
                 if (this.selectedOrgNode.NodeID === -1) {
                     if (this.root && this.root.NodeID !== -1) {
@@ -275,6 +274,8 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                         this.render(this.root);
                         this.showUpdatePeerReporteeNode(this.selectedOrgNode);
                         this.centerNode(this.selectedOrgNode);
+                        this.resetDragNode(null);
+                        this.isNodeMoved = false;
                     }
                     if (this.isAddOrEditModeEnabled) {
                         this.hideAllArrows();
@@ -836,7 +837,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             this.dragListener = d3.behavior.drag()
                 .on("dragstart", (evt) => {
                     if (this.isBuildMode() && !this.isAddOrEditModeEnabled) {
-                        this.endDrag(null);
+                        this.resetDragNode(null);
                         if (!this.isAddOrEditModeEnabled && this.selectedOrgNode) {
                             this.onNodeDragStart(evt);
                         }
@@ -1355,11 +1356,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
     endDrag(domNode) {
         if (this.selectedOrgNode) {
-            this.domNode = this.selectedNode = null;
-            d3.selectAll("g.node").attr(CLASS, "node");
-            d3.selectAll(".ghostCircle").attr(CLASS, "ghostCircle");
-            // now restore the mouseover event or we won't be able to drag a 2nd time
-            d3.select(domNode).select(".ghostCircle").attr("pointer-events", "");
+            this.resetDragNode(domNode);
             if (domNode && domNode.tagName === "g" && domNode.className["baseVal"] === "node") {
                 this.updateTempConnector();
                 if (this.draggingNode !== null) {
@@ -1430,6 +1427,14 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         link.attr("d", d3.svg.diagonal());
 
         link.exit().remove();
+    }
+
+    private resetDragNode(domNode) {
+        this.domNode = this.selectedNode = null;
+        d3.selectAll("g.node").attr(CLASS, "node");
+        d3.selectAll(".ghostCircle").attr(CLASS, "ghostCircle");
+        // now restore the mouseover event or we won't be able to drag a 2nd time
+        d3.select(domNode).select(".ghostCircle").attr("pointer-events", "");
     }
 
     private showUpdatePeerReporteeNode(source) {
@@ -1689,7 +1694,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     private deselectNode() {
         if (this.selectedOrgNode && !this.isAddOrEditModeEnabled) {
             if (this.selectedOrgNode.NodeID !== -1) {
-                this.endDrag(null);
+                this.resetDragNode(null);
                 this.selectedNode = this.draggingNode = null;
                 //  Save the last selection temp so that the graph maintains its position
                 this.lastSelectedNode = this.selectedOrgNode;
