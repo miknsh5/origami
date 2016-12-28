@@ -46,6 +46,8 @@ export class OrgComponent implements OnDestroy {
     @Output() isEditMenuEnable: boolean;
     @Output() isNodeMoveEnabledOrDisabled: boolean;
     @Output() moveNodeDisabled: boolean;
+    @Output() isFeedbackInEditMode: boolean;
+    @Output() isHorizontalViewEnabled: boolean;
 
     constructor(private orgService: OrgService, public domHelper: DomElementHelper) {
         this.currentChartMode = ChartMode.build;
@@ -113,6 +115,14 @@ export class OrgComponent implements OnDestroy {
         } else {
             this.disablePan();
         }
+    }
+
+    onHorizontalViewChanged(value: boolean) {
+        this.isHorizontalViewEnabled = value;
+    }
+
+    feedbackPanelInEditMode(value: boolean) {
+        this.isFeedbackInEditMode = value;
     }
 
     moveNodeEnabledOrDisabled(value: boolean) {
@@ -309,6 +319,20 @@ export class OrgComponent implements OnDestroy {
         this.updateJSON();
     }
 
+    onUpdateNodeAndDeleteNode(childNode: OrgNodeModel) {
+        let node: OrgNodeModel = this.getNode(this.selectedNode.ParentNodeID, this.orgNodes[0]);
+        if (node) {
+            node.children.push(childNode);
+            this.updateOrgNode(this.orgNodes[0], node);
+            this.deleteNodeFromArray(this.selectedNode, this.orgNodes);
+        } else if (this.selectedNode.ParentNodeID === null) {
+            this.deleteNodeFromArray(this.selectedNode, this.orgNodes);
+            this.orgNodes.push(childNode);
+        }
+        this.searchedNode = childNode;
+        this.updateJSON();
+    }
+
     onNodeUpdated(selected) {
         // since while updating data to server we send children as null so refreshing the value
         if (selected && !selected.children && selected.NodeID === this.selectedNode.NodeID && this.selectedNode.children) {
@@ -356,6 +380,7 @@ export class OrgComponent implements OnDestroy {
 
     onGroupSelected(data: any) {
         this.orgGroup = data;
+        this.companyName = this.orgGroup.GroupName;
         this.orgNodes = JSON.parse(JSON.stringify(this.orgGroup.OrgNodes));
         this.companyID = this.orgGroup.CompanyID;
         if (this.groupID !== this.orgGroup.OrgGroupID)
@@ -372,11 +397,11 @@ export class OrgComponent implements OnDestroy {
         this.onAddOrEditModeValueSet(false);
     }
 
-    onCompanySelected(data: any) {
-        if (data) {
-            this.companyName = data.CompanyName;
-        }
-    }
+    // onCompanySelected(data: any) {
+    //     if (data) {
+    //     //   this.companyName = data.CompanyName;
+    //     }
+    // }
 
     onMenuSettingsChange(data: boolean) {
         if (data) {

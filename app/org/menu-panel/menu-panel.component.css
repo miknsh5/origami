@@ -48,6 +48,10 @@ nav ul a {
     color: var(--blue-grey);
 }
 
+nav ul a:hover {
+    background-color: #F5F5F5;
+}
+
 nav ul a i.right,
 nav ul a i.left {
     margin: 0 5px;
@@ -88,6 +92,30 @@ nav ul a i.left {
     padding: 0;
 }
 
+.editgroupname {
+    margin-top: 0;
+    margin-bottom: 0;
+    line-height: normal;
+    cursor: pointer;
+    padding: 10px 5px 10px 0;
+}
+
+.editgroupname>span {
+    white-space: nowrap;
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.editgroupname>span:first-child {
+    width: 128px;
+}
+
+.editgroupname>span.lblCount {
+    width: 28px;
+    text-align: right;
+}
+
 .caption {
     color: #757575;
     color: var(--warm-grey-three);
@@ -101,18 +129,24 @@ nav ul a i.left {
 }
 
 .dropdown-content li>a {
-    padding: 15px 13px;
-    font-size: 13px;
+    padding: 0;
+    font-size: 1rem;
     display: block;
-    line-height: 5px;
     font-weight: 500;
 }
 
 .dropdown-content li>a>i {
+    cursor: pointer;
     height: inherit !important;
     line-height: inherit !important;
-    margin-right: 15px !important;
+    margin-right: 5px !important;
     margin-left: 0px !important;
+    padding: 10px;
+}
+
+nav ul.dropdown-content li:first-child:hover {
+    background-color: transparent !important;
+    cursor: default;
 }
 
 #companyDropdown.dropdown-content li>a {
@@ -120,12 +154,24 @@ nav ul a i.left {
 }
 
 #groupDropdown.dropdown-content li>a {
-    width: 200px;
+    width: 210px;
 }
 
 #groupDropdown.dropdown-content {
     max-height: 350px;
     overflow-x: hidden;
+}
+
+.dropdown-content li>a>.small:hover {
+    color: #008EFF;
+}
+
+.dropdown-content li>a.hover {
+    padding: 10px;
+}
+
+.dropdown-content li>a.hover>i {
+    padding: 0;
 }
 
 .divider {
@@ -163,7 +209,6 @@ nav ul a i.left {
     border-left: 0.18em solid #607d8b;
     border-left: 0.18em solid var(--blue-grey);
     font-weight: 800 !important;
-    cursor: pointer;
 }
 
 #companyDropdown li.companyList a {
@@ -369,12 +414,16 @@ input {
 
 #companyDropdown .lblCount {
     padding-top: 11px;
+    font-size: 0.8rem;
     font-weight: normal;
+    color: var(--warm-grey);
 }
 
 #groupDropdown .lblCount {
-    padding-top: 0.5px;
+    padding-top: 3px;
+    font-size: 0.8rem;
     font-weight: normal;
+    color: var(--warm-grey);
 }
 
 #companySettingsModal,

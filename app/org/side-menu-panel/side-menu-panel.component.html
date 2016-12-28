@@ -18,11 +18,9 @@
                 <form #orgform="ngForm" *ngIf="selectedOrgNode" (keyup.enter)="onEditOrSaveNodeClicked()" (ngSubmit)="onSubmit()">
                     <div *ngIf="selectedNode && isEditModeEnabled" class="form-group text-wrap">
                         <div class="edit-name">
-                            <input type="text" class="h-1 title-name-edit form-control firstName" (keyup)="onInputKeyDownOrUp($event,firstName)" ngControl="firstName" #firstName="ngModel" [ngModel]="selectedNode.NodeFirstName" placeholder="First Name" name="firstName" autocomplete="off"
-                            />
-                            <input type="text" class="h-1 title-name-edit form-control" (keyup)="onInputKeyDownOrUp($event,lastName)" ngControl="lastName" #lastName="ngModel" [ngModel]="selectedNode.NodeLastName" placeholder="Last Name" name="lastName" autocomplete="off" />
-                            <input type="text" class="h-3 title-position-edit form-control" (keyup)="onInputKeyDownOrUp($event,description)" ngControl="description" #description="ngModel" [ngModel]="selectedNode.Description" placeholder="Description" name="description" autocomplete="off"
-                            />
+                            <input type="text" class="h-1 title-name-edit form-control firstName" (keyup)="onEditInputKeyUp($event,firstName)" ngControl="firstName" #firstName="ngModel" [ngModel]="selectedNode.NodeFirstName" placeholder="First Name" name="firstName" autocomplete="off">
+                            <input type="text" class="h-1 title-name-edit form-control" (keyup)="onEditInputKeyUp($event,lastName)" ngControl="lastName" #lastName="ngModel" [ngModel]="selectedNode.NodeLastName" placeholder="Last Name" name="lastName" autocomplete="off" />
+                            <input type="text" class="h-3 title-position-edit form-control" (keyup)="onEditInputKeyUp($event,description)" ngControl="description" #description="ngModel" [ngModel]="selectedNode.Description" placeholder="Description" name="description" autocomplete="off">
                         </div>
                     </div>
                 </form>
@@ -59,6 +57,14 @@
                     <input type="checkbox" class="filled-in" id="JobTitle" checked="checked" (change)="setLabelVisiblity($event)" />
                     <label for="JobTitle">Job Title</label>
                 </div>
+                <hr/>
+                <label class="menuTitle">View as </label>
+                <div class="radioboxList">
+                    <input class="with-gap" name="view" type="radio" id="verticalView" (change)="changeViewVericalOrHorizonatl($event)" />
+                    <label for="verticalView">Vertical</label>
+                    <input class="with-gap" name="view" type="radio" id="horizontalView" (change)="changeViewVericalOrHorizonatl($event)" />
+                    <label for="horizontalView">Horizontal</label>
+                </div>
                 <div class="tabControl">
                     <ul class="tabs">
                         <li class="tab" href="#publishData" (click)="OnPublish($data)"><a>Publish</a></li>
@@ -69,7 +75,7 @@
                     </div>
                     <div id="sidePanelExportData" class="col s12">
                         <sg-csv [orgChartData]="orgChart" [orgName]="companyName"></sg-csv>
-                        <sg-png [width]="svgWidth" [height]="svgHeight" [selectedOrgNode]="selectedNode" [orgName]="companyName"></sg-png>
+                        <sg-png [width]="svgWidth" [height]="svgHeight" [selectedOrgNode]="selectedNode" [orgName]="companyName" [isHorizontalTree]="isHorizontalTree"></sg-png>
                     </div>
                 </div>
             </div>
@@ -78,9 +84,9 @@
                     <div class="feedbackTitle" (click)="openOrCloseFeedBackPanel()"> <i class="material-icons">{{feedbackIcon}}</i> <span>Feedback</span></div>
                     <div class="divider"></div>
                     <div class="input-field col s9">
-                        <textarea placeholder="Share you feedback! Feature requests? Bugs? Compliments? Constructive criticism?" cols="50" id="feedbacktxt" [(ngModel)]="feedbackDescriptionText" autocomplete="off"></textarea>
+                        <textarea (keyup)="OnKeyDown($event)" placeholder="Share you feedback! Feature requests? Bugs? Compliments? Constructive criticism?" cols="50" id="feedbacktxt" [(ngModel)]="feedbackDescriptionText" autocomplete="off"></textarea>
                     </div>
-                    <button class="waves-effect waves-light btn right" (click)="onFeedbackSend()"> 
+                    <button id="sendFeedback" class="waves-effect waves-light btn right" (click)="onFeedbackSend()"> 
                       <i class="material-icons left">send</i>SEND</button>
                 </div>
             </div>
@@ -98,13 +104,13 @@
         </div>
         <div class="divider"></div>
         <div id="deleteNodeConfirm" class="center">
-            <sg-menu-confirm-button [hideMessage]="false" [titleName]="name" [deleteTitle]="deleteTitle" (onConfirmClick)="onNodeDeleteConfirm($event)" (onCancelClick)="onNodeDeleteCancel($event)">
+            <sg-menu-confirm-button [hideMessage]="false" [titleName]="name" [deleteTitle]="deleteTitle" (onConfirmClick)="onNodeDeleteConfirm($event)" (onCancelClick)="onCancelDelete($event)">
             </sg-menu-confirm-button>
         </div>
         <div id="deleteChildNodeConfirm" class="center">
             Delete Child Node First!
             <div>
-                <button class="waves-effect waves-light btn" (click)="onNodeDeleteCancel($event)">OK</button>
+                <button class="waves-effect waves-light btn" (click)="onCancelDelete($event)">OK</button>
             </div>
         </div>
     </div>

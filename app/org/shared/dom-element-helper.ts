@@ -8,6 +8,7 @@ export class DomElementHelper {
     public initTabControl() {
         setTimeout(() => {
             jQuery("ul.tabs").tabs();
+            jQuery("input[id=verticalView]").prop("checked", true);
         }, 500);
     }
 

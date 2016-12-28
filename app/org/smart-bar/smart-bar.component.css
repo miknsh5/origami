@@ -51,7 +51,7 @@
 }
 
 .smart_bar_wrap .search ul li {
-    font-size: 85%;
+    font-size: 87%;
     color: #949494;
 }
 
@@ -68,6 +68,12 @@
     color: #949494;
     cursor: pointer;
     display: block;
+    font-weight: 500;
+}
+
+.smart_bar_wrap .search ul li a span.title {
+    font-weight: normal;
+    font-size: 85%;
 }
 
 .smart_bar_wrap .search ul li.selected a {
