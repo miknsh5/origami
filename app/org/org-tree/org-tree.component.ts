@@ -855,6 +855,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                         if (!this.isAddOrEditModeEnabled && this.selectedOrgNode && !this.isNodeMoved) {
                             this.onNodeDragEnd(evt);
                         }
+                        this.resetDragNode(null);
                     }
                 });
         }
@@ -1298,8 +1299,8 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 draggedNode.ParentNodeID = this.selectedNode.NodeID;
                 draggedNode.NodeID = this.draggingNode.NodeID;
                 if (draggedNode.NodeID !== this.selectedNode.NodeID) {
-                    this.moveNode.emit(draggedNode);
                     this.isNodeMoved = true;
+                    this.moveNode.emit(draggedNode);
                 }
             }
             this.endDrag(element);
@@ -1646,12 +1647,12 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     private nodeClicked(d) {
         if ((d3.event as Event) && (d3.event as Event).defaultPrevented) return; // click suppressed
         if (this.isBuildMode()) {
-            if (this.selectedOrgNode && this.selectedOrgNode.NodeID === -1 || this.isAddOrEditModeEnabled) {
+            if (this.isNodeMoved || this.selectedOrgNode && this.selectedOrgNode.NodeID === -1 || this.isAddOrEditModeEnabled) {
                 return;
             }
-            this.isNodeMoved = false;
             this.expandCollapse(d);
             this.highlightAndCenterNode(d, true);
+            this.isNodeMoved = false;
         } else if (this.isExploreMode()) {
             this.highlightSelectedNode(d);
             this.render(d);
