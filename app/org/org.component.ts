@@ -31,7 +31,7 @@ export class OrgComponent implements OnDestroy {
     @Output() currentChartMode: ChartMode;
     @Output() treeJson: any;
     @Output() orgGroup: OrgGroupModel;
-    @Output() companyName: any;
+    @Output() groupName: any;
     @Output() selectedNode: OrgNodeModel;
     @Output() isAddOrEditMode: boolean;
     @Output() detailAddOrEditMode: boolean;
@@ -96,7 +96,7 @@ export class OrgComponent implements OnDestroy {
     }
 
     changeViewModeNav(viewMode) {
-        if (!this.isAddOrEditMode) {
+        if (!this.isAddOrEditMode && this.selectedNode) {
             if (viewMode === ChartMode.build) {
                 this.enableLabels();
                 this.currentChartMode = ChartMode.build;
@@ -380,7 +380,7 @@ export class OrgComponent implements OnDestroy {
 
     onGroupSelected(data: any) {
         this.orgGroup = data;
-        this.companyName = this.orgGroup.GroupName;
+        this.groupName = this.orgGroup.GroupName;
         this.orgNodes = JSON.parse(JSON.stringify(this.orgGroup.OrgNodes));
         this.companyID = this.orgGroup.CompanyID;
         if (this.groupID !== this.orgGroup.OrgGroupID)
@@ -396,12 +396,6 @@ export class OrgComponent implements OnDestroy {
         this.isEditMenuEnable = false;
         this.onAddOrEditModeValueSet(false);
     }
-
-    // onCompanySelected(data: any) {
-    //     if (data) {
-    //     //   this.companyName = data.CompanyName;
-    //     }
-    // }
 
     onMenuSettingsChange(data: boolean) {
         if (data) {

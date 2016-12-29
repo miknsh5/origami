@@ -9,7 +9,7 @@
                     <i class="material-icons right">keyboard_arrow_right</i>
                 </li>
                 <li class="ui-addList">
-                    <input type="text" placeholder={{placeholderText}} name="multiInTerm" (keyup.enter)="onEnterKeypress($event)" (keyup.backspace)="onSmartbarBackspacePressed($event)" (focusout)="onInputFocusOut($event)" (focus)="onSmartbarFocus($event)" (keyup)="onInputMultiSearch($event)"
+                    <input type="text" placeholder={{placeholderText}} name="multiInTerm" (keyup.backspace)="onSmartbarBackspacePressed($event)" (keyup.enter)="onEnterKeypress($event)" (focusout)="onInputFocusOut($event)" (focus)="onSmartbarFocus($event)" (keyup)="onInputMultiSearch($event)"
                         [(ngModel)]="multiInTerm" autocomplete="off" #addNodes>
                 </li>
             </ul>
