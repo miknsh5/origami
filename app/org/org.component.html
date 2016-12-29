@@ -1,6 +1,4 @@
 <div id="wrapper">
-    <!--<sg-menu-panel (groupSelected)="onGroupSelected($event)" (companySelected)="onCompanySelected($event)" [noNodeExsit]="isOrgNodeEmpty" [currentOrgNodeStatus]="currentOrgNodeStatus" (isMenuEnable)="onMenuSettingsChange($event)">
-    </sg-menu-panel>-->
     <sg-menu-panel (groupSelected)="onGroupSelected($event)" [noNodeExsit]="isOrgNodeEmpty" [currentOrgNodeStatus]="currentOrgNodeStatus" (isMenuEnable)="onMenuSettingsChange($event)">
     </sg-menu-panel>
     <div class="modes_wrap">
@@ -22,7 +20,7 @@
             </sg-smart-bar>
         </div>
     </div>
-    <sg-side-menu-panel [selectedOrgNode]="selectedNode" [currentMode]="currentChartMode" [companyName]="companyName" (showFirstNameLabel)="enableFirstNameLabel($event)" (showLastNameLabel)="enableLastNameLabel($event)" (showDescriptionLabel)="enableDescriptionLabel($event)"
+    <sg-side-menu-panel [selectedOrgNode]="selectedNode" [currentMode]="currentChartMode" [companyName]="groupName" (showFirstNameLabel)="enableFirstNameLabel($event)" (showLastNameLabel)="enableLastNameLabel($event)" (showDescriptionLabel)="enableDescriptionLabel($event)"
         [svgWidth]="svgWidth" [svgHeight]="svgHeight" [orgChart]="orgGroup" (deleteNode)="onNodeDeleted($event)" (updateNode)="onNodeUpdated($event)" (updateNodeAndDeleteNode)="onUpdateNodeAndDeleteNode($event)" [isMenuSettingsEnabled]="isMenuSettingsEnabled"
         [isSmartBarAddEnabled]="isSmartBarEnabled" (isEditEnabled)="isEditEnabled($event)" (isNodeMoveEnabledOrDisabled)="moveNodeEnabledOrDisabled($event)" [isNodeMoveDisabled]="isNodeMoveEnabledOrDisabled" (isFeedbackInEditMode)="feedbackPanelInEditMode($event)"
         (isHorizontalViewEnabled)="onHorizontalViewChanged($event)"></sg-side-menu-panel>

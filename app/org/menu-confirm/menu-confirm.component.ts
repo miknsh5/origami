@@ -21,7 +21,6 @@ export class MenuConfirmButtonComponent {
     }
 
     onCancel() {
-        console.log(this.deleteTitle);
         this.onCancelClick.emit(true);
     }
 }

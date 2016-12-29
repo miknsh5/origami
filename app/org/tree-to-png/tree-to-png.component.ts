@@ -6,8 +6,8 @@ import * as saveSvgAsPng from "save-svg-as-png";
 
 const DEFAULT_MATTRIX = "matrix(1,0,0,1,-3,-9)";
 const DEFAULT_EXT = ".png";
-const DEFAULT_HEIGHT_VALUE = 380;
-const MIN_HEIGHT = 768;
+const DEFAULT_HEIGHT_VALUE = 240;
+const MIN_HEIGHT = 480;
 
 @Component({
     selector: "sg-png",
@@ -21,6 +21,7 @@ export class TreeToPNGComponent {
     @Input() width: any;
     @Input() height: any;
     @Input() isHorizontalTree: any;
+
     private leftNodeInitials: number;
     private rightNodeInitials: number;
     private treeLength: number;

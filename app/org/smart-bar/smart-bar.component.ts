@@ -320,10 +320,11 @@ export class SamrtBarComponent implements OnChanges {
 
         if (this.isEditModeEnabled) {
             if (!this.multiInTerm && this.newNodeValue && this.newNodeValue.length > 0) {
-                if (this.newNodeValue.length === 1) {
+                if (this.newNodeValue.length === 1 && this.multiInTerm !== this.prevSearchTerm) {
                     this.isDescriptionText = false;
+                } else {
+                    this.multiInTerm = this.newNodeValue.pop();
                 }
-                this.multiInTerm = this.newNodeValue.pop();
             } else if (!this.multiInTerm && (this.newNodeValue && this.newNodeValue.length === 0)) {
                 this.isSmartBarEnabled.emit(false);
                 this.isNodeMoveDisabled.emit(false);
