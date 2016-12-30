@@ -265,16 +265,14 @@ path.horizontal {
 .templink {
     fill: none;
     stroke: transparent;
-    stroke-width: 3px;
-}
-
-.ghostCircle.show {
-    display: block;
+    stroke-width: 1px;
 }
 
 .ghostCircle,
 .activeDrag .ghostCircle {
-    display: none;
+    stroke: transparent;
+    stroke-width: 0;
+    fill: transparent;
 }
 
 @-webkit-keyframes loader-figure {
