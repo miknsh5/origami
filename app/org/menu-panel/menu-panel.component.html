@@ -74,7 +74,7 @@
                 <form>
                     <div class="company_groupDetails">
                         <i class="material-icons left">label_outline</i>
-                        <input required #existingGroupName="ngModel" ngControl="existingGroupName" [(ngModel)]="groupName" name="existingGroupName" autocomplete="off" (focusout)="onGroupSave($event)" (keyup.enter)="onGroupSave($event)" />
+                        <input required #existingGroupName="ngModel" ngControl="existingGroupName" [(ngModel)]="groupName" name="existingGroupName" autocomplete="off" (blur)="onGroupSave($event)" (keyup.enter)="onGroupSave($event)" />
                         <div>
                             <label class="modaldefaultlabel"> Name Of Organization </label>
                         </div>
