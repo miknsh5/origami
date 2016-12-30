@@ -321,7 +321,7 @@ export class SideMenuComponent implements OnInit, OnChanges {
             this.isNodeMoveEnabledOrDisabled.emit(false);
             if (this.deleteOrClose === DELETE_ICON) {
                 this.deleteTitle = "Node";
-                this.name = this.selectedOrgNode.NodeFirstName + " " + this.selectedOrgNode.NodeLastName;
+                this.name = `${this.selectedOrgNode.NodeFirstName} ${this.selectedOrgNode.NodeLastName}`;
                 this.domHelper.showElements([MenuElement.deleteNodeModal, MenuElement.deleteNodeConfirm]);
             } else if (this.deleteOrClose === CLOSE_ICON) {
                 this.editOrSave = EDIT_ICON;

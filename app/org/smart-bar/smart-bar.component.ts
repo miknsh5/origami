@@ -189,14 +189,14 @@ export class SamrtBarComponent implements OnChanges {
             }
         }
 
-        let curSelected = jQuery(searchContainer).find("li." + SELECTED);
+        let curSelected = jQuery(searchContainer).find(`li.${SELECTED}`);
         // top arrow
         if ((event as KeyboardEvent).keyCode === 38) {
             if (this.selectedOrgNode && this.selectedOrgNode.IsStaging && !this.selectedOrgNode.IsNewRoot) {
                 this.deleteNode.emit(this.selectedOrgNode);
                 return;
             }
-            let newSelected = jQuery(searchContainer).find("li." + SELECTED).prev();
+            let newSelected = jQuery(searchContainer).find(`li.${SELECTED}`).prev();
             if (this.selectedOrgNode) {
                 if (curSelected.hasClass("addNode") && !newSelected.hasClass("addNode")) {
                     newSelected = newSelected.prev();
@@ -223,7 +223,7 @@ export class SamrtBarComponent implements OnChanges {
         }
         // bottom arrow
         else if ((event as KeyboardEvent).keyCode === 40) {
-            let newSelected = jQuery(searchContainer).find("li." + SELECTED).next();
+            let newSelected = jQuery(searchContainer).find(`li.${SELECTED}`).next();
             if (curSelected.hasClass("nodeSearch") && !newSelected.hasClass("nodeSearch")) {
                 newSelected = newSelected.next();
             }
@@ -293,7 +293,7 @@ export class SamrtBarComponent implements OnChanges {
             return;
         }
         if (this.isDescriptionText) {
-            let element = document.querySelector(TITLE_SEARCH_CONTAINER + " li." + SELECTED);
+            let element = document.querySelector(`${TITLE_SEARCH_CONTAINER} li.${SELECTED}`);
             if (element) {
                 this.renderer.invokeElementMethod(element, "click", []);
                 this.multiInTerm = EMPTYSTRING;
@@ -302,7 +302,7 @@ export class SamrtBarComponent implements OnChanges {
                 this.onAddNode();
             }
         } else {
-            let element = document.querySelector(SEARCH_CONTAINER + " li." + SELECTED);
+            let element = document.querySelector(`${SEARCH_CONTAINER} li.${SELECTED}`);
             if (element) {
                 this.renderer.invokeElementMethod(element, "click", []);
             }
@@ -403,7 +403,7 @@ export class SamrtBarComponent implements OnChanges {
             else {
                 if (!this.newNodeValue || (this.newNodeValue && this.newNodeValue.length === 0)) {
                     this.newNodeValue = new Array();
-                    this.newNodeValue.push(firstName + " " + lastName);
+                    this.newNodeValue.push(`${firstName} ${lastName}`);
                     this.multiInTerm = EMPTYSTRING;
                     this.isDescriptionText = true;
                     if (this.selectedOrgNode.NodeID !== -1) {
@@ -442,7 +442,7 @@ export class SamrtBarComponent implements OnChanges {
                     }
                 } else {
                     this.updateNode.emit(this.newOrgNode);
-                    this.newNodeValue.push(firstName + " " + lastName);
+                    this.newNodeValue.push(`${firstName} ${lastName}`);
                     this.multiInTerm = EMPTYSTRING;
                     this.isDescriptionText = true;
                 }
@@ -679,7 +679,7 @@ export class SamrtBarComponent implements OnChanges {
         if (data) {
             let node = this.getNode(data.NodeID, this.treeJsonData[0]);
             if (node) {
-                jQuery(SEARCH_CONTAINER).find("li." + SELECTED).removeClass(SELECTED);
+                jQuery(SEARCH_CONTAINER).find(`li.${SELECTED}`).removeClass(SELECTED);
                 let jQueryelement = jQuery(event.target).closest("li.nodeSearch");
                 jQueryelement.addClass(SELECTED).scrollTop(jQuery(SEARCH_CONTAINER).scrollTop() + jQueryelement.position().top);
                 this.isSmartBarEnabled.emit(false);
@@ -880,7 +880,7 @@ export class SamrtBarComponent implements OnChanges {
             let searchModel = new OrgSearchModel();
             searchModel.NodeID = inputArray[index].NodeID;
             searchModel.Title = inputArray[index].Description;
-            searchModel.Name = inputArray[index].NodeFirstName + " " + inputArray[index].NodeLastName;
+            searchModel.Name = `${inputArray[index].NodeFirstName} ${inputArray[index].NodeLastName}`;
             this.orgSearchData.push(searchModel);
 
             if (inputArray[index].children && typeof inputArray[index].children === typeof []) {
