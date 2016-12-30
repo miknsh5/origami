@@ -31,8 +31,8 @@ const NODE_WIDTH = 95;
 const RADIAL_DEPTH = 90;
 const DEPTH = 180;
 const RADIAL_VALUE = 360;
-const VIEWBOX_MIN_WIDTH = 560;
-const VIEWBOX_MIN_HEIGHT = 540;
+const VIEWBOX_MIN_WIDTH = 580;
+const VIEWBOX_MIN_HEIGHT = 420;
 const VIEWBOX_MAX_WIDTH = 1366;
 const VIEWBOX_MAX_HEIGHT = 768;
 
@@ -535,16 +535,20 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                         x = (width - VIEWBOX_MAX_WIDTH) / 2;
                         width = VIEWBOX_MAX_WIDTH;
                     } else {
+                        if (width < 400) {
+                            x = -60;
+                        }
                         width = VIEWBOX_MIN_WIDTH;
                     }
                 }
-                if (height < VIEWBOX_MIN_HEIGHT || height > VIEWBOX_MAX_HEIGHT) {
+                if (height > VIEWBOX_MAX_HEIGHT) {
                     if (height > VIEWBOX_MAX_HEIGHT) {
                         y = (height - VIEWBOX_MAX_HEIGHT) / 2;
                         height = VIEWBOX_MAX_HEIGHT;
-                    } else {
-                        height = VIEWBOX_MIN_HEIGHT;
                     }
+                } else if (this.treeWidth <= VIEWBOX_MIN_HEIGHT) {
+                    height = window.innerHeight;
+                    this.treeHeight = window.innerHeight;
                 }
                 return x + " " + y + " " + width + " " + height;
             })

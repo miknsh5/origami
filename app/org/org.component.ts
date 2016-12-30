@@ -5,6 +5,7 @@ import { DraggedNode, OrgNodeModel, ChartMode, OrgCompanyModel, OrgGroupModel, O
 
 const MIN_HEIGHT: number = 420;
 const MIN_WIDTH: number = 640;
+const WINDOW_MIN_WIDTH: number = 320;
 const DEFAULT_OFFSET: number = 61;
 
 declare var svgPanZoom: any;
@@ -374,7 +375,7 @@ export class OrgComponent implements OnDestroy {
     }
 
     onChartUpdated(data: any) {
-         this.currentOrgNodeStatus = OrgNodeStatus.Add;
+        this.currentOrgNodeStatus = OrgNodeStatus.Add;
         this.onGroupSelected(data);
     }
 
@@ -453,7 +454,11 @@ export class OrgComponent implements OnDestroy {
     }
 
     private getSvgWidth() {
-        return window.innerWidth;
+        let width = window.innerWidth;
+        if (width < WINDOW_MIN_WIDTH) {
+            width = WINDOW_MIN_WIDTH;
+        }
+        return width;
     }
 
     private getNode(nodeID: number, rootNode: any) {
