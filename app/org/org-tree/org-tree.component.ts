@@ -339,16 +339,15 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 // left arrow
                 if ((event as KeyboardEvent).keyCode === 37) {
                     let node = this.selectedOrgNode as d3.layout.tree.Node;
+                    let parentNode = node.parent;
                     if (this.isBuildMode() && !this.isFeedbackInEditMode && !this.draggingNode) {
-                        if (node.parent != null) {
-                            let parentNode = node.parent;
+                        if (parentNode != null) {
                             this.highlightAndCenterNode(parentNode);
                         } else {
                             this.addNewRootNode(this.root);
                         }
                     } else if (this.isExploreMode()) {
-                        if (node.parent != null) {
-                            let parentNode = node.parent;
+                        if (parentNode != null) {
                             this.highlightSelectedNode(parentNode);
                             this.render(parentNode);
                         }
@@ -356,18 +355,20 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 }
                 // right arrow
                 else if ((event as KeyboardEvent).keyCode === 39) {
+                    let childNode = null;
+                    if (this.selectedOrgNode.children && this.selectedOrgNode.children.length > 0) {
+                        childNode = this.selectedOrgNode.children[0];
+                    }
                     if (this.isBuildMode() && !this.isFeedbackInEditMode && !this.draggingNode) {
-                        if (this.selectedOrgNode.children && this.selectedOrgNode.children.length > 0) {
-                            let node = this.selectedOrgNode.children[0];
-                            this.highlightAndCenterNode(node);
+                        if (childNode != null) {
+                            this.highlightAndCenterNode(childNode);
                         } else {
                             this.addNewNode(this.selectedOrgNode);
                         }
                     } else if (this.isExploreMode()) {
-                        if (this.selectedOrgNode.children && this.selectedOrgNode.children.length > 0) {
-                            let node = this.selectedOrgNode.children[0];
-                            this.highlightSelectedNode(node);
-                            this.render(node);
+                        if (childNode != null) {
+                            this.highlightSelectedNode(childNode);
+                            this.render(childNode);
                         }
                     }
                 }
@@ -888,7 +889,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         // phantom node to give us mouseover in a radius around it
         nodeEnter.append(CIRCLE)
             .attr(CLASS, "ghostCircle")
-            .attr("r", 22)
+            .attr("r", 21.5)
             .attr("opacity", 0.2) // change this to zero to hide the target area
             .style(FILL, TRANSPARENT_COLOR)
             .attr("pointer-events", "mouseover")
@@ -1122,7 +1123,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             });
 
         nodeUpdate.select(CIRCLE + ".ghostCircle")
-            .attr("r", 27.5);
+            .attr("r", 21.5);
 
         nodeUpdate.select(G_LABEL)
             .style(FILL, PATH_STORKE_COLOR)
@@ -1331,7 +1332,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             if (domNode.tagName === "g") {
                 this.draggingNode = d;
                 d3.select(domNode).select(".ghostCircle").attr("pointer-events", "");
-                d3.selectAll(".ghostCircle").attr(CLASS, "ghostCircle show");
                 d3.select(domNode).attr(CLASS, "node activeDrag");
 
                 this.svg.selectAll("g.node").sort((a, b) => { // select the parent and sort the path's
@@ -1449,9 +1449,8 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     private resetDragNode(domNode) {
         this.domNode = this.targetNode = null;
         d3.selectAll("g.node").attr(CLASS, "node");
-        d3.selectAll(".ghostCircle").attr(CLASS, "ghostCircle");
         // now restore the mouseover event or we won't be able to drag a 2nd time
-        d3.select(domNode).select(".ghostCircle").attr("pointer-events", "");
+        d3.selectAll(".ghostCircle").attr("pointer-events", "");
     }
 
     private showUpdatePeerReporteeNode(source) {
