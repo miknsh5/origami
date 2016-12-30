@@ -10,7 +10,7 @@ import { routing, appRoutingProviders } from "./app.routing";
 import { AppComponent } from "./app.component";
 
 import {
-  OrgComponent, OrgNodeDetailComponent, OrgTreeComponent, MenuPanelComponent,
+  OrgComponent, OrgTreeComponent, MenuPanelComponent,
   SideMenuComponent, OrgService, JsonToCSVComponent, TreeToPNGComponent,
   ImportCsvFileComponent, MenuConfirmButtonComponent, DomElementHelper, SamrtBarComponent } from "./org/index";
 
@@ -21,7 +21,6 @@ import { LoginComponent, AuthService } from "./login/index";
     AppComponent,
     LoginComponent,
     OrgComponent,
-    OrgNodeDetailComponent,
     OrgTreeComponent,
     MenuPanelComponent,
     SideMenuComponent,

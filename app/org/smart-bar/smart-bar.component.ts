@@ -112,7 +112,7 @@ export class SamrtBarComponent implements OnChanges {
 
     }
 
-    @HostListener("focusout", ["$event"])
+    @HostListener("blur", ["$event"])
     onInputFocusOut(event: any) {
         if (this.isNodeMoveEnabledOrDisabled) {
             this.searchTerm = this.multiInTerm = EMPTYSTRING;
