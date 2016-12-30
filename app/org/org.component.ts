@@ -66,9 +66,6 @@ export class OrgComponent implements OnDestroy {
             this.changeViewModeNav(ChartMode.build);
         } else if ((event.metaKey || event.ctrlKey) && event.keyCode === "2".charCodeAt(0)) {
             event.preventDefault();
-            this.changeViewModeNav(ChartMode.explore);
-        } else if ((event.metaKey || event.ctrlKey) && event.keyCode === "3".charCodeAt(0)) {
-            event.preventDefault();
             this.changeViewModeNav(ChartMode.report);
         }
     }
