@@ -85,6 +85,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     private dragListener: any;
     private domNode: any;
     private isNodeMoved: boolean;
+    private isNodedragStarted: boolean;
 
     @Input() currentMode: ChartMode;
     @Input() isAddOrEditModeEnabled: boolean;
@@ -330,7 +331,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
                 // esc
                 if ((event as KeyboardEvent).keyCode === 27) {
-                    if (!this.isAddOrEditModeEnabled && !this.isNodeMoved) {
+                    if (!this.isAddOrEditModeEnabled && !this.isNodeMoved && !this.isNodedragStarted) {
                         this.deselectNode();
                         this.selectNode.emit(this.selectedOrgNode);
                     }
@@ -1279,6 +1280,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             return;
         }
         this.dragStarted = true;
+        this.isNodedragStarted = true;
         this.nodes = this.tree.nodes(d);
         (d3.event as d3.DragEvent).sourceEvent.stopPropagation();
     }
@@ -1388,6 +1390,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 this.highlightAndCenterNode(this.selectedOrgNode);
             }
         }
+        this.isNodedragStarted = false;
     }
 
     overCircle(d) {
