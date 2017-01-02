@@ -96,7 +96,8 @@ export class SamrtBarComponent implements OnChanges {
         }
         if (changes["selectedOrgNode"]) {
             if (this.selectedOrgNode) {
-                if (changes["selectedOrgNode"].previousValue && changes["selectedOrgNode"].previousValue.NodeID !== this.selectedOrgNode.NodeID) {
+                if (changes["selectedOrgNode"].previousValue && changes["selectedOrgNode"].previousValue.NodeID !== this.selectedOrgNode.NodeID
+                    && this.selectedOrgNode.NodeID !== -1) {
                     this.resetSearch();
                 } else {
                     if (this.newNodeValue && this.newNodeValue.length === 1) {
