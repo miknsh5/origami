@@ -1,5 +1,5 @@
 <div id="wrapper">
-    <sg-menu-panel (groupSelected)="onGroupSelected($event)" [noNodeExsit]="isOrgNodeEmpty" [currentOrgNodeStatus]="currentOrgNodeStatus" (isMenuEnable)="onMenuSettingsChange($event)">
+    <sg-menu-panel (groupSelected)="onGroupSelected($event)" [noNodeExsit]="isOrgNodeEmpty" [currentOrgNodeStatus]="currentOrgNodeStatus" (isMenuEnable)="onMenuSettingsChange($event)" [orgNodes]="orgNodes">
     </sg-menu-panel>
     <div class="modes_wrap">
         <ul>

@@ -42,7 +42,7 @@ export class MenuPanelComponent implements OnChanges {
 
     @Input() noNodeExsit: boolean;
     @Input() currentOrgNodeStatus: OrgNodeStatus;
-    @Output() orgNodes = new EventEmitter<any>();
+    @Input() orgNodes: Array<OrgNodeModel>;
     @Output() groupSelected = new EventEmitter<OrgGroupModel>();
     @Output() isMenuEnable = new EventEmitter<boolean>();
     @Output() deleteTitle: string;
@@ -74,8 +74,9 @@ export class MenuPanelComponent implements OnChanges {
             }
         }
 
-        if (changes["noNodeExsit"]) {
-            if (changes["noNodeExsit"].currentValue) {
+        if (changes["orgNodes"] && changes["orgNodes"].currentValue) {
+            this.selectedGroup.OrgNodes = this.orgNodes;
+            if (this.selectedGroup.OrgNodes.length === 0) {
                 this.domHelper.showElements(MenuElement.downloadTemplate);
                 this.domHelper.hideElements(MenuElement.exportData);
             } else {
@@ -376,7 +377,7 @@ export class MenuPanelComponent implements OnChanges {
     }
 
     onDeleteGroupClicked() {
-        this.deleteTitle = "Group";
+        this.deleteTitle = "Organization";
         this.name = this.selectedGroup.GroupName;
         this.domHelper.hideElements([MenuElement.groupName, MenuElement.importTemplate, MenuElement.deleteGroup, MenuElement.groupSaveOrEdit]);
         this.domHelper.showElements(MenuElement.confirmGroupDelete);
