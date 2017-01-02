@@ -38,7 +38,7 @@ export class CSVConversionHelper {
 
     downloadCSVFile(fileName, CSV) {
         // Initialize file format you want csv or xls
-        let uri = "data:text/csv;charset=utf-8," + encodeURI(CSV);
+        let uri = `data:text/csv;charset=utf-8,${encodeURI(CSV)}`;
 
         // Now the little tricky part.
         // you can use either>> window.open(uri);
@@ -48,7 +48,7 @@ export class CSVConversionHelper {
         // this trick will generate a temp <a /> tag
         let link: HTMLAnchorElement = document.createElement("a");
         link.href = uri;
-        link.setAttribute("download", fileName + ".csv");
+        link.setAttribute("download", `${fileName}.csv`);
         // set the visibility hidden so it will not effect on your web-layout
         link.style.visibility = "hidden";
 

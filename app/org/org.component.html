@@ -1,5 +1,5 @@
 <div id="wrapper">
-    <sg-menu-panel (groupSelected)="onGroupSelected($event)" [noNodeExsit]="isOrgNodeEmpty" [currentOrgNodeStatus]="currentOrgNodeStatus" (isMenuEnable)="onMenuSettingsChange($event)">
+    <sg-menu-panel (groupSelected)="onGroupSelected($event)" [noNodeExsit]="isOrgNodeEmpty" [currentOrgNodeStatus]="currentOrgNodeStatus" (isMenuEnable)="onMenuSettingsChange($event)" [orgNodes]="orgNodes">
     </sg-menu-panel>
     <div class="modes_wrap">
         <ul>
@@ -14,7 +14,7 @@
             [isNodeMoveEnabledOrDisabled]="isNodeMoveEnabledOrDisabled" (isNodeMoveDisabled)=" moveNodeEnabledOrDisabled($event)" [isFeedbackInEditMode]="isFeedbackInEditMode" [isHorizontalViewEnabled]="isHorizontalViewEnabled">
         </sg-org-tree>
         <div *ngIf="currentChartMode===1">
-            <sg-smart-bar [treeJsonData]="orgGroup.OrgNodes" (nodeSearched)="onNodeSearched($event)" [selectedOrgNode]="selectedNode" [isEditModeEnabled]="detailAddOrEditMode" (deleteNode)="onNodeDeleted($event)" (updateNode)="onNodeUpdated($event)" (addNode)="onNodeAdded($event)"
+            <sg-smart-bar [treeJsonData]="orgGroup.OrgNodes" (nodeSearched)="onNodeSearched($event)" [selectedOrgNode]="selectedNode" [isEditModeEnabled]="isEditMenuEnable" (deleteNode)="onNodeDeleted($event)" (updateNode)="onNodeUpdated($event)" (addNode)="onNodeAdded($event)"
                 (chartStructureUpdated)="onChartUpdated($event)" (isSmartBarEnabled)="smartBarEnabled($event)" [isEditMenuEnable]="isEditMenuEnable" [orgGroupID]="groupID" [isNodeMoveEnabledOrDisabled]="isNodeMoveEnabledOrDisabled" (isNodeMoveDisabled)=" moveNodeEnabledOrDisabled($event)"
                 (moveNode)="onNodeMoved($event)">
             </sg-smart-bar>

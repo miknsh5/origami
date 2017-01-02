@@ -109,9 +109,11 @@ export class SideMenuComponent implements OnInit, OnChanges {
             }
         }
 
-        if (changes["isSmartBarAddEnabled"] && !changes["isSmartBarAddEnabled"].currentValue && this.isCollapsed) {
-            this.openPanel();
-            this.isCollapsed = false;
+        if (changes["isSmartBarAddEnabled"]) {
+            if (!this.isSmartBarAddEnabled && this.isCollapsed) {
+                this.openPanel();
+                this.isCollapsed = false;
+            }
         }
 
         if (changes["selectedOrgNode"]) {
@@ -142,7 +144,7 @@ export class SideMenuComponent implements OnInit, OnChanges {
                         this.totalReportees += d;
                     });
                 }
-            } else if (this.isCollapsed) {
+            } else {
                 if (this.feedbackIcon === FEEDBACK_ICON_CLOSE) {
                     this.feedbackIcon = FEEDBACK_ICON_OPEN;
                 }
@@ -321,7 +323,7 @@ export class SideMenuComponent implements OnInit, OnChanges {
             this.isNodeMoveEnabledOrDisabled.emit(false);
             if (this.deleteOrClose === DELETE_ICON) {
                 this.deleteTitle = "Node";
-                this.name = this.selectedOrgNode.NodeFirstName + " " + this.selectedOrgNode.NodeLastName;
+                this.name = `${this.selectedOrgNode.NodeFirstName} ${this.selectedOrgNode.NodeLastName}`;
                 this.domHelper.showElements([MenuElement.deleteNodeModal, MenuElement.deleteNodeConfirm]);
             } else if (this.deleteOrClose === CLOSE_ICON) {
                 this.editOrSave = EDIT_ICON;
@@ -370,7 +372,7 @@ export class SideMenuComponent implements OnInit, OnChanges {
     }
 
     private onEditOrSaveNodeClicked() {
-        if (this.selectedNode.NodeID !== -1) {
+        if (this.selectedNode.NodeID !== -1 && !this.isSmartBarAddEnabled) {
             this.isNodeMoveEnabledOrDisabled.emit(false);
             if (this.editOrSave === EDIT_ICON) {
                 this.isEditEnabled.emit(true);

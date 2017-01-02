@@ -85,6 +85,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     private dragListener: any;
     private domNode: any;
     private isNodeMoved: boolean;
+    private isNodedragStarted: boolean;
 
     @Input() currentMode: ChartMode;
     @Input() isAddOrEditModeEnabled: boolean;
@@ -125,7 +126,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         this.initializeTreeAsPerMode();
         this.svg = this.graph.append("svg")
             .attr("preserveAspectRatio", "xMidYMid meet")
-            .attr("viewBox", "0 0 " + this.treeWidth + " " + this.treeHeight)
+            .attr("viewBox", `0 0 ${this.treeWidth} ${this.treeHeight}`)
             .attr("width", this.treeWidth)
             .attr("height", this.treeHeight)
             .append("g")
@@ -330,7 +331,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
                 // esc
                 if ((event as KeyboardEvent).keyCode === 27) {
-                    if (!this.isAddOrEditModeEnabled && !this.isNodeMoved) {
+                    if (!this.isAddOrEditModeEnabled && !this.isNodeMoved && !this.isNodedragStarted) {
                         this.deselectNode();
                         this.selectNode.emit(this.selectedOrgNode);
                     }
@@ -551,7 +552,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                     height = window.innerHeight;
                     this.treeHeight = window.innerHeight;
                 }
-                return x + " " + y + " " + width + " " + height;
+                return `${x} ${y} ${width} ${height}`;
             })
             .attr("width", this.treeWidth)
             .attr("height", this.treeHeight)
@@ -633,7 +634,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             if (grandParent) {
                 this.moveParentNodesToCenter(grandParent, source);
             }
-            d3.selectAll("#arrows " + POLYGON)
+            d3.selectAll(`#arrows ${POLYGON}`)
                 .attr(STROKE, "#FFFFFF")
                 .attr(FILL, NAVIGATION_ARROW_FILL);
         } else {
@@ -776,9 +777,9 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             let transformString = "rotate(0)";
             if (this.isExploreMode() && d.ParentNodeID !== null) {
                 if (d.x > RADIAL_DEPTH) {
-                    transformString = "rotate(" + -Math.abs((d.x || 0) - RADIAL_DEPTH) + ")";
+                    transformString = `rotate(${-Math.abs((d.x || 0) - RADIAL_DEPTH)})`;
                 } else {
-                    transformString = "rotate(" + Math.abs((d.x || 0) - RADIAL_DEPTH) + ")";
+                    transformString = `rotate(${Math.abs((d.x || 0) - RADIAL_DEPTH)})`;
                 }
             }
             return transformString;
@@ -870,7 +871,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                         transformString = this.translate((source.x0 || 0), (source.y0 || 0));
                     }
                 } else if (this.isExploreMode()) {
-                    transformString = "translate(" + this.transformNode((source.x0 || 0), (source.y0 || 0)) + ")";
+                    transformString = `translate(${this.transformNode((source.x0 || 0), (source.y0 || 0))})`;
                 }
                 return transformString;
             })
@@ -938,9 +939,9 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             let transformString = "rotate(0)";
             if (this.isExploreMode() && d.ParentNodeID !== null) {
                 if (d.x >= RADIAL_DEPTH) {
-                    transformString = "rotate(" + -Math.abs((d.x || 0) - RADIAL_DEPTH) + ")";
+                    transformString = `rotate(${-Math.abs((d.x || 0) - RADIAL_DEPTH)})`;
                 } else {
-                    transformString = "rotate(" + Math.abs((d.x || 0) - RADIAL_DEPTH) + ")";
+                    transformString = `rotate(${Math.abs((d.x || 0) - RADIAL_DEPTH)})`;
                 }
             }
             return transformString;
@@ -965,7 +966,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 .attr("data-id", "lastname").text((d) => {
                     let name = "";
                     if (this.showLastNameLabel) {
-                        name = " " + d.NodeLastName;
+                        name = ` ${d.NodeLastName}`;
                     }
                     return name;
                 })
@@ -983,7 +984,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 });
         } else {
             node.select(G_LABEL + " text[data-id='name']").text((d) => {
-                let name = d.NodeFirstName + " " + d.NodeLastName;
+                let name = `${d.NodeFirstName} ${d.NodeLastName}`;
                 if (this.isExploreMode()) {
                     name = d.NodeFirstName;
                 }
@@ -1093,7 +1094,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                     if (d.ParentNodeID == null) {
                         return "rotate(0)";
                     }
-                    return "rotate(" + ((d.x || 0) - RADIAL_DEPTH) + ")translate(" + d.y + ")";
+                    return `rotate(${(d.x || 0) - RADIAL_DEPTH})translate(${d.y})`;
                 }
             });
 
@@ -1198,11 +1199,11 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         link.enter().insert(PATH, "g")
             .attr(CLASS, "link")
             .attr("id", function (d) {
-                return ("link" + d.source.NodeID + "-" + d.target.NodeID);
+                return (`link${d.source.NodeID}-${d.target.NodeID}`);
             })
             .attr("d", (d) => {
                 if (this.isExploreMode()) {
-                    return "M" + x(d.source) + "," + y(d.source) + "L" + x(d.target) + "," + y(d.target);
+                    return `M${x(d.source)},${y(d.source)}L${x(d.target)},${y(d.target)}`;
                 }
                 return diagCoords;
             });
@@ -1212,7 +1213,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             link.transition()
                 .duration(DURATION)
                 .attr("d", function (d) {
-                    return "M" + x(d.source) + "," + y(d.source) + "L" + x(d.target) + "," + y(d.target);
+                    return `M${x(d.source)},${y(d.source)}L${x(d.target)},${y(d.target)}`;
                 });
         } else {
             link.transition()
@@ -1279,6 +1280,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             return;
         }
         this.dragStarted = true;
+        this.isNodedragStarted = true;
         this.nodes = this.tree.nodes(d);
         (d3.event as d3.DragEvent).sourceEvent.stopPropagation();
     }
@@ -1388,6 +1390,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 this.highlightAndCenterNode(this.selectedOrgNode);
             }
         }
+        this.isNodedragStarted = false;
     }
 
     overCircle(d) {
@@ -1487,7 +1490,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     }
 
     private setPeerReporteeNode(nodeName, x, y, className) {
-        let node = d3.select("g." + className);
+        let node = d3.select(`g.${className}`);
         let element = node[0][0]; // assigns the selected element
         if (!element) {
             node = this.svg.append("g")
@@ -1573,7 +1576,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
     private hideAllArrows() {
         // hides all arrows by making transparent
-        d3.selectAll("#arrows " + POLYGON)
+        d3.selectAll(`#arrows ${POLYGON}`)
             .attr(STROKE, TRANSPARENT_COLOR)
             .attr(FILL, TRANSPARENT_COLOR);
     }

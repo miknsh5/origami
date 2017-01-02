@@ -29,7 +29,7 @@ export class JsonToCSVComponent {
 
         // Set Report title in first row or line
         CSV += reportTitle + "\r\n\n";
-        CSV += "Organization ID: " + this.orgChartData.OrgGroupID + "\r\n\n";
+        CSV += `Organization ID: ${this.orgChartData.OrgGroupID}\r\n\n`;
 
         // This condition will generate the Label/Header
         if (showLabel) {
