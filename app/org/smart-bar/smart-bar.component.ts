@@ -96,20 +96,24 @@ export class SamrtBarComponent implements OnChanges {
         }
         if (changes["selectedOrgNode"]) {
             if (this.selectedOrgNode) {
-                if (this.newNodeValue && this.newNodeValue.length === 1) {
-                    this.isSmartBarEnabled.emit(true);
-                }
-                if (!this.isEditMenuEnable && changes["selectedOrgNode"].previousValue === null) {
-                    this.isSmartBarEnabled.emit(false);
-                    this.clearSearch();
+                if (changes["selectedOrgNode"].previousValue && changes["selectedOrgNode"].previousValue.NodeID !== this.selectedOrgNode.NodeID) {
+                    this.resetSearch();
+                } else {
+                    if (this.newNodeValue && this.newNodeValue.length === 1) {
+                        this.isSmartBarEnabled.emit(true);
+                    }
+                    if (!this.isEditMenuEnable && changes["selectedOrgNode"].previousValue === null) {
+                        this.isSmartBarEnabled.emit(false);
+                        this.clearSearch();
+                    }
                 }
                 this.nodeSearched.emit(null);
             } else {
+                this.resetSearch();
                 this.nodeSearched.emit(this.selectedOrgNode);
             }
             this.setInputFocus();
         }
-
     }
 
     @HostListener("blur", ["$event"])
@@ -280,10 +284,7 @@ export class SamrtBarComponent implements OnChanges {
                 this.isNodeMoveDisabled.emit(false);
                 this.newNodeValue = this.titleFilterList = null;
             } else {
-                this.isSmartBarEnabled.emit(false);
-                this.isNodeMoveDisabled.emit(false);
-                this.newNodeValue = this.titleFilterList = null;
-                this.clearSearch();
+                this.resetSearch();
             }
         }
     }
@@ -891,6 +892,13 @@ export class SamrtBarComponent implements OnChanges {
             return;
         }
     };
+
+    private resetSearch() {
+        this.isSmartBarEnabled.emit(false);
+        this.isNodeMoveDisabled.emit(false);
+        this.newNodeValue = this.titleFilterList = null;
+        this.clearSearch();
+    }
 
     private handleError(err) {
         try {
