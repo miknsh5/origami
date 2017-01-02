@@ -35,7 +35,6 @@ export class OrgComponent implements OnDestroy {
     @Output() groupName: any;
     @Output() selectedNode: OrgNodeModel;
     @Output() isAddOrEditMode: boolean;
-    @Output() detailAddOrEditMode: boolean;
     @Output() displayFirstNameLabel: boolean;
     @Output() displayLastNameLabel: boolean;
     @Output() displayDescriptionLabel: boolean;
@@ -144,11 +143,9 @@ export class OrgComponent implements OnDestroy {
             if (this.selectedNode) {
                 if (node.NodeID === -1) {
                     this.isAddOrEditMode = true;
-                    this.detailAddOrEditMode = true;
                 } else if ((this.isAddOrEditMode || !this.isAddOrEditMode && prevNode && prevNode.IsNewRoot)
                     && prevNode && prevNode.NodeID !== node.NodeID) {
                     this.isAddOrEditMode = false;
-                    this.detailAddOrEditMode = false;
                 }
             }
             this.currentOrgNodeStatus = OrgNodeStatus.None;
@@ -167,7 +164,6 @@ export class OrgComponent implements OnDestroy {
             }
             this.selectedNode = addedNode;
             this.searchedNode = addedNode;
-            this.detailAddOrEditMode = false;
             this.isOrgNodeEmpty = false;
             this.currentOrgNodeStatus = OrgNodeStatus.Add;
         }
@@ -189,14 +185,12 @@ export class OrgComponent implements OnDestroy {
 
     onSwitchedToAddMode(node: OrgNodeModel) {
         this.isAddOrEditMode = true;
-        this.detailAddOrEditMode = true;
         this.selectedNode = node;
         this.disableViewAndExploreModesNav();
     }
 
     onAddOrEditModeValueSet(value: boolean) {
         this.isAddOrEditMode = value;
-        this.detailAddOrEditMode = value;
         if (value) {
             this.disableViewAndExploreModesNav();
         } else {
@@ -292,7 +286,6 @@ export class OrgComponent implements OnDestroy {
     onNodeDeleted(deleted) {
         this.currentOrgNodeStatus = OrgNodeStatus.None;
         this.isAddOrEditMode = false;
-        this.detailAddOrEditMode = false;
         if (deleted) {
             if (deleted.IsNewRoot) {
                 let oldRoot = deleted.children[0];
