@@ -5,20 +5,20 @@ import { HttpModule, JsonpModule } from "@angular/http";
 
 import { AUTH_PROVIDERS } from "angular2-jwt";
 
-import { routing, appRoutingProviders } from "./app.routing";
+import { routing, appRoutingProviders } from "./routing";
 
-import { AppComponent } from "./app.component";
+import { App } from "./app";
 
 import {
   OrgComponent, OrgTreeComponent, MenuPanelComponent,
   SideMenuComponent, OrgService, JsonToCSVComponent, TreeToPNGComponent,
-  ImportCsvFileComponent, MenuConfirmButtonComponent, DomElementHelper, SamrtBarComponent } from "./org/index";
+  ImportCsvFileComponent, MenuConfirmButtonComponent, DomElementHelper, SamrtBarComponent } from "./org";
 
-import { LoginComponent, AuthService } from "./login/index";
+import { LoginComponent, AuthService } from "./login";
 
 @NgModule({
   declarations: [
-    AppComponent,
+    App,
     LoginComponent,
     OrgComponent,
     OrgTreeComponent,
@@ -44,6 +44,6 @@ import { LoginComponent, AuthService } from "./login/index";
     HttpModule,
     JsonpModule
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [App]
 })
 export class AppModule { }

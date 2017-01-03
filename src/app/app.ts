@@ -3,9 +3,9 @@ import { Component } from "@angular/core";
 import "rxjs/add/operator/map";
 
 @Component({
-    selector: "sg-app",
+    selector: "app",
     template: "<router-outlet></router-outlet>"
 })
 
-export class AppComponent {
+export class App {
 }

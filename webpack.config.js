@@ -1,35 +1,53 @@
-var webpack = require('webpack'),
-    path = require('path'),
-    CleanWebpackPlugin = require('clean-webpack-plugin')
+var path = require('path');
+var webpack = require('webpack');
 
-module.exports = {
+var config = {
+    cache: true,
     devtool: 'source-map',
     entry: {
-        'vendor': './app/vendor',
-        'app': './app/main'
-    },
-    resolve: {
-        extensions: ['', '.ts', '.js', '.png', '.gif']
+        polyfills: './src/polyfills',
+        vendor: './src/vendor',
+        main: './src/main'
     },
     output: {
-        path: __dirname,
-        filename: './dist/[name].bundle.js'
+        path: path.join(__dirname, 'dist'),
+        filename: '[name].bundle.js',
+        sourceMapFilename: '[name].map',
+        chunkFilename: '[id].chunk.js'
     },
     module: {
         preLoaders: [
             { test: /\.js$/, loader: 'source-map-loader', exclude: /node_modules/ }
         ],
         loaders: [
-            { test: /\.ts$/, loader: 'awesome-typescript-loader', exclude: /node_modules/ },
-            { test: /\.(html|css|png|gif)$/, loader: 'raw-loader' }
+            { test: /\.ts$/, loader: 'awesome-typescript-loader' },
+            { test: /\.json$/, loader: 'json-loader' },
+            { test: /\.html/, loader: 'raw-loader' },
+            { test: /\.css$/, loader: 'to-string-loader!css-loader' },
         ]
     },
+
     plugins: [
         new webpack.optimize.OccurenceOrderPlugin(true),
-        new webpack.optimize.CommonsChunkPlugin( /* chunkName= */ 'vendor', /* filename= */ './dist/vendor.bundle.js'),
-        new CleanWebpackPlugin(['build', 'dist'], { root: __dirname, verbose: true, dry: false, exclude: [/node_modules/] })
+        new webpack.optimize.CommonsChunkPlugin({ name: ['polyfills', 'vendor', 'main'].reverse(), minChunks: Infinity }),
     ],
+    resolve: {
+        extensions: ['', '.ts', '.js', '.png', '.gif']
+    },
     devServer: {
-        historyApiFallback: true
+        historyApiFallback: true,
+        watchOptions: { aggregateTimeout: 300, poll: 1000 }
+    },
+    node: {
+        global: true,
+        process: true,
+        Buffer: false,
+        crypto: 'empty',
+        module: false,
+        clearImmediate: false,
+        setImmediate: false,
+        clearTimeout: true,
+        setTimeout: true
     }
-}
+};
+module.exports = config;

@@ -28,27 +28,27 @@
 }
 
 .modes_wrap li.nav_build {
-    background-image: url("/app/images/nav-build.png");
+    background-image: url("assets/images/nav-build.png");
 }
 
 .modes_wrap li.nav_build.active {
-    background-image: url("/app/images/nav-build-active.png");
+    background-image: url("assets/images/nav-build-active.png");
 }
 
 .modes_wrap li.nav_explore {
-    background-image: url("/app/images/nav-explore.png");
+    background-image: url("assets/images/nav-explore.png");
 }
 
 .modes_wrap li.nav_explore.active {
-    background-image: url("/app/images/nav-explore-active.png");
+    background-image: url("assets/images/nav-explore-active.png");
 }
 
 .modes_wrap li.nav_report {
-    background-image: url("/app/images/nav-report.png");
+    background-image: url("assets/images/nav-report.png");
 }
 
 .modes_wrap li.nav_report.active {
-    background-image: url("/app/images/nav-report-active.png");
+    background-image: url("assets/images/nav-report-active.png");
 }
 
 .modes_wrap li>a {

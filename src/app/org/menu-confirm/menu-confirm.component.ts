@@ -4,7 +4,7 @@ import { Component, Input, Output, EventEmitter } from "@angular/core";
 @Component({
     selector: "sg-menu-confirm-button",
     templateUrl: "app/org/menu-confirm/menu-confirm.component.html",
-    styleUrls: ["app/org/menu-confirm/menu-confirm.component.css", "app/style.css", "app/org/menu-panel/menu-panel.component.css"]
+    styleUrls: ["app/org/menu-confirm/menu-confirm.component.css", "app/org/menu-panel/menu-panel.component.css"]
 })
 
 export class MenuConfirmButtonComponent {
