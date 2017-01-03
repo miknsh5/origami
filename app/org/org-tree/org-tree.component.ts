@@ -1522,10 +1522,12 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     }
 
     private peerReporteeNodeClicked(nodeName) {
-        if (nodeName === REPORTEE_TEXT) {
-            this.addNewNode(this.selectedOrgNode);
-        } else {
-            this.addNewNode(this.selectedOrgNode.parent);
+        if (!this.isAddOrEditModeEnabled) {
+            if (nodeName === REPORTEE_TEXT) {
+                this.addNewNode(this.selectedOrgNode);
+            } else {
+                this.addNewNode(this.selectedOrgNode.parent);
+            }
         }
     }
 
