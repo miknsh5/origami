@@ -40,6 +40,7 @@
         "raw-loader": "^0.5.1",
         "source-map-loader": "^0.1.5",
         "to-string-loader": "^1.1.4",
+        "copy-webpack-plugin": "^2.1.6",
         "ts-helpers": "^1.1.1",
         "webpack": "^1.13.0",
         "webpack-dev-server": "^1.14.1"

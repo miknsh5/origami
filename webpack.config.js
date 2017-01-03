@@ -1,5 +1,6 @@
 var path = require('path');
-var webpack = require('webpack');
+var webpack = require('webpack'),
+    CopyWebpackPlugin = require('copy-webpack-plugin');
 
 var config = {
     cache: true,
@@ -30,12 +31,26 @@ var config = {
     plugins: [
         new webpack.optimize.OccurenceOrderPlugin(true),
         new webpack.optimize.CommonsChunkPlugin({ name: ['polyfills', 'vendor', 'main'].reverse(), minChunks: Infinity }),
+        new CopyWebpackPlugin([{
+                from: path.join(__dirname, 'src/index.html'),
+                to: path.join(__dirname, 'dist/index.html')
+            },
+            {
+                from: path.join(__dirname, 'src/assets'),
+                to: path.join(__dirname, 'dist/assets')
+            },
+            {
+                from: path.join(__dirname, 'src/app'),
+                to: path.join(__dirname, 'dist/app')
+            },
+        ], { ignore: ['*.ts'], })
     ],
     resolve: {
         extensions: ['', '.ts', '.js', '.png', '.gif']
     },
     devServer: {
         historyApiFallback: true,
+        outputPath: path.join(__dirname, 'dist'),
         watchOptions: { aggregateTimeout: 300, poll: 1000 }
     },
     node: {
