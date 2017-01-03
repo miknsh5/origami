@@ -1,4 +1,4 @@
-import {OrgNodeModel} from "./orgnode.model";
+import { OrgNodeModel } from "./orgnode.model";
 
 export class OrgGroupModel {
     CompanyID: number;

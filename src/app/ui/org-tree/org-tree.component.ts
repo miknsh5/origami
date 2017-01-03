@@ -1,9 +1,10 @@
-import * as angular from "@angular/core";
-import { Component, HostListener, Input, Output, Directive, EventEmitter, Attribute, OnChanges, DoCheck, ElementRef, OnInit, SimpleChange } from "@angular/core";
-import { Inject } from "@angular/core";
+import {
+    Component, HostListener, Inject, Input, Output, Directive, EventEmitter,
+    Attribute, OnChanges, DoCheck, ElementRef, OnInit, SimpleChange
+} from "@angular/core";
 
 import * as d3 from "d3";
-import { DraggedNode, OrgNodeModel, OrgService, ChartMode } from "../shared/index";
+import { DraggedNode, OrgNodeModel, OrgService, ChartMode } from "../../shared/index";
 
 const DURATION = 250;
 const TOPBOTTOM_MARGIN = 20;

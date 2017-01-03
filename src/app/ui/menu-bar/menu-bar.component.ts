@@ -1,11 +1,10 @@
 import { Component, Input, Output, EventEmitter, OnChanges, SimpleChange, Renderer } from "@angular/core";
 import { Router } from "@angular/router";
 
-import { OrgCompanyModel, OrgGroupModel, OrgNodeModel, OrgService, OrgNodeStatus, OrgNodeBaseModel, DomElementHelper } from "../shared/index";
-import { CSVConversionHelper } from "../shared/csv-helper";
-import { UserModel } from "../../Shared/index";
-
-import { AuthService } from "../../login/index";
+import {
+    AuthService, UserModel, OrgCompanyModel, OrgGroupModel, OrgNodeModel,
+    OrgService, OrgNodeStatus, OrgNodeBaseModel, DomElementHelper, CSVConversionHelper
+} from "../../shared/index";
 
 const MenuElement = {
     groupName: "#groupName",
@@ -21,12 +20,12 @@ const MenuElement = {
 
 @Component({
     selector: "sg-menu-panel",
-    templateUrl: "app/org/menu-panel/menu-panel.component.html",
-    styleUrls: ["app/org/menu-panel/menu-panel.component.css"],
+    templateUrl: "app/org/menu-bar/menu-bar.component.html",
+    styleUrls: ["app/org/menu-bar/menu-bar.component.css"],
     providers: [CSVConversionHelper]
 })
 
-export class MenuPanelComponent implements OnChanges {
+export class MenuBarComponent implements OnChanges {
     private orgCompanies: OrgCompanyModel[];
     private orgCompanyGroups: OrgGroupModel[];
     private selectedCompany: OrgCompanyModel;

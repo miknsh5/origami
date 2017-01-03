@@ -1,7 +1,10 @@
 import { Component, Output, EventEmitter, OnDestroy, HostListener } from "@angular/core";
 import { tokenNotExpired } from "angular2-jwt";
 
-import { DraggedNode, OrgNodeModel, ChartMode, OrgCompanyModel, OrgGroupModel, OrgNodeStatus, DomElementHelper, OrgService } from "./shared/index";
+import {
+    DraggedNode, OrgNodeModel, ChartMode, OrgCompanyModel, OrgGroupModel,
+    OrgNodeStatus, DomElementHelper, OrgService
+} from "../../shared/index";
 
 const MIN_HEIGHT: number = 420;
 const MIN_WIDTH: number = 640;

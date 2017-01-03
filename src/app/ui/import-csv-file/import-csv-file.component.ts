@@ -1,7 +1,8 @@
 import { Component, Input, Output, EventEmitter } from "@angular/core";
 
-import { OrgGroupModel, OrgNodeModel, OrgService, DomElementHelper } from "../shared/index";
-import { CSVConversionHelper } from "../shared/csv-helper";
+import {
+    OrgGroupModel, OrgNodeModel, OrgService, DomElementHelper, CSVConversionHelper
+} from "../../shared/index";
 
 const DEFAULT_EXTENSION: string = ".csv";
 const DEFAULT_HEADERSTRING: string = "UID,First Name,Last Name,Title,Parent,";
@@ -17,7 +18,7 @@ const ImportElementName = {
 @Component({
     selector: "sg-import-csv-file",
     templateUrl: "app/org/import-csv-file/import-csv-file.component.html",
-    styleUrls: ["app/org/import-csv-file/import-csv-file.component.css", "app/org/menu-panel/menu-panel.component.css"],
+    styleUrls: ["app/org/import-csv-file/import-csv-file.component.css", "app/org/menu-bar/menu-bar.component.css"],
     providers: [CSVConversionHelper]
 })
 

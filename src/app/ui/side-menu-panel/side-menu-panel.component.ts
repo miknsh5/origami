@@ -1,7 +1,9 @@
 import { Component, HostListener, Input, Output, OnChanges, SimpleChange, EventEmitter, OnInit, ViewChild } from "@angular/core";
 import { NgForm, NgControl } from "@angular/forms";
-import { OrgGroupModel, OrgNodeModel, ChartMode, OrgService, UserFeedBack, DomElementHelper } from "../shared/index";
-import { UserModel } from "../../Shared/index";
+
+import {
+    UserModel, OrgGroupModel, OrgNodeModel, ChartMode, OrgService, UserFeedBack, DomElementHelper
+} from "../../shared/index";
 
 declare let jQuery: any;
 

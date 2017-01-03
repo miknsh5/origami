@@ -1,8 +1,7 @@
 import { Routes, RouterModule } from "@angular/router";
-import { AuthGuard } from "./login/index";
+import { AuthGuard } from "./shared/index";
 
-import { LoginComponent } from "./login/login.component";
-import { OrgComponent } from "./org/org.component";
+import { LoginComponent, OrgComponent } from "./container/index";
 
 const appRoutes: Routes = [
     {

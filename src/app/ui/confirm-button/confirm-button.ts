@@ -3,11 +3,11 @@ import { Component, Input, Output, EventEmitter } from "@angular/core";
 
 @Component({
     selector: "sg-menu-confirm-button",
-    templateUrl: "app/org/menu-confirm/menu-confirm.component.html",
-    styleUrls: ["app/org/menu-confirm/menu-confirm.component.css", "app/org/menu-panel/menu-panel.component.css"]
+    templateUrl: "app/org/confirm-button/confirm-button.html",
+    styleUrls: ["app/org/confirm-button/confirm-button.css", "app/org/menu-bar/menu-bar.component.css"]
 })
 
-export class MenuConfirmButtonComponent {
+export class ConfirmButtonComponent {
     private title: any;
     @Input() deleteTitle: string;
     @Input() titleName: string;

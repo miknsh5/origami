@@ -1,7 +1,7 @@
 import { Component, ElementRef, Input, Output, EventEmitter, OnChanges, SimpleChange, HostListener, Renderer } from "@angular/core";
 import { NgForm, NgControl } from "@angular/forms";
 
-import { DraggedNode, OrgNodeModel, OrgSearchModel, OrgService, DomElementHelper } from "../shared/index";
+import { DraggedNode, OrgNodeModel, OrgSearchModel, OrgService, DomElementHelper } from "../../shared/index";
 
 const HeaderTitle = "NAME";
 const AddResource = "Search, Add Resources";

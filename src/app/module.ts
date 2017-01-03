@@ -10,25 +10,27 @@ import { routing, appRoutingProviders } from "./routing";
 import { App } from "./app";
 
 import {
-  OrgComponent, OrgTreeComponent, MenuPanelComponent,
-  SideMenuComponent, OrgService, JsonToCSVComponent, TreeToPNGComponent,
-  ImportCsvFileComponent, MenuConfirmButtonComponent, DomElementHelper, SamrtBarComponent } from "./org";
+  OrgTreeComponent, MenuBarComponent , SideMenuComponent, JsonToCSVComponent, TreeToPNGComponent,
+  ImportCsvFileComponent, ConfirmButtonComponent, SamrtBarComponent
+} from "./ui/index";
 
-import { LoginComponent, AuthService } from "./login";
+import { OrgComponent, LoginComponent } from "./container/index";
+
+import { AuthService, OrgService, DomElementHelper } from "./shared/index"
 
 @NgModule({
   declarations: [
     App,
     LoginComponent,
     OrgComponent,
-    OrgTreeComponent,
-    MenuPanelComponent,
+    MenuBarComponent,
     SideMenuComponent,
+    OrgTreeComponent,
+    SamrtBarComponent,
     JsonToCSVComponent,
     TreeToPNGComponent,
     ImportCsvFileComponent,
-    MenuConfirmButtonComponent,
-    SamrtBarComponent
+    ConfirmButtonComponent
   ],
   providers: [
     appRoutingProviders,

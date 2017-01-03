@@ -2,7 +2,7 @@ import { Injectable, NgZone } from "@angular/core";
 import { tokenNotExpired } from "angular2-jwt";
 import { Router } from "@angular/router";
 
-import { UserModel } from "../shared/index";
+import { UserModel } from "./model/index";
 import { myConfig } from "./auth.config";
 
 declare var Auth0Lock: any;
