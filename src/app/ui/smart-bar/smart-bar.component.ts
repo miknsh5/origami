@@ -253,7 +253,7 @@ export class SamrtBarComponent implements OnChanges {
         }
         // esc
         else if ((event as KeyboardEvent).keyCode === 27) {
-            if (this.isEditModeEnabled && this.selectedOrgNode) {
+            if ((this.isSmartBarEnabled || this.isEditModeEnabled) && this.selectedOrgNode) {
                 if (this.isNodeMoveEnabledOrDisabled) {
                     this.searchTerm = this.multiInTerm = EMPTYSTRING;
                     this.isNodeMoveDisabled.emit(false);
@@ -313,7 +313,7 @@ export class SamrtBarComponent implements OnChanges {
     }
 
     onSmartbarBackspacePressed(event) {
-        if (this.isNodeMoveEnabledOrDisabled && (this.multiInTerm === EMPTYSTRING || this.multiInTerm.length === 1)) {
+        if (this.isNodeMoveEnabledOrDisabled && this.multiInTerm === EMPTYSTRING) {
             this.searchTerm = this.multiInTerm = EMPTYSTRING;
             this.isNodeMoveDisabled.emit(false);
             this.isSmartBarEnabled.emit(false);
