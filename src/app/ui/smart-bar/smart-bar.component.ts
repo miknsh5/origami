@@ -15,8 +15,8 @@ declare let jQuery;
 
 @Component({
     selector: "sg-smart-bar",
-    templateUrl: "app/org/smart-bar/smart-bar.component.html",
-    styleUrls: ["app/org/smart-bar/smart-bar.component.css"]
+    templateUrl: "app/ui/smart-bar/smart-bar.component.html",
+    styleUrls: ["app/ui/smart-bar/smart-bar.component.css"]
 })
 
 export class SamrtBarComponent implements OnChanges {

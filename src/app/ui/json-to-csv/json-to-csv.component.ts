@@ -5,8 +5,8 @@ import { CSVConversionHelper } from "../../shared/index";
 
 @Component({
     selector: "sg-csv",
-    templateUrl: "app/org/json-to-csv/json-to-csv.component.html",
-    styleUrls: ["app/org/json-to-csv/json-to-csv.component.css"],
+    templateUrl: "app/ui/json-to-csv/json-to-csv.component.html",
+    styleUrls: ["app/ui/json-to-csv/json-to-csv.component.css"],
     providers: [CSVConversionHelper]
 })
 

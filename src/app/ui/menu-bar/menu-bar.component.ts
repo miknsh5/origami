@@ -20,8 +20,8 @@ const MenuElement = {
 
 @Component({
     selector: "sg-menu-panel",
-    templateUrl: "app/org/menu-bar/menu-bar.component.html",
-    styleUrls: ["app/org/menu-bar/menu-bar.component.css"],
+    templateUrl: "app/ui/menu-bar/menu-bar.component.html",
+    styleUrls: ["app/ui/menu-bar/menu-bar.component.css"],
     providers: [CSVConversionHelper]
 })
 

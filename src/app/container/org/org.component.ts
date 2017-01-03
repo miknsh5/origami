@@ -15,8 +15,8 @@ declare var svgPanZoom: any;
 
 @Component({
     selector: "sg-org",
-    templateUrl: "app/org/org.component.html",
-    styleUrls: ["app/org/org.component.css"]
+    templateUrl: "app/container/org/org.component.html",
+    styleUrls: ["app/container/org/org.component.css"]
 })
 
 export class OrgComponent implements OnDestroy {

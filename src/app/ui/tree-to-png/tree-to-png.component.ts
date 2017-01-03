@@ -11,8 +11,8 @@ const MIN_HEIGHT = 480;
 
 @Component({
     selector: "sg-png",
-    templateUrl: "app/org/tree-to-png/tree-to-png.component.html",
-    styleUrls: ["app/org/tree-to-png/tree-to-png.component.css"]
+    templateUrl: "app/ui/tree-to-png/tree-to-png.component.html",
+    styleUrls: ["app/ui/tree-to-png/tree-to-png.component.css"]
 })
 
 export class TreeToPNGComponent {

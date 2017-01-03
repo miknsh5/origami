@@ -17,8 +17,8 @@ const ImportElementName = {
 
 @Component({
     selector: "sg-import-csv-file",
-    templateUrl: "app/org/import-csv-file/import-csv-file.component.html",
-    styleUrls: ["app/org/import-csv-file/import-csv-file.component.css", "app/org/menu-bar/menu-bar.component.css"],
+    templateUrl: "app/ui/import-csv-file/import-csv-file.component.html",
+    styleUrls: ["app/ui/import-csv-file/import-csv-file.component.css", "app/ui/menu-bar/menu-bar.component.css"],
     providers: [CSVConversionHelper]
 })
 
