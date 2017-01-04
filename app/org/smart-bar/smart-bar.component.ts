@@ -131,7 +131,6 @@ export class SamrtBarComponent implements OnChanges {
                 this.nodeSearchedList = new Array<OrgSearchModel>();
                 this.titleFilterList = new Array();
                 this.searchHeader = `BY ${HeaderTitle}`;
-
             } else {
                 if (this.searchTerm || this.isSearchEnabled) {
                     this.searchInProgress = this.isSearchEnabled = false;
@@ -254,7 +253,7 @@ export class SamrtBarComponent implements OnChanges {
         }
         // esc
         else if ((event as KeyboardEvent).keyCode === 27) {
-            if (this.isSmartBarEnabled && this.selectedOrgNode) {
+            if (this.selectedOrgNode) {
                 if (this.isNodeMoveEnabledOrDisabled) {
                     this.searchTerm = this.multiInTerm = EMPTYSTRING;
                     this.isNodeMoveDisabled.emit(false);
@@ -858,13 +857,14 @@ export class SamrtBarComponent implements OnChanges {
         }
     }
 
-    private setInputFocus() {
+    private setInputFocus() {        
         if (!this.isMenuSettingsEnabled) {
             setTimeout(() => {
                 let element;
                 if (this.selectedOrgNode) {
-                    if (!this.isSmartBarEnabled)
+                    if (!this.isEditModeEnabled){
                         element = document.querySelector("input[name=multiInTerm]");
+                    }
                 } else {
                     element = document.querySelector("input[name=searchTerm]");
                 }

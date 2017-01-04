@@ -22,7 +22,7 @@
     margin: 0;
 }
 
-.sideNav button {
+button {
     margin: 0 !important;
     padding: 0 !important;
     background-color: #607d8b;
@@ -36,7 +36,7 @@
     margin: 0 8px;
 }
 
-.sideNav .menuButton {
+.menuButton {
     display: block;
     position: absolute;
     right: 0;
@@ -44,7 +44,7 @@
     width: 30px;
 }
 
-.sideNav .menuButton a {
+.menuButton a {
     color: #fff;
     background: #607D8B;
     border: none;
@@ -55,11 +55,11 @@
     padding: 0;
 }
 
-.sideNav .menuButton a>i {
+.menuButton a>i {
     padding: 0 5px;
 }
 
-.sideNav .menuButton a::after {
+.menuButton a::after {
     content: '';
     display: block;
     position: absolute;
@@ -74,7 +74,7 @@
     transform: rotate(180deg);
 }
 
-.sideNav #menuPanel {
+#menuPanel {
     position: relative;
     width: 3px;
     height: 100%;
@@ -85,7 +85,7 @@
     transition: 0.5s;
 }
 
-.sideNav .closebtn {
+.closebtn {
     width: 30px;
     height: 30px;
     background-color: #607d8b;
@@ -121,7 +121,7 @@
     margin: 10px 35px;
 }
 
-.sideNav .editbtn,
+.editbtn,
 .deletebtn,
 .movebtn {
     width: 30px;
@@ -131,7 +131,7 @@
     border: 0;
 }
 
-.sideNav .editbtn i,
+.editbtn i,
 .deletebtn i,
 .movebtn i {
     font-size: 0.99rem;
@@ -146,8 +146,11 @@
     right: 2px;
 }
 
-.sideNav button.movebtn.active {
+.movebtn.active {
     background-color: #CFD8DC;
+    background-color: var(--silver);
+    color: #607d8b;
+    color: var(--blue-grey);
 }
 
 .sideNav .menuTitle {
