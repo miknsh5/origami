@@ -1,5 +1,6 @@
 var path = require('path');
 var webpack = require('webpack'),
+    CleanWebpackPlugin = require('clean-webpack-plugin'),
     CopyWebpackPlugin = require('copy-webpack-plugin');
 
 var config = {
@@ -31,6 +32,7 @@ var config = {
     plugins: [
         new webpack.optimize.OccurenceOrderPlugin(true),
         new webpack.optimize.CommonsChunkPlugin({ name: ['polyfills', 'vendor', 'main'].reverse(), minChunks: Infinity }),
+        new CleanWebpackPlugin(['dist'], { root: __dirname, verbose: true, dry: false, exclude: [/node_modules/] }),
         new CopyWebpackPlugin([{
                 from: path.join(__dirname, 'src/index.html'),
                 to: path.join(__dirname, 'dist/index.html')
