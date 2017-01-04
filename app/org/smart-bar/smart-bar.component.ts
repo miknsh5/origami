@@ -44,6 +44,8 @@ export class SamrtBarComponent implements OnChanges {
     @Input() isEditMenuEnable: boolean;
     @Input() orgGroupID: number;
     @Input() isNodeMoveEnabledOrDisabled: boolean;
+    @Input() isMenuSettingsEnabled: boolean;
+
     @Output() nodeSearched = new EventEmitter<OrgNodeModel>();
     @Output() deleteNode = new EventEmitter<OrgNodeModel>();
     @Output() addNode = new EventEmitter<OrgNodeModel>();
@@ -858,18 +860,20 @@ export class SamrtBarComponent implements OnChanges {
     }
 
     private setInputFocus() {
-        setTimeout(() => {
-            let element;
-            if (this.selectedOrgNode) {
-                if (!this.isEditModeEnabled)
-                    element = document.querySelector("input[name=multiInTerm]");
-            } else {
-                element = document.querySelector("input[name=searchTerm]");
-            }
-            if (element) {
-                this.renderer.invokeElementMethod(element, "focus", []);
-            }
-        }, 100);
+        if (!this.isMenuSettingsEnabled) {
+            setTimeout(() => {
+                let element;
+                if (this.selectedOrgNode) {
+                    if (!this.isEditModeEnabled)
+                        element = document.querySelector("input[name=multiInTerm]");
+                } else {
+                    element = document.querySelector("input[name=searchTerm]");
+                }
+                if (element) {
+                    this.renderer.invokeElementMethod(element, "focus", []);
+                }
+            }, 100);
+        }
     }
 
     private convertToFlatData(inputArray, ischild?: boolean) {
