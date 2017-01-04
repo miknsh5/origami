@@ -7,7 +7,7 @@ import { AUTH_PROVIDERS } from "angular2-jwt";
 
 import { routing, appRoutingProviders } from "./routing";
 
-import { App } from "./app";
+import { AppComponent } from "./app.component";
 
 import {
   OrgTreeComponent, MenuBarComponent , SideMenuComponent, JsonToCSVComponent, TreeToPNGComponent,
@@ -20,7 +20,7 @@ import { AuthService, OrgService, DOMHelper } from "./shared/index"
 
 @NgModule({
   declarations: [
-    App,
+    AppComponent,
     LoginComponent,
     OrgComponent,
     MenuBarComponent,
@@ -46,6 +46,6 @@ import { AuthService, OrgService, DOMHelper } from "./shared/index"
     HttpModule,
     JsonpModule
   ],
-  bootstrap: [App]
+  bootstrap: [AppComponent]
 })
 export class AppModule { }

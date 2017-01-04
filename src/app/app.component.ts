@@ -7,5 +7,5 @@ import "rxjs/add/operator/map";
     template: "<router-outlet></router-outlet>"
 })
 
-export class App {
+export class AppComponent {
 }
