@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter } from "@angular/core";
 
 import {
-    OrgGroupModel, OrgNodeModel, OrgService, DomElementHelper, CSVConversionHelper
+    OrgGroupModel, OrgNodeModel, OrgService, DOMHelper, CSVConversionHelper
 } from "../../shared/index";
 
 const DEFAULT_EXTENSION: string = ".csv";
@@ -34,7 +34,7 @@ export class ImportCsvFileComponent {
     @Input() selectedGroup: OrgGroupModel;
     @Output() newOrgNodes = new EventEmitter<OrgNodeModel>();
 
-    constructor(private orgService: OrgService, private csvHelper: CSVConversionHelper, private domHelper: DomElementHelper) {
+    constructor(private orgService: OrgService, private csvHelper: CSVConversionHelper, private domHelper: DOMHelper) {
         this.fileName = "";
         this.mappedNodesCount = 0;
         this.unmappedNodesCount = 0;

@@ -16,7 +16,7 @@ import {
 
 import { OrgComponent, LoginComponent } from "./container/index";
 
-import { AuthService, OrgService, DomElementHelper } from "./shared/index"
+import { AuthService, OrgService, DOMHelper } from "./shared/index"
 
 @NgModule({
   declarations: [
@@ -37,7 +37,7 @@ import { AuthService, OrgService, DomElementHelper } from "./shared/index"
     AUTH_PROVIDERS,
     AuthService,
     OrgService,
-    DomElementHelper
+    DOMHelper
   ],
   imports: [
     BrowserModule,

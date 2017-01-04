@@ -2,7 +2,7 @@ import { Component, HostListener, Input, Output, OnChanges, SimpleChange, EventE
 import { NgForm, NgControl } from "@angular/forms";
 
 import {
-    UserModel, OrgGroupModel, OrgNodeModel, ChartMode, OrgService, UserFeedBack, DomElementHelper
+    UserModel, OrgGroupModel, OrgNodeModel, ChartMode, OrgService, UserFeedBack, DOMHelper
 } from "../../shared/index";
 
 declare let jQuery: any;
@@ -80,7 +80,7 @@ export class SideMenuComponent implements OnInit, OnChanges {
     @Output() isFeedbackInEditMode = new EventEmitter<boolean>();
     @Output() isHorizontalViewEnabled = new EventEmitter<boolean>();
 
-    constructor(private orgService: OrgService, private domHelper: DomElementHelper) {
+    constructor(private orgService: OrgService, private domHelper: DOMHelper) {
         this.feedbackIcon = FEEDBACK_ICON_OPEN;
         this.isFeedbackOpen = false;
         this.isClosed = false;

@@ -3,7 +3,7 @@ import { Router } from "@angular/router";
 
 import {
     AuthService, UserModel, OrgCompanyModel, OrgGroupModel, OrgNodeModel,
-    OrgService, OrgNodeStatus, OrgNodeBaseModel, DomElementHelper, CSVConversionHelper
+    OrgService, OrgNodeStatus, OrgNodeBaseModel, DOMHelper, CSVConversionHelper
 } from "../../shared/index";
 
 const MenuElement = {
@@ -48,7 +48,7 @@ export class MenuBarComponent implements OnChanges {
     @Output() name: string;
 
     constructor(private orgService: OrgService, private router: Router, private renderer: Renderer,
-        private csvHelper: CSVConversionHelper, private auth: AuthService, private domHelper: DomElementHelper) {
+        private csvHelper: CSVConversionHelper, private auth: AuthService, private domHelper: DOMHelper) {
         this.getAllCompanies();
         this.domHelper.showElements(MenuElement.exportData);
         this.domHelper.hideElements(MenuElement.downloadTemplate);

@@ -1,7 +1,7 @@
 import { Component, ElementRef, Input, Output, EventEmitter, OnChanges, SimpleChange, HostListener, Renderer } from "@angular/core";
 import { NgForm, NgControl } from "@angular/forms";
 
-import { DraggedNode, OrgNodeModel, OrgSearchModel, OrgService, DomElementHelper } from "../../shared/index";
+import { DraggedNode, OrgNodeModel, OrgSearchModel, OrgService, DOMHelper } from "../../shared/index";
 
 const HeaderTitle = "NAME";
 const AddResource = "Search, Add Resources";
@@ -53,7 +53,7 @@ export class SamrtBarComponent implements OnChanges {
     @Output() isNodeMoveDisabled = new EventEmitter<boolean>();
     @Output() moveNode = new EventEmitter<DraggedNode>();
 
-    constructor(private elementRef: ElementRef, private domHelper: DomElementHelper, private renderer: Renderer, private orgService: OrgService) {
+    constructor(private elementRef: ElementRef, private domHelper: DOMHelper, private renderer: Renderer, private orgService: OrgService) {
         this.searchHeader = `BY ${HeaderTitle}`;
         this.placeholderText = `${AddResource}`;
         this.newOrgNode = new OrgNodeModel();

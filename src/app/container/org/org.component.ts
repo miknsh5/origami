@@ -2,8 +2,8 @@ import { Component, Output, EventEmitter, OnDestroy, HostListener } from "@angul
 import { tokenNotExpired } from "angular2-jwt";
 
 import {
-    DraggedNode, OrgNodeModel, ChartMode, OrgCompanyModel, OrgGroupModel,
-    OrgNodeStatus, DomElementHelper, OrgService
+    DraggedNode, OrgNodeModel, ChartMode, OrgCompanyModel,
+    OrgGroupModel, OrgNodeStatus, OrgService
 } from "../../shared/index";
 
 const MIN_HEIGHT: number = 420;
@@ -52,7 +52,7 @@ export class OrgComponent implements OnDestroy {
     @Output() isFeedbackInEditMode: boolean;
     @Output() isHorizontalViewEnabled: boolean;
 
-    constructor(private orgService: OrgService, public domHelper: DomElementHelper) {
+    constructor(private orgService: OrgService) {
         this.currentChartMode = ChartMode.build;
         this.enableLabels();
         this.svgWidth = this.getSvgWidth();
