@@ -17,22 +17,20 @@ declare var svgPanZoom: any;
 })
 
 export class OrgComponent implements OnDestroy {
-    orgNodes: OrgNodeModel[];
-    svgWidth: number;
-    svgHeight: number;
-    buildView: any;
-    reportView: any;
-    exploreView: any;
-    buildViewText: any;
-    reportViewText: any;
-    svgPan: any;
+    private orgNodes: OrgNodeModel[];
+    private svgWidth: number;
+    private svgHeight: number;
+    private buildView: any;
+    private reportView: any;
+    private exploreView: any;
+    private svgPan: any;
+    private isSmartBarEnabled: boolean;
+    private isEditModeEnable: boolean;
 
-    @Output() groupID: any;
     @Output() companyID: any;
     @Output() currentChartMode: ChartMode;
     @Output() treeJson: any;
-    @Output() orgGroup: OrgGroupModel;
-    @Output() groupName: any;
+    orgGroup: OrgGroupModel;
     @Output() selectedNode: OrgNodeModel;
     @Output() isAddOrEditMode: boolean;
     @Output() displayFirstNameLabel: boolean;
@@ -42,10 +40,7 @@ export class OrgComponent implements OnDestroy {
     @Output() currentOrgNodeStatus: OrgNodeStatus;
     @Output() isMenuSettingsEnabled: boolean;
     @Output() searchedNode: OrgNodeModel;
-    @Output() isSmartBarEnabled: boolean;
-    @Output() isEditMenuEnable: boolean;
-    @Output() isNodeMoveEnabledOrDisabled: boolean;
-    @Output() moveNodeDisabled: boolean;
+    @Output() isNodeMoveEnabled: boolean;
     @Output() isFeedbackInEditMode: boolean;
     @Output() isHorizontalViewEnabled: boolean;
 
@@ -123,7 +118,7 @@ export class OrgComponent implements OnDestroy {
     }
 
     moveNodeEnabledOrDisabled(value: boolean) {
-        this.isNodeMoveEnabledOrDisabled = value;
+        this.isNodeMoveEnabled = value;
     }
 
     smartBarEnabled(value: boolean) {
@@ -132,7 +127,7 @@ export class OrgComponent implements OnDestroy {
     }
 
     isEditEnabled(value: boolean) {
-        this.isEditMenuEnable = value;
+        this.isEditModeEnable = value;
         this.onAddOrEditModeValueSet(value);
     }
 
@@ -371,11 +366,8 @@ export class OrgComponent implements OnDestroy {
 
     onGroupSelected(data: any) {
         this.orgGroup = data;
-        this.groupName = this.orgGroup.GroupName;
         this.orgNodes = JSON.parse(JSON.stringify(this.orgGroup.OrgNodes));
         this.companyID = this.orgGroup.CompanyID;
-        if (this.groupID !== this.orgGroup.OrgGroupID)
-            this.groupID = this.orgGroup.OrgGroupID;
         if (this.orgNodes && this.orgNodes.length === 0) {
             this.disableViewAndExploreModesNav();
             this.currentChartMode = ChartMode.build;
@@ -384,7 +376,7 @@ export class OrgComponent implements OnDestroy {
         this.enableViewModesNav(this.currentChartMode);
         this.treeJson = JSON.parse(JSON.stringify(this.orgNodes));
         this.isSmartBarEnabled = false;
-        this.isEditMenuEnable = false;
+        this.isEditModeEnable = false;
         this.onAddOrEditModeValueSet(false);
     }
 

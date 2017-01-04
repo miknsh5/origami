@@ -20,7 +20,7 @@ module.exports = {
             { test: /\.js$/, loader: 'source-map-loader', exclude: /node_modules/ }
         ],
         loaders: [
-            { test: /\.ts$/, loader: 'awesome-typescript-loader', exclude: /node_modules/ },
+            { test: /\.ts$/, loader: 'ts-loader', exclude: /node_modules/ },
             { test: /\.(html|css|png|gif)$/, loader: 'raw-loader' }
         ]
     },
