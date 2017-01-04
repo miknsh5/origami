@@ -41,9 +41,10 @@ export class SamrtBarComponent implements OnChanges {
     @Input() treeJsonData: any;
     @Input() selectedOrgNode: OrgNodeModel;
     @Input() isEditModeEnabled: boolean;
-    @Input() isEditMenuEnable: boolean;
     @Input() orgGroupID: number;
     @Input() isNodeMoveEnabledOrDisabled: boolean;
+    @Input() isMenuSettingsEnabled: boolean;
+
     @Output() nodeSearched = new EventEmitter<OrgNodeModel>();
     @Output() deleteNode = new EventEmitter<OrgNodeModel>();
     @Output() addNode = new EventEmitter<OrgNodeModel>();
@@ -103,7 +104,7 @@ export class SamrtBarComponent implements OnChanges {
                     if (this.newNodeValue && this.newNodeValue.length === 1) {
                         this.isSmartBarEnabled.emit(true);
                     }
-                    if (!this.isEditMenuEnable && changes["selectedOrgNode"].previousValue === null) {
+                    if (!this.isEditModeEnabled && changes["selectedOrgNode"].previousValue === null) {
                         this.isSmartBarEnabled.emit(false);
                         this.clearSearch();
                     }
@@ -130,7 +131,6 @@ export class SamrtBarComponent implements OnChanges {
                 this.nodeSearchedList = new Array<OrgSearchModel>();
                 this.titleFilterList = new Array();
                 this.searchHeader = `BY ${HeaderTitle}`;
-
             } else {
                 if (this.searchTerm || this.isSearchEnabled) {
                     this.searchInProgress = this.isSearchEnabled = false;
@@ -253,7 +253,7 @@ export class SamrtBarComponent implements OnChanges {
         }
         // esc
         else if ((event as KeyboardEvent).keyCode === 27) {
-            if ((this.isSmartBarEnabled || this.isEditModeEnabled) && this.selectedOrgNode) {
+            if (this.selectedOrgNode) {
                 if (this.isNodeMoveEnabledOrDisabled) {
                     this.searchTerm = this.multiInTerm = EMPTYSTRING;
                     this.isNodeMoveDisabled.emit(false);
@@ -320,7 +320,7 @@ export class SamrtBarComponent implements OnChanges {
             this.clearSearch();
         }
 
-        if (this.isEditModeEnabled) {
+        if (this.isSmartBarEnabled) {
             if (!this.multiInTerm && this.newNodeValue && this.newNodeValue.length > 0) {
                 if (this.newNodeValue.length === 1 && this.multiInTerm !== this.prevSearchTerm) {
                     this.isDescriptionText = false;
@@ -495,7 +495,7 @@ export class SamrtBarComponent implements OnChanges {
 
     private onInputSearch() {
         if (this.searchTerm) {
-            if (!this.isEditMenuEnable) {
+            if (!this.isEditModeEnabled) {
                 if (this.searchTerm) {
                     this.isSmartBarEnabled.emit(true);
                     this.processSearch(this.searchTerm);
@@ -542,7 +542,7 @@ export class SamrtBarComponent implements OnChanges {
             this.placeholderText = `${SaveData}`;
         }
 
-        if (!this.isEditMenuEnable) {
+        if (!this.isEditModeEnabled) {
             if (this.selectedOrgNode && this.selectedOrgNode.NodeID === -1) {
                 let islastName = this.checkSpaceInName(this.multiInTerm);
                 let index = this.multiInTerm.indexOf(" ");
@@ -606,13 +606,13 @@ export class SamrtBarComponent implements OnChanges {
 
             if (this.newNodeValue && this.newNodeValue.length === 2) {
                 this.multiInTerm = EMPTYSTRING;
-                if (!this.isEditModeEnabled) {
+                if (!this.isSmartBarEnabled) {
                     this.isSmartBarEnabled.emit(true);
                 }
             } else if (this.multiInTerm) {
                 let searchTerm = this.multiInTerm.trim();
                 if (searchTerm) {
-                    if (!this.isEditModeEnabled) {
+                    if (!this.isSmartBarEnabled) {
                         this.isSmartBarEnabled.emit(true);
                     }
                     this.processSearch(searchTerm);
@@ -857,19 +857,22 @@ export class SamrtBarComponent implements OnChanges {
         }
     }
 
-    private setInputFocus() {
-        setTimeout(() => {
-            let element;
-            if (this.selectedOrgNode) {
-                if (!this.isEditModeEnabled)
-                    element = document.querySelector("input[name=multiInTerm]");
-            } else {
-                element = document.querySelector("input[name=searchTerm]");
-            }
-            if (element) {
-                this.renderer.invokeElementMethod(element, "focus", []);
-            }
-        }, 100);
+    private setInputFocus() {        
+        if (!this.isMenuSettingsEnabled) {
+            setTimeout(() => {
+                let element;
+                if (this.selectedOrgNode) {
+                    if (!this.isEditModeEnabled){
+                        element = document.querySelector("input[name=multiInTerm]");
+                    }
+                } else {
+                    element = document.querySelector("input[name=searchTerm]");
+                }
+                if (element) {
+                    this.renderer.invokeElementMethod(element, "focus", []);
+                }
+            }, 100);
+        }
     }
 
     private convertToFlatData(inputArray, ischild?: boolean) {

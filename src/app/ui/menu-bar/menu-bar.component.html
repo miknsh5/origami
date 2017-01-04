@@ -113,7 +113,7 @@
                                 <label class="lbl">Export</label>
                             </div>
                             <div class="template" id="export" *ngIf="selectedCompany && selectedCompany.CompanyName && selectedGroup">
-                                <sg-csv [orgChartData]="selectedGroup" [orgName]="selectedCompany.CompanyName"></sg-csv>
+                                <sg-csv [orgChartData]="selectedGroup" [orgName]="selectedGroup.GroupName"></sg-csv>
                             </div>
                         </div>
                     </div>

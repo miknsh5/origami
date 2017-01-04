@@ -354,6 +354,7 @@ input {
 
 .groupBody {
     height: 325px;
+    padding-right: 5px;
 }
 
 .template {
