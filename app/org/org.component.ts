@@ -117,7 +117,7 @@ export class OrgComponent implements OnDestroy {
         this.isFeedbackInEditMode = value;
     }
 
-    moveNodeEnabledOrDisabled(value: boolean) {
+    onNodeMoveEnabledOrDisabled(value: boolean) {
         this.isNodeMoveEnabled = value;
     }
 

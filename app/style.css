@@ -153,6 +153,7 @@ node circle {
 
 .defaultCircle {
     fill: #CFD8DC;
+    fill: var(--silver);
 }
 
 .activeDrag circle {
