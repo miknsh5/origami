@@ -81,6 +81,13 @@ node circle {
     text-transform: capitalize;
 }
 
+.node .transitionTextAndArrow {
+    transition: opacity ease-in 0.25s;
+    -webkit-transition: opacity ease-in 0.25s;
+    -moz-transition: opacity ease-in 0.25s;
+    -o-transition: opacity ease-in 0.25s;
+}
+
 .node text#abbr {
     fill: #ffffff;
     fill: var(--white-text);
