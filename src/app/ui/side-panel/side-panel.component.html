@@ -74,8 +74,8 @@
                         <span class="title">Coming soon</span>
                     </div>
                     <div id="sidePanelExportData" class="col s12">
-                        <sg-csv [orgChartData]="orgChart" [orgName]="companyName"></sg-csv>
-                        <sg-png [width]="svgWidth" [height]="svgHeight" [selectedOrgNode]="selectedNode" [orgName]="companyName" [isHorizontalTree]="isHorizontalTree"></sg-png>
+                        <export-csv [orgChartData]="orgChart" [orgName]="companyName"></export-csv>
+                        <export-png [width]="svgWidth" [height]="svgHeight" [selectedOrgNode]="selectedNode" [orgName]="companyName" [isHorizontalTree]="isHorizontalTree"></export-png>
                     </div>
                 </div>
             </div>
@@ -104,8 +104,8 @@
         </div>
         <div class="divider"></div>
         <div id="deleteNodeConfirm" class="center">
-            <sg-menu-confirm-button [hideMessage]="false" [titleName]="name" [deleteTitle]="deleteTitle" (onConfirmClick)="onNodeDeleteConfirm($event)" (onCancelClick)="onCancelDelete($event)">
-            </sg-menu-confirm-button>
+            <confirm-button [hideMessage]="false" [titleName]="name" [deleteTitle]="deleteTitle" (onConfirmClick)="onNodeDeleteConfirm($event)" (onCancelClick)="onCancelDelete($event)">
+            </confirm-button>
         </div>
         <div id="deleteChildNodeConfirm" class="center">
             Delete Child Node First!

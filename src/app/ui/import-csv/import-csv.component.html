@@ -38,7 +38,6 @@
     <div class="template">
         <button class="waves-effect waves-light btn" (click)="onCancelImport(true)"><i class="material-icons">arrow_back</i>Back</button>
         <button class="waves-effect waves-light btn" (click)="onClickDownloadTemplate()"><i class="material-icons">file_download</i>Download</button>
-
     </div>
 </div>
 <div id="confirmImport" class="confirmImport">
@@ -76,7 +75,6 @@
         </div>
     </div>
     <div>
-        <sg-menu-confirm-button [hideMessage]="true" (onConfirmClick)="onConfirm($event)" (onCancelClick)="onCancelImport($event)">
-        </sg-menu-confirm-button>
+        <confirm-button [hideMessage]="true" (onConfirmClick)="onConfirm($event)" (onCancelClick)="onCancelImport($event)"> </confirm-button>
     </div>
 </div>

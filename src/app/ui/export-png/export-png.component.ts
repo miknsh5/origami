@@ -10,12 +10,12 @@ const DEFAULT_HEIGHT_VALUE = 240;
 const MIN_HEIGHT = 480;
 
 @Component({
-    selector: "sg-png",
-    templateUrl: "app/ui/tree-to-png/tree-to-png.component.html",
-    styleUrls: ["app/ui/tree-to-png/tree-to-png.component.css"]
+    selector: "export-png",
+    templateUrl: "app/ui/png-export/png-export.component.html",
+    styleUrls: ["app/ui/png-export/png-export.component.css"]
 })
 
-export class TreeToPNGComponent {
+export class ExportPNGComponent {
     @Input() orgName: any;
     @Input() selectedOrgNode: any;
     @Input() width: any;

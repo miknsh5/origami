@@ -10,8 +10,8 @@ import { routing, appRoutingProviders } from "./routing";
 import { AppComponent } from "./app.component";
 
 import {
-  OrgTreeComponent, MenuBarComponent , SideMenuComponent, JsonToCSVComponent, TreeToPNGComponent,
-  ImportCsvFileComponent, ConfirmButtonComponent, SamrtBarComponent
+  OrgTreeComponent, MenuBarComponent, SidePanelComponent, ExportCSVComponent,
+  ExportPNGComponent, ImportCSVComponent, ConfirmButtonComponent, SamrtBarComponent
 } from "./ui/index";
 
 import { OrgComponent, LoginComponent } from "./container/index";
@@ -24,12 +24,12 @@ import { AuthService, OrgService, DOMHelper } from "./shared/index"
     LoginComponent,
     OrgComponent,
     MenuBarComponent,
-    SideMenuComponent,
+    SidePanelComponent,
     OrgTreeComponent,
     SamrtBarComponent,
-    JsonToCSVComponent,
-    TreeToPNGComponent,
-    ImportCsvFileComponent,
+    ExportCSVComponent,
+    ExportPNGComponent,
+    ImportCSVComponent,
     ConfirmButtonComponent
   ],
   providers: [

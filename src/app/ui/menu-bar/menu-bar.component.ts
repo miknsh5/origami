@@ -19,7 +19,7 @@ const MenuElement = {
 };
 
 @Component({
-    selector: "sg-menu-panel",
+    selector: "menu-bar",
     templateUrl: "app/ui/menu-bar/menu-bar.component.html",
     styleUrls: ["app/ui/menu-bar/menu-bar.component.css"],
     providers: [CSVConversionHelper]

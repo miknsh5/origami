@@ -113,19 +113,19 @@
                                 <label class="lbl">Export</label>
                             </div>
                             <div class="template" id="export" *ngIf="selectedCompany && selectedCompany.CompanyName && selectedGroup">
-                                <sg-csv [orgChartData]="selectedGroup" [orgName]="selectedGroup.GroupName"></sg-csv>
+                                <export-csv [orgChartData]="selectedGroup" [orgName]="selectedGroup.GroupName"></export-csv>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <div *ngIf="isImport">
-                    <sg-import-csv-file (newOrgNodes)="updateNewOrgGroup($event)" [selectedGroup]="selectedGroup"></sg-import-csv-file>
+                    <import-csv (newOrgNodes)="updateNewOrgGroup($event)" [selectedGroup]="selectedGroup"></import-csv>
                 </div>
             </div>
             <div id="deleteGroupConfirm" class="center">
-                <sg-menu-confirm-button [hideMessage]="false" [titleName]="name" [deleteTitle]="deleteTitle" (onConfirmClick)="onGroupDeleteConfirm($event)" (onCancelClick)="onGroupDeleteCancel($event)">
-                </sg-menu-confirm-button>
+                <confirm-button [hideMessage]="false" [titleName]="name" [deleteTitle]="deleteTitle" (onConfirmClick)="onGroupDeleteConfirm($event)" (onCancelClick)="onGroupDeleteCancel($event)">
+                </confirm-button>
             </div>
             <div id="groupDeleteLoader" class="loadscreen center">
                 <div>

@@ -4,13 +4,13 @@ import { Component, Input } from "@angular/core";
 import { CSVConversionHelper } from "../../shared/index";
 
 @Component({
-    selector: "sg-csv",
+    selector: "export-csv",
     templateUrl: "app/ui/json-to-csv/json-to-csv.component.html",
     styleUrls: ["app/ui/json-to-csv/json-to-csv.component.css"],
     providers: [CSVConversionHelper]
 })
 
-export class JsonToCSVComponent {
+export class ExportCSVComponent {
     @Input() orgChartData: any;
     @Input() orgName: any;
 

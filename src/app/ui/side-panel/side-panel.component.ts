@@ -27,12 +27,12 @@ const MenuElement = {
 };
 
 @Component({
-    selector: "sg-side-menu-panel",
-    templateUrl: "app/ui/side-menu-panel/side-menu-panel.component.html",
-    styleUrls: ["app/ui/side-menu-panel/side-menu-panel.component.css"]
+    selector: "side-panel",
+    templateUrl: "app/ui/side-panel/side-panel.component.html",
+    styleUrls: ["app/ui/side-panel/side-panel.component.css"]
 })
 
-export class SideMenuComponent implements OnInit, OnChanges {
+export class SidePanelComponent implements OnInit, OnChanges {
     isCollapsed: boolean;
     isClosed: boolean;
     selectedNode: OrgNodeModel;

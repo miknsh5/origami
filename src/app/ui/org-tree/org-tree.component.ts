@@ -57,7 +57,7 @@ const DEFAULT_FONTSIZE = 11;
 const SIBLING_FONTSIZE = 17.3;
 
 @Component({
-    selector: "sg-org-tree",
+    selector: "org-tree",
     template: ``
 })
 

@@ -16,13 +16,13 @@ const ImportElementName = {
 };
 
 @Component({
-    selector: "sg-import-csv-file",
-    templateUrl: "app/ui/import-csv-file/import-csv-file.component.html",
-    styleUrls: ["app/ui/import-csv-file/import-csv-file.component.css", "app/ui/menu-bar/menu-bar.component.css"],
+    selector: "import-csv",
+    templateUrl: "app/ui/import-csv/import-csv.component.html",
+    styleUrls: ["app/ui/import-csv/import-csv.component.css", "app/ui/menu-bar/menu-bar.component.css"],
     providers: [CSVConversionHelper]
 })
 
-export class ImportCsvFileComponent {
+export class ImportCSVComponent {
     private fileName: any;
     private json: any;
     private rootNode = [];
