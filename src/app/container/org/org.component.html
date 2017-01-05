@@ -26,4 +26,10 @@
             [isSmartBarAddEnabled]="isSmartBarEnabled" (isEditEnabled)="isEditEnabled($event)" (isNodeMoveEnabledOrDisabled)="onNodeMoveEnabledOrDisabled($event)" [isNodeMoveDisabled]="isNodeMoveEnabled" (isFeedbackInEditMode)="feedbackPanelInEditMode($event)"
             (isHorizontalViewEnabled)="onHorizontalViewChanged($event)"></sg-side-menu-panel>
     </div>
+    <div *ngIf="!orgGroup">
+        <div class="loader">
+            <div class="loader__figure"></div>
+            <p class="loader__label">Fetching details...</p>
+        </div>
+    </div>
 </div>
