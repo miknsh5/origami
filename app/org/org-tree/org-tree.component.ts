@@ -321,7 +321,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     keyDown(event: any) {
         if (!this.isAddOrEditModeEnabled) {
             if (!this.isMenuSettingsEnabled) {
-                if (!this.selectedOrgNode || this.isAddOrEditModeEnabled) {
+                if (!this.selectedOrgNode || this.isNodeMoveEnabledOrDisabled) {
                     return;
                 }
 
