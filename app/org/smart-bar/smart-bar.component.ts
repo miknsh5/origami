@@ -142,7 +142,7 @@ export class SamrtBarComponent implements OnChanges {
                     this.isTitleSelected = false;
                 }
             }
-        }, 250);
+        }, 500);
     }
 
     @HostListener("focus", ["$event"])
