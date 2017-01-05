@@ -443,7 +443,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 });
         } else if (this.isReportMode()) {
             if (this.isHorizontalViewEnabled) {
-                this.tree = d3.layout.tree().nodeSize([RIGHTLEFT_MARGIN, NODE_WIDTH]);
+                this.tree = d3.layout.tree().nodeSize([NODE_WIDTH, RIGHTLEFT_MARGIN]);
                 this.setNodeLabelVisiblity();
                 this.root = this.selectedOrgNode || this.lastSelectedNode;
                 this.diagonal = d3.svg.diagonal()
@@ -451,7 +451,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                         return [d.y, d.x];
                     });
             } else {
-                this.tree = d3.layout.tree().nodeSize([RIGHTLEFT_MARGIN, NODE_HEIGHT]);
+                this.tree = d3.layout.tree().nodeSize([NODE_HEIGHT, NODE_WIDTH]);
                 this.setNodeLabelVisiblity();
                 this.root = this.selectedOrgNode || this.lastSelectedNode;
                 this.diagonal = d3.svg.diagonal()
@@ -1158,16 +1158,19 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             }
             return TRANSPARENT_COLOR;
         }).attr(TRANSFORM, (d, index) => {
-            let x = Math.round(this.labelWidths[0][index].getBoundingClientRect()["width"]);
-            if (d.IsSibling) {
-                x += (DEFAULT_MARGIN * 2) + (SIBLING_RADIUS - PARENTCHILD_RADIUS);
-            } else {
-                x += (DEFAULT_MARGIN * 2);
+            if (this.isBuildMode()) {
+                let x = Math.round(this.labelWidths[0][index].getBoundingClientRect()["width"]);
+                if (d.IsSibling) {
+                    x += (DEFAULT_MARGIN * 2) + (SIBLING_RADIUS - PARENTCHILD_RADIUS);
+                } else {
+                    x += (DEFAULT_MARGIN * 2);
+                }
+                if (this.treeHeight === (VIEWBOX_MIN_HEIGHT - RIGHTLEFT_MARGIN)) {
+                    x += TOPBOTTOM_MARGIN;
+                }
+                return this.translate(x, 0);
             }
-            if (this.treeHeight === (VIEWBOX_MIN_HEIGHT - RIGHTLEFT_MARGIN)) {
-                x += TOPBOTTOM_MARGIN;
-            }
-            return this.translate(x, 0);
+            return this.translate(0, 0);
         }).style("visibility", "visible");
 
     }

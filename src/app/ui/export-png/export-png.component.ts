@@ -5,14 +5,13 @@ import * as d3 from "d3";
 import * as saveSvgAsPng from "save-svg-as-png";
 
 const DEFAULT_MATTRIX = "matrix(1,0,0,1,-3,-9)";
-const DEFAULT_EXT = ".png";
-const DEFAULT_HEIGHT_VALUE = 240;
-const MIN_HEIGHT = 480;
+const DEFAULT_HEIGHT_VALUE = 200;
+const MIN_HEIGHT = 400;
 
 @Component({
     selector: "export-png",
-    templateUrl: "app/ui/png-export/png-export.component.html",
-    styleUrls: ["app/ui/png-export/png-export.component.css"]
+    templateUrl: "app/ui/export-png/export-png.component.html",
+    styleUrls: ["app/ui/export-png/export-png.component.css"]
 })
 
 export class ExportPNGComponent {
@@ -55,7 +54,7 @@ export class ExportPNGComponent {
             }
 
             // exports svg to png
-            saveSvgAsPng.saveSvgAsPng(this.svg, this.orgName + DEFAULT_EXT);
+            saveSvgAsPng.saveSvgAsPng(this.svg, `${this.orgName}.png`);
 
             // re assign's the previous attributes.
             this.setPrevAttributes();

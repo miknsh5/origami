@@ -5,8 +5,8 @@ import { CSVConversionHelper } from "../../shared/index";
 
 @Component({
     selector: "export-csv",
-    templateUrl: "app/ui/json-to-csv/json-to-csv.component.html",
-    styleUrls: ["app/ui/json-to-csv/json-to-csv.component.css"],
+    templateUrl: "app/ui/export-csv/export-csv.component.html",
+    styleUrls: ["app/ui/export-csv/export-csv.component.css"],
     providers: [CSVConversionHelper]
 })
 
