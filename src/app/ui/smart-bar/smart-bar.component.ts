@@ -320,19 +320,17 @@ export class SamrtBarComponent implements OnChanges {
             this.clearSearch();
         }
 
-        if (this.isSmartBarEnabled) {
-            if (!this.multiInTerm && this.newNodeValue && this.newNodeValue.length > 0) {
-                if (this.newNodeValue.length === 1 && this.multiInTerm !== this.prevSearchTerm) {
-                    this.isDescriptionText = false;
-                } else {
-                    this.multiInTerm = this.newNodeValue.pop();
-                }
-            } else if (!this.multiInTerm && (this.newNodeValue && this.newNodeValue.length === 0)) {
-                this.isSmartBarEnabled.emit(false);
-                this.isNodeMoveDisabled.emit(false);
-                this.multiInTerm = EMPTYSTRING;
-                this.newNodeValue = null;
+        if (!this.multiInTerm && this.newNodeValue && this.newNodeValue.length > 0) {
+            if (this.newNodeValue.length === 1 && this.multiInTerm !== this.prevSearchTerm) {
+                this.isDescriptionText = false;
+            } else {
+                this.multiInTerm = this.newNodeValue.pop();
             }
+        } else if (!this.multiInTerm && (this.newNodeValue && this.newNodeValue.length === 0)) {
+            this.isSmartBarEnabled.emit(false);
+            this.isNodeMoveDisabled.emit(false);
+            this.multiInTerm = EMPTYSTRING;
+            this.newNodeValue = null;
         }
     }
 
@@ -606,13 +604,13 @@ export class SamrtBarComponent implements OnChanges {
 
             if (this.newNodeValue && this.newNodeValue.length === 2) {
                 this.multiInTerm = EMPTYSTRING;
-                if (!this.isSmartBarEnabled) {
+                if (!this.isEditModeEnabled) {
                     this.isSmartBarEnabled.emit(true);
                 }
             } else if (this.multiInTerm) {
                 let searchTerm = this.multiInTerm.trim();
                 if (searchTerm) {
-                    if (!this.isSmartBarEnabled) {
+                    if (!this.isEditModeEnabled) {
                         this.isSmartBarEnabled.emit(true);
                     }
                     this.processSearch(searchTerm);
@@ -701,7 +699,7 @@ export class SamrtBarComponent implements OnChanges {
                     this.searchHeader = `BY ${HeaderTitle}`;
                 }
                 if (this.selectedOrgNode) {
-                    if (this.selectedOrgNode.NodeID !== node.NodeID) {
+                    if (this.selectedOrgNode.NodeID !== node.NodeID && !this.isNodeMoveEnabledOrDisabled) {
                         this.nodeSearched.emit(node);
                     }
                 } else {
@@ -857,12 +855,12 @@ export class SamrtBarComponent implements OnChanges {
         }
     }
 
-    private setInputFocus() {        
+    private setInputFocus() {
         if (!this.isMenuSettingsEnabled) {
             setTimeout(() => {
                 let element;
                 if (this.selectedOrgNode) {
-                    if (!this.isEditModeEnabled){
+                    if (!this.isEditModeEnabled) {
                         element = document.querySelector("input[name=multiInTerm]");
                     }
                 } else {

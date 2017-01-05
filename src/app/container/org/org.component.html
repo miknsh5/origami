@@ -15,7 +15,7 @@
                 [isNodeMoveEnabledOrDisabled]="isNodeMoveEnabled" (isNodeMoveDisabled)=" onNodeMoveEnabledOrDisabled($event)" [isFeedbackInEditMode]="isFeedbackInEditMode" [isHorizontalViewEnabled]="isHorizontalViewEnabled">
             </org-tree>
             <div *ngIf="currentChartMode===1">
-                <smart-bar [treeJsonData]="orgGroup.OrgNodes" (nodeSearched)="onNodeSearched($event)" [selectedOrgNode]="selectedNode" [isEditModeEnabled]="isEditMenuEnable" (deleteNode)="onNodeDeleted($event)" (updateNode)="onNodeUpdated($event)" (addNode)="onNodeAdded($event)"
+                <smart-bar [treeJsonData]="orgGroup.OrgNodes" (nodeSearched)="onNodeSearched($event)" [selectedOrgNode]="selectedNode" [isEditModeEnabled]="isEditModeEnable" (deleteNode)="onNodeDeleted($event)" (updateNode)="onNodeUpdated($event)" (addNode)="onNodeAdded($event)"
                     (chartStructureUpdated)="onChartUpdated($event)" (isSmartBarEnabled)="smartBarEnabled($event)" [orgGroupID]="orgGroup.OrgGroupID" [isNodeMoveEnabledOrDisabled]="isNodeMoveEnabled" (isNodeMoveDisabled)=" onNodeMoveEnabledOrDisabled($event)"
                     (moveNode)="onNodeMoved($event)" [isMenuSettingsEnabled]="isMenuSettingsEnabled">
                 </smart-bar>
