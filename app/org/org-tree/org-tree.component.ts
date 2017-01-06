@@ -178,7 +178,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             this.root = this.treeData[0];
             this.treeWidth = this.width;
             this.treeHeight = this.height;
-
+            
             if (changes["searchNode"]) {
                 if (changes["searchNode"].currentValue) {
                     this.selectedOrgNode = this.searchNode;
@@ -1402,13 +1402,13 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                     this.selectedOrgNode = this.draggingNode;
                     this.showChildren(this.selectedOrgNode);
                     this.highlightAndCenterNode(this.selectedOrgNode);
-                    this.draggingNode = null;
                 }
             } else {
                 this.showChildren(this.selectedOrgNode);
                 this.highlightAndCenterNode(this.selectedOrgNode);
             }
         }
+        this.draggingNode = null;
         this.isNodedragStarted = false;
     }
 
