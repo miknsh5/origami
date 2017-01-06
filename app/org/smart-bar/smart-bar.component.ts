@@ -321,11 +321,11 @@ export class SamrtBarComponent implements OnChanges {
         }
 
         if (!this.multiInTerm && this.newNodeValue && this.newNodeValue.length > 0) {
-            if (this.newNodeValue.length === 1 && this.multiInTerm !== this.prevSearchTerm) {
-                return;
-            } if (this.newNodeValue.length === 2 && this.multiInTerm !== this.prevSearchTerm) {
-                this.isDescriptionText = true;
-                this.multiInTerm = this.newNodeValue.pop();
+            if (this.newNodeValue.length >= 1 && this.multiInTerm !== this.prevSearchTerm) {
+                if (this.newNodeValue.length === 2) {
+                    this.isDescriptionText = true;
+                    this.multiInTerm = this.newNodeValue.pop();
+                }
             } else {
                 this.isDescriptionText = false;
                 this.multiInTerm = this.newNodeValue.pop();
