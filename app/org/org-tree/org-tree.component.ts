@@ -761,7 +761,13 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 x += TOPBOTTOM_MARGIN;
             }
             return this.translate(x, 0);
-        }).style("visibility", "visible");
+        }).style("visibility", "visible")
+            .attr("opacity", (d) => {
+                if (this.selectedOrgNode && d.ParentNodeID === this.selectedOrgNode.NodeID) {
+                    return 0;
+                }
+                return 1;
+            }).attr(CLASS, "transitionTextAndArrow");
 
         node.select(CIRCLE).attr(CLASS, (d) => {
             if (d.IsSelected) {
@@ -1012,7 +1018,12 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                     return Number.isNaN(d.x) || d.x < DEPTH ? "rotate(0)" : "rotate(180)";
                 }
                 return "rotate(0)";
-            });
+            }).attr("opacity", (d) => {
+                if (this.selectedOrgNode && d.ParentNodeID === this.selectedOrgNode.NodeID) {
+                    return 0;
+                }
+                return 1;
+            }).attr(CLASS, "transitionTextAndArrow");
         }
 
         node.select(G_LABEL + " text[data-id='description']").text((d) => {
@@ -1044,7 +1055,12 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 return Number.isNaN(d.x) || d.x < DEPTH ? "rotate(0)" : "rotate(180)";
             }
             return "rotate(0)";
-        });
+        }).attr("opacity", (d) => {
+            if (this.selectedOrgNode && d.ParentNodeID === this.selectedOrgNode.NodeID) {
+                return 0;
+            }
+            return 1;
+        }).attr(CLASS, "transitionTextAndArrow");
 
         if (this.isBuildMode()) {
             node.select(G_LABEL).attr("x", function (d) {
@@ -1140,34 +1156,37 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 if (!d.Show) {
                     return "hidden";
                 }
-            });
+            }).attr("opacity", 1);
         nodeUpdate.select(G_LABEL + " text[data-id='description']")
             .style("visibility", (d) => {
                 if (!d.Show || !this.showDescriptionLabel) {
                     return "hidden";
                 }
-            });
+            }).attr("opacity", 1);
 
         nodeUpdate.select("#abbr")
             .style("visibility", "visible");
 
-        nodeUpdate.select("polygon[data-id='childIndicator']").attr(FILL, function (d) {
-            if (d._children && d._children.length > 0 && !d.IsSelceted) {
-                return CHILD_ARROW_FILL;
-            }
-            return TRANSPARENT_COLOR;
-        }).attr(TRANSFORM, (d, index) => {
-            let x = Math.round(this.labelWidths[0][index].getBoundingClientRect()["width"]);
-            if (d.IsSibling) {
-                x += (DEFAULT_MARGIN * 2) + (SIBLING_RADIUS - PARENTCHILD_RADIUS);
-            } else {
-                x += (DEFAULT_MARGIN * 2);
-            }
-            if (this.treeHeight === (VIEWBOX_MIN_HEIGHT - RIGHTLEFT_MARGIN)) {
-                x += TOPBOTTOM_MARGIN;
-            }
-            return this.translate(x, 0);
-        }).style("visibility", "visible");
+        nodeUpdate.select("polygon[data-id='childIndicator']")
+            .style("visibility", "visible")
+            .attr(FILL, function (d) {
+                if (d._children && d._children.length > 0 && !d.IsSelceted) {
+                    return CHILD_ARROW_FILL;
+                }
+                return TRANSPARENT_COLOR;
+            })
+            .attr(TRANSFORM, (d, index) => {
+                let x = Math.round(this.labelWidths[0][index].getBoundingClientRect()["width"]);
+                if (d.IsSibling) {
+                    x += (DEFAULT_MARGIN * 2) + (SIBLING_RADIUS - PARENTCHILD_RADIUS);
+                } else {
+                    x += (DEFAULT_MARGIN * 2);
+                }
+                if (this.treeHeight === (VIEWBOX_MIN_HEIGHT - RIGHTLEFT_MARGIN)) {
+                    x += TOPBOTTOM_MARGIN;
+                }
+                return this.translate(x, 0);
+            }).attr("opacity", 1);
 
     }
 
