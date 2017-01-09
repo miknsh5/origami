@@ -25,19 +25,11 @@ export class DOMHelper {
     }
 
     public showElements(selector: any) {
-        if (typeof selector === "string") {
-            jQuery(selector).fadeIn(500);
-        } else {
-            jQuery(selector.join(", ")).fadeIn(500);
-        }
+        jQuery(selector).show();
     }
 
     public hideElements(selector: any) {
-        if (typeof selector === "string") {
-            jQuery(selector).hide();
-        } else {
-            jQuery(selector.join(", ")).hide();
-        }
+        jQuery(selector).hide();
     }
 
     public addClass(selector: any, className: string): void {

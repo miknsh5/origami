@@ -88,7 +88,8 @@
     width: 100%;
 }
 
-.templateScreen {
+.templateScreen,
+.importInternalError {
     display: none;
     padding: 115px 3em;
 }
@@ -101,6 +102,16 @@
 
 .templateScreen .btn {
     margin: 0px 10px;
+}
+
+.importInternalError label {
+    color: #666;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.importInternalError .btn {
+    margin: 10px 10px;
 }
 
 .confirmImport {

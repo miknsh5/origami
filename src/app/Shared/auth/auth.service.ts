@@ -19,9 +19,9 @@ export class AuthService {
                 primaryColor: '#607D8B'
             },
             auth: {
-                redirect: false,
-                sso: true
-            }
+                redirect: false
+            },
+            rememberLastLogin: false
         });
 
         this.onAuthenticated();
