@@ -14,7 +14,7 @@ import {
   ExportPNGComponent, ImportCSVComponent, ConfirmButtonComponent, SamrtBarComponent
 } from "./ui/index";
 
-import { OrgComponent, LoginComponent } from "./container/index";
+import { OrgComponent, LoginComponent, SignUpComponent } from "./container/index";
 
 import { AuthService, OrgService, DOMHelper } from "./shared/index"
 
@@ -22,6 +22,7 @@ import { AuthService, OrgService, DOMHelper } from "./shared/index"
   declarations: [
     AppComponent,
     LoginComponent,
+    SignUpComponent,
     OrgComponent,
     MenuBarComponent,
     SidePanelComponent,

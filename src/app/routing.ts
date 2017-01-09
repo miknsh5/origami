@@ -1,7 +1,7 @@
 import { Routes, RouterModule } from "@angular/router";
 import { AuthGuard } from "./shared/index";
 
-import { LoginComponent, OrgComponent } from "./container/index";
+import { LoginComponent, OrgComponent, SignUpComponent } from "./container/index";
 
 const appRoutes: Routes = [
     {
@@ -12,6 +12,10 @@ const appRoutes: Routes = [
     {
         path: "login",
         component: LoginComponent
+    },
+    {
+        path: "signup",
+        component: SignUpComponent
     },
     {
         path: "home",
