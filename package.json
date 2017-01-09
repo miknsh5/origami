@@ -28,7 +28,7 @@
         "zone.js": "^0.6.23",
         "d3": "^3.5.17",
         "angular2-in-memory-web-api": "0.0.20",
-        "angular2-jwt": "^0.1.22",
+        "angular2-jwt": "^0.1.25",
         "save-svg-as-png": "1.0.3",
         "copy-webpack-plugin": "^2.1.6",
         "clean-webpack-plugin": "^0.1.13"

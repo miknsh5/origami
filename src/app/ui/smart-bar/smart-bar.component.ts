@@ -321,9 +321,13 @@ export class SamrtBarComponent implements OnChanges {
         }
 
         if (!this.multiInTerm && this.newNodeValue && this.newNodeValue.length > 0) {
-            if (this.newNodeValue.length === 1 && this.multiInTerm !== this.prevSearchTerm) {
-                this.isDescriptionText = false;
+            if (this.newNodeValue.length >= 1 && this.multiInTerm !== this.prevSearchTerm) {
+                if (this.newNodeValue.length === 2) {
+                    this.isDescriptionText = true;
+                    this.multiInTerm = this.newNodeValue.pop();
+                }
             } else {
+                this.isDescriptionText = false;
                 this.multiInTerm = this.newNodeValue.pop();
             }
         } else if (!this.multiInTerm && (this.newNodeValue && this.newNodeValue.length === 0)) {
@@ -448,6 +452,10 @@ export class SamrtBarComponent implements OnChanges {
                 }
             }
         }
+        if (this.newNodeValue && this.newNodeValue.length === 1) {
+            this.placeholderText = `${AddJobTitle}`;
+        }
+        this.setInputFocus();
     }
 
     private addNewParentNode(node: OrgNodeModel) {
@@ -486,6 +494,8 @@ export class SamrtBarComponent implements OnChanges {
             this.isDescriptionselected = false;
             this.isSmartBarEnabled.emit(false);
             this.addNode.emit(data);
+            this.placeholderText = `${AddResource}`;
+            this.setInputFocus();
         }
     }
 
@@ -730,6 +740,10 @@ export class SamrtBarComponent implements OnChanges {
         this.multiInTerm = EMPTYSTRING;
         this.titleFilterList = null;
         this.isDescriptionselected = true;
+        if (this.newNodeValue && this.newNodeValue.length === 2) {
+            this.placeholderText = `${SaveData}`;
+        }
+        this.setInputFocus();
     }
 
     private searchTitleList(searchTerm: string, searchList) {
