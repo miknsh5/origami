@@ -11,7 +11,8 @@ const ImportElementName = {
     confirmImport: "#confirmImport",
     templateScreen: "#templateScreen",
     confirmParent: "#confirmParent",
-    closeClass: ".close"
+    closeClass: ".close",
+    importInternalError: "#importInternalError"
 };
 
 @Component({
@@ -96,20 +97,27 @@ export class ImportCsvFileComponent {
             if (this.unmappedNodesCount > 1) {
                 this.orgService.addGroupNodes(this.selectedGroup.OrgGroupID, this.json, null)
                     .subscribe(data => this.setOrgGroupData(data),
-                    err => this.orgService.logError(err),
+                    err => this.logError(err),
                     () => { this.domHelper.showElements(ImportElementName.closeClass); });
             }
             else {
                 this.orgService.addGroupNodes(this.selectedGroup.OrgGroupID, this.json, this.defaultNode.NodeID)
                     .subscribe(data => this.setOrgGroupData(data),
-                    err => this.orgService.logError(err),
+                    err => this.logError(err),
                     () => { this.domHelper.showElements(ImportElementName.closeClass); });
             }
-            this.domHelper.hideElements([ImportElementName.confirmImport, ImportElementName.closeClass, "#cancelbtn"]);
+            this.domHelper.hideElements(`${ImportElementName.confirmImport}, ${ImportElementName.closeClass}, #cancelbtn`);
             this.domHelper.showElements(ImportElementName.loadScreen);
             this.unmappedNodesCount = 0;
             this.mappedNodesCount = 0;
         }
+    }
+
+    logError(err) {
+        console.log(err);
+        this.domHelper.hideElements(ImportElementName.loadScreen);
+        this.domHelper.showElements(`${ImportElementName.importInternalError},${ImportElementName.closeClass},#cancelbtn`);
+
     }
 
     private setOrgGroupData(data) {
@@ -120,7 +128,7 @@ export class ImportCsvFileComponent {
     private onCancelImport(data: boolean) {
         if (data) {
             this.domHelper.showElements(ImportElementName.importfile);
-            this.domHelper.hideElements([ImportElementName.templateScreen, ImportElementName.loadScreen, ImportElementName.confirmImport, ImportElementName.confirmParent]);
+            this.domHelper.hideElements(`${ImportElementName.templateScreen}, ${ImportElementName.loadScreen}, ${ImportElementName.confirmImport}, ${ImportElementName.confirmParent, ImportElementName.importInternalError}`);
 
             this.unmappedNodesCount = 0;
             this.mappedNodesCount = 0;

@@ -211,8 +211,8 @@ export class MenuPanelComponent implements OnChanges {
             this.onGroupSelection(groupData);
             this.isImportDisabled = false;
             this.groupName = this.selectedGroup.GroupName;
-            this.domHelper.showElements([MenuElement.groupModal, MenuElement.deleteGroup]);
-            this.domHelper.hideElements([MenuElement.confirmGroupDelete, MenuElement.groupDeleteLoader]);
+            this.domHelper.showElements(`${MenuElement.groupModal}, ${MenuElement.deleteGroup}`);
+            this.domHelper.hideElements(`${MenuElement.confirmGroupDelete}, ${MenuElement.groupDeleteLoader}`);
             if (this.selectedGroup && this.selectedGroup.OrgNodes.length === 0) {
                 this.domHelper.showElements(MenuElement.downloadTemplate);
                 this.domHelper.hideElements(MenuElement.exportData);
@@ -226,8 +226,8 @@ export class MenuPanelComponent implements OnChanges {
             this.groupSettingTitle = "Add New Organization";
             this.groupName = `Organization ${(this.selectedCompany.OrgGroups.length + 1)}`;
             this.isImportDisabled = true;
-            this.domHelper.showElements([MenuElement.groupModal, MenuElement.importTemplate, MenuElement.downloadTemplate]);
-            this.domHelper.hideElements([MenuElement.deleteGroup, MenuElement.groupDeleteLoader, MenuElement.exportData]);
+            this.domHelper.showElements(`${MenuElement.groupModal}, ${MenuElement.importTemplate}, ${MenuElement.downloadTemplate}`);
+            this.domHelper.hideElements(`${MenuElement.deleteGroup}, ${MenuElement.groupDeleteLoader}, ${MenuElement.exportData}`);
             element = document.querySelector("input[name=existingGroupName]");
         }
         this.renderer.invokeElementMethod(element, "focus", []);
@@ -237,8 +237,8 @@ export class MenuPanelComponent implements OnChanges {
         this.deleteTitle = "";
         this.name = "";
         this.isMenuEnable.emit(false);
-        this.domHelper.showElements([MenuElement.groupName, MenuElement.importTemplate, MenuElement.deleteGroup, MenuElement.groupSaveOrEdit]);
-        this.domHelper.hideElements([MenuElement.groupModal, MenuElement.confirmGroupDelete]);
+        this.domHelper.showElements(`${MenuElement.groupName}, ${MenuElement.importTemplate}, ${MenuElement.deleteGroup}, ${MenuElement.groupSaveOrEdit}`);
+        this.domHelper.hideElements(`${MenuElement.groupModal}, ${MenuElement.confirmGroupDelete}`);
         this.groupName = this.selectedGroup.GroupName;
         this.isImport = false;
         this.groupSettingTitle = "";
@@ -379,7 +379,7 @@ export class MenuPanelComponent implements OnChanges {
     onDeleteGroupClicked() {
         this.deleteTitle = "Organization";
         this.name = this.selectedGroup.GroupName;
-        this.domHelper.hideElements([MenuElement.groupName, MenuElement.importTemplate, MenuElement.deleteGroup, MenuElement.groupSaveOrEdit]);
+        this.domHelper.hideElements(`${MenuElement.groupName}, ${MenuElement.importTemplate}, ${MenuElement.deleteGroup}, ${MenuElement.groupSaveOrEdit}`);
         this.domHelper.showElements(MenuElement.confirmGroupDelete);
     }
 
@@ -393,7 +393,7 @@ export class MenuPanelComponent implements OnChanges {
         }
         this.deleteTitle = "";
         this.name = "";
-        this.domHelper.hideElements([MenuElement.confirmGroupDelete, MenuElement.groupModal + " .close"]);
+        this.domHelper.hideElements(`${MenuElement.confirmGroupDelete}, ${MenuElement.groupModal} .close`);
         this.domHelper.showElements(MenuElement.groupDeleteLoader);
     }
 
@@ -401,7 +401,7 @@ export class MenuPanelComponent implements OnChanges {
         if (data) {
             this.deleteTitle = "";
             this.name = "";
-            this.domHelper.showElements([MenuElement.groupName, MenuElement.importTemplate, MenuElement.deleteGroup, MenuElement.groupSaveOrEdit]);
+            this.domHelper.showElements(`${MenuElement.groupName}, ${MenuElement.importTemplate}, ${MenuElement.deleteGroup}, ${MenuElement.groupSaveOrEdit}`);
             this.domHelper.hideElements(MenuElement.confirmGroupDelete);
         }
     }
