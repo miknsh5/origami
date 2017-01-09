@@ -12,14 +12,18 @@ import { AppComponent } from "./app.component";
 import {
   OrgComponent, OrgTreeComponent, MenuPanelComponent,
   SideMenuComponent, OrgService, JsonToCSVComponent, TreeToPNGComponent,
-  ImportCsvFileComponent, MenuConfirmButtonComponent, DomElementHelper, SamrtBarComponent } from "./org/index";
+  ImportCsvFileComponent, MenuConfirmButtonComponent, DomElementHelper, SamrtBarComponent
+} from "./org/index";
 
 import { LoginComponent, AuthService } from "./login/index";
+
+import { SignUpComponent } from "./signup/signup.component";
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
+    SignUpComponent,
     OrgComponent,
     OrgTreeComponent,
     MenuPanelComponent,
