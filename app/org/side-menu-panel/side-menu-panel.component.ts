@@ -202,7 +202,7 @@ export class SideMenuComponent implements OnInit, OnChanges {
             this.domHelper.setWidth(MenuElement.menuPanel, "100%");
             this.domHelper.setWidth(MenuElement.sideNavfixed, "100%");
             this.domHelper.hideElements(MenuElement.publishData);
-            this.domHelper.showElements([MenuElement.sidePanelExportData, MenuElement.sendFeedback]);
+            this.domHelper.showElements(`${MenuElement.sidePanelExportData}, ${MenuElement.sendFeedback}`);
         }
     }
 
@@ -309,13 +309,13 @@ export class SideMenuComponent implements OnInit, OnChanges {
     onCancelDelete(data: boolean) {
         this.deleteTitle = "";
         this.name = "";
-        this.domHelper.hideElements([MenuElement.deleteNodeModal, MenuElement.deleteChildNodeConfirm, MenuElement.deleteNodeConfirm]);
+        this.domHelper.hideElements(`${MenuElement.deleteNodeModal}, ${MenuElement.deleteChildNodeConfirm}, ${MenuElement.deleteNodeConfirm}`);
     }
 
     dismissPopup() {
         this.deleteTitle = "";
         this.name = "";
-        this.domHelper.hideElements([MenuElement.deleteNodeModal, MenuElement.deleteChildNodeConfirm, MenuElement.deleteNodeConfirm]);
+        this.domHelper.hideElements(`${MenuElement.deleteNodeModal}, ${MenuElement.deleteChildNodeConfirm}, ${MenuElement.deleteNodeConfirm}`);
     }
 
     onDeleteOrCancelNodeClicked() {
@@ -324,7 +324,7 @@ export class SideMenuComponent implements OnInit, OnChanges {
             if (this.deleteOrClose === DELETE_ICON) {
                 this.deleteTitle = "Node";
                 this.name = `${this.selectedOrgNode.NodeFirstName} ${this.selectedOrgNode.NodeLastName}`;
-                this.domHelper.showElements([MenuElement.deleteNodeModal, MenuElement.deleteNodeConfirm]);
+                this.domHelper.showElements(`${MenuElement.deleteNodeModal}, ${MenuElement.deleteNodeConfirm}`);
             } else if (this.deleteOrClose === CLOSE_ICON) {
                 this.editOrSave = EDIT_ICON;
                 this.deleteOrClose = DELETE_ICON;
@@ -351,7 +351,7 @@ export class SideMenuComponent implements OnInit, OnChanges {
             else {
                 this.deleteNode.emit(this.selectedNode);
             }
-            this.domHelper.hideElements([MenuElement.deleteNodeModal, MenuElement.deleteChildNodeConfirm, MenuElement.deleteNodeConfirm]);
+            this.domHelper.hideElements(`${MenuElement.deleteNodeModal}, ${MenuElement.deleteChildNodeConfirm}, ${MenuElement.deleteNodeConfirm}`);
         }
     }
 
