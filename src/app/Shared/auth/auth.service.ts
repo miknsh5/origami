@@ -14,6 +14,9 @@ export class AuthService {
     constructor(private router: Router, private zone: NgZone) {
         this.lock = new Auth0Lock(myConfig.clientID, myConfig.domain, {
             closable: false,
+            languageDictionary: {
+                title: "",
+            },
             theme: {
                 logo: 'http://peopletree.io/images/logo-beta.svg',
                 primaryColor: '#607D8B'
@@ -28,19 +31,11 @@ export class AuthService {
     }
 
     login() {
-        this.lock.show({
-            allowSignUp: false, languageDictionary: {
-                title: "Log In"
-            }
-        });
+        this.lock.show({ initialScreen: 'login' });
     }
 
     signup() {
-        this.lock.show({
-            allowLogin: false, languageDictionary: {
-                title: "Sign Up"
-            }
-        });
+        this.lock.show({ initialScreen: 'signUp' });
     }
 
     logout() {
