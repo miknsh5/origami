@@ -137,9 +137,15 @@ export class SamrtBarComponent implements OnChanges {
                     this.nodeSearchedList = new Array<OrgSearchModel>();
                     this.titleFilterList = new Array();
                     this.searchHeader = `BY ${HeaderTitle}`;
-                }
-                if (this.searchTerm === EMPTYSTRING) {
-                    this.isTitleSelected = false;
+                } else {
+                    if (document.activeElement.id !== "searchNodes") {
+                        this.searchTerm = this.prevSearchTerm = EMPTYSTRING;
+                        this.isTitleSelected = this.searchInProgress = this.isSearchEnabled = false;
+                        this.nodeSearchedList = new Array<OrgSearchModel>();
+                        this.titleFilterList = new Array();
+                        this.searchHeader = `BY ${HeaderTitle}`;
+                        this.isSmartBarEnabled.emit(false);
+                    }
                 }
             }
         }, 500);
@@ -308,7 +314,6 @@ export class SamrtBarComponent implements OnChanges {
             if (element) {
                 this.renderer.invokeElementMethod(element, "click", []);
             }
-            this.isSearchEnabled = true;
         }
     }
 
@@ -339,8 +344,8 @@ export class SamrtBarComponent implements OnChanges {
     }
 
     onSearchBackspacePressed(event) {
-        if (!this.searchTerm || this.searchTerm.length === 1) {
-            if (!this.searchTerm) {
+        if (!this.searchTerm) {
+            if (this.isTitleSelected) {
                 this.isTitleSelected = false;
             }
             this.searchInProgress = this.isSearchEnabled = false;
@@ -725,6 +730,9 @@ export class SamrtBarComponent implements OnChanges {
         this.searchHeader = `BY ${data.Name.toUpperCase()}`;
         this.searchList(data.Name.toLowerCase(), true);
         this.prevSearchTerm = this.searchTerm = EMPTYSTRING;
+        if (event && (event as MouseEvent).clientX > 0) {
+            this.setInputFocus();
+        }
     }
 
     private selectTitle(event: any, data: any) {

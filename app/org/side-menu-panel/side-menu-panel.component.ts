@@ -332,6 +332,7 @@ export class SideMenuComponent implements OnInit, OnChanges {
                 this.selectedNode.NodeFirstName = this.editNodeDetails.NodeFirstName;
                 this.selectedNode.NodeLastName = this.editNodeDetails.NodeLastName;
                 this.selectedNode.Description = this.editNodeDetails.Description;
+                this.updateNode.emit(this.selectedNode);
                 this.editNodeDetails = null;
                 this.isEditEnabled.emit(false);
             }
