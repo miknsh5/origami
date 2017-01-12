@@ -12,10 +12,10 @@ var config = {
         main: './app/main'
     },
     output: {
-        path: path.join(__dirname, 'dist'),
-        filename: './app/[name].bundle.js',
-        sourceMapFilename: './app/[name].map',
-        chunkFilename: './app/[id].chunk.js'
+        path: __dirname,
+        filename: './dist/[name].bundle.js',
+        sourceMapFilename: './dist/[name].map',
+        chunkFilename: './dist/[id].chunk.js'
     },
     resolve: {
         extensions: ['', '.ts', '.tsx', '.js', '.jsx', '.png', '.gif']
