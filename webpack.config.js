@@ -12,7 +12,7 @@ var config = {
         main: './app/main'
     },
     output: {
-        path: path.join(__dirname, 'dist/app'),
+        path: path.join(__dirname, 'dist'),
         filename: './app/[name].bundle.js',
         sourceMapFilename: './app/[name].map',
         chunkFilename: './app/[id].chunk.js'
