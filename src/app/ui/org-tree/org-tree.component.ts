@@ -769,7 +769,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 return this.translate(0, 0);
             })
             .attr("opacity", (d) => {
-                if (this.selectedOrgNode && d.ParentNodeID === this.selectedOrgNode.NodeID) {
+                if (this.selectedOrgNode && (d.ParentNodeID === this.selectedOrgNode.NodeID || this.selectedOrgNode.ParentNodeID === d.ParentNodeID || this.selectedOrgNode.ParentNodeID === d.NodeID)) {
                     return 0;
                 }
                 return 1;
@@ -825,10 +825,12 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             .style("visibility", "hidden");
 
         nodeExit.selectAll(G_LABEL + " text[data-id='name']")
-            .style("visibility", "hidden");
+            .style("visibility", "hidden")
+            .attr("opacity", 0);
 
         nodeExit.selectAll(G_LABEL + " text[data-id='description']")
-            .style("visibility", "hidden");
+            .style("visibility", "hidden")
+            .attr("opacity", 0);
 
         nodeExit.selectAll("#abbr")
             .style("visibility", "hidden");
@@ -1025,7 +1027,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 }
                 return "rotate(0)";
             }).attr("opacity", (d) => {
-                if (this.selectedOrgNode && d.ParentNodeID === this.selectedOrgNode.NodeID) {
+                if (this.selectedOrgNode && (d.ParentNodeID === this.selectedOrgNode.NodeID || this.selectedOrgNode.ParentNodeID === d.ParentNodeID || this.selectedOrgNode.ParentNodeID === d.NodeID)) {
                     return 0;
                 }
                 return 1;
@@ -1062,7 +1064,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             }
             return "rotate(0)";
         }).attr("opacity", (d) => {
-            if (this.selectedOrgNode && d.ParentNodeID === this.selectedOrgNode.NodeID) {
+            if (this.selectedOrgNode && (d.ParentNodeID === this.selectedOrgNode.NodeID || this.selectedOrgNode.ParentNodeID === d.ParentNodeID || this.selectedOrgNode.ParentNodeID === d.NodeID)) {
                 return 0;
             }
             return 1;
