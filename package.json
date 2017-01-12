@@ -7,7 +7,7 @@
         "url": "https://github.com/miknsh5/origami/"
     },
     "scripts": {
-        "start": "webpack-dev-server --inline --colors --progress --display-error-details --display-cached --port 3000  --content-base src",
+        "start": "webpack-dev-server --inline --colors --progress --display-error-details --display-cached --port 3000",
         "postinstall": "typings install",
         "build": "webpack -p",
         "typings": "typings",

@@ -2,7 +2,7 @@ import { Component, OnInit } from "@angular/core";
 
 import { Router } from "@angular/router";
 
-import { AuthService } from "../login/index";
+import { AuthService } from "../shared/index";
 
 @Component({
     selector: "signup",
