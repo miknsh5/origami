@@ -178,7 +178,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             this.root = this.treeData[0];
             this.treeWidth = this.width;
             this.treeHeight = this.height;
-            
+
             if (changes["searchNode"]) {
                 if (changes["searchNode"].currentValue) {
                     this.selectedOrgNode = this.searchNode;
@@ -763,7 +763,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             return this.translate(x, 0);
         }).style("visibility", "visible")
             .attr("opacity", (d) => {
-                if (this.selectedOrgNode && d.ParentNodeID === this.selectedOrgNode.NodeID) {
+                if (this.selectedOrgNode && (d.ParentNodeID === this.selectedOrgNode.NodeID || this.selectedOrgNode.ParentNodeID === d.ParentNodeID || this.selectedOrgNode.ParentNodeID === d.NodeID)) {
                     return 0;
                 }
                 return 1;
@@ -1019,7 +1019,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 }
                 return "rotate(0)";
             }).attr("opacity", (d) => {
-                if (this.selectedOrgNode && d.ParentNodeID === this.selectedOrgNode.NodeID) {
+                if (this.selectedOrgNode && (d.ParentNodeID === this.selectedOrgNode.NodeID || this.selectedOrgNode.ParentNodeID === d.ParentNodeID || this.selectedOrgNode.ParentNodeID === d.NodeID)) {
                     return 0;
                 }
                 return 1;
@@ -1056,7 +1056,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             }
             return "rotate(0)";
         }).attr("opacity", (d) => {
-            if (this.selectedOrgNode && d.ParentNodeID === this.selectedOrgNode.NodeID) {
+            if (this.selectedOrgNode && (d.ParentNodeID === this.selectedOrgNode.NodeID || this.selectedOrgNode.ParentNodeID === d.ParentNodeID || this.selectedOrgNode.ParentNodeID === d.NodeID)) {
                 return 0;
             }
             return 1;
