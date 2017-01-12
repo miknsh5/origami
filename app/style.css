@@ -55,9 +55,13 @@ input:placeholder-shown {
     font-size: 10.5px;
 }
 
+.auth0-lock-header {
+    padding: 0 !important;
+}
+
 .auth0-lock.auth0-lock .auth0-lock-header-logo {
-    height: 55px !important;
-    margin: 20px 10px !important;
+    height: 120px !important;
+    margin: 0 10px !important;
 }
 
 .node {
