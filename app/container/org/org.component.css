@@ -1,0 +1,89 @@
+.main_canvas {
+    float: left;
+    width: 100%;
+    overflow-x: auto;
+}
+
+.modes_wrap {
+    /*width: 10rem;*/
+    position: absolute;
+    /*left: 30px*/
+    width: 7.5rem;
+}
+
+.modes_wrap ul {
+    /*margin-bottom: 0;*/
+    margin: 10px auto 0;
+    display: table;
+}
+
+.modes_wrap li {
+    width: 3.5rem;
+    height: 3.5rem;
+    object-fit: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100%;
+    cursor: pointer;
+}
+
+.modes_wrap li.nav_build {
+    background-image: url("assets/images/build.png");
+}
+
+.modes_wrap li.nav_build.active {
+    background-image: url("assets/images/build-active.png");
+}
+
+.modes_wrap li.nav_explore {
+    background-image: url("assets/images/explore.png");
+}
+
+.modes_wrap li.nav_explore.active {
+    background-image: url("assets/images/explore-active.png");
+}
+
+.modes_wrap li.nav_report {
+    background-image: url("assets/images/report.png");
+}
+
+.modes_wrap li.nav_report.active {
+    background-image: url("assets/images/report-active.png");
+}
+
+.modes_wrap li>a {
+    /*width: 6.5rem;*/
+    width: 2.5rem;
+    line-height: 3.5rem;
+    font-family: Roboto, HelveticaNeue;
+    font-size: 1em;
+    font-weight: 400;
+    color: #607d8b;
+    margin-left: 4rem;
+    display: block;
+}
+
+.modes_wrap li.active>a {
+    font-weight: 800;
+}
+
+@media only screen and (max-width:420px) {
+    .main_canvas {
+        height: auto;
+    }
+    .modes_wrap {
+        /*position: relative;*/
+        left: 0;
+        width: 100%;
+    }
+    .modes_wrap li {
+        background-size: contain;
+        background-position: 0;
+        width: auto;
+        display: inline-block;
+    }
+    .modes_wrap li>a {
+        width: auto;
+        display: inline-block;
+    }
+}

@@ -1,16 +1,15 @@
-import "reflect-metadata";
-import "zone.js/dist/zone";
+// Vendors
 
-import "@angular/common";
-import "@angular/compiler";
+// Angular 2
+import "@angular/platform-browser-dynamic";
+import "@angular/platform-browser";
 import "@angular/core";
 import "@angular/forms";
 import "@angular/http";
-import "@angular/platform-browser";
-import "@angular/platform-browser-dynamic";
 import "@angular/router";
 
-// RxJS
+// RxJS 5
 import "rxjs/add/operator/map";
 import "rxjs/add/operator/mergeMap";
 import "rxjs/Observable";
+
