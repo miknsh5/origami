@@ -819,10 +819,12 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             .style("visibility", "hidden");
 
         nodeExit.selectAll(G_LABEL + " text[data-id='name']")
-            .style("visibility", "hidden");
+            .style("visibility", "hidden")
+            .attr("opacity", 0);
 
         nodeExit.selectAll(G_LABEL + " text[data-id='description']")
-            .style("visibility", "hidden");
+            .style("visibility", "hidden")
+            .attr("opacity", 0);
 
         nodeExit.selectAll("#abbr")
             .style("visibility", "hidden");
