@@ -7,15 +7,15 @@ var config = {
     cache: true,
     devtool: 'source-map',
     entry: {
-        polyfills: './src/polyfills',
-        vendor: './src/vendor',
-        main: './src/main'
+        polyfills: './app/polyfills',
+        vendor: './app/vendor',
+        main: './app/main'
     },
     output: {
-        path: path.join(__dirname, 'dist'),
-        filename: '[name].bundle.js',
-        sourceMapFilename: '[name].map',
-        chunkFilename: '[id].chunk.js'
+        path: path.join(__dirname, 'dist/app'),
+        filename: './app/[name].bundle.js',
+        sourceMapFilename: './app/[name].map',
+        chunkFilename: './app/[id].chunk.js'
     },
     resolve: {
         extensions: ['', '.ts', '.tsx', '.js', '.jsx', '.png', '.gif']
@@ -36,16 +36,20 @@ var config = {
         new webpack.optimize.CommonsChunkPlugin({ name: ['polyfills', 'vendor', 'main'].reverse(), minChunks: Infinity }),
         new CleanWebpackPlugin(['dist'], { root: __dirname, verbose: true, dry: false, exclude: [/node_modules/] }),
         new CopyWebpackPlugin([{
-                from: path.join(__dirname, 'src/index.html'),
+                from: path.join(__dirname, 'index.html'),
                 to: path.join(__dirname, 'dist/index.html')
             },
             {
-                from: path.join(__dirname, 'src/assets'),
+                from: path.join(__dirname, 'assets'),
                 to: path.join(__dirname, 'dist/assets')
             },
             {
-                from: path.join(__dirname, 'src/app'),
+                from: path.join(__dirname, 'app'),
                 to: path.join(__dirname, 'dist/app')
+            },
+            {
+                from: path.join(__dirname, 'favicon.ico'),
+                to: path.join(__dirname, 'dist/favicon.ico')
             },
         ], { ignore: ['*.ts'], })
     ],
