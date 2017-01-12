@@ -39,8 +39,12 @@ nav a.button-collapse i {
 nav .brand-logo {
     padding: 0 50px;
     color: #333333;
-    font-size: 1.2em;
+    font-size: 3.2em;
     font-weight: 300;
+}
+
+nav .brand-logo img {
+    max-width: 140px;
 }
 
 nav ul a {
@@ -423,6 +427,6 @@ input {
     }
     nav .brand-logo {
         position: relative;
-        padding: 0 15px;
+        padding: 0 25px;
     }
 }
