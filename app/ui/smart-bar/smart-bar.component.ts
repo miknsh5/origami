@@ -120,11 +120,6 @@ export class SamrtBarComponent implements OnChanges {
 
     @HostListener("blur", ["$event"])
     onInputFocusOut(event: any) {
-        if (this.isNodeMoveEnabledOrDisabled) {
-            this.searchTerm = this.multiInTerm = EMPTYSTRING;
-            this.isNodeMoveDisabled.emit(false);
-            this.isSmartBarEnabled.emit(false);
-        }
         setTimeout(() => {
             if (this.selectedOrgNode) {
                 this.isTitleSelected = this.searchInProgress = false;
