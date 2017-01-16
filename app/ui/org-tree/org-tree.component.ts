@@ -340,40 +340,38 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
     @HostListener("document:keydown", ["$event"])
     keyDown(event: any) {
-        if (!this.isAddOrEditModeEnabled) {
-            if (!this.isMenuSettingsEnabled) {
-                if (!this.selectedOrgNode || this.isNodeMoveEnabledOrDisabled) {
-                    return;
-                }
+        if (this.isBuildMode() && !this.isMenuSettingsEnabled && !this.isAddOrEditModeEnabled) {
+            if (!this.selectedOrgNode || this.isNodeMoveEnabledOrDisabled) {
+                return;
+            }
 
-                if (this.selectedOrgNode.NodeID === -1) {
-                    return;
-                }
+            if (this.selectedOrgNode.NodeID === -1) {
+                return;
+            }
 
-                // esc
-                if ((event as KeyboardEvent).keyCode === 27) {
-                    if (!this.isNodeMoved && !this.isNodedragStarted) {
-                        this.deselectNode();
-                        this.selectNode.emit(this.selectedOrgNode);
-                    }
+            // esc
+            if ((event as KeyboardEvent).keyCode === 27) {
+                if (!this.isNodeMoved && !this.isNodedragStarted) {
+                    this.deselectNode();
+                    this.selectNode.emit(this.selectedOrgNode);
                 }
+            }
 
-                // left arrow
-                if ((event as KeyboardEvent).keyCode === 37) {
-                    this.moveLeft();
-                }
-                // right arrow
-                else if ((event as KeyboardEvent).keyCode === 39) {
-                    this.moveRight();
-                }
-                // top arrow
-                else if ((event as KeyboardEvent).keyCode === 38) {
-                    this.moveUp();
-                }
-                // bottom arrow
-                else if ((event as KeyboardEvent).keyCode === 40) {
-                    this.moveDown();
-                }
+            // left arrow
+            if ((event as KeyboardEvent).keyCode === 37) {
+                this.moveLeft();
+            }
+            // right arrow
+            else if ((event as KeyboardEvent).keyCode === 39) {
+                this.moveRight();
+            }
+            // top arrow
+            else if ((event as KeyboardEvent).keyCode === 38) {
+                this.moveUp();
+            }
+            // bottom arrow
+            else if ((event as KeyboardEvent).keyCode === 40) {
+                this.moveDown();
             }
         }
     }

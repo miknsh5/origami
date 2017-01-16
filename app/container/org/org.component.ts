@@ -33,7 +33,7 @@ export class OrgComponent implements OnDestroy {
 
     @Output() companyID: any;
     @Output() currentChartMode: ChartMode;
-    @Output() treeJson: any;    
+    @Output() treeJson: any;
     @Output() selectedNode: OrgNodeModel;
     @Output() isAddOrEditMode: boolean;
     @Output() displayFirstNameLabel: boolean;
@@ -106,6 +106,9 @@ export class OrgComponent implements OnDestroy {
                 this.enableViewModesNav(this.currentChartMode);
                 this.enableLabels();
                 this.enablePan();
+            }
+            if (this.isNodeMoveEnabled) {
+                this.isNodeMoveEnabled = false;
             }
         } else {
             this.disablePan();
