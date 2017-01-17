@@ -67,7 +67,7 @@ export class AuthService {
                 }
 
                 let user = new UserModel();
-                user.Name = profile.name;
+                user.Name = profile.username;
                 user.Picture = profile.picture;
                 user.ClientID = profile.clientID;
                 user.UserID = profile.identities[0].user_id;
