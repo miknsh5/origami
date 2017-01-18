@@ -339,6 +339,12 @@ ul.tabs .tab {
     padding: 10px;
 }
 
+#feedbackPanel textarea::-webkit-input-placeholder {
+    color: #ffffff;
+    color: var(--white-text);
+    opacity: 0.2;
+}
+
 #feedbackPanel .divider {
     background-color: #8B8E90;
 }
