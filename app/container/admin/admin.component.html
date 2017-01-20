@@ -1,0 +1,54 @@
+<div id="wrapper">
+    <ul id="userDropdown" class="dropdown-content">
+        <li class="collection-item avatar">
+            <img [src]="userModel.Picture" alt="">
+            <p>{{userModel.Name}}</p>
+            <p class="caption">{{userModel.Email}}</p>
+        </li>
+        <li class="divider"></li>
+        <li (click)="auth.logout()"><a><i class="material-icons left">remove_circle</i>Logout</a></li>
+    </ul>
+    <nav class="fixed">
+        <div class="nav-wrapper">
+            <a href="/home" class="brand-logo"><img src="http://peopletree.io/images/pt-logo-beta.png" /> </a>
+            <ul class="right">
+                <li *ngIf="userModel">
+                    <a class="dropdown-button" data-activates="userDropdown">
+                        <i class="material-icons left">person</i>
+                        <span class="userName hide-on-small-only">{{userModel.Name}}</span>
+                        <i class="material-icons right">arrow_drop_down</i>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container">
+        <ul *ngIf="userDetails" class="collapsible" data-collapsible="expandable">
+            <li *ngFor="let user of userDetails">
+                <div class="collapsible-header"><img [src]="user.Picture" />
+                    <p>{{user.Name}}</p>
+                    <p class="count">
+                        <span class="right">{{user.Company[0].OrgNodeCounts}}</span>
+                    </p>
+                </div>
+                <div class="collapsible-body">
+                    <p>
+                        UserID : {{user.UserID}}
+                        <br> Email : {{user.Email}}
+                    </p>
+                    <div class="companyDetails" *ngFor="let orgGroup of user.Company[0].OrgGroups">
+                        <hr>
+                        <p>
+                            Organization ID : {{orgGroup.OrgGroupID}}
+                            <br> Organization Name : {{orgGroup.GroupName}}
+                            <br> Organization Node Counts : {{orgGroup.OrgNodeCounts}}
+                        </p>
+                    </div>
+                </div>
+            </li>
+        </ul>
+        <blockquote *ngIf="!userDetails">
+            You are not aligible to view this page
+        </blockquote>
+    </div>
+</div>

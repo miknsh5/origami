@@ -8,3 +8,4 @@ export * from "./orgnode.model";
 export * from "./userfeedback.model";
 export * from "./orgsearch.model";
 export * from "./draggednode.model";
+export * from "./userdetails.model";

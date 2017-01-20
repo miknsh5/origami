@@ -49,11 +49,15 @@ export class MenuBarComponent implements OnChanges {
 
     constructor(private orgService: OrgService, private router: Router, private renderer: Renderer,
         private csvHelper: CSVConversionHelper, private auth: AuthService, private domHelper: DOMHelper) {
-        this.getAllCompanies();
-        this.domHelper.showElements(MenuElement.exportData);
-        this.domHelper.hideElements(MenuElement.downloadTemplate);
-        this.isImport = false;
-        this.groupSettingTitle = "Settings";
+        let profile = localStorage.getItem("profile");
+        if (profile) {
+            this.userModel = JSON.parse(profile);
+            this.getAllCompanies();
+            this.domHelper.showElements(MenuElement.exportData);
+            this.domHelper.hideElements(MenuElement.downloadTemplate);
+            this.isImport = false;
+            this.groupSettingTitle = "Settings";
+        }
     }
 
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
@@ -87,10 +91,8 @@ export class MenuBarComponent implements OnChanges {
     }
 
     private getAllCompanies() {
-        let profile = localStorage.getItem("profile");
-        if (profile) {
-            this.userModel = JSON.parse(profile);
-            this.orgService.getCompanies(profile)
+        if (this.userModel) {
+            this.orgService.getCompanies(this.userModel.UserID)
                 .subscribe(data => this.setCompanies(data),
                 err => this.orgService.logError(err));
         }

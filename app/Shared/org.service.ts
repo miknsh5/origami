@@ -4,7 +4,7 @@ import { Headers, RequestOptions } from "@angular/http";
 
 @Injectable()
 export class OrgService {
-    readonly apiUrl = "//origamiapi.azurewebsites.net/"; // "//peopletreeapi.azurewebsites.net/";
+    readonly apiUrl = "http://localhost:54574/"; // "//peopletreeapi.azurewebsites.net/";
     private headers: Headers;
 
     constructor(private http: Http) {
@@ -12,10 +12,17 @@ export class OrgService {
         this.headers.append("Accept", "application/json");
     }
 
-    getCompanies(userProfile) {
-        let url = `${this.apiUrl}api/Org/GetCompaniesForUser`;
+    createUser(userProfile) {
+        let url = `${this.apiUrl}api/Org/CreateUserOrValidate`;
 
         return this.http.post(url, userProfile, { headers: this.headers })
+            .map(node => node.json());
+    }
+
+    getCompanies(userID) {
+        let url = `${this.apiUrl}api/Org/GetCompaniesForUser?userID=${userID}`;
+
+        return this.http.get(url, { headers: this.headers })
             .map(node => node.json());
     }
 
@@ -138,6 +145,14 @@ export class OrgService {
         return this.http.post(url, node, options)
             .map(res => res.json());
     }
+
+    getDetailsForAdmin() {
+        let options = new RequestOptions({ headers: this.headers });
+        let url = `${this.apiUrl}api/Org/GetAllUsersAndCompanies`;
+         return this.http.get(url, { headers: this.headers })
+            .map(node => node.json());
+    }
+
 
     logError(err: any) {
         console.error(err);

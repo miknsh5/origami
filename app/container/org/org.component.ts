@@ -14,7 +14,7 @@ const DEFAULT_OFFSET: number = 61;
 declare var svgPanZoom: any;
 
 @Component({
-    selector: "sg-org",
+    selector: "pt-org",
     templateUrl: "app/container/org/org.component.html",
     styleUrls: ["app/container/org/org.component.css"]
 })
