@@ -5,7 +5,7 @@ import { Router } from "@angular/router";
 import { AuthService } from "../shared/index";
 
 @Component({
-    selector: "signup",
+    selector: "pt-signup",
     template: ``
 })
 

@@ -16,6 +16,10 @@ export class DOMHelper {
         jQuery(selector).dropdown(options);
     }
 
+    public initCollapsible() {
+        jQuery(".collapsible").collapsible();
+    }
+
     public setWidth(selector: string, width: any) {
         jQuery(selector).width(width);
     }

@@ -21,11 +21,11 @@
         ],
         "directive-selector-prefix": [
             true,
-            "sg"
+            "pt"
         ],
         "component-selector-prefix": [
             true,
-            "sg"
+            "pt"
         ],
         "use-input-property-decorator": true,
         "use-output-property-decorator": true,
