@@ -25,10 +25,15 @@
     <div class="container">
         <ul *ngIf="userDetails" class="collapsible" data-collapsible="expandable">
             <li *ngFor="let user of userDetails">
-                <div class="collapsible-header"><img [src]="user.Picture" />
-                    <p>{{user.Name}}</p>
-                    <p class="count">
-                        <span class="right">{{user.Company[0].OrgNodeCounts}}</span>
+                <div class="collapsible-header">
+                    <img [src]="user.Picture" />
+                    <div>
+                        <p id="userName">{{user.Name}}</p>
+                        <p id="orgGroup-count">Organization Count: {{user.Company[0].OrgGroups.length}}</p>
+                        <p id="orgNode-count">OrgNode Count: {{user.Company[0].OrgNodeCounts}}</p>
+                    </div>
+                    <p class="collapsible-icon">
+                        <span class="right"><i class="material-icons">keyboard_arrow_down</i></span>
                     </p>
                 </div>
                 <div class="collapsible-body">
@@ -41,14 +46,29 @@
                         <p>
                             Organization ID : {{orgGroup.OrgGroupID}}
                             <br> Organization Name : {{orgGroup.GroupName}}
-                            <br> Organization Node Counts : {{orgGroup.OrgNodeCounts}}
+                            <br> Organization Node Count : {{orgGroup.OrgNodeCounts}}
                         </p>
                     </div>
                 </div>
             </li>
         </ul>
-        <blockquote *ngIf="!userDetails">
-            You are not aligible to view this page
-        </blockquote>
+        <div *ngIf="!userDetails">
+            <svg class="loader" width="38" height="38" viewBox="0 0 38 38" xmlns="http://www.w3.org/2000/svg" stroke="#0097FF">
+            <g fill="none" fill-rule="evenodd">
+                <g transform="translate(1 1)" stroke-width="2">
+                    <circle stroke-opacity=".5" cx="18" cy="18" r="18"/>
+                    <path d="M36 18c0-9.94-8.06-18-18-18">
+                        <animateTransform
+                        attributeName="transform"
+                        type="rotate"
+                        from="0 18 18"
+                        to="360 18 18"
+                        dur="1s"
+                        repeatCount="indefinite"/>
+                    </path>
+                </g>
+            </g>
+        </svg>
+        </div>
     </div>
 </div>

@@ -16,20 +16,16 @@ export class AdminComponent {
         let profile = localStorage.getItem("profile");
         if (profile) {
             this.userModel = JSON.parse(profile);
-            if (this.userModel.UserID === "579f2a8585be5a762320c1bf") {
-                this.getDetails();
-            } else {
-                setTimeout(() => {
-                    this.domHelper.initDropDown(".dropdown-button", { constrain_width: false, alignment: "right" });
-                }, 500);
-            }
+            this.getAllUsers(this.userModel.UserID);
         }
     }
 
-    getDetails() {
-        this.orgService.getDetailsForAdmin()
+    getAllUsers(userID) {
+        this.orgService.getAllUsersAndCompanies(userID)
             .subscribe(data => this.displayDetails(data),
-            err => this.orgService.logError(err));
+            err => {
+                this.orgService.logError(err);
+            });
     }
 
     displayDetails(data: Array<UserDetails>) {

@@ -17,7 +17,9 @@ export class DOMHelper {
     }
 
     public initCollapsible() {
-        jQuery(".collapsible").collapsible();
+        setTimeout(() => {
+            jQuery(".collapsible").collapsible();
+        }, 500);
     }
 
     public setWidth(selector: string, width: any) {
