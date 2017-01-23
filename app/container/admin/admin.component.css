@@ -96,14 +96,19 @@ nav ul a i.left {
     margin: 5px;
 }
 
+.collapsible-header div {
+    display: inline-flex;
+    width: calc(100% - 75px);
+}
+
 .collapsible-header p {
     vertical-align: middle;
     margin: auto 10px;
-    width: 100%
+    width: 33%;
 }
 
-.collapsible-header p.count {
-    width: 10%
+.collapsible-header .collapsible-icon {
+    width: 25px;
 }
 
 .collapsible-body p {
@@ -131,5 +136,45 @@ nav ul a i.left {
     nav .brand-logo {
         position: relative;
         margin-left: 20px;
+    }
+}
+
+@media only screen and (min-width: 0) {
+    html {
+        font-size: 72%;
+    }
+}
+
+@media only screen and (max-width: 768px) {
+    .container {
+        width: 100%;
+    }
+    .collapsible-header img {
+        min-width: 60px;
+        width: 60px;
+        height: 60px;
+        margin: auto 10px;
+    }
+    .collapsible-header {
+        line-height: 0;
+        background-size: contain;
+        background-position: 0;
+        margin: auto auto;
+        columns: 100px 3;
+    }
+    .collapsible-header div {
+        display: table;
+        width: calc(100% - 90px);
+    }
+    .collapsible-header p {
+        display: table-row;
+        line-height: 2em;
+        width: 100%;
+    }
+    .collapsible-header .collapsible-icon {
+        width: 10px;
+    }
+    .collapsible-header i {
+        margin-right: 0;
     }
 }

@@ -25,10 +25,15 @@
     <div class="container">
         <ul *ngIf="userDetails" class="collapsible" data-collapsible="expandable">
             <li *ngFor="let user of userDetails">
-                <div class="collapsible-header"><img [src]="user.Picture" />
-                    <p>{{user.Name}}</p>
-                    <p class="count">
-                        <span class="right">{{user.Company[0].OrgNodeCounts}}</span>
+                <div class="collapsible-header">
+                    <img [src]="user.Picture" />
+                    <div>
+                        <p id="userName">{{user.Name}}</p>
+                        <p id="orgGroup-count">Organization Count: {{user.Company[0].OrgGroups.length}}</p>
+                        <p id="orgNode-count">OrgNode Count: {{user.Company[0].OrgNodeCounts}}</p>
+                    </div>
+                    <p class="collapsible-icon">
+                        <span class="right"><i class="material-icons">keyboard_arrow_down</i></span>
                     </p>
                 </div>
                 <div class="collapsible-body">
@@ -41,7 +46,7 @@
                         <p>
                             Organization ID : {{orgGroup.OrgGroupID}}
                             <br> Organization Name : {{orgGroup.GroupName}}
-                            <br> Organization Node Counts : {{orgGroup.OrgNodeCounts}}
+                            <br> Organization Node Count : {{orgGroup.OrgNodeCounts}}
                         </p>
                     </div>
                 </div>
