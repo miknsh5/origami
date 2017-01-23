@@ -90,6 +90,7 @@ nav ul a i.left {
 }
 
 .collapsible-header img {
+    min-width: 40px;
     width: 40px;
     height: 40px;
     margin: 5px;

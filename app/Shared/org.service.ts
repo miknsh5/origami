@@ -146,10 +146,10 @@ export class OrgService {
             .map(res => res.json());
     }
 
-    getDetailsForAdmin() {
+    getAllUsersAndCompanies(userID) {
         let options = new RequestOptions({ headers: this.headers });
-        let url = `${this.apiUrl}api/Org/GetAllUsersAndCompanies`;
-         return this.http.get(url, { headers: this.headers })
+        let url = `${this.apiUrl}api/Org/GetAllUsersAndCompanies?userID=${userID}`;
+        return this.http.get(url, { headers: this.headers })
             .map(node => node.json());
     }
 
