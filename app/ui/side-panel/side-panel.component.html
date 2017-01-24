@@ -3,7 +3,7 @@
         <a class="waves-effect waves-light" (click)="openPanel()"><i class="material-icons">folder_shared</i></a>
     </div>
     <div id="menuPanel" class="right">
-        <div style="min-height: 600px;overflow: hidden;">
+        <div style="min-height:660px;overflow:hidden;">
             <div>
                 <button class="waves-effect waves-light closebtn" (click)="closePanel()"><i class="material-icons">close</i></button>
                 <hr/>
@@ -64,6 +64,22 @@
                     <label for="verticalView">Vertical</label>
                     <input class="with-gap" name="view" type="radio" id="horizontalView" (change)="changeViewVericalOrHorizonatl($event)" />
                     <label for="horizontalView">Horizontal</label>
+                </div>
+                <hr/>
+                <label class="slideBarTitle">Zoom: </label>
+                <div class="slideBar">
+                    <div class="range-field">
+                        <label class="verticalSlidelbl">Vertical</label>
+                        <input id="verticalSlider" type="range" [(ngModel)]="verticalSlider.value" min="{{verticalSlider.min}}" max="{{verticalSlider.max}}" (change)="changeVericalSlider(verticalSlider.value)" />
+                    </div>
+                    <div class="range-field">
+                        <label class="horizontalSlidelbl">Horizontal</label>
+                        <input id="horizontalSlider" type="range" [(ngModel)]="horizontalSlider.value" min="{{horizontalSlider.min}}" max="{{horizontalSlider.max}}" (change)="changeHorizontalSlider(horizontalSlider.value)" />
+                    </div>
+                    <div id="reset" class="reset-wrap">
+                        <button class="waves-effect waves-light btn right" (click)="onReset()"> 
+                     <i class="material-icons">autorenew</i>Reset</button>
+                    </div>
                 </div>
                 <div class="tabControl">
                     <ul class="tabs">

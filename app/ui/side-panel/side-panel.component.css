@@ -112,13 +112,12 @@ button {
 
 [type="radio"]+label {
     padding-left: 30px;
-    display: block;
     font-size: 0.9rem;
     line-height: 1.9em;
 }
 
 .radioboxList {
-    margin: 10px 35px;
+    margin: 10px 25px;
 }
 
 .editbtn,
@@ -153,7 +152,8 @@ button {
     color: var(--blue-grey);
 }
 
-.sideNav .menuTitle {
+.sideNav .menuTitle,
+.sideNav .slideBarTitle {
     padding-left: 15px;
     font-size: 1em;
     font-weight: 700;
@@ -215,6 +215,11 @@ button {
     margin: 25px 35px;
 }
 
+.sideNav #sidePanelExportData {
+    display: flex;
+    margin: 12px 15px;
+}
+
 [type="checkbox"].filled-in:checked+label:after {
     width: 18px;
     height: 18px;
@@ -266,7 +271,7 @@ a {
 }
 
 .tabControl {
-    margin-top: 50px;
+    margin-top: 40px;
     z-index: 0;
 }
 
@@ -522,6 +527,39 @@ ul.tabs .tab {
     font-size: 1rem;
     line-height: inherit;
     margin-right: 8px;
+}
+
+.slideBar .horizontalSlidelbl,
+.slideBar .verticalSlidelbl {
+    font-size: 0.99rem;
+    color: #9e9e9e;
+    margin: 20px 20px;
+}
+
+#reset button {
+    right: 42px;
+    padding: 0px 16px 0px 0px!important;
+}
+
+.reset-wrap {
+    text-align: center;
+}
+
+#reset .waves-effect {
+    background-color: #0097FF;
+    padding: 0px 0.8rem;
+    margin: 0px 25px;
+    font-size: 0.7rem;
+    border-radius: 0px;
+    height: 30px;
+    line-height: normal;
+}
+
+#reset .btn i {
+    font-size: 1rem;
+    line-height: 1rem;
+    margin: 0px 8px;
+    vertical-align: middle;
 }
 
 @media only screen and (min-width: 1440px) {
