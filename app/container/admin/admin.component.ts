@@ -11,6 +11,9 @@ import { AuthService, OrgService, UserDetails, UserModel, DOMHelper } from "../.
 export class AdminComponent {
     private userDetails: Array<UserDetails>;
     private userModel: UserModel;
+    private userCount: number = 0;
+    private organizationCount: number = 0;
+    private orgNodeCount: number = 0;
 
     constructor(private orgService: OrgService, private auth: AuthService, private domHelper: DOMHelper) {
         let profile = localStorage.getItem("profile");
@@ -31,6 +34,15 @@ export class AdminComponent {
     displayDetails(data: Array<UserDetails>) {
         if (data) {
             this.userDetails = data;
+            this.userCount = this.userDetails.length;
+            this.userDetails.forEach((d) => {
+                d.Company.forEach(d => {
+                    this.organizationCount += d.OrgGroups.length;
+                    d.OrgGroups.forEach(d => {
+                        this.orgNodeCount += d.OrgNodeCounts;
+                    });
+                });
+            });
             this.domHelper.initCollapsible();
             this.domHelper.initDropDown(".dropdown-button", { constrain_width: false, alignment: "right" });
         }
