@@ -208,6 +208,10 @@ nav ul.dropdown-content li:first-child:hover {
     cursor: pointer;
 }
 
+.exportLbl {
+    margin: 30px 0;
+}
+
 
 /* The Modal (background) */
 
