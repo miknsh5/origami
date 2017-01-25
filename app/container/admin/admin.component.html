@@ -23,6 +23,23 @@
         </div>
     </nav>
     <div class="container">
+        <div id="countHeader" class="center">
+            <ul class="total-count-header">
+                <li>
+                    <h6>Users</h6>
+                    <h5>{{userCount.toLocaleString('en')}}</h5>
+                </li>
+                <li>
+                    <h6>Organizations</h6>
+                    <h5>{{organizationCount.toLocaleString('en')}}</h5>
+                </li>
+                <li>
+                    <h6>Nodes</h6>
+                    <h5>{{orgNodeCount.toLocaleString('en')}}</h5>
+                </li>
+            </ul>
+        </div>
+
         <ul *ngIf="userDetails" class="collapsible" data-collapsible="expandable">
             <li *ngFor="let user of userDetails">
                 <div class="collapsible-header">
@@ -30,7 +47,7 @@
                     <div>
                         <p id="userName">{{user.Name}}</p>
                         <p id="orgGroup-count">Organization Count: {{user.Company[0].OrgGroups.length}}</p>
-                        <p id="orgNode-count">OrgNode Count: {{user.Company[0].OrgNodeCounts}}</p>
+                        <p id="orgNode-count">Node Count: {{user.Company[0].OrgNodeCounts}}</p>
                     </div>
                     <p class="collapsible-icon">
                         <span class="right"><i class="material-icons">keyboard_arrow_down</i></span>

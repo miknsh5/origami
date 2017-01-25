@@ -121,6 +121,40 @@ nav ul a i.left {
     opacity: 0.2;
 }
 
+.collapsible-header.active I {
+    -ms-transform: rotate(180deg);
+    -webkit-transform: rotate(180deg);
+    transform: rotate(180deg);
+}
+
+.total-count-header {
+    margin: 50px 0;
+}
+
+#countHeader .total-count-header {
+    display: block;
+    text-align: center;
+}
+
+#countHeader ul li {
+    vertical-align: middle;
+    margin: auto 1.9rem;
+    text-align: center;
+    display: inline-block;
+}
+
+#countHeader ul li h5 {
+    margin-top: 0;
+    font-size: 1.5em;
+    font-weight: bolder;
+}
+
+#countHeader ul li h6 {
+    margin-bottom: 0px;
+    font-size: 1.2em;
+    font-weight: 400;
+}
+
 @media only screen and (max-width:992px) {
     nav .brand-logo {
         left: 0%;
@@ -148,6 +182,9 @@ nav ul a i.left {
 @media only screen and (max-width: 768px) {
     .container {
         width: 100%;
+    }
+    #countHeader ul li {
+        margin: auto 5%;
     }
     .collapsible-header img {
         min-width: 60px;
