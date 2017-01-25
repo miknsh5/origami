@@ -50,6 +50,51 @@ body {
     color: var(--white-text);
 }
 
+input[type=range] {
+    position: relative;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    width: 75%;
+    margin: 0px 20px;
+    padding: 3px;
+}
+
+input[type=range]+.thumb {
+    background-color: #0097FF !important;
+    transform-origin: 100% 10%;
+}
+
+input[type=range]+.thumb .value {
+    display: block;
+    width: 30px;
+    text-align: center;
+    color: #0097FF;
+    font-size: 0;
+    -webkit-transform: rotate(45deg);
+    transform: rotate(45deg);
+}
+
+input[type=range]::-webkit-slider-thumb {
+    background: #0097FF !important;
+}
+
+input[type=range]::-moz-range-thumb {
+    background: #0097FF !important;
+}
+
+input[type=range]+.thumb.active {
+    border-radius: 50% 50% 50% 0;
+    background-color: #0097FF !important;
+}
+
+input[type=range]+.thumb.active .value {
+    color: #fff;
+    margin-left: -1px;
+    margin-top: 8px;
+    font-size: 10px;
+}
+
 input:placeholder-shown {
     font-weight: normal;
     font-size: 10.5px;

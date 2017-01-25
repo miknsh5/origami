@@ -46,6 +46,8 @@ export class OrgComponent implements OnDestroy {
     @Output() isNodeMoveEnabled: boolean;
     @Output() isFeedbackInEditMode: boolean;
     @Output() isHorizontalViewEnabled: boolean;
+    @Output() horizontalSpaceForNode: number;
+    @Output() verticalSpaceForNode: number;
 
     constructor(private orgService: OrgService) {
         this.currentChartMode = ChartMode.build;
@@ -407,6 +409,14 @@ export class OrgComponent implements OnDestroy {
             this.orgService.changeParent(node).subscribe(data => this.updateJSON(),
                 err => this.orgService.logError(err));
         }
+    }
+
+    verticalNodeSpace(data: number) {
+       this.verticalSpaceForNode = data;
+    }
+
+    horizontalNodeSpace(data: number) {
+       this.horizontalSpaceForNode = data;
     }
 
     private enableViewModesNav(viewMode) {

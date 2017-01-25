@@ -103,6 +103,8 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     @Input() isNodeMoveEnabledOrDisabled: boolean;
     @Input() isFeedbackInEditMode: boolean;
     @Input() isHorizontalViewEnabled: boolean;
+    @Input() verticalSpaceForNode: number;
+    @Input() horizontalSpaceForNode: number;
 
     @Output() selectNode = new EventEmitter<OrgNodeModel>();
     @Output() addNode = new EventEmitter<OrgNodeModel>();
@@ -207,6 +209,20 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                     this.root = this.treeData[0];
                     this.selectedOrgNode = this.root;
                 }
+            }
+
+            if ((changes["verticalSpaceForNode"] || changes["horizontalSpaceForNode"]) && this.currentMode === ChartMode.report) {
+                this.initializeTreeAsPerMode();
+                let node = this.selectedOrgNode;
+                if (!node && this.lastSelectedNode) {
+                    node = this.lastSelectedNode;
+                }
+                this.expandTree(node);
+                this.calculateLevelDepth();
+                this.resizeLinesArrowsAndSvg();
+                this.setNodeLabelVisiblity();
+                this.highlightAndCenterNode(node);
+                return;
             }
 
             if (changes["isAddOrEditModeEnabled"] && this.isAddOrEditModeEnabled && !changes["treeData"]) {
@@ -441,19 +457,23 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 });
         } else if (this.isReportMode()) {
             if (this.isHorizontalViewEnabled) {
-                this.tree = d3.layout.tree().nodeSize([NODE_WIDTH, RIGHTLEFT_MARGIN]);
+                let width = this.verticalSpaceForNode || NODE_WIDTH;
+                let height = this.horizontalSpaceForNode || RIGHTLEFT_MARGIN;
+                this.tree = d3.layout.tree().nodeSize([width, height]);
                 this.setNodeLabelVisiblity();
                 this.root = this.selectedOrgNode || this.lastSelectedNode;
                 this.diagonal = d3.svg.diagonal()
-                    .projection(function (d) {
+                    .projection((d) => {
                         return [d.y, d.x];
                     });
             } else {
-                this.tree = d3.layout.tree().nodeSize([NODE_HEIGHT, NODE_WIDTH]);
+                let width = this.verticalSpaceForNode || NODE_WIDTH;
+                let height = this.horizontalSpaceForNode || RIGHTLEFT_MARGIN;
+                this.tree = d3.layout.tree().nodeSize([height, width]);
                 this.setNodeLabelVisiblity();
                 this.root = this.selectedOrgNode || this.lastSelectedNode;
                 this.diagonal = d3.svg.diagonal()
-                    .projection(function (d) {
+                    .projection((d) => {
                         return [d.x, d.y];
                     });
             }
@@ -696,7 +716,9 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             if (this.isBuildMode()) {
                 this.nodes.forEach(function (d) { d.y = d.depth * DEPTH; });
             } else if (this.isReportMode()) {
-                this.nodes.forEach(function (d) { d.y = d.depth * NODE_WIDTH; });
+                if (!this.isHorizontalViewEnabled) {
+                    this.nodes.forEach((d) => { d.y = d.depth * (this.verticalSpaceForNode || NODE_WIDTH); });
+                }
             } else {
                 this.nodes.forEach(function (d) { d.y = d.depth * (RADIAL_DEPTH + NODE_HEIGHT); });
             }
