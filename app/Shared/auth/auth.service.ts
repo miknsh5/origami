@@ -31,6 +31,7 @@ export class AuthService {
     }
 
     login() {
+        this.clearStorage();
         this.lock.show({ initialScreen: 'login' });
     }
 
@@ -39,9 +40,7 @@ export class AuthService {
     }
 
     logout() {
-        // To log out, just remove the token and profile from local storage
-        localStorage.removeItem("profile");
-        localStorage.removeItem("id_token");
+        this.clearStorage();
 
         // Send the user back to the Login after logout
         this.router.navigateByUrl("/login");
@@ -89,5 +88,10 @@ export class AuthService {
                 this.zone.run(() => this.router.navigateByUrl("/home"));
             });
         });
+    }
+
+    private clearStorage() {
+        // To log out, just remove the token and profile from local storage
+        localStorage.clear()
     }
 }

@@ -92,7 +92,14 @@ export class MenuBarComponent implements OnChanges {
             this.userModel = JSON.parse(profile);
             this.orgService.getCompanies(profile)
                 .subscribe(data => this.setCompanies(data),
-                err => this.orgService.logError(err));
+                err => {
+                    this.orgService.logError(err);
+                    if (err.status === 400) {
+                        this.auth.logout();
+                    }
+                });
+        } else {
+            this.auth.logout();
         }
     }
 
