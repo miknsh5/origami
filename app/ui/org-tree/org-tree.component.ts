@@ -211,25 +211,13 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 }
             }
 
-            if ((changes["verticalSpaceForNode"] || changes["horizontalSpaceForNode"]) && this.currentMode === ChartMode.report) {
-                this.initializeTreeAsPerMode();
-                let node = this.selectedOrgNode;
-                if (!node && this.lastSelectedNode) {
-                    node = this.lastSelectedNode;
-                }
-                this.expandTree(node);
-                this.calculateLevelDepth();
-                this.resizeLinesArrowsAndSvg();
-                this.setNodeLabelVisiblity();
-                this.highlightAndCenterNode(node);
-                return;
-            }
-
             if (changes["isAddOrEditModeEnabled"] && this.isAddOrEditModeEnabled && !changes["treeData"]) {
                 return;
             }
 
-            if (changes["isHorizontalViewEnabled"] || changes["currentMode"] || (changes["orgGroupID"] && this.isExploreMode())) {
+            if (((changes["verticalSpaceForNode"] || changes["horizontalSpaceForNode"]) && this.currentMode === ChartMode.report) ||
+                (changes["isHorizontalViewEnabled"] || changes["currentMode"] || (changes["orgGroupID"] && this.isExploreMode())) ||
+                (changes["isNodeMoveEnabledOrDisabled"])) {
                 this.initializeTreeAsPerMode();
                 let node = this.selectedOrgNode;
                 if (!node && this.lastSelectedNode) {
@@ -871,21 +859,21 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         if (!this.dragListener) {
             this.dragListener = d3.behavior.drag()
                 .on("dragstart", (evt) => {
-                    if (this.isBuildMode() && !this.isAddOrEditModeEnabled) {
+                    if (this.isBuildMode() && !this.isAddOrEditModeEnabled && !this.isNodeMoveEnabledOrDisabled) {
                         if (!this.isAddOrEditModeEnabled && this.selectedOrgNode && !this.isNodeMoved) {
                             this.onNodeDragStart(evt);
                         }
                     }
                 })
                 .on("drag", (evt) => {
-                    if (this.isBuildMode() && !this.isAddOrEditModeEnabled) {
+                    if (this.isBuildMode() && !this.isAddOrEditModeEnabled && !this.isNodeMoveEnabledOrDisabled) {
                         if (!this.isAddOrEditModeEnabled && this.selectedOrgNode && !this.isNodeMoved) {
                             this.onNodeDrag(evt);
                         }
                     }
                 })
                 .on("dragend", (evt) => {
-                    if (this.isBuildMode() && !this.isAddOrEditModeEnabled) {
+                    if (this.isBuildMode() && !this.isAddOrEditModeEnabled && !this.isNodeMoveEnabledOrDisabled) {
                         if (!this.isAddOrEditModeEnabled && this.selectedOrgNode && !this.isNodeMoved) {
                             this.onNodeDragEnd(evt);
                         }

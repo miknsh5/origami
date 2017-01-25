@@ -399,7 +399,6 @@ export class SidePanelComponent implements OnInit, OnChanges {
 
     private onEditOrSaveNodeClicked() {
         if (this.selectedNode.NodeID !== -1 && !this.isSmartBarAddEnabled) {
-            this.isNodeMoveEnabledOrDisabled.emit(false);
             if (this.editOrSave === EDIT_ICON) {
                 this.isEditEnabled.emit(true);
                 this.isEditModeEnabled = true;
@@ -428,6 +427,7 @@ export class SidePanelComponent implements OnInit, OnChanges {
                     alert("Please enter FirstName.");
                 }
             }
+            this.isNodeMoveEnabledOrDisabled.emit(false);
         }
     }
 
