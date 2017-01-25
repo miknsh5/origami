@@ -13,7 +13,9 @@ export class DOMHelper {
     }
 
     public initDropDown(selector: string, options: any) {
-        jQuery(selector).dropdown(options);
+        setTimeout(() => {
+            jQuery(selector).dropdown(options);
+        }, 200);
     }
 
     public initCollapsible() {

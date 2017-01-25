@@ -32,7 +32,8 @@ export class AuthService {
     }
 
     login() {
-        this.lock.show({ initialScreen: "login" });
+        this.clearStorage();
+        this.lock.show({ initialScreen: 'login' });
     }
 
     signup() {
@@ -40,50 +41,51 @@ export class AuthService {
     }
 
     logout() {
-        // To log out, just remove the token and profile from local storage
-        localStorage.removeItem("profile");
-        localStorage.removeItem("id_token");
+        this.clearStorage();
 
         // Send the user back to the Login after logout
         this.router.navigateByUrl("/login");
     }
 
-    authenticated() {
+    isAuthenticated() {
         return tokenNotExpired();
     }
 
     private onAuthenticated() {
         this.lock.on("authenticated", (authResult) => {
             localStorage.setItem("id_token", authResult.idToken);
+            this.getProfile(authResult.idToken);
+        });
+    }
 
-            // Fetch profile information
-            this.lock.getProfile(authResult.idToken, (error, profile) => {
-                if (error) {
-                    // Handle error
-                    throw new Error(error);
-                }
+    private getProfile(idToken) {
+        // Fetch profile information
+        this.lock.getProfile(idToken, (error, profile) => {
+            if (error) {
+                // Handle error
+                throw new Error(error);
+            }
 
-                let user = new UserModel();
-                user.Name = profile.username || profile.nickname;
-                user.Picture = profile.picture;
-                user.ClientID = profile.clientID;
-                user.UserID = profile.identities[0].user_id;
-                user.Connection = profile.identities[0].connection;
-                user.IsSocial = profile.identities[0].isSocial;
-                user.Provider = profile.identities[0].provider;
+            let user = new UserModel();
+            user.Name = profile.username || profile.nickname;
+            user.Picture = profile.picture;
+            user.ClientID = profile.clientID;
+            user.UserID = profile.identities[0].user_id;
+            user.Connection = profile.identities[0].connection;
+            user.IsSocial = profile.identities[0].isSocial;
+            user.Provider = profile.identities[0].provider;
 
-                if (profile["email"]) {
-                    user.Email = profile.email;
-                }
+            if (profile["email"]) {
+                user.Email = profile.email;
+            }
 
-                if (user.IsSocial && profile.identities[0].access_token) {
-                    user.AccessToken = profile.identities[0].access_token;
-                } else {
-                    user.AccessToken = authResult.idToken;
-                }
+            if (user.IsSocial && profile.identities && profile.identities.length > 0) {
+                user.AccessToken = profile.identities[0].access_token;
+            } else {
+                user.AccessToken = idToken;
+            }
 
-                this.createOrValidateUser(user);
-            });
+            this.createOrValidateUser(user);
         });
     }
 
@@ -98,5 +100,10 @@ export class AuthService {
                 alert("User Creation Failed. Please try again later.");
                 this.orgService.logError(err);
             });
+    }
+
+    private clearStorage() {
+        // To log out, just remove the token and profile from local storage
+        localStorage.clear()
     }
 }
