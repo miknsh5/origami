@@ -13,7 +13,7 @@ var config = {
     },
     output: {
         path: __dirname,
-        filename: './dist/[name].bundle.js',
+        filename: './dist/[name].bundle.20170127.js',
         sourceMapFilename: './dist/[name].map',
         chunkFilename: './dist/[id].chunk.js'
     },

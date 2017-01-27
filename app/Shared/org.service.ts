@@ -4,7 +4,7 @@ import { Headers, RequestOptions } from "@angular/http";
 
 @Injectable()
 export class OrgService {
-    readonly apiUrl = "//origamiapi.azurewebsites.net/"; // "//peopletreeapi.azurewebsites.net/";
+    readonly apiUrl = "//peopletreeapi.azurewebsites.net/";
     private headers: Headers;
 
     constructor(private http: Http) {

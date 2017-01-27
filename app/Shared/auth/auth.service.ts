@@ -79,12 +79,9 @@ export class AuthService {
                 user.Email = profile.email;
             }
 
-            if (user.IsSocial && profile.identities && profile.identities.length > 0) {
-                user.AccessToken = profile.identities[0].access_token;
-            } else {
-                user.AccessToken = idToken;
-            }
+            user.AccessToken = idToken;
 
+            this.lock.hide();
             this.createOrValidateUser(user);
         });
     }
@@ -93,7 +90,6 @@ export class AuthService {
         this.orgService.createUser(user)
             .subscribe(data => {
                 localStorage.setItem("profile", JSON.stringify(data));
-                this.lock.hide();
                 this.zone.run(() => this.router.navigateByUrl("/home"));
             },
             err => {
