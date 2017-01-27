@@ -2,6 +2,8 @@ nav {
     background-color: #ffffff;
     background-color: var(--white-text);
     z-index: 1;
+    position: fixed;
+    top: 0;
 }
 
 nav,
@@ -163,6 +165,14 @@ nav ul a i.left {
     }
 }
 
+@media only screen and (min-width: 601px) {
+    .container {
+        width: 85%;
+        position: relative;
+        top: 55px;
+    }
+}
+
 @media only screen and (max-width:768px) {
     nav ul a {
         padding: 0;
@@ -170,6 +180,9 @@ nav ul a i.left {
     nav .brand-logo {
         position: relative;
         margin-left: 20px;
+    }
+    .home {
+        padding: 0 10px;
     }
 }
 
@@ -182,6 +195,8 @@ nav ul a i.left {
 @media only screen and (max-width: 768px) {
     .container {
         width: 100%;
+        position: relative;
+        top: 55px;
     }
     #countHeader ul li {
         margin: auto 5%;
