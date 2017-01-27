@@ -210,11 +210,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                     this.selectedOrgNode = this.root;
                 }
             }
-
-            if (changes["isAddOrEditModeEnabled"] && this.isAddOrEditModeEnabled && !changes["treeData"]) {
-                return;
-            }
-
             if (((changes["verticalSpaceForNode"] || changes["horizontalSpaceForNode"]) && this.currentMode === ChartMode.report) ||
                 (changes["isHorizontalViewEnabled"] || changes["currentMode"] || (changes["orgGroupID"] && this.isExploreMode())) ||
                 (changes["isNodeMoveEnabledOrDisabled"])) {
@@ -231,6 +226,9 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 return;
             }
 
+            if (changes["isAddOrEditModeEnabled"] && this.isAddOrEditModeEnabled && !changes["treeData"]) {
+                return;
+            }
             let raiseSelectedEvent: boolean = true;
             if (changes["isAddOrEditModeEnabled"]) {
                 // We don't need to raise a selectednode change event if the only change happening is entering/leaving edit node
