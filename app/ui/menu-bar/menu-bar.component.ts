@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnChanges, SimpleChange, Renderer } from "@angular/core";
+import { Component, Input, Output, EventEmitter, OnChanges, OnInit, SimpleChange, Renderer } from "@angular/core";
 import { Router } from "@angular/router";
 
 import {
@@ -25,7 +25,7 @@ const MenuElement = {
     providers: [CSVConversionHelper]
 })
 
-export class MenuBarComponent implements OnChanges {
+export class MenuBarComponent implements OnInit, OnChanges {
     private orgCompanies: OrgCompanyModel[];
     private orgCompanyGroups: OrgGroupModel[];
     private selectedCompany: OrgCompanyModel;
@@ -49,11 +49,20 @@ export class MenuBarComponent implements OnChanges {
 
     constructor(private orgService: OrgService, private router: Router, private renderer: Renderer,
         private csvHelper: CSVConversionHelper, private auth: AuthService, private domHelper: DOMHelper) {
-        this.getAllCompanies();
         this.domHelper.showElements(MenuElement.exportData);
         this.domHelper.hideElements(MenuElement.downloadTemplate);
         this.isImport = false;
         this.groupSettingTitle = "Settings";
+    }
+
+    ngOnInit() {
+        let profile = localStorage.getItem("profile");
+        if (profile) {
+            this.userModel = JSON.parse(profile);
+            this.getAllCompanies();
+        } else {
+            this.auth.logout();
+        }
     }
 
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
@@ -87,16 +96,12 @@ export class MenuBarComponent implements OnChanges {
     }
 
     private getAllCompanies() {
-        let profile = localStorage.getItem("profile");
-        if (profile) {
-            this.userModel = JSON.parse(profile);
-            this.orgService.getCompanies(profile)
+        if (this.userModel) {
+            this.domHelper.initDropDown(".dropdown-button", { constrain_width: false, alignment: "right" });
+            this.orgService.getCompanies(this.userModel.UserID)
                 .subscribe(data => this.setCompanies(data),
                 err => {
                     this.orgService.logError(err);
-                    if (err.status === 400) {
-                        this.auth.logout();
-                    }
                 });
         } else {
             this.auth.logout();
@@ -180,7 +185,6 @@ export class MenuBarComponent implements OnChanges {
 
     private enableDropDowns() {
         this.domHelper.initDropDown(".dropdown-button", { constrain_width: false, alignment: "right" });
-        this.domHelper.initDropDown(".organization", { constrain_width: false, belowOrigin: true, alignment: "left" });
         this.domHelper.initDropDown(".group", { constrain_width: false, belowOrigin: true, alignment: "left" });
     }
 

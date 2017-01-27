@@ -14,7 +14,7 @@ const DEFAULT_OFFSET: number = 61;
 declare var svgPanZoom: any;
 
 @Component({
-    selector: "sg-org",
+    selector: "pt-org",
     templateUrl: "app/container/org/org.component.html",
     styleUrls: ["app/container/org/org.component.css"]
 })
@@ -46,6 +46,8 @@ export class OrgComponent implements OnDestroy {
     @Output() isNodeMoveEnabled: boolean;
     @Output() isFeedbackInEditMode: boolean;
     @Output() isHorizontalViewEnabled: boolean;
+    @Output() horizontalSpaceForNode: number;
+    @Output() verticalSpaceForNode: number;
 
     constructor(private orgService: OrgService) {
         this.currentChartMode = ChartMode.build;
@@ -407,6 +409,14 @@ export class OrgComponent implements OnDestroy {
             this.orgService.changeParent(node).subscribe(data => this.updateJSON(),
                 err => this.orgService.logError(err));
         }
+    }
+
+    verticalNodeSpace(data: number) {
+       this.verticalSpaceForNode = data;
+    }
+
+    horizontalNodeSpace(data: number) {
+       this.horizontalSpaceForNode = data;
     }
 
     private enableViewModesNav(viewMode) {

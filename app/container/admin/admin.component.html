@@ -1,0 +1,97 @@
+<div id="wrapper">
+    <ul id="userDropdown" class="dropdown-content">
+        <li class="collection-item avatar">
+            <img [src]="userModel.Picture" alt="">
+            <p>{{userModel.Name}}</p>
+            <p class="caption">{{userModel.Email}}</p>
+        </li>
+        <li class="divider"></li>
+        <li (click)="auth.logout()"><a><i class="material-icons left">remove_circle</i>Logout</a></li>
+    </ul>
+    <nav class="fixed">
+        <div class="nav-wrapper">
+            <a href="/home" class="brand-logo"><img src="http://peopletree.io/images/pt-logo-beta.png" /> </a>
+            <ul class="right">
+                <li class="home">
+                    <a href="/home">
+                        <i class="material-icons left">home</i>
+                        <span class="userName hide-on-small-only">Home</span>
+                    </a>
+                </li>
+                <li *ngIf="userModel">
+                    <a class="dropdown-button" data-activates="userDropdown">
+                        <i class="material-icons left">person</i>
+                        <span class="userName hide-on-small-only">{{userModel.Name}}</span>
+                        <i class="material-icons right">arrow_drop_down</i>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container">
+        <div id="countHeader" class="center">
+            <ul class="total-count-header">
+                <li>
+                    <h6>Users</h6>
+                    <h5>{{userCount.toLocaleString('en')}}</h5>
+                </li>
+                <li>
+                    <h6>Organizations</h6>
+                    <h5>{{organizationCount.toLocaleString('en')}}</h5>
+                </li>
+                <li>
+                    <h6>Nodes</h6>
+                    <h5>{{orgNodeCount.toLocaleString('en')}}</h5>
+                </li>
+            </ul>
+        </div>
+
+        <ul *ngIf="userDetails" class="collapsible" data-collapsible="expandable">
+            <li *ngFor="let user of userDetails">
+                <div class="collapsible-header">
+                    <img [src]="user.Picture" />
+                    <div>
+                        <p id="userName">{{user.Name}}</p>
+                        <p id="orgGroup-count">Organization Count: {{user.Company[0].OrgGroups.length}}</p>
+                        <p id="orgNode-count">Node Count: {{user.Company[0].OrgNodeCounts}}</p>
+                    </div>
+                    <p class="collapsible-icon">
+                        <span class="right"><i class="material-icons">keyboard_arrow_down</i></span>
+                    </p>
+                </div>
+                <div class="collapsible-body">
+                    <p>
+                        UserID : {{user.UserID}}
+                        <br> Email : {{user.Email}}
+                    </p>
+                    <div class="companyDetails" *ngFor="let orgGroup of user.Company[0].OrgGroups">
+                        <hr>
+                        <p>
+                            Organization ID : {{orgGroup.OrgGroupID}}
+                            <br> Organization Name : {{orgGroup.GroupName}}
+                            <br> Organization Node Count : {{orgGroup.OrgNodeCounts}}
+                        </p>
+                    </div>
+                </div>
+            </li>
+        </ul>
+        <div *ngIf="!userDetails">
+            <svg class="loader" width="38" height="38" viewBox="0 0 38 38" xmlns="http://www.w3.org/2000/svg" stroke="#0097FF">
+            <g fill="none" fill-rule="evenodd">
+                <g transform="translate(1 1)" stroke-width="2">
+                    <circle stroke-opacity=".5" cx="18" cy="18" r="18"/>
+                    <path d="M36 18c0-9.94-8.06-18-18-18">
+                        <animateTransform
+                        attributeName="transform"
+                        type="rotate"
+                        from="0 18 18"
+                        to="360 18 18"
+                        dur="1s"
+                        repeatCount="indefinite"/>
+                    </path>
+                </g>
+            </g>
+        </svg>
+        </div>
+    </div>
+</div>

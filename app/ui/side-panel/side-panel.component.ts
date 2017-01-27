@@ -42,6 +42,8 @@ export class SidePanelComponent implements OnInit, OnChanges {
     isEditModeEnabled: boolean;
     editOrSave: any;
     deleteOrClose: any;
+    verticalSlider: any;
+    horizontalSlider: any;
 
     private editNodeDetails: OrgNodeModel;
     private userModel: UserModel;
@@ -79,6 +81,8 @@ export class SidePanelComponent implements OnInit, OnChanges {
     @Output() isNodeMoveEnabledOrDisabled = new EventEmitter<boolean>();
     @Output() isFeedbackInEditMode = new EventEmitter<boolean>();
     @Output() isHorizontalViewEnabled = new EventEmitter<boolean>();
+    @Output() verticalSpaceValue = new EventEmitter<number>();
+    @Output() horizontalSpaceValue = new EventEmitter<number>();
 
     constructor(private orgService: OrgService, private domHelper: DOMHelper) {
         this.feedbackIcon = FEEDBACK_ICON_OPEN;
@@ -89,6 +93,10 @@ export class SidePanelComponent implements OnInit, OnChanges {
         this.deleteOrClose = DELETE_ICON;
         this.isEditOrDeleteDisabled = false;
         this.isHorizontalTree = false;
+        this.verticalSlider = { min: 90, max: 360, value: 95 };
+        this.horizontalSlider = { min: 90, max: 360, value: 120 };
+        this.verticalSpaceValue.emit(this.verticalSlider.value);
+        this.horizontalSpaceValue.emit(this.horizontalSlider.value);
     }
 
     ngOnInit() {
@@ -239,6 +247,21 @@ export class SidePanelComponent implements OnInit, OnChanges {
         }
     }
 
+    changeVericalSlider(data: number) {
+        this.verticalSpaceValue.emit(data);
+        this.horizontalSpaceValue.emit(this.horizontalSlider.value);
+    }
+    changeHorizontalSlider(data: number) {
+        this.horizontalSpaceValue.emit(data);
+        this.verticalSpaceValue.emit(this.verticalSlider.value);
+    }
+    onReset() {
+        this.verticalSlider = { min: 90, max: 360, value: 95 };
+        this.horizontalSlider = { min: 90, max: 360, value: 120 };
+        this.verticalSpaceValue.emit(this.verticalSlider.value);
+        this.horizontalSpaceValue.emit(this.horizontalSlider.value);
+    }
+
     private setLabelVisiblity(event) {
         if (event.target.id === "FirstName") {
             if (event.target.checked === true) {
@@ -376,7 +399,6 @@ export class SidePanelComponent implements OnInit, OnChanges {
 
     private onEditOrSaveNodeClicked() {
         if (this.selectedNode.NodeID !== -1 && !this.isSmartBarAddEnabled) {
-            this.isNodeMoveEnabledOrDisabled.emit(false);
             if (this.editOrSave === EDIT_ICON) {
                 this.isEditEnabled.emit(true);
                 this.isEditModeEnabled = true;
@@ -405,6 +427,7 @@ export class SidePanelComponent implements OnInit, OnChanges {
                     alert("Please enter FirstName.");
                 }
             }
+            this.isNodeMoveEnabledOrDisabled.emit(false);
         }
     }
 

@@ -13,7 +13,15 @@ export class DOMHelper {
     }
 
     public initDropDown(selector: string, options: any) {
-        jQuery(selector).dropdown(options);
+        setTimeout(() => {
+            jQuery(selector).dropdown(options);
+        }, 200);
+    }
+
+    public initCollapsible() {
+        setTimeout(() => {
+            jQuery(".collapsible").collapsible();
+        }, 500);
     }
 
     public setWidth(selector: string, width: any) {

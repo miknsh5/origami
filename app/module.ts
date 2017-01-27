@@ -14,13 +14,14 @@ import {
   ExportPNGComponent, ImportCSVComponent, ConfirmButtonComponent, SamrtBarComponent
 } from "./ui/index";
 
-import { OrgComponent, LoginComponent, SignUpComponent } from "./container/index";
+import { AdminComponent, OrgComponent, LoginComponent, SignUpComponent } from "./container/index";
 
-import { AuthService, OrgService, DOMHelper } from "./shared/index"
+import { AuthService, OrgService, DOMHelper } from "./shared/index";
 
 @NgModule({
   declarations: [
     AppComponent,
+    AdminComponent,
     LoginComponent,
     SignUpComponent,
     OrgComponent,

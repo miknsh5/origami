@@ -103,6 +103,8 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     @Input() isNodeMoveEnabledOrDisabled: boolean;
     @Input() isFeedbackInEditMode: boolean;
     @Input() isHorizontalViewEnabled: boolean;
+    @Input() verticalSpaceForNode: number;
+    @Input() horizontalSpaceForNode: number;
 
     @Output() selectNode = new EventEmitter<OrgNodeModel>();
     @Output() addNode = new EventEmitter<OrgNodeModel>();
@@ -208,12 +210,9 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                     this.selectedOrgNode = this.root;
                 }
             }
-
-            if (changes["isAddOrEditModeEnabled"] && this.isAddOrEditModeEnabled && !changes["treeData"]) {
-                return;
-            }
-
-            if (changes["isHorizontalViewEnabled"] || changes["currentMode"] || (changes["orgGroupID"] && this.isExploreMode())) {
+            if (((changes["verticalSpaceForNode"] || changes["horizontalSpaceForNode"]) && this.currentMode === ChartMode.report) ||
+                (changes["isHorizontalViewEnabled"] || changes["currentMode"] || (changes["orgGroupID"] && this.isExploreMode())) ||
+                (changes["isNodeMoveEnabledOrDisabled"])) {
                 this.initializeTreeAsPerMode();
                 let node = this.selectedOrgNode;
                 if (!node && this.lastSelectedNode) {
@@ -227,6 +226,9 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 return;
             }
 
+            if (changes["isAddOrEditModeEnabled"] && this.isAddOrEditModeEnabled && !changes["treeData"]) {
+                return;
+            }
             let raiseSelectedEvent: boolean = true;
             if (changes["isAddOrEditModeEnabled"]) {
                 // We don't need to raise a selectednode change event if the only change happening is entering/leaving edit node
@@ -441,19 +443,23 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 });
         } else if (this.isReportMode()) {
             if (this.isHorizontalViewEnabled) {
-                this.tree = d3.layout.tree().nodeSize([NODE_WIDTH, RIGHTLEFT_MARGIN]);
+                let width = this.verticalSpaceForNode || NODE_WIDTH;
+                let height = this.horizontalSpaceForNode || RIGHTLEFT_MARGIN;
+                this.tree = d3.layout.tree().nodeSize([width, height]);
                 this.setNodeLabelVisiblity();
                 this.root = this.selectedOrgNode || this.lastSelectedNode;
                 this.diagonal = d3.svg.diagonal()
-                    .projection(function (d) {
+                    .projection((d) => {
                         return [d.y, d.x];
                     });
             } else {
-                this.tree = d3.layout.tree().nodeSize([NODE_HEIGHT, NODE_WIDTH]);
+                let width = this.verticalSpaceForNode || NODE_WIDTH;
+                let height = this.horizontalSpaceForNode || RIGHTLEFT_MARGIN;
+                this.tree = d3.layout.tree().nodeSize([height, width]);
                 this.setNodeLabelVisiblity();
                 this.root = this.selectedOrgNode || this.lastSelectedNode;
                 this.diagonal = d3.svg.diagonal()
-                    .projection(function (d) {
+                    .projection((d) => {
                         return [d.x, d.y];
                     });
             }
@@ -696,7 +702,9 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             if (this.isBuildMode()) {
                 this.nodes.forEach(function (d) { d.y = d.depth * DEPTH; });
             } else if (this.isReportMode()) {
-                this.nodes.forEach(function (d) { d.y = d.depth * NODE_WIDTH; });
+                if (!this.isHorizontalViewEnabled) {
+                    this.nodes.forEach((d) => { d.y = d.depth * (this.verticalSpaceForNode || NODE_WIDTH); });
+                }
             } else {
                 this.nodes.forEach(function (d) { d.y = d.depth * (RADIAL_DEPTH + NODE_HEIGHT); });
             }
@@ -849,21 +857,21 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         if (!this.dragListener) {
             this.dragListener = d3.behavior.drag()
                 .on("dragstart", (evt) => {
-                    if (this.isBuildMode() && !this.isAddOrEditModeEnabled) {
+                    if (this.isBuildMode() && !this.isAddOrEditModeEnabled && !this.isNodeMoveEnabledOrDisabled) {
                         if (!this.isAddOrEditModeEnabled && this.selectedOrgNode && !this.isNodeMoved) {
                             this.onNodeDragStart(evt);
                         }
                     }
                 })
                 .on("drag", (evt) => {
-                    if (this.isBuildMode() && !this.isAddOrEditModeEnabled) {
+                    if (this.isBuildMode() && !this.isAddOrEditModeEnabled && !this.isNodeMoveEnabledOrDisabled) {
                         if (!this.isAddOrEditModeEnabled && this.selectedOrgNode && !this.isNodeMoved) {
                             this.onNodeDrag(evt);
                         }
                     }
                 })
                 .on("dragend", (evt) => {
-                    if (this.isBuildMode() && !this.isAddOrEditModeEnabled) {
+                    if (this.isBuildMode() && !this.isAddOrEditModeEnabled && !this.isNodeMoveEnabledOrDisabled) {
                         if (!this.isAddOrEditModeEnabled && this.selectedOrgNode && !this.isNodeMoved) {
                             this.onNodeDragEnd(evt);
                         }

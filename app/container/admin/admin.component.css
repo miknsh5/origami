@@ -1,0 +1,232 @@
+nav {
+    background-color: #ffffff;
+    background-color: var(--white-text);
+    z-index: 1;
+    position: fixed;
+    top: 0;
+}
+
+nav,
+nav .nav-wrapper i,
+nav .nav-wrapper>ul>li,
+nav .nav-wrapper>ul>li>a,
+nav a.button-collapse,
+nav a.button-collapse i {
+    height: 55px;
+    line-height: 55px;
+}
+
+nav .brand-logo {
+    margin-left: 50px;
+    color: #333333;
+    font-size: 3.2em;
+    font-weight: 300;
+}
+
+nav .brand-logo img {
+    max-width: 140px;
+}
+
+nav ul a {
+    color: #607d8b;
+    color: var(--blue-grey);
+}
+
+nav ul a i.right,
+nav ul a i.left {
+    margin: 0 5px;
+    font-size: 20px;
+}
+
+.dropdown-content {
+    top: 55px !important;
+}
+
+.dropdown-content li {
+    min-height: 0px;
+    font-size: 13px;
+}
+
+.dropdown-content li:last-child a {
+    padding: 10px;
+    font-size: 13px;
+}
+
+.dropdown-content .collection-item.avatar {
+    min-height: 65px;
+    padding: 10px 25px 10px 70px;
+}
+
+.dropdown-content .collection-item.avatar img {
+    position: absolute;
+    width: 42px;
+    height: 42px;
+    overflow: hidden;
+    left: 15px;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.dropdown-content .collection-item.avatar p {
+    margin: 0;
+}
+
+.dropdown-content .collection-item.avatar .title {
+    padding: 0;
+}
+
+.dropdown-content li>a>i {
+    height: inherit !important;
+    line-height: inherit !important;
+    margin-right: 10px !important;
+    margin-left: 0px !important;
+    display: inline-block;
+}
+
+.dropdown-content .caption {
+    color: #757575;
+}
+
+.collapsible-header {
+    display: flex;
+}
+
+.collapsible-header img {
+    min-width: 40px;
+    width: 40px;
+    height: 40px;
+    margin: 5px;
+}
+
+.collapsible-header div {
+    display: inline-flex;
+    width: calc(100% - 75px);
+}
+
+.collapsible-header p {
+    vertical-align: middle;
+    margin: auto 10px;
+    width: 33%;
+}
+
+.collapsible-header .collapsible-icon {
+    width: 25px;
+}
+
+.collapsible-body p {
+    padding: 10px 2rem;
+}
+
+.collapsible-body .companyDetails hr {
+    margin: 0 2rem;
+    border-color: #ccc;
+    opacity: 0.2;
+}
+
+.collapsible-header.active I {
+    -ms-transform: rotate(180deg);
+    -webkit-transform: rotate(180deg);
+    transform: rotate(180deg);
+}
+
+.total-count-header {
+    margin: 5% 0;
+}
+
+#countHeader .total-count-header {
+    display: block;
+    text-align: center;
+}
+
+#countHeader ul li {
+    vertical-align: middle;
+    margin: auto 1.9rem;
+    text-align: center;
+    display: inline-block;
+}
+
+#countHeader ul li h5 {
+    margin-top: 0;
+    font-size: 1.5em;
+    font-weight: bolder;
+}
+
+#countHeader ul li h6 {
+    margin-bottom: 0px;
+    font-size: 1.2em;
+    font-weight: 400;
+}
+
+@media only screen and (max-width:992px) {
+    nav .brand-logo {
+        left: 0%;
+        -webkit-transform: translateX(0%);
+        transform: translateX(0%);
+    }
+}
+
+@media only screen and (min-width: 601px) {
+    .container {
+        width: 85%;
+        position: relative;
+        top: 55px;
+    }
+}
+
+@media only screen and (max-width:768px) {
+    nav ul a {
+        padding: 0;
+    }
+    nav .brand-logo {
+        position: relative;
+        margin-left: 20px;
+    }
+    .home {
+        padding: 0 10px;
+    }
+}
+
+@media only screen and (min-width: 0) {
+    html {
+        font-size: 72%;
+    }
+}
+
+@media only screen and (max-width: 768px) {
+    .container {
+        width: 100%;
+        position: relative;
+        top: 55px;
+    }
+    #countHeader ul li {
+        margin: auto 5%;
+    }
+    .collapsible-header img {
+        min-width: 60px;
+        width: 60px;
+        height: 60px;
+        margin: auto 10px;
+    }
+    .collapsible-header {
+        line-height: 0;
+        background-size: contain;
+        background-position: 0;
+        margin: auto auto;
+        columns: 100px 3;
+    }
+    .collapsible-header div {
+        display: table;
+        width: calc(100% - 90px);
+    }
+    .collapsible-header p {
+        display: table-row;
+        line-height: 2em;
+        width: 100%;
+    }
+    .collapsible-header .collapsible-icon {
+        width: 10px;
+    }
+    .collapsible-header i {
+        margin-right: 0;
+    }
+}
