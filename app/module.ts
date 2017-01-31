@@ -11,7 +11,7 @@ import { AppComponent } from "./app.component";
 
 import {
   OrgTreeComponent, MenuBarComponent, SidePanelComponent, ExportCSVComponent,
-  ExportPNGComponent, ImportCSVComponent, ConfirmButtonComponent, SamrtBarComponent
+  ExportPNGComponent, ImportCSVComponent, ConfirmButtonComponent, SamrtBarComponent, TutorialComponent
 } from "./ui/index";
 
 import { AdminComponent, OrgComponent, LoginComponent, SignUpComponent } from "./container/index";
@@ -32,7 +32,8 @@ import { AuthService, OrgService, DOMHelper } from "./shared/index";
     ExportCSVComponent,
     ExportPNGComponent,
     ImportCSVComponent,
-    ConfirmButtonComponent
+    ConfirmButtonComponent,
+    TutorialComponent
   ],
   providers: [
     appRoutingProviders,

@@ -1,0 +1,98 @@
+.tutorial-wrap {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    max-height: 100%;
+    overflow: auto;
+    background-color: rgba(255, 255, 255, 0.5);
+    display: block;
+}
+
+.tutorial-wrap .tutorial-wrap-content {
+    background-color: #fefefe;
+    padding: 0px;
+    border: 0px solid #888;
+    width: 22%;
+    min-width: 500px;
+    height: 300px;
+    top: 25.5%;
+    margin: 10px auto;
+    position: relative;
+    box-shadow: 0px 2px 2px 3px rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+    display: block;
+}
+
+.tutorial-wrap .tutorial-wrap-content .tutorial-label,
+.tutorial-wrap .tutorial-wrap-content .tutorial-label-header {
+    line-height: 1.5em;
+    font-family: Roboto, HelveticaNeue;
+    font-size: 0.99em;
+    font-weight: 400;
+    color: #607d8b;
+    display: block;
+}
+
+.tutorial-wrap .tutorial-wrap-content .tutorial-label-header {
+    font-size: 1.5em;
+    font-weight: 800;
+}
+
+.tutorial-wrap .tutorial-wrap-content .tutorial-header {
+    margin: 0 3rem;
+    padding-top: 35px;
+    word-wrap: break-word;
+}
+
+.tutorial-wrap .tutorial-wrap-content .mode-wrap {
+    display: flex;
+    font-size: 0.99em;
+    font-weight: 400;
+}
+
+.tutorial-wrap .tutorial-wrap-content .mode-wrap .mode {
+    display: block;
+    width: 45%;
+}
+
+.tutorial-wrap .tutorial-wrap-content .mode-wrap .mode .mode-header-label {
+    display: inline-block;
+    color: #607d8b !important;
+    font-size: 1.4em;
+    font-weight: 500;
+}
+
+.tutorial-wrap .tutorial-wrap-content .mode-wrap .mode .mode-desc-label {
+    display: inline-block;
+    line-height: 1.1em;
+    font-family: Roboto, HelveticaNeue;
+    font-size: 1em !important;
+    font-weight: 400;
+    color: #607d8b !important;
+    margin-left: 15px;
+}
+
+.btn.waves-effect {
+    background-color: #0097FF;
+    background-color: var(--azure);
+    padding: 5px 0.7rem;
+    font-size: 0.75rem;
+    border-radius: 0px;
+    max-height: 30px;
+    line-height: normal;
+    margin: 0px 50px;
+    text-transform: initial;
+}
+
+.btn i {
+    font-size: 1rem;
+    line-height: inherit;
+    vertical-align: text-bottom
+}
+
+.tour {
+    margin: 35px 9em;
+}

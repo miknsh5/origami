@@ -2,6 +2,9 @@
     <menu-bar (groupSelected)="onGroupSelected($event)" [noNodeExsit]="isOrgNodeEmpty" [currentOrgNodeStatus]="currentOrgNodeStatus" (isMenuEnable)="onMenuSettingsChange($event)" [orgNodes]="orgNodes">
     </menu-bar>
     <div *ngIf="orgGroup">
+        <div>
+            <pt-tutorial></pt-tutorial>
+        </div>
         <div class="modes_wrap">
             <ul>
                 <li [ngClass]="buildView" class="nav_build" (click)="changeViewModeNav(1)"><a> Build</a></li>
