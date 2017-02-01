@@ -48,6 +48,7 @@ export class OrgComponent implements OnDestroy {
     @Output() isHorizontalViewEnabled: boolean;
     @Output() horizontalSpaceForNode: number;
     @Output() verticalSpaceForNode: number;
+    @Output() isTutorialActivate: boolean;
 
     constructor(private orgService: OrgService) {
         this.currentChartMode = ChartMode.build;
@@ -412,11 +413,15 @@ export class OrgComponent implements OnDestroy {
     }
 
     verticalNodeSpace(data: number) {
-       this.verticalSpaceForNode = data;
+        this.verticalSpaceForNode = data;
     }
 
     horizontalNodeSpace(data: number) {
-       this.horizontalSpaceForNode = data;
+        this.horizontalSpaceForNode = data;
+    }
+
+    activateTutorial(data: boolean) {
+        this.isTutorialActivate = data;
     }
 
     private enableViewModesNav(viewMode) {

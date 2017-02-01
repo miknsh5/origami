@@ -46,6 +46,7 @@ export class MenuBarComponent implements OnInit, OnChanges {
     @Output() isMenuEnable = new EventEmitter<boolean>();
     @Output() deleteTitle: string;
     @Output() name: string;
+    @Output() isTutorialActive = new EventEmitter<boolean>();
 
     constructor(private orgService: OrgService, private router: Router, private renderer: Renderer,
         private csvHelper: CSVConversionHelper, private auth: AuthService, private domHelper: DOMHelper) {
@@ -53,6 +54,7 @@ export class MenuBarComponent implements OnInit, OnChanges {
         this.domHelper.hideElements(MenuElement.downloadTemplate);
         this.isImport = false;
         this.groupSettingTitle = "Settings";
+        this.isTutorialActive.emit(false);
     }
 
     ngOnInit() {
@@ -93,6 +95,10 @@ export class MenuBarComponent implements OnInit, OnChanges {
 
             }
         }
+    }
+
+    private activateTutorial() {
+        this.isTutorialActive.emit(true);
     }
 
     private getAllCompanies() {

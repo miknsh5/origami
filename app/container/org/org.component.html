@@ -1,9 +1,9 @@
 <div id="wrapper">
-    <menu-bar (groupSelected)="onGroupSelected($event)" [noNodeExsit]="isOrgNodeEmpty" [currentOrgNodeStatus]="currentOrgNodeStatus" (isMenuEnable)="onMenuSettingsChange($event)" [orgNodes]="orgNodes">
+    <menu-bar (groupSelected)="onGroupSelected($event)" [noNodeExsit]="isOrgNodeEmpty" [currentOrgNodeStatus]="currentOrgNodeStatus" (isMenuEnable)="onMenuSettingsChange($event)" [orgNodes]="orgNodes" (isTutorialActive)="activateTutorial($event)">
     </menu-bar>
     <div *ngIf="orgGroup">
         <div>
-            <pt-tutorial></pt-tutorial>
+            <pt-tutorial [isTutorialActivate]=[isTutorialActivate] (deactivateTutorial)="activateTutorial($event)"></pt-tutorial>
         </div>
         <div class="modes_wrap">
             <ul>

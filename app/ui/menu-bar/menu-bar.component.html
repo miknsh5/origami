@@ -6,8 +6,14 @@
             <p>{{userModel.Name}}</p>
             <p class="caption">{{userModel.Email}}</p>
         </li>
+
+        <li class="divider"></li>
         <li *ngIf="userModel.UserID === '579f2a8585be5a762320c1bf'">
             <a href="/admin"><i class="material-icons">dashboard</i>Admin</a>
+        </li>
+        <li class="divider"></li>
+        <li (click)="activateTutorial()">
+            <a><i class="material-icons">adb</i>Let's take Tour</a>
         </li>
         <li class="divider"></li>
         <li (click)="auth.logout()"><a><i class="material-icons left">remove_circle</i>Logout</a></li>

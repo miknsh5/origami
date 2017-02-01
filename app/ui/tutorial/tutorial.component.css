@@ -16,8 +16,8 @@
     background-color: #fefefe;
     padding: 0px;
     border: 0px solid #888;
-    width: 22%;
-    min-width: 500px;
+    width: 100%;
+    max-width: 500px;
     height: 300px;
     top: 25.5%;
     margin: 10px auto;
@@ -55,7 +55,7 @@
 
 .tutorial-wrap .tutorial-wrap-content .mode-wrap .mode {
     display: block;
-    width: 45%;
+    width: 50%;
 }
 
 .tutorial-wrap .tutorial-wrap-content .mode-wrap .mode .mode-header-label {
@@ -66,7 +66,7 @@
 }
 
 .tutorial-wrap .tutorial-wrap-content .mode-wrap .mode .mode-desc-label {
-    display: inline-block;
+    display: block;
     line-height: 1.1em;
     font-family: Roboto, HelveticaNeue;
     font-size: 1em !important;
@@ -83,7 +83,7 @@
     border-radius: 0px;
     max-height: 30px;
     line-height: normal;
-    margin: 0px 50px;
+    margin: 0px 12px;
     text-transform: initial;
 }
 
@@ -94,5 +94,15 @@
 }
 
 .tour {
-    margin: 35px 9em;
+    margin-top: 20px;
+}
+
+@media only screen and (max-width: 768px) {
+    .tutorial-wrap .tutorial-wrap-content .tutorial-header {
+        margin: 0 1rem;
+    }
+    .tutorial-wrap .tutorial-wrap-content {
+        max-width: 400px;
+        height: 270px;
+    }
 }
