@@ -30,6 +30,7 @@ export class OrgComponent implements OnDestroy {
     private isSmartBarEnabled: boolean;
     private isEditModeEnable: boolean;
     orgGroup: OrgGroupModel;
+    isTutorialActivate: boolean;
 
     @Output() companyID: any;
     @Output() currentChartMode: ChartMode;
@@ -48,7 +49,6 @@ export class OrgComponent implements OnDestroy {
     @Output() isHorizontalViewEnabled: boolean;
     @Output() horizontalSpaceForNode: number;
     @Output() verticalSpaceForNode: number;
-    @Output() isTutorialActivate: boolean;
 
     constructor(private orgService: OrgService) {
         this.currentChartMode = ChartMode.build;

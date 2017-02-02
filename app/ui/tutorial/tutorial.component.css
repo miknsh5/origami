@@ -97,6 +97,48 @@
     margin-top: 20px;
 }
 
+.tooltip {
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px dotted black;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: #fefefe;
+    color: #0097FF;
+    text-align: center;
+    border-radius: 0px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 1;
+    bottom: 150%;
+    left: 50%;
+    margin-left: -60px;
+    -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+    --webkit-box-shadow: 0 0 10px var(--black-80);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+    box-shadow: 0 0 10px var(--black-80);
+    stroke: none;
+}
+
+.tooltip .tooltiptext::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 15px;
+    border-style: solid;
+    border-color: #fefefe transparent transparent transparent;
+    filter: drop-shadow(rgba(0, 0, 0, 0.8) 0 0 10px);
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+}
+
 @media only screen and (max-width: 768px) {
     .tutorial-wrap .tutorial-wrap-content .tutorial-header {
         margin: 0 1rem;

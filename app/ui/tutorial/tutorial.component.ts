@@ -3,7 +3,8 @@ import { Component, ElementRef, Input, Output, EventEmitter, OnChanges, SimpleCh
 import { DOMHelper } from "../../shared/index";
 
 const tutorailElementName = {
-    tutorailStart: "#tutorialStart"
+    tutorailStart: "#tutorialStart",
+    smartBarTooltip: "#smart-bar-tooltip"
 };
 
 @Component({
@@ -13,12 +14,12 @@ const tutorailElementName = {
 })
 
 export class TutorialComponent implements OnChanges {
-    @Input() isTutorialActivate: boolean;
+    @Input() isActivate: boolean;
     @Output() deactivateTutorial = new EventEmitter<boolean>();
 
 
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
-        if (changes["isTutorialActivate"] && changes["isTutorialActivate"].currentValue === true) {
+        if (changes["isActivate"] && changes["isActivate"].currentValue) {
             this.domHelper.showElements(tutorailElementName.tutorailStart);
         }
     }
@@ -28,13 +29,20 @@ export class TutorialComponent implements OnChanges {
         // this.domHelper.hideElements(tutorailElementName.tutorailStart);
     }
 
-    constructor(private domHelper: DOMHelper) { }
+    constructor(private domHelper: DOMHelper, private elementRef: ElementRef) { }
     startTutorial() {
-
+        this.domHelper.hideElements(tutorailElementName.tutorailStart);
+        this.domHelper.showElements(tutorailElementName.smartBarTooltip);
+        // let element;
+        // element = document.querySelector("input[name=multiInTerm]");
+        // console.log(element);
+         if (this.isActivate) {
+            this.deactivateTutorial.emit(false);
+        }
     }
     skipTutorial() {
         this.domHelper.hideElements(tutorailElementName.tutorailStart);
-        if (!this.isTutorialActivate) {
+        if (this.isActivate) {
             this.deactivateTutorial.emit(false);
         }
     }

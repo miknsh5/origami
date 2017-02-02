@@ -54,7 +54,6 @@ export class MenuBarComponent implements OnInit, OnChanges {
         this.domHelper.hideElements(MenuElement.downloadTemplate);
         this.isImport = false;
         this.groupSettingTitle = "Settings";
-        this.isTutorialActive.emit(false);
     }
 
     ngOnInit() {
