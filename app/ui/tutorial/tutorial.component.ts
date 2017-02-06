@@ -4,7 +4,9 @@ import { DOMHelper } from "../../shared/index";
 
 const tutorailElementName = {
     tutorailStart: "#tutorialStart",
-    smartBarTooltip: "#smart-bar-tooltip"
+    smartBarTooltip: "#smart-bar-tooltip",
+    skipTour: "#skip-Tutorial",
+    startTutorial: "#start-Tutorial"
 };
 
 @Component({
@@ -15,6 +17,7 @@ const tutorailElementName = {
 
 export class TutorialComponent implements OnChanges {
     @Input() isActivate: boolean;
+    @Input() isOrgNodeEmpty: boolean;
     @Output() deactivateTutorial = new EventEmitter<boolean>();
 
 
@@ -26,17 +29,20 @@ export class TutorialComponent implements OnChanges {
 
     @HostListener("window:click", ["$event"])
     bodyClicked(event: any) {
-        // this.domHelper.hideElements(tutorailElementName.tutorailStart);
+        //  this.domHelper.hideElements(tutorailElementName.startTutorial);
+        //  this.domHelper.showElements([tutorailElementName.tutorailStart, tutorailElementName.skipTutorial]);
+        //  this.domHelper.hideElements(tutorailElementName.tutorailStart);
+        console.log("body!")
+
     }
 
     constructor(private domHelper: DOMHelper, private elementRef: ElementRef) { }
-    startTutorial() {
+    startTutorial(event: any) {
         this.domHelper.hideElements(tutorailElementName.tutorailStart);
-        this.domHelper.showElements(tutorailElementName.smartBarTooltip);
-        // let element;
-        // element = document.querySelector("input[name=multiInTerm]");
-        // console.log(element);
-         if (this.isActivate) {
+        if (this.isOrgNodeEmpty) {
+            this.domHelper.showElements(tutorailElementName.smartBarTooltip);
+        }
+        if (this.isActivate) {
             this.deactivateTutorial.emit(false);
         }
     }

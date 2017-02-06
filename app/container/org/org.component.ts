@@ -387,6 +387,10 @@ export class OrgComponent implements OnDestroy {
         this.isSmartBarEnabled = false;
         this.isEditModeEnable = false;
         this.onAddOrEditModeValueSet(false);
+        if (this.treeJson && this.treeJson.length === 0) {
+            this.isOrgNodeEmpty = true;
+            console.log("empty");
+        }
     }
 
     onMenuSettingsChange(data: boolean) {

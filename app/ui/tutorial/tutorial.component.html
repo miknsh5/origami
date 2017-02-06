@@ -1,6 +1,7 @@
 <div>
     <div class="tutorial-wrap" id="tutorialStart">
         <div class="tutorial-wrap-content">
+            <!--<div id="start-Tutorial">-->
             <div class="tutorial-header">
                 <span class="tutorial-label-header">60 Second Tutorial </span>
                 <span class="tutorial-label"> Everything needed to get off the ground running.</span>
@@ -28,9 +29,23 @@
                 <button class="waves-effect waves-light btn" (click)="startTutorial()">GET STARTED <i class="material-icons">keyboard_arrow_right</i> </button>
 
             </div>
+            <!--</div>-->
+            <!--<div id="skip-Tutorial">
+                <div class="tutorial-header">
+                    Do you want to skip?
+                </div>
+                <button class="waves-effect waves-light btn" (click)="skipTutorial()"><i class="material-icons">keyboard_arrow_left</i>SKIP</button>
+            </div>-->
         </div>
     </div>
-    <div id="smart-bar-tooltip" class="tooltip">Hover over me
-        <span class="tooltiptext">Tooltip text</span>
+    <div class="smart-bar-tutorial" id="smart-bar-tooltip">
+        <div>
+            <label class="headerlbl"> Let's add the first person to your organization.</label>
+        </div>
+        <div class="instruction">
+            <label class="actionlbl"> &gt;Type Donald Duck</label>
+        </div>
     </div>
+
+
 </div>
