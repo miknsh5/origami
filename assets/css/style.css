@@ -281,6 +281,11 @@ path.horizontal {
     fill: transparent;
 }
 
+.svg-divider>svg {
+    width: 100% !important;
+    height: 1%;
+}
+
 
 /* Scroll bar */
 

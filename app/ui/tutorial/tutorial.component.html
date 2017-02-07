@@ -1,43 +1,38 @@
 <div>
     <div class="tutorial-wrap" id="tutorialStart">
         <div class="tutorial-wrap-content">
-            <!--<div id="start-Tutorial">-->
-            <div class="tutorial-header">
-                <span class="tutorial-label-header">60 Second Tutorial </span>
-                <span class="tutorial-label"> Everything needed to get off the ground running.</span>
-            </div>
-
-            <hr>
-            <div class="mode-wrap tutorial-header">
-                <div class="mode">
-                    <label class="mode-header-label"> 1 Build </label>
-                    <label class="mode-desc-label">Add Resources</label>
-                </div>
-                <!--<div class="mode">
-                <label class="mode-header-label"> 2 Explore </label>
-                <label class="mode-desc-label">Navigate Groups</label>
-            </div>-->
-                <div class="mode">
-                    <label class="mode-header-label"> 2 Report </label>
-                    <label class="mode-desc-label">Export Charts</label>
-                </div>
-            </div>
-
-            <div class="tour center">
-                <button class="waves-effect waves-light btn" (click)="skipTutorial()"><i class="material-icons">keyboard_arrow_left</i>SKIP</button>
-
-                <button class="waves-effect waves-light btn" (click)="startTutorial()">GET STARTED <i class="material-icons">keyboard_arrow_right</i> </button>
-
-            </div>
-            <!--</div>-->
-            <!--<div id="skip-Tutorial">
+            <div id="start-Tutorial">
                 <div class="tutorial-header">
-                    Do you want to skip?
+                    <span class="tutorial-label-header">60 Second Tutorial </span>
+                    <span class="tutorial-label"> Everything needed to get off the ground running.</span>
                 </div>
-                <button class="waves-effect waves-light btn" (click)="skipTutorial()"><i class="material-icons">keyboard_arrow_left</i>SKIP</button>
-            </div>-->
+
+                <div class="svg-divider">
+                    <img src="/assets/images/tutorial-header.svg">
+                </div>
+                <div class="mode-wrap tutorial-header">
+                    <div class="mode">
+                        <label class="mode-header-label"> 1 Build </label>
+                        <label class="mode-desc-label">Add Resources</label>
+                    </div>
+                    <!--<div class="mode">
+                        <label class="mode-header-label"> 2 Explore </label>
+                        <label class="mode-desc-label">Navigate Groups</label>
+                    </div>-->
+                    <div class="mode">
+                        <label class="mode-header-label"> 2 Report </label>
+                        <label class="mode-desc-label">Export Charts</label>
+                    </div>
+                </div>
+                <div class="tour center">
+                    <button class="waves-effect waves-light btn" (click)="skipTutorial()"><i class="material-icons">keyboard_arrow_left</i>SKIP</button>
+                    <button class="waves-effect waves-light btn" (click)="startTutorial()">GET STARTED <i class="material-icons">keyboard_arrow_right</i> </button>
+                </div>
+            </div>
         </div>
     </div>
+
+
     <div class="smart-bar-tutorial" id="smart-bar-tooltip">
         <div>
             <label class="headerlbl"> Let's add the first person to your organization.</label>
@@ -47,5 +42,19 @@
         </div>
     </div>
 
+
+    <div class="tutorial-wrap" id="tutorial-skip-or-Continue">
+        <div class="tutorial-wrap-content">
+            <div>
+                <div class="">
+                    Do you want to skip or continue?
+                </div>
+                <div class="tour center">
+                    <button class="waves-effect waves-light btn" (click)="skipTutorial()"><i class="material-icons">keyboard_arrow_left</i>SKIP</button>
+                    <button class="waves-effect waves-light btn" (click)="continueTutorial()"><i class="material-icons">keyboard_arrow_right</i>CONTINUE</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
 </div>

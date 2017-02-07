@@ -26,6 +26,10 @@
     display: block;
 }
 
+#tutorialStart {
+    display: none;
+}
+
 .tutorial-wrap .tutorial-wrap-content .tutorial-label,
 .tutorial-wrap .tutorial-wrap-content .tutorial-label-header {
     line-height: 1.5em;
@@ -51,6 +55,7 @@
     display: flex;
     font-size: 0.99em;
     font-weight: 400;
+    padding: 0;
 }
 
 .tutorial-wrap .tutorial-wrap-content .mode-wrap .mode {
@@ -148,6 +153,10 @@
 }
 
 .tutorial-wrap #skip-Tutorial {
+    display: none;
+}
+
+#tutorial-skip-or-Continue {
     display: none;
 }
 

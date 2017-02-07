@@ -5,7 +5,7 @@ import { DOMHelper } from "../../shared/index";
 const tutorailElementName = {
     tutorailStart: "#tutorialStart",
     smartBarTooltip: "#smart-bar-tooltip",
-    skipTour: "#skip-Tutorial",
+    tutorialSkipOrContinue: "#tutorial-skip-or-Continue",
     startTutorial: "#start-Tutorial"
 };
 
@@ -18,21 +18,26 @@ const tutorailElementName = {
 export class TutorialComponent implements OnChanges {
     @Input() isActivate: boolean;
     @Input() isOrgNodeEmpty: boolean;
+    @Input() isTutorialEnabled: boolean;
+
     @Output() deactivateTutorial = new EventEmitter<boolean>();
 
 
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
-        if (changes["isActivate"] && changes["isActivate"].currentValue) {
+        if ((changes["isActivate"] && changes["isActivate"].currentValue) || (changes["isTutorialEnabled"] && changes["isTutorialEnabled"].currentValue)) {
             this.domHelper.showElements(tutorailElementName.tutorailStart);
         }
     }
 
     @HostListener("window:click", ["$event"])
     bodyClicked(event: any) {
-        //  this.domHelper.hideElements(tutorailElementName.startTutorial);
-        //  this.domHelper.showElements([tutorailElementName.tutorailStart, tutorailElementName.skipTutorial]);
-        //  this.domHelper.hideElements(tutorailElementName.tutorailStart);
-        console.log("body!")
+        if ((event.target.nodeName !== ("svg" || "SVG")) && (event.target.nodeName !== ("BUTTON" || "button"))) {
+            // this.domHelper.showElements(tutorailElementName.tutorialSkipOrContinue);
+            // this.domHelper.showElements(tutorailElementName.tutorailStart);
+            this.domHelper.hideElements(tutorailElementName.smartBarTooltip);
+        } else {
+
+        }
 
     }
 
@@ -47,9 +52,13 @@ export class TutorialComponent implements OnChanges {
         }
     }
     skipTutorial() {
-        this.domHelper.hideElements(tutorailElementName.tutorailStart);
+        this.domHelper.hideElements(`${tutorailElementName.tutorailStart},${tutorailElementName.smartBarTooltip},${tutorailElementName.tutorialSkipOrContinue}`);
         if (this.isActivate) {
             this.deactivateTutorial.emit(false);
         }
+    }
+
+    continueTutorial() {
+        console.log("continue");
     }
 }

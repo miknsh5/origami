@@ -29,8 +29,9 @@ export class OrgComponent implements OnDestroy {
     private svgPan: any;
     private isSmartBarEnabled: boolean;
     private isEditModeEnable: boolean;
+    private isTutorialActivate: boolean;
+    private isTutorialEnableOrDisabled: boolean;
     orgGroup: OrgGroupModel;
-    isTutorialActivate: boolean;
 
     @Output() companyID: any;
     @Output() currentChartMode: ChartMode;
@@ -308,8 +309,14 @@ export class OrgComponent implements OnDestroy {
         }
         if (this.orgNodes && this.orgNodes.length === 0) {
             this.isOrgNodeEmpty = true;
+        } else {
+            this.isOrgNodeEmpty = false;
         }
         this.updateJSON();
+    }
+
+    enableOrDisableTutorial(data: boolean) {
+     this.isTutorialEnableOrDisabled = data;
     }
 
     onUpdateNodeAndDeleteNode(childNode: OrgNodeModel) {
@@ -389,7 +396,6 @@ export class OrgComponent implements OnDestroy {
         this.onAddOrEditModeValueSet(false);
         if (this.treeJson && this.treeJson.length === 0) {
             this.isOrgNodeEmpty = true;
-            console.log("empty");
         }
     }
 

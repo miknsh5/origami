@@ -47,6 +47,7 @@ export class MenuBarComponent implements OnInit, OnChanges {
     @Output() deleteTitle: string;
     @Output() name: string;
     @Output() isTutorialActive = new EventEmitter<boolean>();
+    @Output() isTutorialEnabled = new EventEmitter<boolean>();
 
     constructor(private orgService: OrgService, private router: Router, private renderer: Renderer,
         private csvHelper: CSVConversionHelper, private auth: AuthService, private domHelper: DOMHelper) {
@@ -175,6 +176,7 @@ export class MenuBarComponent implements OnInit, OnChanges {
     private setOrgGroupData(data: any) {
         if (data) {
             if (data.OrgNodes && data.OrgNodes.length === 0) {
+                this.isTutorialEnabled.emit(true);
                 this.domHelper.showElements(MenuElement.downloadTemplate);
                 this.domHelper.hideElements(MenuElement.exportData);
             } else {

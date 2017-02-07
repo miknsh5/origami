@@ -128,6 +128,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         this.isNodeMoved = false;
         this.initializeTreeAsPerMode();
         this.svg = this.graph.append("svg")
+            .attr(CLASS, "tree")
             .attr("preserveAspectRatio", "xMidYMid meet")
             .attr("viewBox", `0 0 ${this.treeWidth} ${this.treeHeight}`)
             .attr("width", this.treeWidth)
@@ -534,7 +535,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                 .attr(STROKE, TRANSPARENT_COLOR);
         }
 
-        d3.select("svg")
+        d3.select("svg.tree")
             .attr("viewBox", () => {
                 let x = 0, y = 0, width = this.treeWidth, height = this.treeHeight;
                 if (width < VIEWBOX_MIN_WIDTH || width > VIEWBOX_MAX_WIDTH) {
