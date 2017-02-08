@@ -1,6 +1,6 @@
 import { Component, ElementRef, Input, Output, EventEmitter, OnChanges, SimpleChange, HostListener, Renderer } from "@angular/core";
 
-import { DOMHelper } from "../../shared/index";
+import { DOMHelper, TutorialStatusMode } from "../../shared/index";
 
 const tutorailElementName = {
     tutorailStart: "#tutorialStart",
@@ -16,49 +16,56 @@ const tutorailElementName = {
 })
 
 export class TutorialComponent implements OnChanges {
-    @Input() isActivate: boolean;
+    @Input() tutorialStatus: TutorialStatusMode;
     @Input() isOrgNodeEmpty: boolean;
-    @Input() isTutorialEnabled: boolean;
 
-    @Output() deactivateTutorial = new EventEmitter<boolean>();
+    @Output() deactivateTutorial = new EventEmitter<TutorialStatusMode>();
+
 
 
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
-        if ((changes["isActivate"] && changes["isActivate"].currentValue) || (changes["isTutorialEnabled"] && changes["isTutorialEnabled"].currentValue)) {
+        if (changes["tutorialStatus"] && changes["tutorialStatus"].currentValue === TutorialStatusMode.start ) {
+            this.domHelper.hideElements(tutorailElementName.tutorialSkipOrContinue);
             this.domHelper.showElements(tutorailElementName.tutorailStart);
+        } else   if (changes["tutorialStatus"] && changes["tutorialStatus"].currentValue === TutorialStatusMode.skip ) {
+            this.domHelper.showElements(tutorailElementName.tutorialSkipOrContinue);
+        //    this.domHelper.showElements(tutorailElementName.tutorailStart);
         }
     }
 
-    @HostListener("window:click", ["$event"])
-    bodyClicked(event: any) {
-        if ((event.target.nodeName !== ("svg" || "SVG")) && (event.target.nodeName !== ("BUTTON" || "button"))) {
-            // this.domHelper.showElements(tutorailElementName.tutorialSkipOrContinue);
-            // this.domHelper.showElements(tutorailElementName.tutorailStart);
-            this.domHelper.hideElements(tutorailElementName.smartBarTooltip);
-        } else {
+    // @HostListener("window:click", ["$event"])
+    // bodyClicked(event: any) {
+    //     // if ((event.target.nodeName !== ("svg" || "SVG")) && (event.target.nodeName !== ("BUTTON" || "button"))) {
+    //     //     console.log(this.tutorialStatus);
+    //     //     // if (this.tutorialStatus === TutorialStatusMode.start) {
+    //     //     //     this.domHelper.showElements(tutorailElementName.tutorailStart);
 
-        }
+    //     //     //     // this.domHelper.showElements(tutorailElementName.tutorialSkipOrContinue);
+    //     //     // } else if (this.tutorialStatus === TutorialStatusMode.end) { }
 
-    }
+    //     //    this.domHelper.hideElements(tutorailElementName.smartBarTooltip);
+    //     // } else {
+
+    //     // }
+
+    // }
 
     constructor(private domHelper: DOMHelper, private elementRef: ElementRef) { }
     startTutorial(event: any) {
-        this.domHelper.hideElements(tutorailElementName.tutorailStart);
+        this.domHelper.hideElements(`${tutorailElementName.tutorailStart},${tutorailElementName.tutorialSkipOrContinue}`);
         if (this.isOrgNodeEmpty) {
             this.domHelper.showElements(tutorailElementName.smartBarTooltip);
-        }
-        if (this.isActivate) {
-            this.deactivateTutorial.emit(false);
         }
     }
     skipTutorial() {
         this.domHelper.hideElements(`${tutorailElementName.tutorailStart},${tutorailElementName.smartBarTooltip},${tutorailElementName.tutorialSkipOrContinue}`);
-        if (this.isActivate) {
-            this.deactivateTutorial.emit(false);
+        if (this.tutorialStatus === TutorialStatusMode.start) {
+            this.deactivateTutorial.emit(TutorialStatusMode.end);
         }
     }
 
     continueTutorial() {
-        console.log("continue");
+         this.domHelper.hideElements(tutorailElementName.tutorialSkipOrContinue);
+         this.domHelper.showElements(tutorailElementName.smartBarTooltip);
     }
 }

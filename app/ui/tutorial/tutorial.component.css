@@ -121,7 +121,7 @@
     stroke: none;
 }
 
-.smart-bar-tutorial ::after {
+.smart-bar-tutorial::after {
     content: "";
     position: absolute;
     top: 100%;
@@ -158,6 +158,11 @@
 
 #tutorial-skip-or-Continue {
     display: none;
+}
+
+.skip {
+    padding: 105px 107px 0px;
+    font-size: 1.3rem;
 }
 
 @media only screen and (max-width: 768px) {

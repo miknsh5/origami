@@ -3,7 +3,7 @@ import { tokenNotExpired } from "angular2-jwt";
 
 import {
     DraggedNode, OrgNodeModel, ChartMode, OrgCompanyModel,
-    OrgGroupModel, OrgNodeStatus, OrgService
+    OrgGroupModel, OrgNodeStatus, OrgService, TutorialStatusMode
 } from "../../shared/index";
 
 const MIN_HEIGHT: number = 420;
@@ -30,7 +30,6 @@ export class OrgComponent implements OnDestroy {
     private isSmartBarEnabled: boolean;
     private isEditModeEnable: boolean;
     private isTutorialActivate: boolean;
-    private isTutorialEnableOrDisabled: boolean;
     orgGroup: OrgGroupModel;
 
     @Output() companyID: any;
@@ -50,6 +49,7 @@ export class OrgComponent implements OnDestroy {
     @Output() isHorizontalViewEnabled: boolean;
     @Output() horizontalSpaceForNode: number;
     @Output() verticalSpaceForNode: number;
+    @Output() tutorialStatus: TutorialStatusMode;
 
     constructor(private orgService: OrgService) {
         this.currentChartMode = ChartMode.build;
@@ -315,9 +315,6 @@ export class OrgComponent implements OnDestroy {
         this.updateJSON();
     }
 
-    enableOrDisableTutorial(data: boolean) {
-     this.isTutorialEnableOrDisabled = data;
-    }
 
     onUpdateNodeAndDeleteNode(childNode: OrgNodeModel) {
         let node: OrgNodeModel = this.getNode(this.selectedNode.ParentNodeID, this.orgNodes[0]);
@@ -430,8 +427,8 @@ export class OrgComponent implements OnDestroy {
         this.horizontalSpaceForNode = data;
     }
 
-    activateTutorial(data: boolean) {
-        this.isTutorialActivate = data;
+    activateTutorial(data: TutorialStatusMode) {
+        this.tutorialStatus = data;
     }
 
     private enableViewModesNav(viewMode) {

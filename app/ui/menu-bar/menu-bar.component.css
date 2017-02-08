@@ -9,6 +9,7 @@
 
 .auth_panel .nav-wrapper i.material-icons {
     font-size: 1.2em;
+    vertical-align: middle;
 }
 
 hr {

@@ -3,7 +3,7 @@ import { Router } from "@angular/router";
 
 import {
     AuthService, UserModel, OrgCompanyModel, OrgGroupModel, OrgNodeModel,
-    OrgService, OrgNodeStatus, OrgNodeBaseModel, DOMHelper, CSVConversionHelper
+    OrgService, OrgNodeStatus, OrgNodeBaseModel, DOMHelper, CSVConversionHelper, TutorialStatusMode
 } from "../../shared/index";
 
 const MenuElement = {
@@ -39,6 +39,7 @@ export class MenuBarComponent implements OnInit, OnChanges {
     private isImportDisabled: boolean;
 
 
+    @Input() tutorialState: TutorialStatusMode;
     @Input() noNodeExsit: boolean;
     @Input() currentOrgNodeStatus: OrgNodeStatus;
     @Input() orgNodes: Array<OrgNodeModel>;
@@ -46,8 +47,7 @@ export class MenuBarComponent implements OnInit, OnChanges {
     @Output() isMenuEnable = new EventEmitter<boolean>();
     @Output() deleteTitle: string;
     @Output() name: string;
-    @Output() isTutorialActive = new EventEmitter<boolean>();
-    @Output() isTutorialEnabled = new EventEmitter<boolean>();
+    @Output() tutorialCurrentStatus = new EventEmitter<TutorialStatusMode>();
 
     constructor(private orgService: OrgService, private router: Router, private renderer: Renderer,
         private csvHelper: CSVConversionHelper, private auth: AuthService, private domHelper: DOMHelper) {
@@ -98,7 +98,7 @@ export class MenuBarComponent implements OnInit, OnChanges {
     }
 
     private activateTutorial() {
-        this.isTutorialActive.emit(true);
+        this.tutorialCurrentStatus.emit(TutorialStatusMode.start);
     }
 
     private getAllCompanies() {
@@ -143,6 +143,9 @@ export class MenuBarComponent implements OnInit, OnChanges {
             this.orgCompanyGroups = groups;
             this.selectedGroup = null;
             if (this.orgCompanyGroups.length && this.orgCompanyGroups.length > 0) {
+                if (this.orgCompanyGroups.length === 1) {
+                    this.tutorialCurrentStatus.emit(TutorialStatusMode.start);
+                }
                 this.orgCompanyGroups.forEach((group) => {
                     if (group.IsDefaultGroup) {
                         this.selectedGroup = group;
@@ -159,6 +162,7 @@ export class MenuBarComponent implements OnInit, OnChanges {
                 this.groupName = `Organization ${(this.selectedCompany.OrgGroups.length + 1)}`;
                 this.groupSelectedMode = "AddNewGroup";
                 this.onGroupSave();
+                this.tutorialCurrentStatus.emit(TutorialStatusMode.start);
             }
         }
     }
@@ -176,7 +180,6 @@ export class MenuBarComponent implements OnInit, OnChanges {
     private setOrgGroupData(data: any) {
         if (data) {
             if (data.OrgNodes && data.OrgNodes.length === 0) {
-                this.isTutorialEnabled.emit(true);
                 this.domHelper.showElements(MenuElement.downloadTemplate);
                 this.domHelper.hideElements(MenuElement.exportData);
             } else {
@@ -220,6 +223,7 @@ export class MenuBarComponent implements OnInit, OnChanges {
     }
 
     private onAddOrSettingsClick(name: string, groupData?: OrgNodeModel) {
+        this.tutorialCurrentStatus.emit(TutorialStatusMode.skip);
         this.isMenuEnable.emit(true);
         let element = null;
         if (name.toLowerCase() === "group") {

@@ -1,10 +1,6 @@
 export enum TutorialStatusMode {
-   smartbarfocus = 1,
-   addName,
-   searchNode,
-   addJobTitle,
-   selectJobTitle,
-   AssignChild,
-   moveNode,
-   entreTosave,
+    start = 1,
+    end,
+    skip,
+    continue
 }
