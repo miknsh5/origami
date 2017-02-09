@@ -98,7 +98,17 @@ export class MenuBarComponent implements OnInit, OnChanges {
     }
 
     private activateTutorial() {
-        this.tutorialCurrentStatus.emit(TutorialStatusMode.start);
+        if (this.tutorialState) {
+            switch (this.tutorialState) {
+                case TutorialStatusMode.End:
+                case TutorialStatusMode.Skip: {
+                    this.tutorialCurrentStatus.emit(TutorialStatusMode.Start);
+                }
+            }
+        }
+        else {
+            this.tutorialCurrentStatus.emit(TutorialStatusMode.Start);
+        }
     }
 
     private getAllCompanies() {
@@ -144,7 +154,9 @@ export class MenuBarComponent implements OnInit, OnChanges {
             this.selectedGroup = null;
             if (this.orgCompanyGroups.length && this.orgCompanyGroups.length > 0) {
                 if (this.orgCompanyGroups.length === 1) {
-                    this.tutorialCurrentStatus.emit(TutorialStatusMode.start);
+                    if (this.orgCompanyGroups[0].OrgNodes.length === 0) {
+                        this.tutorialCurrentStatus.emit(TutorialStatusMode.Start);
+                    }
                 }
                 this.orgCompanyGroups.forEach((group) => {
                     if (group.IsDefaultGroup) {
@@ -162,7 +174,7 @@ export class MenuBarComponent implements OnInit, OnChanges {
                 this.groupName = `Organization ${(this.selectedCompany.OrgGroups.length + 1)}`;
                 this.groupSelectedMode = "AddNewGroup";
                 this.onGroupSave();
-                this.tutorialCurrentStatus.emit(TutorialStatusMode.start);
+                this.tutorialCurrentStatus.emit(TutorialStatusMode.Start);
             }
         }
     }
@@ -210,48 +222,63 @@ export class MenuBarComponent implements OnInit, OnChanges {
     }
 
     private onGroupSelection(data) {
-        if (this.selectedGroup.OrgGroupID !== data.OrgGroupID) {
-            this.selectedGroup.IsDefaultGroup = false;
-        }
-        if (data && data.OrgGroupID !== this.selectedGroup.OrgGroupID) {
-            this.selectedGroup = data;
-            this.selectedGroup.IsDefaultGroup = true;
-            this.getAllNodes(data.OrgGroupID);
-            this.orgService.setDefaultGroup(this.userModel.UserID, this.selectedCompany.CompanyID, this.selectedGroup.OrgGroupID)
-                .subscribe(data => { }, err => this.orgService.logError(err));
+        switch (this.tutorialState) {
+            case TutorialStatusMode.Start:
+            case TutorialStatusMode.Continue:
+                this.tutorialCurrentStatus.emit(TutorialStatusMode.Interupt);
+                break;
+            case TutorialStatusMode.Skip:
+            case TutorialStatusMode.End:
+                if (this.selectedGroup.OrgGroupID !== data.OrgGroupID) {
+                    this.selectedGroup.IsDefaultGroup = false;
+                }
+                if (data && data.OrgGroupID !== this.selectedGroup.OrgGroupID) {
+                    this.selectedGroup = data;
+                    this.selectedGroup.IsDefaultGroup = true;
+                    this.getAllNodes(data.OrgGroupID);
+                    this.orgService.setDefaultGroup(this.userModel.UserID, this.selectedCompany.CompanyID, this.selectedGroup.OrgGroupID)
+                        .subscribe(data => { }, err => this.orgService.logError(err));
+                }
         }
     }
 
     private onAddOrSettingsClick(name: string, groupData?: OrgNodeModel) {
-        this.tutorialCurrentStatus.emit(TutorialStatusMode.skip);
-        this.isMenuEnable.emit(true);
-        let element = null;
-        if (name.toLowerCase() === "group") {
-            this.groupSelectedMode = "Settings";
-            this.groupSettingTitle = "Settings";
-            this.onGroupSelection(groupData);
-            this.isImportDisabled = false;
-            this.groupName = this.selectedGroup.GroupName;
-            this.domHelper.showElements(`${MenuElement.groupModal}, ${MenuElement.deleteGroup}`);
-            this.domHelper.hideElements(`${MenuElement.confirmGroupDelete}, ${MenuElement.groupDeleteLoader}`);
-            if (this.selectedGroup && this.selectedGroup.OrgNodes.length === 0) {
-                this.domHelper.showElements(MenuElement.downloadTemplate);
-                this.domHelper.hideElements(MenuElement.exportData);
-            } else {
-                this.domHelper.showElements(MenuElement.exportData);
-                this.domHelper.hideElements(MenuElement.downloadTemplate);
-            }
-            element = document.querySelector("input[name=existingGroupName]");
-        } else {
-            this.groupSelectedMode = "AddNewGroup";
-            this.groupSettingTitle = "Add New Organization";
-            this.groupName = `Organization ${(this.selectedCompany.OrgGroups.length + 1)}`;
-            this.isImportDisabled = true;
-            this.domHelper.showElements(`${MenuElement.groupModal}, ${MenuElement.importTemplate}, ${MenuElement.downloadTemplate}`);
-            this.domHelper.hideElements(`${MenuElement.deleteGroup}, ${MenuElement.groupDeleteLoader}, ${MenuElement.exportData}`);
-            element = document.querySelector("input[name=existingGroupName]");
+        switch (this.tutorialState) {
+            case TutorialStatusMode.Start:
+            case TutorialStatusMode.Continue:
+                this.tutorialCurrentStatus.emit(TutorialStatusMode.Interupt);
+                break;
+            case TutorialStatusMode.Skip:
+            case TutorialStatusMode.End:
+                this.isMenuEnable.emit(true);
+                let element = null;
+                if (name.toLowerCase() === "group") {
+                    this.groupSelectedMode = "Settings";
+                    this.groupSettingTitle = "Settings";
+                    this.onGroupSelection(groupData);
+                    this.isImportDisabled = false;
+                    this.groupName = this.selectedGroup.GroupName;
+                    this.domHelper.showElements(`${MenuElement.groupModal}, ${MenuElement.deleteGroup}`);
+                    this.domHelper.hideElements(`${MenuElement.confirmGroupDelete}, ${MenuElement.groupDeleteLoader}`);
+                    if (this.selectedGroup && this.selectedGroup.OrgNodes.length === 0) {
+                        this.domHelper.showElements(MenuElement.downloadTemplate);
+                        this.domHelper.hideElements(MenuElement.exportData);
+                    } else {
+                        this.domHelper.showElements(MenuElement.exportData);
+                        this.domHelper.hideElements(MenuElement.downloadTemplate);
+                    }
+                    element = document.querySelector("input[name=existingGroupName]");
+                } else {
+                    this.groupSelectedMode = "AddNewGroup";
+                    this.groupSettingTitle = "Add New Organization";
+                    this.groupName = `Organization ${(this.selectedCompany.OrgGroups.length + 1)}`;
+                    this.isImportDisabled = true;
+                    this.domHelper.showElements(`${MenuElement.groupModal}, ${MenuElement.importTemplate}, ${MenuElement.downloadTemplate}`);
+                    this.domHelper.hideElements(`${MenuElement.deleteGroup}, ${MenuElement.groupDeleteLoader}, ${MenuElement.exportData}`);
+                    element = document.querySelector("input[name=existingGroupName]");
+                }
+                this.renderer.invokeElementMethod(element, "focus", []);
         }
-        this.renderer.invokeElementMethod(element, "focus", []);
     }
 
     private dismissPopup() {

@@ -1,5 +1,5 @@
 <div id="wrapper">
-    <menu-bar (groupSelected)="onGroupSelected($event)" [noNodeExsit]="isOrgNodeEmpty" [currentOrgNodeStatus]="currentOrgNodeStatus" (isMenuEnable)="onMenuSettingsChange($event)" [orgNodes]="orgNodes" (tutorialCurrentStatus)="activateTutorial($event)">
+    <menu-bar (groupSelected)="onGroupSelected($event)" [noNodeExsit]="isOrgNodeEmpty" [currentOrgNodeStatus]="currentOrgNodeStatus" (isMenuEnable)="onMenuSettingsChange($event)" [orgNodes]="orgNodes" (tutorialCurrentStatus)="activateTutorial($event)" [tutorialState]="tutorialStatus">
     </menu-bar>
     <div *ngIf="orgGroup">
         <div>

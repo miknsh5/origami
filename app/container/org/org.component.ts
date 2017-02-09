@@ -3,7 +3,7 @@ import { tokenNotExpired } from "angular2-jwt";
 
 import {
     DraggedNode, OrgNodeModel, ChartMode, OrgCompanyModel,
-    OrgGroupModel, OrgNodeStatus, OrgService, TutorialStatusMode
+    OrgGroupModel, OrgNodeStatus, OrgService, TutorialStatusMode, OrgState
 } from "../../shared/index";
 
 const MIN_HEIGHT: number = 420;
@@ -29,7 +29,6 @@ export class OrgComponent implements OnDestroy {
     private svgPan: any;
     private isSmartBarEnabled: boolean;
     private isEditModeEnable: boolean;
-    private isTutorialActivate: boolean;
     orgGroup: OrgGroupModel;
 
     @Output() companyID: any;
@@ -50,6 +49,7 @@ export class OrgComponent implements OnDestroy {
     @Output() horizontalSpaceForNode: number;
     @Output() verticalSpaceForNode: number;
     @Output() tutorialStatus: TutorialStatusMode;
+    @Output() orgCurrentState: OrgState;
 
     constructor(private orgService: OrgService) {
         this.currentChartMode = ChartMode.build;

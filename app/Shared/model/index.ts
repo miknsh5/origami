@@ -1,6 +1,7 @@
 export * from "./orgchart.modes";
 export * from "./orgnodestatus.modes";
 export * from "./tutorialstatus.modes";
+export * from "./orgstate.modes";
 export * from "./user.model";
 export * from "./orgcompany.model";
 export * from "./orggroup.model";

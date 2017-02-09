@@ -1,6 +1,7 @@
 export enum TutorialStatusMode {
-    start = 1,
-    end,
-    skip,
-    continue
+    Start = 1,
+    End = 2,
+    Skip = 3,
+    Continue = 4,
+    Interupt = 5
 }
