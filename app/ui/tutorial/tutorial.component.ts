@@ -1,6 +1,6 @@
 import { Component, ElementRef, Input, Output, EventEmitter, OnChanges, SimpleChange, HostListener, Renderer } from "@angular/core";
 
-import { DOMHelper, TutorialStatusMode, OrgState } from "../../shared/index";
+import { DOMHelper, TutorialStatusMode, OrgState, OrgNodeModel } from "../../shared/index";
 
 const tutorailElementName = {
     tutorailStart: "#tutorialStart",
@@ -16,8 +16,14 @@ const tutorailElementName = {
 })
 
 export class TutorialComponent implements OnChanges {
+    private tutorailSessionStarted: boolean = false;
+    private popupTitle: any;
+    private popupContent: any;
+
     @Input() tutorialStatus: TutorialStatusMode;
     @Input() isOrgNodeEmpty: boolean;
+    @Input() orgCurrentState: OrgState;
+    @Input() selectedOrgNode: OrgNodeModel;
 
     @Output() deactivateTutorial = new EventEmitter<TutorialStatusMode>();
 
@@ -27,14 +33,37 @@ export class TutorialComponent implements OnChanges {
         if (changes["tutorialStatus"] && changes["tutorialStatus"].currentValue === TutorialStatusMode.Start) {
             this.domHelper.hideElements(tutorailElementName.tutorialSkipOrContinue);
             this.domHelper.showElements(tutorailElementName.tutorailStart);
-        } else if (changes["tutorialStatus"] && changes["tutorialStatus"].currentValue === TutorialStatusMode.Interupt) {
-            this.domHelper.showElements(tutorailElementName.tutorialSkipOrContinue);
+        }
+        if (this.tutorailSessionStarted) {
+            if (changes["tutorialStatus"] && changes["tutorialStatus"].currentValue === TutorialStatusMode.Interupt) {
+                this.domHelper.showElements(tutorailElementName.tutorialSkipOrContinue);
+            }
+
+            if (changes["orgCurrentState"]) {
+                if (this.orgCurrentState === OrgState.AddName) {
+                    this.popupTitle = `Text assist shows available actions,let's add a resource`;
+                    this.popupContent = `>with Donald Duck selected, press enter to select`;
+                    this.domHelper.setBottom(tutorailElementName.smartBarTooltip, "155px");
+                    this.domHelper.setWidth(tutorailElementName.smartBarTooltip, "480px");
+                } else if (this.orgCurrentState === OrgState.AddJobTitle) {
+                    this.popupTitle = `App presumes we want to a title(esc to cancel)`;
+                    this.popupContent = `>Type Designer and press enter`;
+                    this.domHelper.setWidth(tutorailElementName.smartBarTooltip, "401px");
+                }
+                else {
+                    this.domHelper.hideElements(tutorailElementName.smartBarTooltip);
+                }
+            }
         }
     }
 
-    constructor(private domHelper: DOMHelper, private elementRef: ElementRef) { }
+    constructor(private domHelper: DOMHelper, private elementRef: ElementRef) {
+        this.popupTitle = ` Let's add the first person to your organization.`;
+        this.popupContent = `>Type Donald Duck`;
+    }
 
     startTutorial(event: any) {
+        this.tutorailSessionStarted = true;
         this.domHelper.hideElements(`${tutorailElementName.tutorailStart},${tutorailElementName.tutorialSkipOrContinue}`);
         if (this.isOrgNodeEmpty) {
             this.domHelper.showElements(tutorailElementName.smartBarTooltip);
@@ -48,6 +77,7 @@ export class TutorialComponent implements OnChanges {
         } else if (this.tutorialStatus === TutorialStatusMode.Interupt) {
             this.deactivateTutorial.emit(TutorialStatusMode.Skip);
         }
+        this.tutorailSessionStarted = false;
     }
 
     continueTutorial() {

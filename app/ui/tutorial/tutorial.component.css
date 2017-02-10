@@ -109,9 +109,9 @@
     position: absolute;
     height: 50px;
     left: 12.5%;
-    width: 50%;
+    width: 55%;
     min-width: 320px;
-    max-width: 430px;
+    max-width: 450px;
     background-color: #fafafa;
     background-color: var(--white);
     -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);

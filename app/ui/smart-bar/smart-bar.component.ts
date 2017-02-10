@@ -1,7 +1,7 @@
 import { Component, ElementRef, Input, Output, EventEmitter, OnChanges, SimpleChange, HostListener, Renderer } from "@angular/core";
 import { NgForm, NgControl } from "@angular/forms";
 
-import { DraggedNode, OrgNodeModel, OrgSearchModel, OrgService, DOMHelper } from "../../shared/index";
+import { DraggedNode, OrgNodeModel, OrgSearchModel, OrgService, DOMHelper, OrgState } from "../../shared/index";
 
 const HeaderTitle = "NAME";
 const AddResource = "Search, Add Resources";
@@ -53,6 +53,7 @@ export class SamrtBarComponent implements OnChanges {
     @Output() isSmartBarEnabled = new EventEmitter<boolean>();
     @Output() isNodeMoveDisabled = new EventEmitter<boolean>();
     @Output() moveNode = new EventEmitter<DraggedNode>();
+    @Output() currentSmartbarStatus = new EventEmitter<OrgState>();
 
     constructor(private elementRef: ElementRef, private domHelper: DOMHelper, private renderer: Renderer, private orgService: OrgService) {
         this.searchHeader = `BY ${HeaderTitle}`;
@@ -450,6 +451,7 @@ export class SamrtBarComponent implements OnChanges {
                     this.multiInTerm = EMPTYSTRING;
                     this.isDescriptionText = true;
                 }
+                this.currentSmartbarStatus.emit(OrgState.AddJobTitle);
             }
         }
         if (this.newNodeValue && this.newNodeValue.length === 1) {
@@ -552,6 +554,7 @@ export class SamrtBarComponent implements OnChanges {
 
         if (!this.isEditModeEnabled) {
             if (this.selectedOrgNode && this.selectedOrgNode.NodeID === -1) {
+
                 let islastName = this.checkSpaceInName(this.multiInTerm);
                 let index = this.multiInTerm.indexOf(" ");
                 if (!this.newNodeValue || this.newNodeValue.length === 0 && this.multiInTerm === EMPTYSTRING) {
@@ -573,6 +576,7 @@ export class SamrtBarComponent implements OnChanges {
                         }
                     }
                     else {
+                        this.currentSmartbarStatus.emit(OrgState.AddName);
                         this.selectedOrgNode.NodeFirstName = this.multiInTerm;
                         if (index !== -1) {
                             this.selectedOrgNode.NodeLastName = this.multiInTerm.substring(index + 1, this.multiInTerm.length);

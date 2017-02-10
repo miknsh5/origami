@@ -141,6 +141,10 @@ export class OrgComponent implements OnDestroy {
         this.onAddOrEditModeValueSet(value);
     }
 
+    changedStateForTutorial(data: OrgState) {
+      this.orgCurrentState = data;
+    }
+
     onNodeSelected(node) {
         if (!this.isSmartBarEnabled || (!this.selectedNode && node)) {
             let prevNode = this.selectedNode ? this.selectedNode : new OrgNodeModel();
