@@ -39,7 +39,7 @@ export class MenuBarComponent implements OnInit, OnChanges {
     private isImportDisabled: boolean;
 
 
-    @Input() tutorialState: TutorialStatusMode;
+    @Input() tutorialStatus: TutorialStatusMode;
     @Input() noNodeExsit: boolean;
     @Input() currentOrgNodeStatus: OrgNodeStatus;
     @Input() orgNodes: Array<OrgNodeModel>;
@@ -98,16 +98,11 @@ export class MenuBarComponent implements OnInit, OnChanges {
     }
 
     private activateTutorial() {
-        if (this.tutorialState) {
-            switch (this.tutorialState) {
-                case TutorialStatusMode.End:
-                case TutorialStatusMode.Skip: {
-                    this.tutorialCurrentStatus.emit(TutorialStatusMode.Start);
-                }
+        switch (this.tutorialStatus) {
+            case TutorialStatusMode.End:
+            case TutorialStatusMode.Skip: {
+                this.tutorialCurrentStatus.emit(TutorialStatusMode.Start);
             }
-        }
-        else {
-            this.tutorialCurrentStatus.emit(TutorialStatusMode.Start);
         }
     }
 
@@ -157,6 +152,8 @@ export class MenuBarComponent implements OnInit, OnChanges {
                     if (this.orgCompanyGroups[0].OrgNodes.length === 0) {
                         this.tutorialCurrentStatus.emit(TutorialStatusMode.Start);
                     }
+                } else {
+                    this.tutorialCurrentStatus.emit(TutorialStatusMode.End);
                 }
                 this.orgCompanyGroups.forEach((group) => {
                     if (group.IsDefaultGroup) {
@@ -222,7 +219,7 @@ export class MenuBarComponent implements OnInit, OnChanges {
     }
 
     private onGroupSelection(data) {
-        switch (this.tutorialState) {
+        switch (this.tutorialStatus) {
             case TutorialStatusMode.Start:
             case TutorialStatusMode.Continue:
                 this.tutorialCurrentStatus.emit(TutorialStatusMode.Interupt);
@@ -243,7 +240,7 @@ export class MenuBarComponent implements OnInit, OnChanges {
     }
 
     private onAddOrSettingsClick(name: string, groupData?: OrgNodeModel) {
-        switch (this.tutorialState) {
+        switch (this.tutorialStatus) {
             case TutorialStatusMode.Start:
             case TutorialStatusMode.Continue:
                 this.tutorialCurrentStatus.emit(TutorialStatusMode.Interupt);
