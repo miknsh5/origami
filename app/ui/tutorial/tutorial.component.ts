@@ -9,6 +9,25 @@ const tutorailElementName = {
     startTutorial: "#start-Tutorial"
 };
 
+const tutorialPopupTitle = {
+    step1: "Let's add the first person to your organization.",
+    step2: "Text assist shows available actions,let's add a resource",
+    step3: "App assumes we want to add a title(if not, just enter again)",
+    step4: `You just created your first node! 
+            The details panel gives you a dynamic view into
+            any details about Donald. 
+            You can make it go away at any time by clicking (image)`,
+    step5: "Great. Now let's add Donald's team.",
+    step6: `Well done! You can always navigate using the arrow keys or the mouse. To add a note just start typing, or navigate to one of these: (image) 
+            Also,use the smart bar for search too!`
+};
+const tutorialPopupContent = {
+    step1: ">Type Donald Duck",
+    step2: ">with Donald Duck selected, press enter to select",
+    step3: ">Type Designer and press enter",
+    step5: `>Press right(img) to add a direct report, try "Roger Rabit" and make Roger a "Front End Dev"`
+};
+
 @Component({
     selector: "pt-tutorial",
     templateUrl: "app/ui/tutorial/tutorial.component.html",
@@ -41,13 +60,13 @@ export class TutorialComponent implements OnChanges {
 
             if (changes["orgCurrentState"]) {
                 if (this.orgCurrentState === OrgState.AddName) {
-                    this.popupTitle = `Text assist shows available actions,let's add a resource`;
-                    this.popupContent = `>with Donald Duck selected, press enter to select`;
+                    this.popupTitle = tutorialPopupTitle.step2;
+                    this.popupContent = tutorialPopupContent.step2;
                     this.domHelper.setBottom(tutorailElementName.smartBarTooltip, "155px");
                     this.domHelper.setWidth(tutorailElementName.smartBarTooltip, "480px");
                 } else if (this.orgCurrentState === OrgState.AddJobTitle) {
-                    this.popupTitle = `App presumes we want to a title(esc to cancel)`;
-                    this.popupContent = `>Type Designer and press enter`;
+                    this.popupTitle = tutorialPopupTitle.step3;
+                    this.popupContent = tutorialPopupContent.step3;
                     this.domHelper.setWidth(tutorailElementName.smartBarTooltip, "401px");
                 }
                 else {
@@ -58,8 +77,8 @@ export class TutorialComponent implements OnChanges {
     }
 
     constructor(private domHelper: DOMHelper, private elementRef: ElementRef) {
-        this.popupTitle = ` Let's add the first person to your organization.`;
-        this.popupContent = `>Type Donald Duck`;
+        this.popupTitle = tutorialPopupTitle.step1;
+        this.popupContent = tutorialPopupContent.step1;
     }
 
     startTutorial(event: any) {

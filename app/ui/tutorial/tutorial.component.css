@@ -42,7 +42,7 @@
 
 .tutorial-wrap .tutorial-wrap-content .tutorial-label-header {
     font-size: 1.5em;
-    font-weight: 800;
+    font-weight: 400;
 }
 
 .tutorial-wrap .tutorial-wrap-content .tutorial-header {
@@ -54,8 +54,15 @@
 .tutorial-wrap .tutorial-wrap-content .mode-wrap {
     display: flex;
     font-size: 0.99em;
-    font-weight: 400;
-    padding: 0;
+    font-weight: 300;
+    padding: 0px 0px;
+    margin-left: 80px;
+    margin-top: -20px;
+}
+
+.mode-header-label span {
+    padding: 0 2.5px;
+    font-size: larger;
 }
 
 .tutorial-wrap .tutorial-wrap-content .mode-wrap .mode {
@@ -66,24 +73,34 @@
 .tutorial-wrap .tutorial-wrap-content .mode-wrap .mode .mode-header-label {
     display: inline-block;
     color: #607d8b !important;
-    font-size: 1.4em;
-    font-weight: 500;
+    font-weight: 400;
 }
 
 .tutorial-wrap .tutorial-wrap-content .mode-wrap .mode .mode-desc-label {
     display: block;
     line-height: 1.1em;
     font-family: Roboto, HelveticaNeue;
-    font-size: 1em !important;
     font-weight: 400;
     color: #607d8b !important;
-    margin-left: 15px;
+    margin-left: 14px;
+}
+
+.create-modelbl {
+    margin: 0px -7px;
+}
+
+.add-modelbl {
+    margin: 0 0 0 16px;
+}
+
+.edit-modelbl {
+    margin: 0 0 0 10px;
 }
 
 .btn.waves-effect {
-    background-color: #0097FF;
-    background-color: var(--azure);
-    padding: 5px 0.7rem;
+    background-color: #448AFF;
+    /*background-color: var(--azure);*/
+    padding: 5px 1.5rem;
     font-size: 0.75rem;
     border-radius: 0px;
     max-height: 30px;
@@ -99,7 +116,7 @@
 }
 
 .tour {
-    margin-top: 20px;
+    margin-top: 40px;
 }
 
 .smart-bar-tutorial {
