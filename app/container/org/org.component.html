@@ -3,7 +3,7 @@
     </menu-bar>
     <div *ngIf="orgGroup">
         <div>
-            <pt-tutorial [isOrgNodeEmpty]="isOrgNodeEmpty" [tutorialStatus]="tutorialStatus" (deactivateTutorial)="activateTutorial($event)" [orgCurrentState]="orgCurrentState" [selectedOrgNode]="selectedNode"></pt-tutorial>
+            <pt-tutorial [isOrgNodeEmpty]="isOrgNodeEmpty" [tutorialStatus]="tutorialStatus" (deactivateTutorial)="activateTutorial($event)" [orgCurrentState]="orgCurrentState" [selectedOrgNode]="currentOrgNode"></pt-tutorial>
         </div>
         <div class="modes_wrap">
             <ul>

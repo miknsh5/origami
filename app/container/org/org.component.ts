@@ -50,6 +50,7 @@ export class OrgComponent implements OnDestroy {
     @Output() verticalSpaceForNode: number;
     @Output() tutorialStatus: TutorialStatusMode;
     @Output() orgCurrentState: OrgState;
+    @Output() currentOrgNode: OrgNodeModel;
 
     constructor(private orgService: OrgService) {
         this.currentChartMode = ChartMode.build;
@@ -184,6 +185,8 @@ export class OrgComponent implements OnDestroy {
         else {
             this.addChildToSelectedOrgNode(addedNode, this.orgNodes[0]);
         }
+
+        this.currentOrgNode = addedNode;
 
         if (this.selectedNode && this.selectedNode.NodeID !== addedNode.NodeID) {
             this.updateJSON(addedNode);
@@ -336,6 +339,7 @@ export class OrgComponent implements OnDestroy {
     }
 
     onNodeUpdated(selected) {
+        this.currentOrgNode = selected;
         // since while updating data to server we send children as null so refreshing the value
         if (selected && !selected.children && selected.NodeID === this.selectedNode.NodeID && this.selectedNode.children) {
             selected.children = this.selectedNode.children;

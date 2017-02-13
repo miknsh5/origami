@@ -120,7 +120,7 @@ export class SamrtBarComponent implements OnChanges {
     }
 
     @HostListener("blur", ["$event"])
-    onInputFocusOut(event: any) {
+    onInputFocusOut(event: any) {       
         setTimeout(() => {
             if (this.selectedOrgNode) {
                 this.isTitleSelected = this.searchInProgress = false;
@@ -297,6 +297,7 @@ export class SamrtBarComponent implements OnChanges {
             return;
         }
         if (this.isDescriptionText) {
+            this.currentSmartbarStatus.emit(OrgState.PressEnter);
             let element = document.querySelector(`${TITLE_SEARCH_CONTAINER} li.${SELECTED}`);
             if (element) {
                 this.renderer.invokeElementMethod(element, "click", []);
@@ -451,11 +452,11 @@ export class SamrtBarComponent implements OnChanges {
                     this.multiInTerm = EMPTYSTRING;
                     this.isDescriptionText = true;
                 }
-                this.currentSmartbarStatus.emit(OrgState.AddJobTitle);
             }
         }
         if (this.newNodeValue && this.newNodeValue.length === 1) {
             this.placeholderText = `${AddJobTitle}`;
+            this.currentSmartbarStatus.emit(OrgState.AddJobTitle);
         }
         this.setInputFocus();
     }
@@ -576,7 +577,10 @@ export class SamrtBarComponent implements OnChanges {
                         }
                     }
                     else {
-                        this.currentSmartbarStatus.emit(OrgState.AddName);
+                        if (this.multiInTerm.trim() !== EMPTYSTRING) {
+                            this.currentSmartbarStatus.emit(OrgState.AddName);
+                        }
+
                         this.selectedOrgNode.NodeFirstName = this.multiInTerm;
                         if (index !== -1) {
                             this.selectedOrgNode.NodeLastName = this.multiInTerm.substring(index + 1, this.multiInTerm.length);

@@ -121,14 +121,13 @@
 
 .smart-bar-tutorial {
     display: none;
-    bottom: 77px;
-    padding: 5px 60px;
+    padding: 10px 0 12px 40px;
     position: absolute;
-    height: 50px;
+    height: auto;
     left: 12.5%;
     width: 55%;
-    min-width: 320px;
-    max-width: 450px;
+    min-width: 340px;
+    max-width: 500px;
     background-color: #fafafa;
     background-color: var(--white);
     -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
@@ -191,15 +190,19 @@
         height: 270px;
     }
     .smart-bar-tutorial {
-        padding: 5px 30px;
+        padding: 5px 0 9px 14px;
         left: 5px;
     }
+    .create-modelbl[_ngcontent-cbh-7] {
+        margin: -15px 37px;
+    }
+    margin: -15px 0px 0 -42px;
 }
 
 @media only screen and (max-width: 420px) {
     .smart-bar-tutorial {
         bottom: 13px;
-        padding: 5px 30px;
+        padding: 5px 0 9px 14px;
         left: 10px;
         min-width: 316px;
     }

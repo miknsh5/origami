@@ -25,7 +25,11 @@ export class DOMHelper {
     }
 
     public setBottom(selector: string, bottom: any) {
-        jQuery(selector).css({bottom: bottom});
+        jQuery(selector).css({ bottom: bottom });
+    }
+
+    public setTop(selector: string, top: any) {
+        jQuery(selector).css({ top: top });
     }
 
     public setWidth(selector: string, width: any) {

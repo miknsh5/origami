@@ -2,6 +2,9 @@ import { Component, ElementRef, Input, Output, EventEmitter, OnChanges, SimpleCh
 
 import { DOMHelper, TutorialStatusMode, OrgState, OrgNodeModel } from "../../shared/index";
 
+const SEARCH_CONTAINER = "#searchSelection";
+const TITLE_SEARCH_CONTAINER = "#titleSearchSelection";
+
 const tutorailElementName = {
     tutorailStart: "#tutorialStart",
     smartBarTooltip: "#smart-bar-tooltip",
@@ -25,8 +28,11 @@ const tutorialPopupContent = {
     step1: ">Type Donald Duck",
     step2: ">with Donald Duck selected, press enter to select",
     step3: ">Type Designer and press enter",
-    step5: `>Press right(img) to add a direct report, try "Roger Rabit" and make Roger a "Front End Dev"`
+    step5: `>Press right(img) to add a direct report, try "Roger Rabit" and make Roger a "Front End Dev"`,
+    emptyString: ""
 };
+
+declare let jQuery;
 
 @Component({
     selector: "pt-tutorial",
@@ -46,8 +52,6 @@ export class TutorialComponent implements OnChanges {
 
     @Output() deactivateTutorial = new EventEmitter<TutorialStatusMode>();
 
-
-
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
         if (changes["tutorialStatus"] && changes["tutorialStatus"].currentValue === TutorialStatusMode.Start) {
             this.domHelper.hideElements(tutorailElementName.tutorialSkipOrContinue);
@@ -58,22 +62,37 @@ export class TutorialComponent implements OnChanges {
                 this.domHelper.showElements(tutorailElementName.tutorialSkipOrContinue);
             }
 
-            if (changes["orgCurrentState"]) {
+            if (changes["orgCurrentState"] || changes["selectedOrgNode"]) {
+                console.log(this.selectedOrgNode);
                 if (this.orgCurrentState === OrgState.AddName) {
-                    this.popupTitle = tutorialPopupTitle.step2;
-                    this.popupContent = tutorialPopupContent.step2;
-                    this.domHelper.setBottom(tutorailElementName.smartBarTooltip, "155px");
-                    this.domHelper.setWidth(tutorailElementName.smartBarTooltip, "480px");
+                    setTimeout(() => {
+                        this.popupTitle = tutorialPopupTitle.step2;
+                        this.popupContent = tutorialPopupContent.step2;
+                        let top = (jQuery(SEARCH_CONTAINER).offset().top - 70);
+                        this.domHelper.setTop(tutorailElementName.smartBarTooltip, top);
+                    }, 500);
                 } else if (this.orgCurrentState === OrgState.AddJobTitle) {
                     this.popupTitle = tutorialPopupTitle.step3;
                     this.popupContent = tutorialPopupContent.step3;
-                    this.domHelper.setWidth(tutorailElementName.smartBarTooltip, "401px");
+                } else if (this.orgCurrentState === OrgState.PressEnter) {
+                    this.popupTitle = tutorialPopupTitle.step4;
+                    this.popupContent = tutorialPopupContent.emptyString;
+                    // this.domHelper.setWidth(tutorailElementName.smartBarTooltip, "100%");
+                    setTimeout(() => {
+                        this.popupTitle = tutorialPopupTitle.step5;
+                        this.popupContent = tutorialPopupContent.step5;
+                    }, 1500);
                 }
                 else {
                     this.domHelper.hideElements(tutorailElementName.smartBarTooltip);
                 }
             }
         }
+    }
+
+    @HostListener("window:resize", ["$event"])
+    onResize(event: any) {
+        // console.log(jQuery(tutorailElementName.smartBarTooltip).offset());
     }
 
     constructor(private domHelper: DOMHelper, private elementRef: ElementRef) {
@@ -84,9 +103,11 @@ export class TutorialComponent implements OnChanges {
     startTutorial(event: any) {
         this.tutorailSessionStarted = true;
         this.domHelper.hideElements(`${tutorailElementName.tutorailStart},${tutorailElementName.tutorialSkipOrContinue}`);
-        if (this.isOrgNodeEmpty) {
-            this.domHelper.showElements(tutorailElementName.smartBarTooltip);
-        }
+        this.domHelper.setTop(tutorailElementName.smartBarTooltip, "505px");
+        this.domHelper.showElements(tutorailElementName.smartBarTooltip);
+
+
+
     }
 
     skipTutorial() {
