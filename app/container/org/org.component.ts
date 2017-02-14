@@ -31,10 +31,10 @@ export class OrgComponent implements OnDestroy {
     private isEditModeEnable: boolean;
     orgGroup: OrgGroupModel;
 
+    @Output() selectedOrgNode: OrgNodeModel;
     @Output() companyID: any;
     @Output() currentChartMode: ChartMode;
     @Output() treeJson: any;
-    @Output() selectedNode: OrgNodeModel;
     @Output() isAddOrEditMode: boolean;
     @Output() displayFirstNameLabel: boolean;
     @Output() displayLastNameLabel: boolean;
@@ -50,7 +50,6 @@ export class OrgComponent implements OnDestroy {
     @Output() verticalSpaceForNode: number;
     @Output() tutorialStatus: TutorialStatusMode;
     @Output() orgCurrentState: OrgState;
-    @Output() currentOrgNode: OrgNodeModel;
 
     constructor(private orgService: OrgService) {
         this.currentChartMode = ChartMode.build;
@@ -96,7 +95,7 @@ export class OrgComponent implements OnDestroy {
     }
 
     changeViewModeNav(viewMode) {
-        if (!this.isAddOrEditMode && this.selectedNode) {
+        if (!this.isAddOrEditMode && this.selectedOrgNode) {
             if (viewMode === ChartMode.build) {
                 this.enableLabels();
                 this.currentChartMode = ChartMode.build;
@@ -143,14 +142,14 @@ export class OrgComponent implements OnDestroy {
     }
 
     changedStateForTutorial(data: OrgState) {
-      this.orgCurrentState = data;
+        this.orgCurrentState = data;
     }
 
     onNodeSelected(node) {
-        if (!this.isSmartBarEnabled || (!this.selectedNode && node)) {
-            let prevNode = this.selectedNode ? this.selectedNode : new OrgNodeModel();
-            this.selectedNode = node;
-            if (this.selectedNode) {
+        if (!this.isSmartBarEnabled || (!this.selectedOrgNode && node)) {
+            let prevNode = this.selectedOrgNode ? this.selectedOrgNode : new OrgNodeModel();
+            this.selectedOrgNode = node;
+            if (this.selectedOrgNode) {
                 if (node.NodeID === -1) {
                     this.isAddOrEditMode = true;
                 } else if ((this.isAddOrEditMode || !this.isAddOrEditMode && prevNode && prevNode.IsNewRoot)
@@ -172,7 +171,7 @@ export class OrgComponent implements OnDestroy {
                 let node = this.getNode(-1, this.orgNodes[0]);
                 this.deleteNodeFromArray(node, this.orgNodes);
             }
-            this.selectedNode = addedNode;
+            this.selectedOrgNode = addedNode;
             this.searchedNode = addedNode;
             this.isOrgNodeEmpty = false;
             this.currentOrgNodeStatus = OrgNodeStatus.Add;
@@ -186,9 +185,7 @@ export class OrgComponent implements OnDestroy {
             this.addChildToSelectedOrgNode(addedNode, this.orgNodes[0]);
         }
 
-        this.currentOrgNode = addedNode;
-
-        if (this.selectedNode && this.selectedNode.NodeID !== addedNode.NodeID) {
+        if (this.selectedOrgNode && this.selectedOrgNode.NodeID !== addedNode.NodeID) {
             this.updateJSON(addedNode);
         } else {
             this.updateJSON();
@@ -197,7 +194,7 @@ export class OrgComponent implements OnDestroy {
 
     onSwitchedToAddMode(node: OrgNodeModel) {
         this.isAddOrEditMode = true;
-        this.selectedNode = node;
+        this.selectedOrgNode = node;
         this.disableViewAndExploreModesNav();
     }
 
@@ -267,9 +264,9 @@ export class OrgComponent implements OnDestroy {
         this.treeJson = JSON.parse(JSON.stringify(this.orgNodes));
         if (addedNode && addedNode.NodeID === -1) {
             this.searchedNode = this.getNode(addedNode.NodeID, this.treeJson[0]);
-            this.selectedNode = this.searchedNode;
+            this.selectedOrgNode = this.searchedNode;
         }
-        if ((this.treeJson && this.treeJson.length === 0) || (this.selectedNode && this.selectedNode.NodeID === -1)) {
+        if ((this.treeJson && this.treeJson.length === 0) || (this.selectedOrgNode && this.selectedOrgNode.NodeID === -1)) {
             this.disableViewAndExploreModesNav();
         }
     }
@@ -284,7 +281,7 @@ export class OrgComponent implements OnDestroy {
         };
         if (index > -1) {
             nodes.splice(index, 1);
-            this.selectedNode = null;
+            this.selectedOrgNode = null;
         } else {
             for (let i = 0; i < nodes.length; i++) {
                 let element = nodes[i];
@@ -311,8 +308,8 @@ export class OrgComponent implements OnDestroy {
                 this.currentOrgNodeStatus = OrgNodeStatus.Delete;
             }
         } else {
-            let node = this.getNode(this.selectedNode.NodeID, this.orgNodes[0]);
-            this.selectedNode = JSON.parse(JSON.stringify(node));
+            let node = this.getNode(this.selectedOrgNode.NodeID, this.orgNodes[0]);
+            this.selectedOrgNode = JSON.parse(JSON.stringify(node));
         }
         if (this.orgNodes && this.orgNodes.length === 0) {
             this.isOrgNodeEmpty = true;
@@ -324,13 +321,13 @@ export class OrgComponent implements OnDestroy {
 
 
     onUpdateNodeAndDeleteNode(childNode: OrgNodeModel) {
-        let node: OrgNodeModel = this.getNode(this.selectedNode.ParentNodeID, this.orgNodes[0]);
+        let node: OrgNodeModel = this.getNode(this.selectedOrgNode.ParentNodeID, this.orgNodes[0]);
         if (node) {
             node.children.push(childNode);
             this.updateOrgNode(this.orgNodes[0], node);
-            this.deleteNodeFromArray(this.selectedNode, this.orgNodes);
-        } else if (this.selectedNode.ParentNodeID === null) {
-            this.deleteNodeFromArray(this.selectedNode, this.orgNodes);
+            this.deleteNodeFromArray(this.selectedOrgNode, this.orgNodes);
+        } else if (this.selectedOrgNode.ParentNodeID === null) {
+            this.deleteNodeFromArray(this.selectedOrgNode, this.orgNodes);
             this.orgNodes.push(childNode);
         }
         this.currentOrgNodeStatus = OrgNodeStatus.Delete;
@@ -339,13 +336,12 @@ export class OrgComponent implements OnDestroy {
     }
 
     onNodeUpdated(selected) {
-        this.currentOrgNode = selected;
         // since while updating data to server we send children as null so refreshing the value
-        if (selected && !selected.children && selected.NodeID === this.selectedNode.NodeID && this.selectedNode.children) {
-            selected.children = this.selectedNode.children;
+        if (selected && !selected.children && selected.NodeID === this.selectedOrgNode.NodeID && this.selectedOrgNode.children) {
+            selected.children = this.selectedOrgNode.children;
         }
         if (selected.NodeID !== -1) {
-            this.selectedNode = selected;
+            this.selectedOrgNode = selected;
         }
         if (selected.NodeID !== -1 && selected.IsStaging) {
             // updating local changes

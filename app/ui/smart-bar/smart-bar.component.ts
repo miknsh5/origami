@@ -1,7 +1,7 @@
 import { Component, ElementRef, Input, Output, EventEmitter, OnChanges, SimpleChange, HostListener, Renderer } from "@angular/core";
 import { NgForm, NgControl } from "@angular/forms";
 
-import { DraggedNode, OrgNodeModel, OrgSearchModel, OrgService, DOMHelper, OrgState } from "../../shared/index";
+import { DraggedNode, OrgNodeModel, OrgSearchModel, OrgService, DOMHelper, OrgState, TutorialStatusMode } from "../../shared/index";
 
 const HeaderTitle = "NAME";
 const AddResource = "Search, Add Resources";
@@ -44,6 +44,7 @@ export class SamrtBarComponent implements OnChanges {
     @Input() orgGroupID: number;
     @Input() isNodeMoveEnabledOrDisabled: boolean;
     @Input() isMenuSettingsEnabled: boolean;
+    @Input() tutorialStatus: TutorialStatusMode;
 
     @Output() nodeSearched = new EventEmitter<OrgNodeModel>();
     @Output() deleteNode = new EventEmitter<OrgNodeModel>();
@@ -120,7 +121,7 @@ export class SamrtBarComponent implements OnChanges {
     }
 
     @HostListener("blur", ["$event"])
-    onInputFocusOut(event: any) {       
+    onInputFocusOut(event: any) {
         setTimeout(() => {
             if (this.selectedOrgNode) {
                 this.isTitleSelected = this.searchInProgress = false;
@@ -462,13 +463,24 @@ export class SamrtBarComponent implements OnChanges {
     }
 
     private addNewParentNode(node: OrgNodeModel) {
-        if (!node) { return; }
-        // we don"t really need to send any child info to the server at this point
-        node.children = null;
-        this.orgService.addRootNode(node)
-            .subscribe(data => this.emitChartUpdatedNotification(data),
-            error => this.handleError(error),
-            () => console.log("Added new parent."));
+        // switch (this.tutorialStatus) {
+        //     case TutorialStatusMode.Skip:
+        //     case TutorialStatusMode.End:
+                if (!node) { return; }
+                // we don"t really need to send any child info to the server at this point
+                node.children = null;
+                this.orgService.addRootNode(node)
+                    .subscribe(data => this.emitChartUpdatedNotification(data),
+                    error => this.handleError(error),
+                    () => console.log("Added new parent."));
+        //         break;
+        //     case TutorialStatusMode.Start:
+        //     case TutorialStatusMode.Continue:
+        //         let id = Math.floor(Math.random() * (25 - 1 + 1)) + 1;
+        //         node.NodeID = id;
+        //         this.emitChartUpdatedNotification(node);
+        //         break;
+        // }
     }
 
     private emitChartUpdatedNotification(data: OrgNodeModel) {
@@ -482,13 +494,25 @@ export class SamrtBarComponent implements OnChanges {
 
 
     private addNewNode(node: OrgNodeModel) {
-        if (!node) { return; }
-        // we don"t really need to send any child info to the server at this point
-        node.children = null;
-        this.orgService.addNode(node)
-            .subscribe(data => this.emitAddNodeNotification(data),
-            error => this.handleError(error),
-            () => console.log("Added new node."));
+        // switch (this.tutorialStatus) {
+        //     case TutorialStatusMode.Skip:
+        //     case TutorialStatusMode.End:
+        //         if (!node) { return; }
+                // we don"t really need to send any child info to the server at this point
+                node.children = null;
+                this.orgService.addNode(node)
+                    .subscribe(data => this.emitAddNodeNotification(data),
+                    error => this.handleError(error),
+                    () => console.log("Added new node."));
+        //         break;
+        //     case TutorialStatusMode.Start:
+        //     case TutorialStatusMode.Continue:
+        //         let id = Math.floor(Math.random() * (25 - 1 + 1)) + 1;
+        //         node.NodeID = id;
+        //         console.log(node);
+        //         this.emitAddNodeNotification(node);
+        //         break;
+        // }
     }
 
     private emitAddNodeNotification(data: OrgNodeModel) {

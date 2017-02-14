@@ -25,7 +25,7 @@
                     </div>
                 </div>
                 <div class="tour center">
-                    <!--<button class="waves-effect waves-light btn" (click)="skipTutorial()"><i class="material-icons">keyboard_arrow_left</i>SKIP</button>-->
+                    <button class="waves-effect waves-light btn" (click)="skipTutorial()"><i class="material-icons">keyboard_arrow_left</i>No Thanks, I'm good!</button>
                     <button class="waves-effect waves-light btn" (click)="startTutorial()">GET STARTED <i class="material-icons">keyboard_arrow_right</i> </button>
                 </div>
             </div>
@@ -33,7 +33,7 @@
     </div>
 
 
-    <div class="smart-bar-tutorial" id="smart-bar-tooltip">
+    <div [ngClass]="smartBarTip" id="smart-bar-tooltip">
         <div>
             <label class="headerlbl"> {{popupTitle}}</label>
         </div>
@@ -47,14 +47,33 @@
         <div class="tutorial-wrap-content">
             <div>
                 <div class="skip">
-                    Do you want to skip or continue?
+                    Looks like you're going your own way! Would you like to continue?
                 </div>
                 <div class="tour center">
-                    <button class="waves-effect waves-light btn" (click)="skipTutorial()"><i class="material-icons">keyboard_arrow_left</i>SKIP</button>
-                    <button class="waves-effect waves-light btn" (click)="continueTutorial()"><i class="material-icons">keyboard_arrow_right</i>CONTINUE</button>
+                    <button class="waves-effect waves-light btn" (click)="skipTutorial()"><i class="material-icons">keyboard_arrow_left</i>No thanks, I'm done!</button>
+                    <button class="waves-effect waves-light btn" (click)="continueTutorial()"><i class="material-icons">keyboard_arrow_right</i>Yes</button>
                 </div>
             </div>
         </div>
     </div>
+
+    <div class="tutorial-wrap" id="tutorial-end-or-restart">
+        <div class="tutorial-wrap-content">
+            <div>
+                <div class="tutorial-header">
+                    <span class="tutorial-label-header">60 Second Tutorial </span>
+                    <span class="tutorial-label">It's that easy! Once you're done, check out the reports screen to export your work </span>
+                </div>
+
+                <hr/>
+                <div class="tour center">
+
+                    <button class="waves-effect waves-light btn" (click)="restartTutorial()">See it again <i class="material-icons">keyboard_arrow_right</i></button>
+                    <button class="waves-effect waves-light btn" (click)="skipTutorial()">Good to go! <i class="material-icons">keyboard_arrow_right</i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
 </div>

@@ -3,7 +3,7 @@
     </menu-bar>
     <div *ngIf="orgGroup">
         <div>
-            <pt-tutorial [isOrgNodeEmpty]="isOrgNodeEmpty" [tutorialStatus]="tutorialStatus" (deactivateTutorial)="activateTutorial($event)" [orgCurrentState]="orgCurrentState" [selectedOrgNode]="currentOrgNode"></pt-tutorial>
+            <pt-tutorial [jsonData]="treeJson" [isOrgNodeEmpty]="isOrgNodeEmpty" [tutorialStatus]="tutorialStatus" (deactivateTutorial)="activateTutorial($event)" [orgCurrentState]="orgCurrentState" [selectedOrgNode]="selectedOrgNode"></pt-tutorial>
         </div>
         <div class="modes_wrap">
             <ul>
@@ -19,13 +19,13 @@
                 [horizontalSpaceForNode]="horizontalSpaceForNode">
             </org-tree>
             <div *ngIf="currentChartMode===1">
-                <smart-bar [treeJsonData]="orgGroup.OrgNodes" (nodeSearched)="onNodeSearched($event)" [selectedOrgNode]="selectedNode" [isEditModeEnabled]="isEditModeEnable" (deleteNode)="onNodeDeleted($event)" (updateNode)="onNodeUpdated($event)" (addNode)="onNodeAdded($event)"
+                <smart-bar [treeJsonData]="orgGroup.OrgNodes" (nodeSearched)="onNodeSearched($event)" [selectedOrgNode]="selectedOrgNode" [isEditModeEnabled]="isEditModeEnable" (deleteNode)="onNodeDeleted($event)" (updateNode)="onNodeUpdated($event)" (addNode)="onNodeAdded($event)"
                     (chartStructureUpdated)="onChartUpdated($event)" (isSmartBarEnabled)="smartBarEnabled($event)" [orgGroupID]="orgGroup.OrgGroupID" [isNodeMoveEnabledOrDisabled]="isNodeMoveEnabled" (isNodeMoveDisabled)=" onNodeMoveEnabledOrDisabled($event)"
-                    (moveNode)="onNodeMoved($event)" [isMenuSettingsEnabled]="isMenuSettingsEnabled" (currentSmartbarStatus)="changedStateForTutorial($event)">
+                    (moveNode)="onNodeMoved($event)" [isMenuSettingsEnabled]="isMenuSettingsEnabled" (currentSmartbarStatus)="changedStateForTutorial($event)" [tutorialStatus]="tutorialStatus">
                 </smart-bar>
             </div>
         </div>
-        <side-panel [selectedOrgNode]="selectedNode" [currentMode]="currentChartMode" [companyName]="orgGroup.GroupName" (showFirstNameLabel)="enableFirstNameLabel($event)" (showLastNameLabel)="enableLastNameLabel($event)" (showDescriptionLabel)="enableDescriptionLabel($event)"
+        <side-panel [selectedOrgNode]="selectedOrgNode" [currentMode]="currentChartMode" [companyName]="orgGroup.GroupName" (showFirstNameLabel)="enableFirstNameLabel($event)" (showLastNameLabel)="enableLastNameLabel($event)" (showDescriptionLabel)="enableDescriptionLabel($event)"
             [svgWidth]="svgWidth" [svgHeight]="svgHeight" [orgChart]="orgGroup" (deleteNode)="onNodeDeleted($event)" (updateNode)="onNodeUpdated($event)" (updateNodeAndDeleteNode)="onUpdateNodeAndDeleteNode($event)" [isMenuSettingsEnabled]="isMenuSettingsEnabled"
             [isSmartBarAddEnabled]="isSmartBarEnabled" (isEditEnabled)="isEditEnabled($event)" (isNodeMoveEnabledOrDisabled)="onNodeMoveEnabledOrDisabled($event)" [isNodeMoveDisabled]="isNodeMoveEnabled" (isFeedbackInEditMode)="feedbackPanelInEditMode($event)"
             (isHorizontalViewEnabled)="onHorizontalViewChanged($event)" (verticalSpaceValue)="verticalNodeSpace($event)" (horizontalSpaceValue)="horizontalNodeSpace($event)"></side-panel>
