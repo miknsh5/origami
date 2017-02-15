@@ -425,6 +425,7 @@ export class SamrtBarComponent implements OnChanges {
                                 this.newOrgNode.ParentNodeID = null;
                                 this.newOrgNode.children = new Array<OrgNodeModel>();
                                 this.newOrgNode.children.push(this.selectedOrgNode);
+                                //    this.currentSmartbarStatus.emit(OrgState.AddRoot);
                             }
                             else {
                                 this.newOrgNode.ParentNodeID = null;
@@ -466,13 +467,13 @@ export class SamrtBarComponent implements OnChanges {
         // switch (this.tutorialStatus) {
         //     case TutorialStatusMode.Skip:
         //     case TutorialStatusMode.End:
-                if (!node) { return; }
-                // we don"t really need to send any child info to the server at this point
-                node.children = null;
-                this.orgService.addRootNode(node)
-                    .subscribe(data => this.emitChartUpdatedNotification(data),
-                    error => this.handleError(error),
-                    () => console.log("Added new parent."));
+        if (!node) { return; }
+        // we don"t really need to send any child info to the server at this point
+        node.children = null;
+        this.orgService.addRootNode(node)
+            .subscribe(data => this.emitChartUpdatedNotification(data),
+            error => this.handleError(error),
+            () => console.log("Added new parent."));
         //         break;
         //     case TutorialStatusMode.Start:
         //     case TutorialStatusMode.Continue:
@@ -494,25 +495,24 @@ export class SamrtBarComponent implements OnChanges {
 
 
     private addNewNode(node: OrgNodeModel) {
-        // switch (this.tutorialStatus) {
-        //     case TutorialStatusMode.Skip:
-        //     case TutorialStatusMode.End:
-        //         if (!node) { return; }
+        switch (this.tutorialStatus) {
+            case TutorialStatusMode.Skip:
+            case TutorialStatusMode.End:
+                if (!node) { return; }
                 // we don"t really need to send any child info to the server at this point
                 node.children = null;
                 this.orgService.addNode(node)
                     .subscribe(data => this.emitAddNodeNotification(data),
                     error => this.handleError(error),
                     () => console.log("Added new node."));
-        //         break;
-        //     case TutorialStatusMode.Start:
-        //     case TutorialStatusMode.Continue:
-        //         let id = Math.floor(Math.random() * (25 - 1 + 1)) + 1;
-        //         node.NodeID = id;
-        //         console.log(node);
-        //         this.emitAddNodeNotification(node);
-        //         break;
-        // }
+                break;
+            case TutorialStatusMode.Start:
+            case TutorialStatusMode.Continue:
+                let id = Math.floor(Math.random() * (25 - 1 + 1)) + 1;
+                node.NodeID = id;
+                this.emitAddNodeNotification(node);
+                break;
+        }
     }
 
     private emitAddNodeNotification(data: OrgNodeModel) {
@@ -523,6 +523,8 @@ export class SamrtBarComponent implements OnChanges {
             this.addNode.emit(data);
             this.placeholderText = `${AddResource}`;
             this.setInputFocus();
+            this.newOrgNode = null;
+            this.newOrgNode = new OrgNodeModel();
         }
     }
 

@@ -4,7 +4,7 @@ import {
 } from "@angular/core";
 
 import * as d3 from "d3";
-import { DraggedNode, OrgNodeModel, OrgService, ChartMode } from "../../shared/index";
+import { DraggedNode, OrgNodeModel, OrgService, ChartMode, TutorialStatusMode } from "../../shared/index";
 
 const DURATION = 250;
 const TOPBOTTOM_MARGIN = 20;
@@ -105,6 +105,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     @Input() isHorizontalViewEnabled: boolean;
     @Input() verticalSpaceForNode: number;
     @Input() horizontalSpaceForNode: number;
+    @Input() tutorialStatus: TutorialStatusMode;
 
     @Output() selectNode = new EventEmitter<OrgNodeModel>();
     @Output() addNode = new EventEmitter<OrgNodeModel>();

@@ -149,8 +149,10 @@ export class MenuBarComponent implements OnInit, OnChanges {
             this.selectedGroup = null;
             if (this.orgCompanyGroups.length && this.orgCompanyGroups.length > 0) {
                 if (this.orgCompanyGroups.length === 1) {
-                    if (this.orgCompanyGroups[0].OrgNodes.length === 0) {
+                    if (this.orgCompanyGroups[0].OrgNodeCounts === 0) {
                         this.tutorialCurrentStatus.emit(TutorialStatusMode.Start);
+                    } else {
+                        this.tutorialCurrentStatus.emit(TutorialStatusMode.End);
                     }
                 } else {
                     this.tutorialCurrentStatus.emit(TutorialStatusMode.End);

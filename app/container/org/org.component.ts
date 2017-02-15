@@ -292,6 +292,19 @@ export class OrgComponent implements OnDestroy {
         }
     }
 
+    deleteTutorialNodes(data: boolean) {
+        if (data) {
+            if (this.orgNodes[0] && this.orgNodes[0].children) {
+                this.orgNodes[0].children.forEach((d) => {
+                    this.onNodeDeleted(d);
+                });
+            }
+            if (this.orgNodes[0]) {
+                this.onNodeDeleted(this.orgNodes[0]);
+            }
+        }
+    }
+
     onNodeDeleted(deleted) {
         this.currentOrgNodeStatus = OrgNodeStatus.None;
         this.isAddOrEditMode = false;

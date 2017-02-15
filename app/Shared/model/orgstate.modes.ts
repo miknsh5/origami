@@ -12,4 +12,5 @@ export enum OrgState {
     EditNode = 11,
     SaveNode = 12,
     DeleteNode = 13,
+    AddRoot = 14
 }

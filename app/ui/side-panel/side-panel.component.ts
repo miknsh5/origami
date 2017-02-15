@@ -2,7 +2,7 @@ import { Component, HostListener, Input, Output, OnChanges, SimpleChange, EventE
 import { NgForm, NgControl } from "@angular/forms";
 
 import {
-    UserModel, OrgGroupModel, OrgNodeModel, ChartMode, OrgService, UserFeedBack, DOMHelper
+    UserModel, OrgGroupModel, OrgNodeModel, ChartMode, OrgService, UserFeedBack, DOMHelper, TutorialStatusMode
 } from "../../shared/index";
 
 declare let jQuery: any;
@@ -68,6 +68,7 @@ export class SidePanelComponent implements OnInit, OnChanges {
     @Input() isMenuSettingsEnabled: boolean;
     @Input() isSmartBarAddEnabled: boolean;
     @Input() isNodeMoveDisabled: boolean;
+    @Input() tutorialStatus: TutorialStatusMode;
 
     @Output() updateNode = new EventEmitter<OrgNodeModel>();
     @Output() deleteNode = new EventEmitter<OrgNodeModel>();
@@ -311,23 +312,33 @@ export class SidePanelComponent implements OnInit, OnChanges {
     }
 
     onNodeDeleteConfirm() {
-        if (this.selectedNode.NodeID === -1) {
-            this.deleteNode.emit(this.selectedNode);
-        } else {
-            if (this.selectedNode.children && this.selectedNode.children.length === 1) {
-                this.orgService.deleteNode(this.selectedNode.NodeID, this.selectedNode.children[0].NodeID)
-                    .subscribe(data => this.emitDeleteNodeNotification(data, this.selectedNode.children[0]),
-                    error => this.handleError(error),
-                    () => console.log("Deleted node."));
-            } else if (this.selectedNode.children && this.selectedNode.children.length > 0) {
-                this.domHelper.hideElements(MenuElement.deleteNodeConfirm);
-                this.domHelper.showElements(MenuElement.deleteChildNodeConfirm);
-            } else {
-                this.orgService.deleteNode(this.selectedNode.NodeID)
-                    .subscribe(data => this.emitDeleteNodeNotification(data),
-                    error => this.handleError(error),
-                    () => console.log("Deleted node."));
-            }
+        switch (this.tutorialStatus) {
+            case TutorialStatusMode.Skip:
+            case TutorialStatusMode.End:
+                if (this.selectedNode.NodeID === -1) {
+                    this.deleteNode.emit(this.selectedNode);
+                } else {
+                    if (this.selectedNode.children && this.selectedNode.children.length === 1) {
+                        this.orgService.deleteNode(this.selectedNode.NodeID, this.selectedNode.children[0].NodeID)
+                            .subscribe(data => this.emitDeleteNodeNotification(data, this.selectedNode.children[0]),
+                            error => this.handleError(error),
+                            () => console.log("Deleted node."));
+                    } else if (this.selectedNode.children && this.selectedNode.children.length > 0) {
+                        this.domHelper.hideElements(MenuElement.deleteNodeConfirm);
+                        this.domHelper.showElements(MenuElement.deleteChildNodeConfirm);
+                    } else {
+                        this.orgService.deleteNode(this.selectedNode.NodeID)
+                            .subscribe(data => this.emitDeleteNodeNotification(data),
+                            error => this.handleError(error),
+                            () => console.log("Deleted node."));
+                    }
+                }
+                break;
+            case TutorialStatusMode.Start:
+            case TutorialStatusMode.Continue:
+                this.deleteNode.emit(this.selectedOrgNode);
+                this.domHelper.hideElements(`${MenuElement.deleteNodeModal}, ${MenuElement.deleteChildNodeConfirm}, ${MenuElement.deleteNodeConfirm}`);
+                break;
         }
     }
 
@@ -432,13 +443,22 @@ export class SidePanelComponent implements OnInit, OnChanges {
     }
 
     private editNode(node: OrgNodeModel) {
-        if (!node) { return; }
-        // we don"t really need to send any child info to the server at this point
-        node.children = null;
-        this.orgService.updateNode(node)
-            .subscribe(data => this.emitUpdateNodeNotification(data),
-            error => this.handleError(error),
-            () => console.log("Updated node."));
+        switch (this.tutorialStatus) {
+            case TutorialStatusMode.Skip:
+            case TutorialStatusMode.End:
+                if (!node) { return; }
+                // we don"t really need to send any child info to the server at this point
+                node.children = null;
+                this.orgService.updateNode(node)
+                    .subscribe(data => this.emitUpdateNodeNotification(data),
+                    error => this.handleError(error),
+                    () => console.log("Updated node."));
+                break;
+            case TutorialStatusMode.Start:
+            case TutorialStatusMode.Continue:
+                this.emitUpdateNodeNotification(true);
+                break;
+        }
     }
 
     private emitUpdateNodeNotification(data) {

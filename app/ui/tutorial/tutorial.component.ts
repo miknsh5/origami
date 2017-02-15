@@ -56,6 +56,7 @@ export class TutorialComponent implements OnChanges {
     @Input() selectedOrgNode: OrgNodeModel;
     @Input() jsonData: any;
     @Output() deactivateTutorial = new EventEmitter<TutorialStatusMode>();
+    @Output() deleteNode = new EventEmitter<boolean>();
 
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
         if (changes["tutorialStatus"] && changes["tutorialStatus"].currentValue === TutorialStatusMode.Start) {
@@ -65,63 +66,87 @@ export class TutorialComponent implements OnChanges {
             }
         }
         if (this.tutorailSessionStarted) {
-            if (changes["tutorialStatus"] && changes["tutorialStatus"].currentValue === TutorialStatusMode.Interupt) {
+            if (changes["tutorialStatus"] && changes["tutorialStatus"].currentValue === TutorialStatusMode.Interupt || this.orgCurrentState === OrgState.AddRoot) {
                 this.domHelper.showElements(tutorailElementName.tutorialSkipOrContinue);
             }
 
             if (changes["orgCurrentState"] || changes["jsonData"]) {
 
                 if (this.orgCurrentState === OrgState.AddName) {
-                    if (this.jsonData[0] && this.jsonData[0].NodeID === -1) {
+                    if (this.jsonData[0] && (this.jsonData[0].NodeID === -1 || this.jsonData.NodeID === -1)) {
                         this.popupTitle = tutorialPopupTitle.step2;
                         this.popupContent = tutorialPopupContent.step2;
                     }
-                    if ((this.selectedOrgNode && this.selectedOrgNode.NodeFirstName !== "") || this.popupTitle === tutorialPopupTitle.step5) {
+
+                    if ((this.selectedOrgNode && this.selectedOrgNode.NodeFirstName !== "")) {
                         setTimeout(() => {
                             let element = jQuery(SEARCH_CONTAINER).offset();
                             if (element) {
-                                let top = (element.top - 70);
+                                let top = (element.top - 85);
                                 this.domHelper.setTop(tutorailElementName.smartBarTooltip, top);
                             }
                         }, 500);
+                    } else if (this.selectedOrgNode && this.selectedOrgNode.Description === "" && this.popupTitle === tutorialPopupTitle.step5) {
+                        let element = jQuery("input[name=multiInTerm]").offset();
+                        if (element) {
+                            let top = (element.top - 95);
+                            this.domHelper.setTop(tutorailElementName.smartBarTooltip, top);
+                        }
                     } else {
                         let element = jQuery("input[name=multiInTerm]").offset();
                         if (element) {
-                            let top = (element.top - 85);
+                            let top = (element.top - 95);
                             this.domHelper.setTop(tutorailElementName.smartBarTooltip, top);
                         }
                     }
                 } else if (this.orgCurrentState === OrgState.AddJobTitle) {
-                    if (this.jsonData[0] && this.jsonData[0].NodeID === -1) {
+                    if (this.jsonData[0] && (this.jsonData[0].NodeID === -1 || this.jsonData.NodeID === -1)) {
                         this.popupTitle = tutorialPopupTitle.step3;
                         this.popupContent = tutorialPopupContent.step3;
                     }
                     if ((this.selectedOrgNode && this.selectedOrgNode.Description !== "") || this.popupTitle === tutorialPopupTitle.step5) {
+                        if (this.selectedOrgNode && this.selectedOrgNode.Description === "" && this.popupTitle === tutorialPopupTitle.step5) {
+                            let element = jQuery("input[name=multiInTerm]").offset();
+                            if (element) {
+                                let top = (element.top - 95);
+                                this.domHelper.setTop(tutorailElementName.smartBarTooltip, top);
+                            }
+                        }
                         setTimeout(() => {
                             let element = jQuery(TITLE_SEARCH_CONTAINER).offset();
                             if (element) {
-                                let top = (element.top - 70);
+                                let top = (element.top - 85);
                                 this.domHelper.setTop(tutorailElementName.smartBarTooltip, top);
                             }
                         }, 500);
                     } else {
                         let element = jQuery("input[name=multiInTerm]").offset();
                         if (element) {
-                            let top = (element.top - 85);
+                            let top = (element.top - 95);
                             this.domHelper.setTop(tutorailElementName.smartBarTooltip, top);
                         }
                     }
                 } else if (this.orgCurrentState === OrgState.PressEnter) {
-                    if (this.jsonData[0] && this.jsonData[0].NodeID === -1) {
-                        this.popupTitle = tutorialPopupTitle.step4;
-                        this.popupContent = tutorialPopupContent.emptyString;
-                        this.smartBarTip = SMARTBARTIP;
-                        let element = jQuery("input[name=multiInTerm]").offset();
-                        if (element) {
-                            let top = (element.top - 180);
-                            this.domHelper.setTop(tutorailElementName.smartBarTooltip, top);
+                    setTimeout(() => {
+                        if (this.jsonData[0] && (this.jsonData[0].NodeID !== -1 || this.jsonData.NodeID === -1) && this.jsonData[0].NodeID !== this.selectedOrgNode.ParentNodeID) {
+                            this.popupTitle = tutorialPopupTitle.step4;
+                            this.popupContent = tutorialPopupContent.emptyString;
+                            this.smartBarTip = SMARTBARTIP;
+
+                            let leftElement = jQuery("#menuPanel").offset();
+                            if (leftElement) {
+                                let left = (leftElement.left - 530);
+                                this.domHelper.setLeft(tutorailElementName.smartBarTooltip, left);
+                            }
+
+                            let element = jQuery("input[name=multiInTerm]").offset();
+                            if (element) {
+                                let top = (element.top - 180);
+                                this.domHelper.setTop(tutorailElementName.smartBarTooltip, top);
+                            }
                         }
-                    }
+                    }, 1500);
+
 
                     setTimeout(() => {
                         if (this.selectedOrgNode && this.selectedOrgNode.NodeID !== -1 && this.jsonData[0] && this.jsonData[0].NodeID !== this.selectedOrgNode.NodeID) {
@@ -147,6 +172,11 @@ export class TutorialComponent implements OnChanges {
                         else {
                             this.popupTitle = tutorialPopupTitle.step5;
                             this.popupContent = tutorialPopupContent.step5;
+                            let leftElement = jQuery("input[name=multiInTerm]").offset();
+                            if (leftElement) {
+                                let left = (leftElement.left);
+                                this.domHelper.setLeft(tutorailElementName.smartBarTooltip, left);
+                            }
                             let element = jQuery("input[name=multiInTerm]").offset();
                             this.smartBarTip = SMARTBARTUTORIAL;
                             if (element) {
@@ -192,6 +222,10 @@ export class TutorialComponent implements OnChanges {
         } else if (this.tutorialStatus === TutorialStatusMode.Interupt) {
             this.deactivateTutorial.emit(TutorialStatusMode.Skip);
         }
+
+        if (this.jsonData && this.tutorailSessionStarted) {
+            this.deleteNode.emit(true);
+        }
         this.tutorailSessionStarted = false;
     }
 
@@ -203,9 +237,14 @@ export class TutorialComponent implements OnChanges {
 
     restartTutorial() {
         this.domHelper.hideElements(tutorailElementName.tutorialEndOrRestart);
-        this.domHelper.setTop(tutorailElementName.smartBarTooltip, "505px");
+        let element = jQuery("input[name=multiInTerm]").offset();
+        if (element) {
+            let top = (element.top - 85);
+            this.domHelper.setTop(tutorailElementName.smartBarTooltip, top);
+        }
         this.domHelper.showElements(tutorailElementName.smartBarTooltip);
         this.smartBarTip = SMARTBARTUTORIAL;
         this.deactivateTutorial.emit(TutorialStatusMode.Start);
+        this.deleteNode.emit(true);
     }
 }
