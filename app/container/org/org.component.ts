@@ -102,14 +102,23 @@ export class OrgComponent implements OnDestroy {
                 this.enableViewModesNav(ChartMode.build);
                 this.disablePan();
             } else {
-                if (viewMode === ChartMode.report) {
-                    this.currentChartMode = ChartMode.report;
-                } else {
-                    this.currentChartMode = ChartMode.explore;
+                switch (this.tutorialStatus) {
+                    case TutorialStatusMode.End:
+                    case TutorialStatusMode.Skip:
+                        if (viewMode === ChartMode.report) {
+                            this.currentChartMode = ChartMode.report;
+                        } else {
+                            this.currentChartMode = ChartMode.explore;
+                        }
+                        this.enableViewModesNav(this.currentChartMode);
+                        this.enableLabels();
+                        this.enablePan();
+                        break;
+                    case TutorialStatusMode.Continue:
+                    case TutorialStatusMode.Start:
+                        this.activateTutorial(TutorialStatusMode.Interupt);
+                        break;
                 }
-                this.enableViewModesNav(this.currentChartMode);
-                this.enableLabels();
-                this.enablePan();
             }
             if (this.isNodeMoveEnabled) {
                 this.isNodeMoveEnabled = false;
@@ -300,7 +309,11 @@ export class OrgComponent implements OnDestroy {
                 });
             }
             if (this.orgNodes[0]) {
-                this.onNodeDeleted(this.orgNodes[0]);
+                this.orgNodes[0].NodeID = -1;
+                this.orgNodes[0].IsStaging = true;
+                this.orgNodes[0].NodeFirstName = "";
+                this.orgNodes[0].NodeLastName = "";
+                this.orgNodes[0].Description = "";
             }
         }
     }

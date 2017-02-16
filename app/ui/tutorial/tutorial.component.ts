@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, Output, EventEmitter, OnChanges, SimpleChange, HostListener, Renderer } from "@angular/core";
+import { Component, ElementRef, Input, Output, EventEmitter, OnChanges, SimpleChange, HostListener, Renderer, ViewChild, AfterViewInit } from "@angular/core";
 
 import { DOMHelper, TutorialStatusMode, OrgState, OrgNodeModel } from "../../shared/index";
 
@@ -45,6 +45,7 @@ declare let jQuery;
 })
 
 export class TutorialComponent implements OnChanges {
+
     private tutorailSessionStarted: boolean = false;
     private popupTitle: any;
     private popupContent: any;
@@ -135,7 +136,7 @@ export class TutorialComponent implements OnChanges {
 
                             let leftElement = jQuery("#menuPanel").offset();
                             if (leftElement) {
-                                let left = (leftElement.left - 530);
+                                let left = (leftElement.left - 540);
                                 this.domHelper.setLeft(tutorailElementName.smartBarTooltip, left);
                             }
 
@@ -145,7 +146,7 @@ export class TutorialComponent implements OnChanges {
                                 this.domHelper.setTop(tutorailElementName.smartBarTooltip, top);
                             }
                         }
-                    }, 1500);
+                    }, 300);
 
 
                     setTimeout(() => {
@@ -159,6 +160,7 @@ export class TutorialComponent implements OnChanges {
                                     let top = (element.top - 120);
                                     this.domHelper.setTop(tutorailElementName.smartBarTooltip, top);
                                 }
+
                                 setTimeout(() => {
                                     this.popupTitle = tutorialPopupTitle.step1;
                                     this.popupContent = tutorialPopupContent.step1;
@@ -166,7 +168,7 @@ export class TutorialComponent implements OnChanges {
                                     this.domHelper.hideElements(tutorailElementName.smartBarTooltip);
                                     this.domHelper.showElements(tutorailElementName.tutorialEndOrRestart);
 
-                                }, 5000);
+                                }, 7000);
                             }
                         }
                         else {
@@ -184,7 +186,7 @@ export class TutorialComponent implements OnChanges {
                                 this.domHelper.setTop(tutorailElementName.smartBarTooltip, top);
                             }
                         }
-                    }, 2600);
+                    }, 4000);
                 }
                 else {
                     this.domHelper.hideElements(tutorailElementName.smartBarTooltip);
@@ -227,6 +229,16 @@ export class TutorialComponent implements OnChanges {
             this.deleteNode.emit(true);
         }
         this.tutorailSessionStarted = false;
+
+        this.popupTitle = tutorialPopupTitle.step1;
+        this.popupContent = tutorialPopupContent.step1;
+
+        let element = jQuery("input[name=multiInTerm]").offset();
+        if (element) {
+            let top = (element.top - 85);
+            this.domHelper.setTop(tutorailElementName.smartBarTooltip, top);
+        }
+        this.smartBarTip = SMARTBARTUTORIAL;
     }
 
     continueTutorial() {

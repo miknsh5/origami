@@ -65,6 +65,19 @@ export class SamrtBarComponent implements OnChanges {
     }
 
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
+        if (changes["tutorialStatus"]) {
+            switch (this.tutorialStatus) {
+                case TutorialStatusMode.End:
+                case TutorialStatusMode.Skip:
+                    this.clearSearch();
+                    this.newNodeValue = null;
+                    this.multiInTerm = this.searchTerm = EMPTYSTRING;
+                    this.placeholderText = `${AddResource}`;
+                    this.isDescriptionText = false;
+                    this.isSmartBarEnabled.emit(false);
+                    break;
+            }
+        }
         if (changes["isNodeMoveEnabledOrDisabled"]) {
             if (changes["isNodeMoveEnabledOrDisabled"].currentValue) {
                 this.clearSearch();

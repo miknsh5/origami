@@ -112,6 +112,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     @Output() switchToAddMode = new EventEmitter<OrgNodeModel>();
     @Output() moveNode = new EventEmitter<DraggedNode>();
     @Output() isNodeMoveDisabled = new EventEmitter<boolean>();
+    @Output() tutorialCurrentStatus = new EventEmitter<TutorialStatusMode>();
 
     constructor(private orgService: OrgService,
         @Inject(ElementRef) elementRef: ElementRef) {
@@ -349,7 +350,16 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                     if (parentNode != null) {
                         this.highlightAndCenterNode(parentNode);
                     } else {
-                        this.addNewRootNode(this.root);
+                        switch (this.tutorialStatus) {
+                            case TutorialStatusMode.End:
+                            case TutorialStatusMode.Skip:
+                                this.addNewRootNode(this.root);
+                                break;
+                            case TutorialStatusMode.Start:
+                            case TutorialStatusMode.Continue:
+                                this.tutorialCurrentStatus.emit(TutorialStatusMode.Interupt);
+                                break;
+                        }
                     }
                 } else if (this.isExploreMode()) {
                     if (parentNode != null) {

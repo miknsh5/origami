@@ -84,6 +84,7 @@ export class SidePanelComponent implements OnInit, OnChanges {
     @Output() isHorizontalViewEnabled = new EventEmitter<boolean>();
     @Output() verticalSpaceValue = new EventEmitter<number>();
     @Output() horizontalSpaceValue = new EventEmitter<number>();
+    @Output() tutorialCurrentStatus = new EventEmitter<TutorialStatusMode>();
 
     constructor(private orgService: OrgService, private domHelper: DOMHelper) {
         this.feedbackIcon = FEEDBACK_ICON_OPEN;
@@ -358,9 +359,19 @@ export class SidePanelComponent implements OnInit, OnChanges {
         if (this.selectedNode.NodeID !== -1) {
             this.isNodeMoveEnabledOrDisabled.emit(false);
             if (this.deleteOrClose === DELETE_ICON) {
-                this.deleteTitle = "Node";
-                this.name = `${this.selectedOrgNode.NodeFirstName} ${this.selectedOrgNode.NodeLastName}`;
-                this.domHelper.showElements(`${MenuElement.deleteNodeModal}, ${MenuElement.deleteNodeConfirm}`);
+                switch (this.tutorialStatus) {
+                    case TutorialStatusMode.Start:
+                    case TutorialStatusMode.Continue:
+                        this.tutorialCurrentStatus.emit(TutorialStatusMode.Interupt);
+                        break;
+                    case TutorialStatusMode.End:
+                    case TutorialStatusMode.Skip:
+                        this.deleteTitle = "Node";
+                        this.name = `${this.selectedOrgNode.NodeFirstName} ${this.selectedOrgNode.NodeLastName}`;
+                        this.domHelper.showElements(`${MenuElement.deleteNodeModal}, ${MenuElement.deleteNodeConfirm}`);
+                        break;
+                }
+
             } else if (this.deleteOrClose === CLOSE_ICON) {
                 this.editOrSave = EDIT_ICON;
                 this.deleteOrClose = DELETE_ICON;

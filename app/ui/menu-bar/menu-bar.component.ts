@@ -43,6 +43,7 @@ export class MenuBarComponent implements OnInit, OnChanges {
     @Input() noNodeExsit: boolean;
     @Input() currentOrgNodeStatus: OrgNodeStatus;
     @Input() orgNodes: Array<OrgNodeModel>;
+
     @Output() groupSelected = new EventEmitter<OrgGroupModel>();
     @Output() isMenuEnable = new EventEmitter<boolean>();
     @Output() deleteTitle: string;
@@ -68,6 +69,20 @@ export class MenuBarComponent implements OnInit, OnChanges {
     }
 
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
+        if (changes["tutorialStatus"]) {
+
+            switch (this.tutorialStatus) {
+                case TutorialStatusMode.End:
+                case TutorialStatusMode.Skip:
+                    if (this.selectedCompany.OrgGroups && this.selectedCompany.OrgGroups.length > 1) {
+                        this.groupDeletion(this.selectedGroup);
+                    } else {
+                        this.getAllNodes(this.selectedGroup.OrgGroupID);
+                    }
+                    break;
+            }
+        }
+
         if (changes["currentOrgNodeStatus"]) {
             if (this.currentOrgNodeStatus === OrgNodeStatus.Add) {
                 this.selectedCompany.OrgNodeCounts = this.selectedCompany.OrgNodeCounts + 1;
@@ -101,6 +116,21 @@ export class MenuBarComponent implements OnInit, OnChanges {
         switch (this.tutorialStatus) {
             case TutorialStatusMode.End:
             case TutorialStatusMode.Skip: {
+                if (this.selectedCompany.OrgGroups && this.selectedCompany.OrgGroups.length > 1) {
+                    let group = new OrgGroupModel();
+                    let userID = this.userModel.UserID;
+                    group.CompanyID = this.selectedCompany.CompanyID;
+                    group.GroupName = "Tutorial Demo Organization";
+                    group.OrgNodes = new Array<OrgNodeModel>();
+                    let id = Math.floor(Math.random() * (25 - 1 + 1)) + 1;
+                    group.OrgGroupID = id;
+                    group.OrgNodeCounts = 0;
+                    this.selectedGroup.IsDefaultGroup = false;
+                    this.selectedGroup = group;
+                    this.selectedGroup.IsDefaultGroup = true;
+                    this.orgCompanyGroups.push(this.selectedGroup);
+                    this.setOrgGroupData(group);
+                }
                 this.tutorialCurrentStatus.emit(TutorialStatusMode.Start);
             }
         }
