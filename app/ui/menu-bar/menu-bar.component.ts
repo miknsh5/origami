@@ -75,7 +75,8 @@ export class MenuBarComponent implements OnInit, OnChanges {
                 case TutorialStatusMode.End:
                 case TutorialStatusMode.Skip:
                     if (this.selectedCompany.OrgGroups && this.selectedCompany.OrgGroups.length > 1) {
-                        this.groupDeletion(this.selectedGroup);
+                        if (this.selectedGroup.GroupName === "Tutorial Demo Organization")
+                            this.groupDeletion(this.selectedGroup);
                     } else {
                         this.getAllNodes(this.selectedGroup.OrgGroupID);
                     }

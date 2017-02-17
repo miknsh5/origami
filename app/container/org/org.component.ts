@@ -309,15 +309,15 @@ export class OrgComponent implements OnDestroy {
                 });
             }
             if (this.orgNodes[0]) {
-                this.onNodeDeleted(this.orgNodes[0]);
-                this.orgNodes = new Array<OrgNodeModel>();
-                let node = new OrgNodeModel();
-                this.orgNodes.push(node);
-                this.orgNodes[0].NodeID = -1;
-                this.orgNodes[0].IsStaging = true;
-                this.orgNodes[0].NodeFirstName = "";
-                this.orgNodes[0].NodeLastName = "";
-                this.orgNodes[0].Description = "";
+                // if (this.tutorialStatus === TutorialStatusMode.Restart) {
+                    this.onNodeDeleted(this.orgNodes[0]);
+                // } else {
+                //     this.orgNodes[0].NodeFirstName = "";
+                //     this.orgNodes[0].NodeLastName = "";
+                //     this.orgNodes[0].Description = "";
+                //     this.orgNodes[0].IsStaging = true;
+                //     this.updateJSON();
+                // }
             }
         }
     }
