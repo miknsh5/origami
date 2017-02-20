@@ -79,11 +79,15 @@ export class MenuBarComponent implements OnInit, OnChanges {
                     this.getAllNodes(this.selectedGroup.OrgGroupID);
                 }
                 if (this.tutorialMode === TutorialMode.Skiped) {
-                    this.cookie.setCookie("tutorial", true, 365);
+                    this.cookie.setCookie(this.userModel.UserID, true, 365);
                 }
             } else if (this.tutorialMode === TutorialMode.Continued) {
                 this.selectedCompany.OrgNodeCounts = 0;
                 this.selectedGroup.OrgNodeCounts = 0;
+            } else if (this.tutorialMode === TutorialMode.Started) {
+                if (!this.cookie.checkCookie(this.userModel.UserID)) {
+                    this.addTutorialGroup();
+                }
             }
         }
 
@@ -118,21 +122,25 @@ export class MenuBarComponent implements OnInit, OnChanges {
 
     private activateTutorial() {
         if (this.tutorialMode === TutorialMode.Skiped) {
-            let group = new OrgGroupModel();
-            let userID = this.userModel.UserID;
-            group.CompanyID = this.selectedCompany.CompanyID;
-            group.GroupName = "Tutorial Demo Organization";
-            group.OrgNodes = new Array<OrgNodeModel>();
-            let id = Math.floor(Math.random() * (25 - 1 + 1)) + 1;
-            group.OrgGroupID = id;
-            group.OrgNodeCounts = 0;
-            this.selectedGroup.IsDefaultGroup = false;
-            this.selectedGroup = group;
-            this.selectedGroup.IsDefaultGroup = true;
-            this.orgCompanyGroups.push(this.selectedGroup);
-            this.setOrgGroupData(group);
+            this.addTutorialGroup();
             this.tutorialModeChanged.emit(TutorialMode.Continued);
         }
+    }
+
+    private addTutorialGroup() {
+        let group = new OrgGroupModel();
+        let userID = this.userModel.UserID;
+        group.CompanyID = this.selectedCompany.CompanyID;
+        group.GroupName = "Tutorial Demo Organization";
+        group.OrgNodes = new Array<OrgNodeModel>();
+        let id = Math.floor(Math.random() * (25 - 1 + 1)) + 1;
+        group.OrgGroupID = id;
+        group.OrgNodeCounts = 0;
+        this.selectedGroup.IsDefaultGroup = false;
+        this.selectedGroup = group;
+        this.selectedGroup.IsDefaultGroup = true;
+        this.orgCompanyGroups.push(this.selectedGroup);
+        this.setOrgGroupData(group);
     }
 
     private getAllCompanies() {
@@ -222,7 +230,7 @@ export class MenuBarComponent implements OnInit, OnChanges {
             if (data.OrgNodes && data.OrgNodes.length === 0) {
                 this.domHelper.showElements(MenuElement.downloadTemplate);
                 this.domHelper.hideElements(MenuElement.exportData);
-                if (this.cookie.checkCookie("tutorial")) {
+                if (this.cookie.checkCookie(this.userModel.UserID)) {
                     this.tutorialModeChanged.emit(TutorialMode.Skiped);
                     this.tutorialEnabled.emit(false);
                 } else {
