@@ -45,11 +45,11 @@ export class ExportPNGComponent {
 
             if (this.isHorizontalTree) {
                 let height = this.leftNodeInitials + this.rightNodeInitials + MIN_HEIGHT;
-                // sets default attributes of exporting.            
+                // sets default attributes of exporting.
                 this.setDefaultAttributes(this.treeLength, height);
             } else {
                 let width = this.leftNodeInitials + this.rightNodeInitials + MIN_HEIGHT;
-                // sets default attributes of exporting.            
+                // sets default attributes of exporting.
                 this.setDefaultAttributes(width, this.treeLength);
             }
 
@@ -64,7 +64,7 @@ export class ExportPNGComponent {
     private getPrevAttributes() {
         this.viewPort = document.getElementsByClassName("svg-pan-zoom_viewport")[0];
         this.mattrix = this.viewPort.getAttribute("transform");
-        this.svg = document.getElementsByTagName("svg")[0];
+        this.svg = document.querySelector("svg.tree") as SVGElement;
         this.circles = this.svg.getElementsByTagName("circle");
         this.nodes = this.svg.getElementsByClassName("nodes")[0];
         this.nodesTransform = this.nodes.getAttribute("transform");

@@ -1,7 +1,7 @@
 import { Component, ElementRef, Input, Output, EventEmitter, OnChanges, SimpleChange, HostListener, Renderer } from "@angular/core";
 import { NgForm, NgControl } from "@angular/forms";
 
-import { DraggedNode, OrgNodeModel, OrgSearchModel, OrgService, DOMHelper } from "../../shared/index";
+import { DraggedNode, OrgNodeModel, OrgSearchModel, OrgService, DOMHelper, TutorialNodeState, TutorialMode } from "../../shared/index";
 
 const HeaderTitle = "NAME";
 const AddResource = "Search, Add Resources";
@@ -44,6 +44,7 @@ export class SamrtBarComponent implements OnChanges {
     @Input() orgGroupID: number;
     @Input() isNodeMoveEnabledOrDisabled: boolean;
     @Input() isMenuSettingsEnabled: boolean;
+    @Input() tutorialStatus: TutorialMode;
 
     @Output() nodeSearched = new EventEmitter<OrgNodeModel>();
     @Output() deleteNode = new EventEmitter<OrgNodeModel>();
@@ -53,6 +54,7 @@ export class SamrtBarComponent implements OnChanges {
     @Output() isSmartBarEnabled = new EventEmitter<boolean>();
     @Output() isNodeMoveDisabled = new EventEmitter<boolean>();
     @Output() moveNode = new EventEmitter<DraggedNode>();
+    @Output() currentSmartbarStatus = new EventEmitter<TutorialNodeState>();
 
     constructor(private elementRef: ElementRef, private domHelper: DOMHelper, private renderer: Renderer, private orgService: OrgService) {
         this.searchHeader = `BY ${HeaderTitle}`;
@@ -63,6 +65,18 @@ export class SamrtBarComponent implements OnChanges {
     }
 
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
+        if (changes["tutorialStatus"]) {
+            if (this.tutorialStatus === TutorialMode.Ended || this.tutorialStatus === TutorialMode.Skiped) {
+                this.clearSearch();
+                this.newNodeValue = null;
+                this.multiInTerm = this.searchTerm = EMPTYSTRING;
+                this.placeholderText = `${AddResource}`;
+                this.isDescriptionText = false;
+                this.isSmartBarEnabled.emit(false);
+            } else if (changes["tutorialStatus"].previousValue === TutorialMode.Ended && this.tutorialStatus === TutorialMode.Continued) {
+                this.currentSmartbarStatus.emit(TutorialNodeState.None);
+            }
+        }
         if (changes["isNodeMoveEnabledOrDisabled"]) {
             if (changes["isNodeMoveEnabledOrDisabled"].currentValue) {
                 this.clearSearch();
@@ -296,6 +310,7 @@ export class SamrtBarComponent implements OnChanges {
             return;
         }
         if (this.isDescriptionText) {
+            this.currentSmartbarStatus.emit(TutorialNodeState.PressEnter);
             let element = document.querySelector(`${TITLE_SEARCH_CONTAINER} li.${SELECTED}`);
             if (element) {
                 this.renderer.invokeElementMethod(element, "click", []);
@@ -454,6 +469,7 @@ export class SamrtBarComponent implements OnChanges {
         }
         if (this.newNodeValue && this.newNodeValue.length === 1) {
             this.placeholderText = `${AddJobTitle}`;
+            this.currentSmartbarStatus.emit(TutorialNodeState.AddJobTitle);
         }
         this.setInputFocus();
     }
@@ -479,13 +495,19 @@ export class SamrtBarComponent implements OnChanges {
 
 
     private addNewNode(node: OrgNodeModel) {
-        if (!node) { return; }
-        // we don"t really need to send any child info to the server at this point
-        node.children = null;
-        this.orgService.addNode(node)
-            .subscribe(data => this.emitAddNodeNotification(data),
-            error => this.handleError(error),
-            () => console.log("Added new node."));
+        if (this.tutorialStatus === TutorialMode.Skiped) {
+            if (!node) { return; }
+            // we don"t really need to send any child info to the server at this point
+            node.children = null;
+            this.orgService.addNode(node)
+                .subscribe(data => this.emitAddNodeNotification(data),
+                error => this.handleError(error),
+                () => console.log("Added new node."));
+        } else if (this.tutorialStatus === TutorialMode.Continued) {
+            let id = Math.floor(Math.random() * (25 - 1 + 1)) + 1;
+            node.NodeID = id;
+            this.emitAddNodeNotification(node);
+        }
     }
 
     private emitAddNodeNotification(data: OrgNodeModel) {
@@ -496,10 +518,11 @@ export class SamrtBarComponent implements OnChanges {
             this.addNode.emit(data);
             this.placeholderText = `${AddResource}`;
             this.setInputFocus();
+            this.newOrgNode = null;
+            this.newOrgNode = new OrgNodeModel();
+            this.currentSmartbarStatus.emit(TutorialNodeState.NodeAdded);
         }
     }
-
-
 
     private onInputSearch() {
         if (this.searchTerm) {
@@ -552,6 +575,7 @@ export class SamrtBarComponent implements OnChanges {
 
         if (!this.isEditModeEnabled) {
             if (this.selectedOrgNode && this.selectedOrgNode.NodeID === -1) {
+
                 let islastName = this.checkSpaceInName(this.multiInTerm);
                 let index = this.multiInTerm.indexOf(" ");
                 if (!this.newNodeValue || this.newNodeValue.length === 0 && this.multiInTerm === EMPTYSTRING) {
@@ -573,6 +597,10 @@ export class SamrtBarComponent implements OnChanges {
                         }
                     }
                     else {
+                        if (this.multiInTerm.trim() !== EMPTYSTRING) {
+                            this.currentSmartbarStatus.emit(TutorialNodeState.AddName);
+                        }
+
                         this.selectedOrgNode.NodeFirstName = this.multiInTerm;
                         if (index !== -1) {
                             this.selectedOrgNode.NodeLastName = this.multiInTerm.substring(index + 1, this.multiInTerm.length);

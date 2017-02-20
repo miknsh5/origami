@@ -6,3 +6,4 @@ export * from "./export-png/index";
 export * from "./import-csv/index";
 export * from "./confirm-button/index";
 export * from "./smart-bar/index";
+export * from "./tutorial/index";

@@ -2,8 +2,8 @@ import { Component, Input, Output, EventEmitter, OnChanges, OnInit, SimpleChange
 import { Router } from "@angular/router";
 
 import {
-    AuthService, UserModel, OrgCompanyModel, OrgGroupModel, OrgNodeModel,
-    OrgService, OrgNodeStatus, OrgNodeBaseModel, DOMHelper, CSVConversionHelper
+    AuthService, UserModel, OrgCompanyModel, OrgGroupModel, OrgNodeModel, Cookie,
+    OrgService, OrgNodeStatus, OrgNodeBaseModel, DOMHelper, CSVConversionHelper, TutorialMode
 } from "../../shared/index";
 
 const MenuElement = {
@@ -39,15 +39,19 @@ export class MenuBarComponent implements OnInit, OnChanges {
     private isImportDisabled: boolean;
 
 
+    @Input() tutorialMode: TutorialMode;
     @Input() noNodeExsit: boolean;
     @Input() currentOrgNodeStatus: OrgNodeStatus;
     @Input() orgNodes: Array<OrgNodeModel>;
+
     @Output() groupSelected = new EventEmitter<OrgGroupModel>();
     @Output() isMenuEnable = new EventEmitter<boolean>();
     @Output() deleteTitle: string;
     @Output() name: string;
+    @Output() tutorialModeChanged = new EventEmitter<TutorialMode>();
+    @Output() tutorialEnabled = new EventEmitter<Boolean>();
 
-    constructor(private orgService: OrgService, private router: Router, private renderer: Renderer,
+    constructor(private orgService: OrgService, private router: Router, private renderer: Renderer, private cookie: Cookie,
         private csvHelper: CSVConversionHelper, private auth: AuthService, private domHelper: DOMHelper) {
         this.domHelper.showElements(MenuElement.exportData);
         this.domHelper.hideElements(MenuElement.downloadTemplate);
@@ -66,7 +70,24 @@ export class MenuBarComponent implements OnInit, OnChanges {
     }
 
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
-        if (changes["currentOrgNodeStatus"]) {
+        if (changes["tutorialMode"]) {
+            if (this.selectedCompany && this.selectedGroup && this.tutorialMode === TutorialMode.Skiped) {
+                if (this.selectedCompany.OrgGroups && this.selectedCompany.OrgGroups.length > 1) {
+                    if (this.selectedGroup.GroupName === "Tutorial Demo Organization")
+                        this.groupDeletion(this.selectedGroup);
+                } else {
+                    this.getAllNodes(this.selectedGroup.OrgGroupID);
+                }
+                if (this.tutorialMode === TutorialMode.Skiped) {
+                    this.cookie.setCookie("tutorial", true, 365);
+                }
+            } else if (this.tutorialMode === TutorialMode.Continued) {
+                this.selectedCompany.OrgNodeCounts = 0;
+                this.selectedGroup.OrgNodeCounts = 0;
+            }
+        }
+
+        if (changes["currentOrgNodeStatus"] && this.orgNodes && this.orgNodes.length !== 0) {
             if (this.currentOrgNodeStatus === OrgNodeStatus.Add) {
                 this.selectedCompany.OrgNodeCounts = this.selectedCompany.OrgNodeCounts + 1;
                 this.selectedGroup.OrgNodeCounts = this.selectedGroup.OrgNodeCounts + 1;
@@ -92,6 +113,25 @@ export class MenuBarComponent implements OnInit, OnChanges {
                 this.domHelper.hideElements(MenuElement.downloadTemplate);
 
             }
+        }
+    }
+
+    private activateTutorial() {
+        if (this.tutorialMode === TutorialMode.Skiped) {
+            let group = new OrgGroupModel();
+            let userID = this.userModel.UserID;
+            group.CompanyID = this.selectedCompany.CompanyID;
+            group.GroupName = "Tutorial Demo Organization";
+            group.OrgNodes = new Array<OrgNodeModel>();
+            let id = Math.floor(Math.random() * (25 - 1 + 1)) + 1;
+            group.OrgGroupID = id;
+            group.OrgNodeCounts = 0;
+            this.selectedGroup.IsDefaultGroup = false;
+            this.selectedGroup = group;
+            this.selectedGroup.IsDefaultGroup = true;
+            this.orgCompanyGroups.push(this.selectedGroup);
+            this.setOrgGroupData(group);
+            this.tutorialModeChanged.emit(TutorialMode.Continued);
         }
     }
 
@@ -137,6 +177,15 @@ export class MenuBarComponent implements OnInit, OnChanges {
             this.orgCompanyGroups = groups;
             this.selectedGroup = null;
             if (this.orgCompanyGroups.length && this.orgCompanyGroups.length > 0) {
+                if (this.orgCompanyGroups.length === 1) {
+                    if (this.orgCompanyGroups[0].OrgNodeCounts === 0) {
+                        this.tutorialModeChanged.emit(TutorialMode.Started);
+                    } else {
+                        this.tutorialModeChanged.emit(TutorialMode.Skiped);
+                    }
+                } else {
+                    this.tutorialModeChanged.emit(TutorialMode.Skiped);
+                }
                 this.orgCompanyGroups.forEach((group) => {
                     if (group.IsDefaultGroup) {
                         this.selectedGroup = group;
@@ -153,6 +202,7 @@ export class MenuBarComponent implements OnInit, OnChanges {
                 this.groupName = `Organization ${(this.selectedCompany.OrgGroups.length + 1)}`;
                 this.groupSelectedMode = "AddNewGroup";
                 this.onGroupSave();
+                this.tutorialModeChanged.emit(TutorialMode.Started);
             }
         }
     }
@@ -172,6 +222,12 @@ export class MenuBarComponent implements OnInit, OnChanges {
             if (data.OrgNodes && data.OrgNodes.length === 0) {
                 this.domHelper.showElements(MenuElement.downloadTemplate);
                 this.domHelper.hideElements(MenuElement.exportData);
+                if (this.cookie.checkCookie("tutorial")) {
+                    this.tutorialModeChanged.emit(TutorialMode.Skiped);
+                    this.tutorialEnabled.emit(false);
+                } else {
+                    this.tutorialEnabled.emit(true);
+                }
             } else {
                 this.domHelper.showElements(MenuElement.exportData);
                 this.domHelper.hideElements(MenuElement.downloadTemplate);
@@ -200,47 +256,63 @@ export class MenuBarComponent implements OnInit, OnChanges {
     }
 
     private onGroupSelection(data) {
-        if (this.selectedGroup.OrgGroupID !== data.OrgGroupID) {
-            this.selectedGroup.IsDefaultGroup = false;
-        }
-        if (data && data.OrgGroupID !== this.selectedGroup.OrgGroupID) {
-            this.selectedGroup = data;
-            this.selectedGroup.IsDefaultGroup = true;
-            this.getAllNodes(data.OrgGroupID);
-            this.orgService.setDefaultGroup(this.userModel.UserID, this.selectedCompany.CompanyID, this.selectedGroup.OrgGroupID)
-                .subscribe(data => { }, err => this.orgService.logError(err));
+        switch (this.tutorialMode) {
+            case TutorialMode.Started:
+            case TutorialMode.Continued:
+                this.tutorialModeChanged.emit(TutorialMode.Interupted);
+                break;
+            case TutorialMode.Skiped:
+            case TutorialMode.Ended:
+                if (this.selectedGroup.OrgGroupID !== data.OrgGroupID) {
+                    this.selectedGroup.IsDefaultGroup = false;
+                }
+                if (data && data.OrgGroupID !== this.selectedGroup.OrgGroupID) {
+                    this.selectedGroup = data;
+                    this.selectedGroup.IsDefaultGroup = true;
+                    this.getAllNodes(data.OrgGroupID);
+                    this.orgService.setDefaultGroup(this.userModel.UserID, this.selectedCompany.CompanyID, this.selectedGroup.OrgGroupID)
+                        .subscribe(data => { }, err => this.orgService.logError(err));
+                }
         }
     }
 
     private onAddOrSettingsClick(name: string, groupData?: OrgNodeModel) {
-        this.isMenuEnable.emit(true);
-        let element = null;
-        if (name.toLowerCase() === "group") {
-            this.groupSelectedMode = "Settings";
-            this.groupSettingTitle = "Settings";
-            this.onGroupSelection(groupData);
-            this.isImportDisabled = false;
-            this.groupName = this.selectedGroup.GroupName;
-            this.domHelper.showElements(`${MenuElement.groupModal}, ${MenuElement.deleteGroup}`);
-            this.domHelper.hideElements(`${MenuElement.confirmGroupDelete}, ${MenuElement.groupDeleteLoader}`);
-            if (this.selectedGroup && this.selectedGroup.OrgNodes.length === 0) {
-                this.domHelper.showElements(MenuElement.downloadTemplate);
-                this.domHelper.hideElements(MenuElement.exportData);
-            } else {
-                this.domHelper.showElements(MenuElement.exportData);
-                this.domHelper.hideElements(MenuElement.downloadTemplate);
-            }
-            element = document.querySelector("input[name=existingGroupName]");
-        } else {
-            this.groupSelectedMode = "AddNewGroup";
-            this.groupSettingTitle = "Add New Organization";
-            this.groupName = `Organization ${(this.selectedCompany.OrgGroups.length + 1)}`;
-            this.isImportDisabled = true;
-            this.domHelper.showElements(`${MenuElement.groupModal}, ${MenuElement.importTemplate}, ${MenuElement.downloadTemplate}`);
-            this.domHelper.hideElements(`${MenuElement.deleteGroup}, ${MenuElement.groupDeleteLoader}, ${MenuElement.exportData}`);
-            element = document.querySelector("input[name=existingGroupName]");
+        switch (this.tutorialMode) {
+            case TutorialMode.Started:
+            case TutorialMode.Continued:
+                this.tutorialModeChanged.emit(TutorialMode.Interupted);
+                break;
+            case TutorialMode.Skiped:
+            case TutorialMode.Ended:
+                this.isMenuEnable.emit(true);
+                let element = null;
+                if (name.toLowerCase() === "group") {
+                    this.groupSelectedMode = "Settings";
+                    this.groupSettingTitle = "Settings";
+                    this.onGroupSelection(groupData);
+                    this.isImportDisabled = false;
+                    this.groupName = this.selectedGroup.GroupName;
+                    this.domHelper.showElements(`${MenuElement.groupModal}, ${MenuElement.deleteGroup}`);
+                    this.domHelper.hideElements(`${MenuElement.confirmGroupDelete}, ${MenuElement.groupDeleteLoader}`);
+                    if (this.selectedGroup && this.selectedGroup.OrgNodes.length === 0) {
+                        this.domHelper.showElements(MenuElement.downloadTemplate);
+                        this.domHelper.hideElements(MenuElement.exportData);
+                    } else {
+                        this.domHelper.showElements(MenuElement.exportData);
+                        this.domHelper.hideElements(MenuElement.downloadTemplate);
+                    }
+                    element = document.querySelector("input[name=existingGroupName]");
+                } else {
+                    this.groupSelectedMode = "AddNewGroup";
+                    this.groupSettingTitle = "Add New Organization";
+                    this.groupName = `Organization ${(this.selectedCompany.OrgGroups.length + 1)}`;
+                    this.isImportDisabled = true;
+                    this.domHelper.showElements(`${MenuElement.groupModal}, ${MenuElement.importTemplate}, ${MenuElement.downloadTemplate}`);
+                    this.domHelper.hideElements(`${MenuElement.deleteGroup}, ${MenuElement.groupDeleteLoader}, ${MenuElement.exportData}`);
+                    element = document.querySelector("input[name=existingGroupName]");
+                }
+                this.renderer.invokeElementMethod(element, "focus", []);
         }
-        this.renderer.invokeElementMethod(element, "focus", []);
     }
 
     private dismissPopup() {

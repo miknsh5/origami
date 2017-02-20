@@ -24,6 +24,14 @@ export class DOMHelper {
         }, 500);
     }
 
+    public setLeft(selector: string, left: any) {
+        jQuery(selector).css({ left: left });
+    }
+
+    public setTop(selector: string, top: any) {
+        jQuery(selector).css({ top: top });
+    }
+
     public setWidth(selector: string, width: any) {
         jQuery(selector).width(width);
     }

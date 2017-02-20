@@ -1,0 +1,231 @@
+.tutorial-wrap {
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    max-height: 100%;
+    overflow: auto;
+    background-color: rgba(255, 255, 255, 0.5);
+    display: block;
+}
+
+.tutorial-wrap .tutorial-wrap-content {
+    background-color: #fefefe;
+    padding: 0px;
+    border: 0px solid #888;
+    width: 100%;
+    max-width: 500px;
+    height: 300px;
+    top: 25.5%;
+    margin: 10px auto;
+    position: relative;
+    box-shadow: 0px 2px 2px 3px rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+    display: block;
+}
+
+.tutorial-wrap .tutorial-wrap-content .tutorial-label,
+.tutorial-wrap .tutorial-wrap-content .tutorial-label-header {
+    line-height: 1.5em;
+    font-family: Roboto, HelveticaNeue;
+    font-size: 0.99em;
+    font-weight: 400;
+    color: #607d8b;
+    display: block;
+}
+
+.tutorial-wrap .tutorial-wrap-content .tutorial-label-header {
+    font-size: 1.5em;
+    font-weight: 400;
+}
+
+.tutorial-wrap .tutorial-wrap-content .tutorial-header {
+    margin: 0 3rem;
+    padding-top: 35px;
+    word-wrap: break-word;
+}
+
+.tutorial-wrap .tutorial-wrap-content .mode-wrap {
+    display: flex;
+    font-size: 0.99em;
+    font-weight: 300;
+    padding: 0px 0px;
+    margin-left: 80px;
+    margin-top: -20px;
+}
+
+.mode-header-label span {
+    padding: 0 2.5px;
+    font-size: larger;
+}
+
+.tutorial-wrap .tutorial-wrap-content .mode-wrap .mode {
+    display: block;
+    width: 50%;
+}
+
+.tutorial-wrap .tutorial-wrap-content .mode-wrap .mode .mode-header-label {
+    display: inline-block;
+    color: #607d8b !important;
+    font-weight: 400;
+}
+
+.tutorial-wrap .tutorial-wrap-content .mode-wrap .mode .mode-desc-label {
+    display: block;
+    line-height: 1.1em;
+    font-family: Roboto, HelveticaNeue;
+    font-weight: 400;
+    color: #607d8b !important;
+    margin-left: 14px;
+}
+
+.create-modelbl {
+    margin: 0px -7px;
+}
+
+.add-modelbl {
+    margin: 0 0 0 16px;
+}
+
+.edit-modelbl {
+    margin: 0 0 0 10px;
+}
+
+.btn.waves-effect {
+    background-color: #448AFF;
+    /*background-color: var(--azure);*/
+    padding: 5px 1.5rem;
+    font-size: 0.75rem;
+    border-radius: 0px;
+    max-height: 30px;
+    line-height: normal;
+    margin: 0px 12px;
+    text-transform: initial;
+}
+
+.btn i {
+    font-size: 1rem;
+    line-height: inherit;
+    vertical-align: text-bottom
+}
+
+.tour {
+    margin-top: 40px;
+}
+
+.smart-bar-tutorial,
+.smart-bar-tip,
+.tip {
+    padding: 10px 20px 12px 40px;
+    position: absolute;
+    height: auto;
+    left: 12.5%;
+    width: 55%;
+    min-width: 340px;
+    max-width: 500px;
+    background-color: #fafafa;
+    background-color: var(--white);
+    -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+    --webkit-box-shadow: 0 0 10px var(--black-80);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+    box-shadow: 0 0 10px var(--black-80);
+    stroke: none;
+    top: 79vh
+}
+
+.smart-bar-tutorial::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 45%;
+    margin-left: -5px;
+    /*border-width: 15px;*/
+    border-bottom-width: 0;
+    border-top-width: 10px;
+    border-left-width: 27px;
+    border-right-width: 27px;
+    border-style: solid;
+    border-color: #fafafa transparent transparent transparent;
+    -webkit-filter: drop-shadow(0px 2px 1px rgba(0, 0, 0, 0.08));
+    filter: drop-shadow(0px 2px 1px rgba(0, 0, 0, 0.08));
+}
+
+.smart-bar-tip::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 100%;
+    margin: -6px;
+    border-bottom-width: 0px;
+    border-top-width: 8px;
+    border-left-width: 6px;
+    border-right-width: 26px;
+    border-style: solid;
+    border-color: #fafafa transparent transparent transparent;
+    -webkit-filter: drop-shadow(0px 2px 1px rgba(0, 0, 0, 0.08));
+    filter: drop-shadow(0px 2px 1px rgba(0, 0, 0, 0.08));
+}
+
+.tip::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin-left: -5px;
+    border: 0;
+    border-style: solid;
+    border-color: #fafafa transparent transparent transparent;
+    -webkit-filter: drop-shadow(0px 2px 1px rgba(0, 0, 0, 0.08));
+    filter: drop-shadow(0px 2px 1px rgba(0, 0, 0, 0.08));
+}
+
+.smart-bar-tutorial .actionlbl,
+.smart-bar-tip .actionlbl,
+.tip .actionlbl {
+    color: #0097FF;
+    line-height: 0.8rem;
+}
+
+.smart-bar-tutorial .headerlbl,
+.smart-bar-tip .headerlbl,
+.tip .headerlbl {
+    font-size: 0.9rem;
+    line-height: 1px;
+}
+
+.instruction {
+    line-height: 0.8rem;
+}
+
+.skip {
+    padding: 73px 106px 0px;
+    font-size: 1.3rem;
+}
+
+@media only screen and (max-width: 768px) {
+    .tutorial-wrap .tutorial-wrap-content .tutorial-header {
+        margin: 0 1rem;
+    }
+    .tutorial-wrap .tutorial-wrap-content {
+        max-width: 400px;
+        height: 270px;
+    }
+    .smart-bar-tutorial {
+        padding: 5px 0 9px 14px;
+        left: 5px;
+    }
+    .create-modelbl[_ngcontent-cbh-7] {
+        margin: -15px 37px;
+    }
+    margin: -15px 0px 0 -42px;
+}
+
+@media only screen and (max-width: 420px) {
+    .smart-bar-tutorial {
+        bottom: 13px;
+        padding: 5px 0 9px 14px;
+        left: 10px;
+        min-width: 316px;
+    }
+}
