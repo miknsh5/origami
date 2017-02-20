@@ -495,23 +495,18 @@ export class SamrtBarComponent implements OnChanges {
 
 
     private addNewNode(node: OrgNodeModel) {
-        switch (this.tutorialStatus) {
-            case TutorialMode.Skiped:
-            case TutorialMode.Ended:
-                if (!node) { return; }
-                // we don"t really need to send any child info to the server at this point
-                node.children = null;
-                this.orgService.addNode(node)
-                    .subscribe(data => this.emitAddNodeNotification(data),
-                    error => this.handleError(error),
-                    () => console.log("Added new node."));
-                break;
-            case TutorialMode.Started:
-            case TutorialMode.Continued:
-                let id = Math.floor(Math.random() * (25 - 1 + 1)) + 1;
-                node.NodeID = id;
-                this.emitAddNodeNotification(node);
-                break;
+        if (this.tutorialStatus === TutorialMode.Skiped) {
+            if (!node) { return; }
+            // we don"t really need to send any child info to the server at this point
+            node.children = null;
+            this.orgService.addNode(node)
+                .subscribe(data => this.emitAddNodeNotification(data),
+                error => this.handleError(error),
+                () => console.log("Added new node."));
+        } else if (this.tutorialStatus === TutorialMode.Continued) {
+            let id = Math.floor(Math.random() * (25 - 1 + 1)) + 1;
+            node.NodeID = id;
+            this.emitAddNodeNotification(node);
         }
     }
 

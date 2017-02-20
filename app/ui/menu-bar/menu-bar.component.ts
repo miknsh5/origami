@@ -81,10 +81,13 @@ export class MenuBarComponent implements OnInit, OnChanges {
                 if (this.tutorialMode === TutorialMode.Skiped) {
                     this.cookie.setCookie("tutorial", true, 365);
                 }
+            } else if (this.tutorialMode === TutorialMode.Continued) {
+                this.selectedCompany.OrgNodeCounts = 0;
+                this.selectedGroup.OrgNodeCounts = 0;
             }
         }
 
-        if (changes["currentOrgNodeStatus"]) {
+        if (changes["currentOrgNodeStatus"] && this.orgNodes && this.orgNodes.length !== 0) {
             if (this.currentOrgNodeStatus === OrgNodeStatus.Add) {
                 this.selectedCompany.OrgNodeCounts = this.selectedCompany.OrgNodeCounts + 1;
                 this.selectedGroup.OrgNodeCounts = this.selectedGroup.OrgNodeCounts + 1;
@@ -115,21 +118,19 @@ export class MenuBarComponent implements OnInit, OnChanges {
 
     private activateTutorial() {
         if (this.tutorialMode === TutorialMode.Skiped) {
-            if (this.selectedCompany.OrgGroups && this.selectedCompany.OrgGroups.length > 1) {
-                let group = new OrgGroupModel();
-                let userID = this.userModel.UserID;
-                group.CompanyID = this.selectedCompany.CompanyID;
-                group.GroupName = "Tutorial Demo Organization";
-                group.OrgNodes = new Array<OrgNodeModel>();
-                let id = Math.floor(Math.random() * (25 - 1 + 1)) + 1;
-                group.OrgGroupID = id;
-                group.OrgNodeCounts = 0;
-                this.selectedGroup.IsDefaultGroup = false;
-                this.selectedGroup = group;
-                this.selectedGroup.IsDefaultGroup = true;
-                this.orgCompanyGroups.push(this.selectedGroup);
-                this.setOrgGroupData(group);
-            }
+            let group = new OrgGroupModel();
+            let userID = this.userModel.UserID;
+            group.CompanyID = this.selectedCompany.CompanyID;
+            group.GroupName = "Tutorial Demo Organization";
+            group.OrgNodes = new Array<OrgNodeModel>();
+            let id = Math.floor(Math.random() * (25 - 1 + 1)) + 1;
+            group.OrgGroupID = id;
+            group.OrgNodeCounts = 0;
+            this.selectedGroup.IsDefaultGroup = false;
+            this.selectedGroup = group;
+            this.selectedGroup.IsDefaultGroup = true;
+            this.orgCompanyGroups.push(this.selectedGroup);
+            this.setOrgGroupData(group);
             this.tutorialModeChanged.emit(TutorialMode.Continued);
         }
     }

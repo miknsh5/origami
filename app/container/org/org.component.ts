@@ -454,8 +454,9 @@ export class OrgComponent implements OnDestroy {
         if (data === TutorialMode.Skiped) {
             this.isTutorialModeEnabled = false;
             this.changedStateForTutorial(TutorialNodeState.None);
-        } else if (data === TutorialMode.Continued && !this.isTutorialModeEnabled) {
-            this.isTutorialModeEnabled = true;
+        } else if (data === TutorialMode.Continued) {
+            if (!this.isTutorialModeEnabled)
+                this.isTutorialModeEnabled = true;
             this.changedStateForTutorial(TutorialNodeState.None)
         }
         this.tutorialStatus = data;
