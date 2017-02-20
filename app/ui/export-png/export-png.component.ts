@@ -45,11 +45,11 @@ export class ExportPNGComponent {
 
             if (this.isHorizontalTree) {
                 let height = this.leftNodeInitials + this.rightNodeInitials + MIN_HEIGHT;
-                // sets default attributes of exporting.            
+                // sets default attributes of exporting.
                 this.setDefaultAttributes(this.treeLength, height);
             } else {
                 let width = this.leftNodeInitials + this.rightNodeInitials + MIN_HEIGHT;
-                // sets default attributes of exporting.            
+                // sets default attributes of exporting.
                 this.setDefaultAttributes(width, this.treeLength);
             }
 

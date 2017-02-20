@@ -3,7 +3,7 @@ import { tokenNotExpired } from "angular2-jwt";
 
 import {
     DraggedNode, OrgNodeModel, ChartMode, OrgCompanyModel,
-    OrgGroupModel, OrgNodeStatus, OrgService, TutorialStatusMode, OrgState
+    OrgGroupModel, OrgNodeStatus, OrgService, TutorialMode, TutorialNodeState
 } from "../../shared/index";
 
 const MIN_HEIGHT: number = 420;
@@ -30,6 +30,7 @@ export class OrgComponent implements OnDestroy {
     private isSmartBarEnabled: boolean;
     private isEditModeEnable: boolean;
     orgGroup: OrgGroupModel;
+    isTutorialModeEnabled: boolean;
 
     @Output() selectedOrgNode: OrgNodeModel;
     @Output() companyID: any;
@@ -48,8 +49,8 @@ export class OrgComponent implements OnDestroy {
     @Output() isHorizontalViewEnabled: boolean;
     @Output() horizontalSpaceForNode: number;
     @Output() verticalSpaceForNode: number;
-    @Output() tutorialStatus: TutorialStatusMode;
-    @Output() orgCurrentState: OrgState;
+    @Output() tutorialStatus: TutorialMode;
+    @Output() orgCurrentState: TutorialNodeState;
 
     constructor(private orgService: OrgService) {
         this.currentChartMode = ChartMode.build;
@@ -57,7 +58,9 @@ export class OrgComponent implements OnDestroy {
         this.svgWidth = this.getSvgWidth();
         this.svgHeight = this.getSvgHeight();
         this.currentOrgNodeStatus = OrgNodeStatus.None;
-        this.isMenuSettingsEnabled = false;
+        this.isTutorialModeEnabled = this.isMenuSettingsEnabled = false;
+        this.tutorialStatus = TutorialMode.Skiped;
+        this.changedStateForTutorial(TutorialNodeState.None);
     }
 
     @HostListener("window:keydown", ["$event"])
@@ -87,7 +90,6 @@ export class OrgComponent implements OnDestroy {
     enableDescriptionLabel(data) {
         this.displayDescriptionLabel = data;
     }
-
     enableLabels() {
         this.displayFirstNameLabel = true;
         this.displayLastNameLabel = true;
@@ -103,8 +105,8 @@ export class OrgComponent implements OnDestroy {
                 this.disablePan();
             } else {
                 switch (this.tutorialStatus) {
-                    case TutorialStatusMode.End:
-                    case TutorialStatusMode.Skip:
+                    case TutorialMode.Ended:
+                    case TutorialMode.Skiped:
                         if (viewMode === ChartMode.report) {
                             this.currentChartMode = ChartMode.report;
                         } else {
@@ -114,9 +116,9 @@ export class OrgComponent implements OnDestroy {
                         this.enableLabels();
                         this.enablePan();
                         break;
-                    case TutorialStatusMode.Continue:
-                    case TutorialStatusMode.Start:
-                        this.activateTutorial(TutorialStatusMode.Interupt);
+                    case TutorialMode.Continued:
+                    case TutorialMode.Started:
+                        this.onTutorialModeChanged(TutorialMode.Interupted);
                         break;
                 }
             }
@@ -150,7 +152,7 @@ export class OrgComponent implements OnDestroy {
         this.onAddOrEditModeValueSet(value);
     }
 
-    changedStateForTutorial(data: OrgState) {
+    changedStateForTutorial(data: TutorialNodeState) {
         this.orgCurrentState = data;
     }
 
@@ -303,21 +305,8 @@ export class OrgComponent implements OnDestroy {
 
     deleteTutorialNodes(data: boolean) {
         if (data) {
-            if (this.orgNodes[0] && this.orgNodes[0].children) {
-                this.orgNodes[0].children.forEach((d) => {
-                    this.onNodeDeleted(d);
-                });
-            }
             if (this.orgNodes[0]) {
-                // if (this.tutorialStatus === TutorialStatusMode.Restart) {
-                    this.onNodeDeleted(this.orgNodes[0]);
-                // } else {
-                //     this.orgNodes[0].NodeFirstName = "";
-                //     this.orgNodes[0].NodeLastName = "";
-                //     this.orgNodes[0].Description = "";
-                //     this.orgNodes[0].IsStaging = true;
-                //     this.updateJSON();
-                // }
+                this.onNodeDeleted(this.orgNodes[0]);
             }
         }
     }
@@ -461,8 +450,21 @@ export class OrgComponent implements OnDestroy {
         this.horizontalSpaceForNode = data;
     }
 
-    activateTutorial(data: TutorialStatusMode) {
+    onTutorialModeChanged(data: TutorialMode) {
+        if (data === TutorialMode.Skiped) {
+            this.isTutorialModeEnabled = false;
+            this.changedStateForTutorial(TutorialNodeState.None);
+        } else if (data === TutorialMode.Continued && !this.isTutorialModeEnabled) {
+            this.isTutorialModeEnabled = true;
+            this.changedStateForTutorial(TutorialNodeState.None)
+        }
         this.tutorialStatus = data;
+    }
+
+    onTutorialEnable(data: boolean) {
+        this.isTutorialModeEnabled = data;
+        if (this.isTutorialModeEnabled)
+            this.tutorialStatus = TutorialMode.Started;
     }
 
     private enableViewModesNav(viewMode) {

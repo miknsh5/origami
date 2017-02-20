@@ -1,6 +1,6 @@
 import { Component, ElementRef, Input, Output, EventEmitter, OnChanges, SimpleChange, HostListener, Renderer, ViewChild, AfterViewInit } from "@angular/core";
 
-import { DOMHelper, TutorialStatusMode, OrgState, OrgNodeModel } from "../../shared/index";
+import { DOMHelper, TutorialMode, TutorialNodeState, OrgNodeModel } from "../../shared/index";
 
 import { Observable } from "rxjs/Rx";
 
@@ -51,121 +51,97 @@ declare let jQuery;
 })
 
 export class TutorialComponent implements OnChanges {
-
-    private tutorailSessionStarted: boolean = false;
     private popupTitle: HTMLElement;
     private popupContent: HTMLElement;
     private smartBarTip: any;
-    timer: any;
 
-    @Input() tutorialStatus: TutorialStatusMode;
+    @Input() tutorialMode: TutorialMode;
     @Input() isOrgNodeEmpty: boolean;
-    @Input() orgCurrentState: OrgState;
+    @Input() tutorialNodeState: TutorialNodeState;
     @Input() selectedOrgNode: OrgNodeModel;
     @Input() jsonData: any;
+    @Input() tutorialEnabled: boolean;
 
-    @Output() deactivateTutorial = new EventEmitter<TutorialStatusMode>();
+    @Output() modeChanged = new EventEmitter<TutorialMode>();
     @Output() deleteNode = new EventEmitter<boolean>();
 
     constructor(private domHelper: DOMHelper, private elementRef: ElementRef) {
         this.smartBarTip = SMARTBARTUTORIAL;
-        this.timer = Observable.timer(500, 100);
     }
 
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
-        if (changes["tutorialStatus"] && changes["tutorialStatus"].currentValue === TutorialStatusMode.Start) {
-            if (changes["tutorialStatus"].previousValue !== TutorialStatusMode.Continue) {
-                this.domHelper.hideElements(tutorailElementName.tutorialSkipOrContinue);
-                this.domHelper.showElements(tutorailElementName.tutorailStart);
+        if (this.tutorialEnabled) {
+            if (this.tutorialNodeState === TutorialNodeState.None && this.tutorialMode === TutorialMode.Continued) {
+                this.setToStep1();
             }
-        }
-        if (this.tutorailSessionStarted) {
-            if (changes["tutorialStatus"] && changes["tutorialStatus"].currentValue === TutorialStatusMode.Interupt || this.orgCurrentState === OrgState.AddRoot) {
-                this.domHelper.showElements(tutorailElementName.tutorialSkipOrContinue);
-            }
+            else if (this.tutorialNodeState === TutorialNodeState.AddName) {
+                if (this.jsonData[0] && (this.jsonData[0].NodeID === -1 || this.jsonData.NodeID === -1)) {
+                    this.popupTitle.innerHTML = tutorialPopupTitle.step2;
+                    this.popupContent.innerHTML = tutorialPopupContent.step2;
+                }
 
-            if (changes["orgCurrentState"] || changes["jsonData"]) {
-
-                if (this.orgCurrentState === OrgState.AddName) {
-                    if (this.jsonData[0] && (this.jsonData[0].NodeID === -1 || this.jsonData.NodeID === -1)) {
-                        this.popupTitle.innerHTML = tutorialPopupTitle.step2;
-                        this.popupContent.innerHTML = tutorialPopupContent.step2;
-                    }
-
-                    if ((this.selectedOrgNode && this.selectedOrgNode.NodeFirstName !== "")) {
-                        this.setTop(85, SEARCH_CONTAINER, tutorailElementName.smartBarTooltip);
-                    } else if (this.selectedOrgNode && this.selectedOrgNode.Description === "" && this.popupTitle.innerHTML === tutorialPopupTitle.step5) {
+                if ((this.selectedOrgNode && this.selectedOrgNode.NodeFirstName !== "")) {
+                    this.setTop(85, SEARCH_CONTAINER, tutorailElementName.smartBarTooltip);
+                } else if (this.selectedOrgNode && this.selectedOrgNode.Description === "" && this.popupTitle.innerHTML === tutorialPopupTitle.step5) {
+                    this.setTop(95, SMARTBAR, tutorailElementName.smartBarTooltip);
+                } else {
+                    this.setTop(95, SMARTBAR, tutorailElementName.smartBarTooltip);
+                }
+            } else if (this.tutorialNodeState === TutorialNodeState.AddJobTitle) {
+                if (this.jsonData[0] && (this.jsonData[0].NodeID === -1 || this.jsonData.NodeID === -1)) {
+                    this.popupTitle.innerHTML = tutorialPopupTitle.step3;
+                    this.popupContent.innerHTML = tutorialPopupContent.step3;
+                }
+                if ((this.selectedOrgNode && this.selectedOrgNode.Description !== "") || this.popupTitle.innerHTML === tutorialPopupTitle.step5) {
+                    if (this.selectedOrgNode && this.selectedOrgNode.Description === "" && this.popupTitle.innerHTML === tutorialPopupTitle.step5) {
                         this.setTop(95, SMARTBAR, tutorailElementName.smartBarTooltip);
-                    } else {
-                        this.setTop(95, SMARTBAR, tutorailElementName.smartBarTooltip);
                     }
-                } else if (this.orgCurrentState === OrgState.AddJobTitle) {
-                    if (this.jsonData[0] && (this.jsonData[0].NodeID === -1 || this.jsonData.NodeID === -1)) {
-                        this.popupTitle.innerHTML = tutorialPopupTitle.step3;
-                        this.popupContent.innerHTML = tutorialPopupContent.step3;
-                    }
-                    if ((this.selectedOrgNode && this.selectedOrgNode.Description !== "") || this.popupTitle.innerHTML === tutorialPopupTitle.step5) {
-                        if (this.selectedOrgNode && this.selectedOrgNode.Description === "" && this.popupTitle.innerHTML === tutorialPopupTitle.step5) {
-                            this.setTop(95, SMARTBAR, tutorailElementName.smartBarTooltip);
+                    this.setTop(85, TITLE_SEARCH_CONTAINER, tutorailElementName.smartBarTooltip);
+                } else {
+                    this.setTop(95, SMARTBAR, tutorailElementName.smartBarTooltip);
+                }
+            } else if (this.tutorialNodeState === TutorialNodeState.PressEnter) {
+                setTimeout(() => {
+                    if (this.jsonData[0] && (this.jsonData[0].NodeID !== -1 || this.jsonData.NodeID === -1) && this.jsonData[0].NodeID !== this.selectedOrgNode.ParentNodeID) {
+                        this.popupTitle.innerHTML = tutorialPopupTitle.step4;
+                        this.popupContent.innerHTML = tutorialPopupContent.emptyString;
+                        this.smartBarTip = SMARTBARTIP;
+
+                        let leftElement = jQuery("#menuPanel").offset();
+                        if (leftElement) {
+                            let left = (leftElement.left - 540);
+                            this.domHelper.setLeft(tutorailElementName.smartBarTooltip, left);
                         }
-                        this.setTop(85, TITLE_SEARCH_CONTAINER, tutorailElementName.smartBarTooltip);
-                    } else {
-                        this.setTop(95, SMARTBAR, tutorailElementName.smartBarTooltip);
+
+                        this.setTop(200, SMARTBAR, tutorailElementName.smartBarTooltip);
                     }
-                } else if (this.orgCurrentState === OrgState.PressEnter) {
-                    setTimeout(() => {
-                        if (this.jsonData[0] && (this.jsonData[0].NodeID !== -1 || this.jsonData.NodeID === -1) && this.jsonData[0].NodeID !== this.selectedOrgNode.ParentNodeID) {
-                            this.popupTitle.innerHTML = tutorialPopupTitle.step4;
+                }, 200);
+            } else if (this.tutorialNodeState === TutorialNodeState.NodeAdded) {
+                setTimeout(() => {
+                    if (this.selectedOrgNode && this.selectedOrgNode.NodeID !== -1 && this.jsonData[0] && this.jsonData[0].NodeID !== this.selectedOrgNode.NodeID) {
+                        if (this.selectedOrgNode.ParentNodeID === this.jsonData[0].NodeID) {
+                            this.popupTitle.innerHTML = tutorialPopupTitle.step6;
                             this.popupContent.innerHTML = tutorialPopupContent.emptyString;
-                            this.smartBarTip = SMARTBARTIP;
+                            this.smartBarTip = TIP;
+                            this.setTop(120, SMARTBAR, tutorailElementName.smartBarTooltip);
 
-                            let leftElement = jQuery("#menuPanel").offset();
-                            if (leftElement) {
-                                let left = (leftElement.left - 540);
-                                this.domHelper.setLeft(tutorailElementName.smartBarTooltip, left);
-                            }
-
-                            this.setTop(200, SMARTBAR, tutorailElementName.smartBarTooltip);
+                            setTimeout(() => {
+                                this.modeChanged.emit(TutorialMode.Ended);
+                            }, 2000);
                         }
-                    }, 300);
-
-
-                    setTimeout(() => {
-                        if (this.selectedOrgNode && this.selectedOrgNode.NodeID !== -1 && this.jsonData[0] && this.jsonData[0].NodeID !== this.selectedOrgNode.NodeID) {
-                            if (this.selectedOrgNode.ParentNodeID === this.jsonData[0].NodeID) {
-                                this.popupTitle.innerHTML = tutorialPopupTitle.step6;
-                                this.popupContent.innerHTML = tutorialPopupContent.emptyString;
-                                this.smartBarTip = TIP;
-                                this.setTop(120, SMARTBAR, tutorailElementName.smartBarTooltip);
-
-                                setTimeout(() => {
-                                    this.popupTitle.innerHTML = tutorialPopupTitle.step1;
-                                    this.popupContent.innerHTML = tutorialPopupContent.step1;
-
-                                    this.domHelper.hideElements(tutorailElementName.smartBarTooltip);
-                                    this.domHelper.showElements(tutorailElementName.tutorialEndOrRestart);
-
-                                }, 7000);
-                            }
+                    }
+                    else {
+                        this.popupTitle.innerHTML = tutorialPopupTitle.step5;
+                        this.popupContent.innerHTML = tutorialPopupContent.step5;
+                        this.smartBarTip = SMARTBARTUTORIAL;
+                        let leftElement = jQuery("input[name=multiInTerm]").offset();
+                        if (leftElement) {
+                            let left = (leftElement.left);
+                            this.domHelper.setLeft(tutorailElementName.smartBarTooltip, left);
                         }
-                        else {
-                            this.popupTitle.innerHTML = tutorialPopupTitle.step5;
-                            this.popupContent.innerHTML = tutorialPopupContent.step5;
-                             this.smartBarTip = SMARTBARTUTORIAL;
-                            let leftElement = jQuery("input[name=multiInTerm]").offset();
-                            if (leftElement) {
-                                let left = (leftElement.left);
-                                this.domHelper.setLeft(tutorailElementName.smartBarTooltip, left);
-                            }
-                            this.setTop(115, SMARTBAR, tutorailElementName.smartBarTooltip);
-                        }
-                    }, 4000);
-                    // this.timer.subscribe(this.displayStepFourth());
-                    // this.timer.subscribe(this.displayStepFifthAndSixth());
-                }
-                else {
-                    this.domHelper.hideElements(tutorailElementName.smartBarTooltip);
-                }
+                        this.setTop(115, SMARTBAR, tutorailElementName.smartBarTooltip);
+                    }
+                }, 200);
             }
         }
     }
@@ -183,109 +159,39 @@ export class TutorialComponent implements OnChanges {
         }
     }
 
-    // setLeft(distance) {
-    //     let leftElement = jQuery(MENUBAR).offset();
-    //     if (leftElement) {
-    //         let left = (leftElement.left - distance);
-    //         this.domHelper.setLeft(tutorailElementName.smartBarTooltip, left);
-    //     }
-    // }
-
-    // displayStepFourth() {
-    //     if (this.jsonData[0] && (this.jsonData[0].NodeID !== -1 || this.jsonData.NodeID === -1) && this.jsonData[0].NodeID !== this.selectedOrgNode.ParentNodeID) {
-    //         this.popupTitle.innerHTML = tutorialPopupTitle.step4;
-    //         this.popupContent.innerHTML = tutorialPopupContent.emptyString;
-    //         this.smartBarTip = SMARTBARTIP;
-    //         this.setLeft(765);
-    //         this.setTop(200, SMARTBAR, tutorailElementName.smartBarTooltip);
-    //     }
-    // }
-
-    // displayStepFifthAndSixth() {
-    //     if (this.selectedOrgNode && this.selectedOrgNode.NodeID !== -1 && this.jsonData[0] && this.jsonData[0].NodeID !== this.selectedOrgNode.NodeID) {
-    //         if (this.selectedOrgNode.ParentNodeID === this.jsonData[0].NodeID) {
-    //             this.popupTitle.innerHTML = tutorialPopupTitle.step6;
-    //             this.popupContent.innerHTML = tutorialPopupContent.emptyString;
-    //             this.smartBarTip = TIP;
-
-    //             this.setTop(120, SMARTBAR, tutorailElementName.smartBarTooltip);
-
-    //             setTimeout(() => {
-    //                 this.popupTitle.innerHTML = tutorialPopupTitle.step1;
-    //                 this.popupContent.innerHTML = tutorialPopupContent.step1;
-
-    //                 this.domHelper.hideElements(tutorailElementName.smartBarTooltip);
-    //                 this.domHelper.showElements(tutorailElementName.tutorialEndOrRestart);
-
-    //             }, 7000);
-    //         }
-    //     } else {
-    //         this.popupTitle.innerHTML = tutorialPopupTitle.step5;
-    //         this.popupContent.innerHTML = tutorialPopupContent.step5;
-
-    //         this.setLeft(130);
-    //         this.setTop(115, SMARTBAR, tutorailElementName.smartBarTooltip);
-    //         this.smartBarTip = SMARTBARTUTORIAL;
-    //     }
-    // }
-
     startTutorial(event: any) {
-        this.domHelper.showElements(tutorailElementName.smartBarTooltip);
-        this.popupTitle = this.elementRef.nativeElement.querySelector(tutorailElementName.tutorialTitle) as HTMLElement;
-        this.popupContent = this.elementRef.nativeElement.querySelector(tutorailElementName.tutorialContent) as HTMLElement;
-        this.popupTitle.innerHTML = tutorialPopupTitle.step1;
-        this.popupContent.innerHTML = tutorialPopupContent.step1;
-        this.tutorailSessionStarted = true;
-        this.domHelper.hideElements(`${tutorailElementName.tutorailStart},${tutorailElementName.tutorialSkipOrContinue}`);
-        let element = jQuery("input[name=multiInTerm]").offset();
-        if (element) {
-            let top = (element.top - 85);
-            this.domHelper.setTop(tutorailElementName.smartBarTooltip, top);
-        }
+        this.modeChanged.emit(TutorialMode.Continued);
+        this.setToStep1();
     }
 
     skipTutorial() {
-        this.domHelper.hideElements(`${tutorailElementName.tutorailStart},${tutorailElementName.smartBarTooltip},${tutorailElementName.tutorialSkipOrContinue},${tutorailElementName.tutorialEndOrRestart}`);
-        if (this.tutorialStatus === TutorialStatusMode.Start) {
-            this.deactivateTutorial.emit(TutorialStatusMode.End);
-        } else if (this.tutorialStatus === TutorialStatusMode.Interupt) {
-            this.deactivateTutorial.emit(TutorialStatusMode.Skip);
-        }
-
-        if (this.jsonData && this.tutorailSessionStarted) {
+        if (this.jsonData && this.tutorialEnabled) {
             this.deleteNode.emit(true);
         }
-        this.tutorailSessionStarted = false;
-
-        this.popupTitle.innerHTML = tutorialPopupTitle.step1;
-        this.popupContent.innerHTML = tutorialPopupContent.step1;
-
-        let element = jQuery("input[name=multiInTerm]").offset();
-        if (element) {
-            let top = (element.top - 85);
-            this.domHelper.setTop(tutorailElementName.smartBarTooltip, top);
-        }
-        this.smartBarTip = SMARTBARTUTORIAL;
+        this.modeChanged.emit(TutorialMode.Skiped);
     }
 
     continueTutorial() {
-        this.domHelper.hideElements(tutorailElementName.tutorialSkipOrContinue);
-        this.domHelper.showElements(tutorailElementName.smartBarTooltip);
-        this.deactivateTutorial.emit(TutorialStatusMode.Continue);
+        this.modeChanged.emit(TutorialMode.Continued);
     }
 
     restartTutorial() {
-        this.domHelper.hideElements(tutorailElementName.tutorialEndOrRestart);
-        let element = jQuery("input[name=multiInTerm]").offset();
-        if (element) {
-            let top = (element.top - 85);
-            this.domHelper.setTop(tutorailElementName.smartBarTooltip, top);
-        }
-        this.popupTitle.innerHTML = tutorialPopupTitle.step1;
-        this.popupContent.innerHTML = tutorialPopupContent.step1;
-        this.domHelper.showElements(tutorailElementName.smartBarTooltip);
-        this.smartBarTip = SMARTBARTUTORIAL;
-        this.deactivateTutorial.emit(TutorialStatusMode.Start);
         this.deleteNode.emit(true);
+        this.smartBarTip = SMARTBARTUTORIAL;
+        this.startTutorial(null);
+    }
+
+    private setToStep1() {
+        setTimeout(() => {
+            this.popupTitle = this.elementRef.nativeElement.querySelector(tutorailElementName.tutorialTitle) as HTMLElement;
+            this.popupContent = this.elementRef.nativeElement.querySelector(tutorailElementName.tutorialContent) as HTMLElement;
+            this.popupTitle.innerHTML = tutorialPopupTitle.step1;
+            this.popupContent.innerHTML = tutorialPopupContent.step1;
+            let element = jQuery("input[name=multiInTerm]").offset();
+            if (element) {
+                let top = (element.top - 85);
+                this.domHelper.setTop(tutorailElementName.smartBarTooltip, top);
+            }
+        }, 200);
     }
 }

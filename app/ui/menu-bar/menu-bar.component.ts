@@ -2,8 +2,8 @@ import { Component, Input, Output, EventEmitter, OnChanges, OnInit, SimpleChange
 import { Router } from "@angular/router";
 
 import {
-    AuthService, UserModel, OrgCompanyModel, OrgGroupModel, OrgNodeModel,
-    OrgService, OrgNodeStatus, OrgNodeBaseModel, DOMHelper, CSVConversionHelper, TutorialStatusMode
+    AuthService, UserModel, OrgCompanyModel, OrgGroupModel, OrgNodeModel, Cookie,
+    OrgService, OrgNodeStatus, OrgNodeBaseModel, DOMHelper, CSVConversionHelper, TutorialMode
 } from "../../shared/index";
 
 const MenuElement = {
@@ -39,7 +39,7 @@ export class MenuBarComponent implements OnInit, OnChanges {
     private isImportDisabled: boolean;
 
 
-    @Input() tutorialStatus: TutorialStatusMode;
+    @Input() tutorialMode: TutorialMode;
     @Input() noNodeExsit: boolean;
     @Input() currentOrgNodeStatus: OrgNodeStatus;
     @Input() orgNodes: Array<OrgNodeModel>;
@@ -48,9 +48,10 @@ export class MenuBarComponent implements OnInit, OnChanges {
     @Output() isMenuEnable = new EventEmitter<boolean>();
     @Output() deleteTitle: string;
     @Output() name: string;
-    @Output() tutorialCurrentStatus = new EventEmitter<TutorialStatusMode>();
+    @Output() tutorialModeChanged = new EventEmitter<TutorialMode>();
+    @Output() tutorialEnabled = new EventEmitter<Boolean>();
 
-    constructor(private orgService: OrgService, private router: Router, private renderer: Renderer,
+    constructor(private orgService: OrgService, private router: Router, private renderer: Renderer, private cookie: Cookie,
         private csvHelper: CSVConversionHelper, private auth: AuthService, private domHelper: DOMHelper) {
         this.domHelper.showElements(MenuElement.exportData);
         this.domHelper.hideElements(MenuElement.downloadTemplate);
@@ -69,18 +70,17 @@ export class MenuBarComponent implements OnInit, OnChanges {
     }
 
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
-        if (changes["tutorialStatus"]) {
-
-            switch (this.tutorialStatus) {
-                case TutorialStatusMode.End:
-                case TutorialStatusMode.Skip:
-                    if (this.selectedCompany.OrgGroups && this.selectedCompany.OrgGroups.length > 1) {
-                        if (this.selectedGroup.GroupName === "Tutorial Demo Organization")
-                            this.groupDeletion(this.selectedGroup);
-                    } else {
-                        this.getAllNodes(this.selectedGroup.OrgGroupID);
-                    }
-                    break;
+        if (changes["tutorialMode"]) {
+            if (this.selectedCompany && this.selectedGroup && this.tutorialMode === TutorialMode.Skiped) {
+                if (this.selectedCompany.OrgGroups && this.selectedCompany.OrgGroups.length > 1) {
+                    if (this.selectedGroup.GroupName === "Tutorial Demo Organization")
+                        this.groupDeletion(this.selectedGroup);
+                } else {
+                    this.getAllNodes(this.selectedGroup.OrgGroupID);
+                }
+                if (this.tutorialMode === TutorialMode.Skiped) {
+                    this.cookie.setCookie("tutorial", true, 365);
+                }
             }
         }
 
@@ -114,26 +114,23 @@ export class MenuBarComponent implements OnInit, OnChanges {
     }
 
     private activateTutorial() {
-        switch (this.tutorialStatus) {
-            case TutorialStatusMode.End:
-            case TutorialStatusMode.Skip: {
-                if (this.selectedCompany.OrgGroups && this.selectedCompany.OrgGroups.length > 1) {
-                    let group = new OrgGroupModel();
-                    let userID = this.userModel.UserID;
-                    group.CompanyID = this.selectedCompany.CompanyID;
-                    group.GroupName = "Tutorial Demo Organization";
-                    group.OrgNodes = new Array<OrgNodeModel>();
-                    let id = Math.floor(Math.random() * (25 - 1 + 1)) + 1;
-                    group.OrgGroupID = id;
-                    group.OrgNodeCounts = 0;
-                    this.selectedGroup.IsDefaultGroup = false;
-                    this.selectedGroup = group;
-                    this.selectedGroup.IsDefaultGroup = true;
-                    this.orgCompanyGroups.push(this.selectedGroup);
-                    this.setOrgGroupData(group);
-                }
-                this.tutorialCurrentStatus.emit(TutorialStatusMode.Start);
+        if (this.tutorialMode === TutorialMode.Skiped) {
+            if (this.selectedCompany.OrgGroups && this.selectedCompany.OrgGroups.length > 1) {
+                let group = new OrgGroupModel();
+                let userID = this.userModel.UserID;
+                group.CompanyID = this.selectedCompany.CompanyID;
+                group.GroupName = "Tutorial Demo Organization";
+                group.OrgNodes = new Array<OrgNodeModel>();
+                let id = Math.floor(Math.random() * (25 - 1 + 1)) + 1;
+                group.OrgGroupID = id;
+                group.OrgNodeCounts = 0;
+                this.selectedGroup.IsDefaultGroup = false;
+                this.selectedGroup = group;
+                this.selectedGroup.IsDefaultGroup = true;
+                this.orgCompanyGroups.push(this.selectedGroup);
+                this.setOrgGroupData(group);
             }
+            this.tutorialModeChanged.emit(TutorialMode.Continued);
         }
     }
 
@@ -181,12 +178,12 @@ export class MenuBarComponent implements OnInit, OnChanges {
             if (this.orgCompanyGroups.length && this.orgCompanyGroups.length > 0) {
                 if (this.orgCompanyGroups.length === 1) {
                     if (this.orgCompanyGroups[0].OrgNodeCounts === 0) {
-                        this.tutorialCurrentStatus.emit(TutorialStatusMode.Start);
+                        this.tutorialModeChanged.emit(TutorialMode.Started);
                     } else {
-                        this.tutorialCurrentStatus.emit(TutorialStatusMode.End);
+                        this.tutorialModeChanged.emit(TutorialMode.Skiped);
                     }
                 } else {
-                    this.tutorialCurrentStatus.emit(TutorialStatusMode.End);
+                    this.tutorialModeChanged.emit(TutorialMode.Skiped);
                 }
                 this.orgCompanyGroups.forEach((group) => {
                     if (group.IsDefaultGroup) {
@@ -204,7 +201,7 @@ export class MenuBarComponent implements OnInit, OnChanges {
                 this.groupName = `Organization ${(this.selectedCompany.OrgGroups.length + 1)}`;
                 this.groupSelectedMode = "AddNewGroup";
                 this.onGroupSave();
-                this.tutorialCurrentStatus.emit(TutorialStatusMode.Start);
+                this.tutorialModeChanged.emit(TutorialMode.Started);
             }
         }
     }
@@ -224,6 +221,12 @@ export class MenuBarComponent implements OnInit, OnChanges {
             if (data.OrgNodes && data.OrgNodes.length === 0) {
                 this.domHelper.showElements(MenuElement.downloadTemplate);
                 this.domHelper.hideElements(MenuElement.exportData);
+                if (this.cookie.checkCookie("tutorial")) {
+                    this.tutorialModeChanged.emit(TutorialMode.Skiped);
+                    this.tutorialEnabled.emit(false);
+                } else {
+                    this.tutorialEnabled.emit(true);
+                }
             } else {
                 this.domHelper.showElements(MenuElement.exportData);
                 this.domHelper.hideElements(MenuElement.downloadTemplate);
@@ -252,13 +255,13 @@ export class MenuBarComponent implements OnInit, OnChanges {
     }
 
     private onGroupSelection(data) {
-        switch (this.tutorialStatus) {
-            case TutorialStatusMode.Start:
-            case TutorialStatusMode.Continue:
-                this.tutorialCurrentStatus.emit(TutorialStatusMode.Interupt);
+        switch (this.tutorialMode) {
+            case TutorialMode.Started:
+            case TutorialMode.Continued:
+                this.tutorialModeChanged.emit(TutorialMode.Interupted);
                 break;
-            case TutorialStatusMode.Skip:
-            case TutorialStatusMode.End:
+            case TutorialMode.Skiped:
+            case TutorialMode.Ended:
                 if (this.selectedGroup.OrgGroupID !== data.OrgGroupID) {
                     this.selectedGroup.IsDefaultGroup = false;
                 }
@@ -273,13 +276,13 @@ export class MenuBarComponent implements OnInit, OnChanges {
     }
 
     private onAddOrSettingsClick(name: string, groupData?: OrgNodeModel) {
-        switch (this.tutorialStatus) {
-            case TutorialStatusMode.Start:
-            case TutorialStatusMode.Continue:
-                this.tutorialCurrentStatus.emit(TutorialStatusMode.Interupt);
+        switch (this.tutorialMode) {
+            case TutorialMode.Started:
+            case TutorialMode.Continued:
+                this.tutorialModeChanged.emit(TutorialMode.Interupted);
                 break;
-            case TutorialStatusMode.Skip:
-            case TutorialStatusMode.End:
+            case TutorialMode.Skiped:
+            case TutorialMode.Ended:
                 this.isMenuEnable.emit(true);
                 let element = null;
                 if (name.toLowerCase() === "group") {

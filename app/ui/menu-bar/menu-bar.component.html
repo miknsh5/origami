@@ -12,7 +12,7 @@
             <a href="/admin"><i class="material-icons">dashboard</i>Admin</a>
         </li>
         <li class="divider"></li>
-        <li (click)="activateTutorial()">
+        <li *ngIf="tutorialMode === 2" (click)="activateTutorial()">
             <a><i class="material-icons">slideshow</i>Let's take Tour</a>
         </li>
         <li class="divider"></li>

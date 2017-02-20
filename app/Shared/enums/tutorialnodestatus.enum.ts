@@ -1,5 +1,5 @@
-export enum OrgState {
-    InitialFocusOnSmartbar = 1,
+export enum TutorialNodeState {
+    None = 1,
     AddName = 2,
     AddJobTitle = 3,
     PressEnter = 4,
@@ -12,5 +12,6 @@ export enum OrgState {
     EditNode = 11,
     SaveNode = 12,
     DeleteNode = 13,
-    AddRoot = 14
+    AddRoot = 14,
+    NodeAdded = 15
 }

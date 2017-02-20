@@ -2,7 +2,7 @@ import { Component, HostListener, Input, Output, OnChanges, SimpleChange, EventE
 import { NgForm, NgControl } from "@angular/forms";
 
 import {
-    UserModel, OrgGroupModel, OrgNodeModel, ChartMode, OrgService, UserFeedBack, DOMHelper, TutorialStatusMode
+    UserModel, OrgGroupModel, OrgNodeModel, ChartMode, OrgService, UserFeedBack, DOMHelper, TutorialMode
 } from "../../shared/index";
 
 declare let jQuery: any;
@@ -68,7 +68,7 @@ export class SidePanelComponent implements OnInit, OnChanges {
     @Input() isMenuSettingsEnabled: boolean;
     @Input() isSmartBarAddEnabled: boolean;
     @Input() isNodeMoveDisabled: boolean;
-    @Input() tutorialStatus: TutorialStatusMode;
+    @Input() tutorialStatus: TutorialMode;
 
     @Output() updateNode = new EventEmitter<OrgNodeModel>();
     @Output() deleteNode = new EventEmitter<OrgNodeModel>();
@@ -84,7 +84,7 @@ export class SidePanelComponent implements OnInit, OnChanges {
     @Output() isHorizontalViewEnabled = new EventEmitter<boolean>();
     @Output() verticalSpaceValue = new EventEmitter<number>();
     @Output() horizontalSpaceValue = new EventEmitter<number>();
-    @Output() tutorialCurrentStatus = new EventEmitter<TutorialStatusMode>();
+    @Output() tutorialCurrentStatus = new EventEmitter<TutorialMode>();
 
     constructor(private orgService: OrgService, private domHelper: DOMHelper) {
         this.feedbackIcon = FEEDBACK_ICON_OPEN;
@@ -314,8 +314,12 @@ export class SidePanelComponent implements OnInit, OnChanges {
 
     onNodeDeleteConfirm() {
         switch (this.tutorialStatus) {
-            case TutorialStatusMode.Skip:
-            case TutorialStatusMode.End:
+            case TutorialMode.Started:
+            case TutorialMode.Continued:
+                this.deleteNode.emit(this.selectedOrgNode);
+                this.domHelper.hideElements(`${MenuElement.deleteNodeModal}, ${MenuElement.deleteChildNodeConfirm}, ${MenuElement.deleteNodeConfirm}`);
+                break;
+            default:
                 if (this.selectedNode.NodeID === -1) {
                     this.deleteNode.emit(this.selectedNode);
                 } else {
@@ -334,11 +338,6 @@ export class SidePanelComponent implements OnInit, OnChanges {
                             () => console.log("Deleted node."));
                     }
                 }
-                break;
-            case TutorialStatusMode.Start:
-            case TutorialStatusMode.Continue:
-                this.deleteNode.emit(this.selectedOrgNode);
-                this.domHelper.hideElements(`${MenuElement.deleteNodeModal}, ${MenuElement.deleteChildNodeConfirm}, ${MenuElement.deleteNodeConfirm}`);
                 break;
         }
     }
@@ -359,19 +358,13 @@ export class SidePanelComponent implements OnInit, OnChanges {
         if (this.selectedNode.NodeID !== -1) {
             this.isNodeMoveEnabledOrDisabled.emit(false);
             if (this.deleteOrClose === DELETE_ICON) {
-                switch (this.tutorialStatus) {
-                    case TutorialStatusMode.Start:
-                    case TutorialStatusMode.Continue:
-                        this.tutorialCurrentStatus.emit(TutorialStatusMode.Interupt);
-                        break;
-                    case TutorialStatusMode.End:
-                    case TutorialStatusMode.Skip:
-                        this.deleteTitle = "Node";
-                        this.name = `${this.selectedOrgNode.NodeFirstName} ${this.selectedOrgNode.NodeLastName}`;
-                        this.domHelper.showElements(`${MenuElement.deleteNodeModal}, ${MenuElement.deleteNodeConfirm}`);
-                        break;
+                if (this.tutorialStatus === TutorialMode.Started || this.tutorialStatus === TutorialMode.Continued) {
+                    this.tutorialCurrentStatus.emit(TutorialMode.Interupted);
+                } else {
+                    this.deleteTitle = "Node";
+                    this.name = `${this.selectedOrgNode.NodeFirstName} ${this.selectedOrgNode.NodeLastName}`;
+                    this.domHelper.showElements(`${MenuElement.deleteNodeModal}, ${MenuElement.deleteNodeConfirm}`);
                 }
-
             } else if (this.deleteOrClose === CLOSE_ICON) {
                 this.editOrSave = EDIT_ICON;
                 this.deleteOrClose = DELETE_ICON;
@@ -454,21 +447,16 @@ export class SidePanelComponent implements OnInit, OnChanges {
     }
 
     private editNode(node: OrgNodeModel) {
-        switch (this.tutorialStatus) {
-            case TutorialStatusMode.Skip:
-            case TutorialStatusMode.End:
-                if (!node) { return; }
-                // we don"t really need to send any child info to the server at this point
-                node.children = null;
-                this.orgService.updateNode(node)
-                    .subscribe(data => this.emitUpdateNodeNotification(data),
-                    error => this.handleError(error),
-                    () => console.log("Updated node."));
-                break;
-            case TutorialStatusMode.Start:
-            case TutorialStatusMode.Continue:
-                this.emitUpdateNodeNotification(true);
-                break;
+        if (this.tutorialStatus === TutorialMode.Started || this.tutorialStatus === TutorialMode.Continued) {
+            this.emitUpdateNodeNotification(true);
+        } else {
+            if (!node) { return; }
+            // we don"t really need to send any child info to the server at this point
+            node.children = null;
+            this.orgService.updateNode(node)
+                .subscribe(data => this.emitUpdateNodeNotification(data),
+                error => this.handleError(error),
+                () => console.log("Updated node."));
         }
     }
 

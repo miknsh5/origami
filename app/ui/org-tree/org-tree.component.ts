@@ -4,7 +4,7 @@ import {
 } from "@angular/core";
 
 import * as d3 from "d3";
-import { DraggedNode, OrgNodeModel, OrgService, ChartMode, TutorialStatusMode } from "../../shared/index";
+import { DraggedNode, OrgNodeModel, OrgService, ChartMode, TutorialMode } from "../../shared/index";
 
 const DURATION = 250;
 const TOPBOTTOM_MARGIN = 20;
@@ -105,14 +105,14 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     @Input() isHorizontalViewEnabled: boolean;
     @Input() verticalSpaceForNode: number;
     @Input() horizontalSpaceForNode: number;
-    @Input() tutorialStatus: TutorialStatusMode;
+    @Input() tutorialStatus: TutorialMode;
 
     @Output() selectNode = new EventEmitter<OrgNodeModel>();
     @Output() addNode = new EventEmitter<OrgNodeModel>();
     @Output() switchToAddMode = new EventEmitter<OrgNodeModel>();
     @Output() moveNode = new EventEmitter<DraggedNode>();
     @Output() isNodeMoveDisabled = new EventEmitter<boolean>();
-    @Output() tutorialCurrentStatus = new EventEmitter<TutorialStatusMode>();
+    @Output() tutorialCurrentStatus = new EventEmitter<TutorialMode>();
 
     constructor(private orgService: OrgService,
         @Inject(ElementRef) elementRef: ElementRef) {
@@ -351,13 +351,13 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                         this.highlightAndCenterNode(parentNode);
                     } else {
                         switch (this.tutorialStatus) {
-                            case TutorialStatusMode.End:
-                            case TutorialStatusMode.Skip:
+                            case TutorialMode.Ended:
+                            case TutorialMode.Skiped:
                                 this.addNewRootNode(this.root);
                                 break;
-                            case TutorialStatusMode.Start:
-                            case TutorialStatusMode.Continue:
-                                this.tutorialCurrentStatus.emit(TutorialStatusMode.Interupt);
+                            case TutorialMode.Started:
+                            case TutorialMode.Continued:
+                                this.tutorialCurrentStatus.emit(TutorialMode.Interupted);
                                 break;
                         }
                     }

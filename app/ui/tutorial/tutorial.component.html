@@ -1,5 +1,5 @@
-<div>
-    <div class="tutorial-wrap" id="tutorialStart">
+<div *ngIf="tutorialEnabled">
+    <div *ngIf="tutorialMode === 1" class="tutorial-wrap" id="tutorialStart">
         <div class="tutorial-wrap-content">
             <div id="start-Tutorial">
                 <div class="tutorial-header">
@@ -32,8 +32,7 @@
         </div>
     </div>
 
-
-    <div [ngClass]="smartBarTip" id="smart-bar-tooltip">
+    <div *ngIf="tutorialMode === 3" [ngClass]="smartBarTip" id="smart-bar-tooltip">
         <div>
             <label class="headerlbl" id="tutorialTitle"> </label>
         </div>
@@ -42,8 +41,7 @@
         </div>
     </div>
 
-
-    <div class="tutorial-wrap" id="tutorial-skip-or-Continue">
+    <div *ngIf="tutorialMode === 4" class="tutorial-wrap" id="tutorial-skip-or-Continue">
         <div class="tutorial-wrap-content">
             <div>
                 <div class="skip">
@@ -57,7 +55,7 @@
         </div>
     </div>
 
-    <div class="tutorial-wrap" id="tutorial-end-or-restart">
+    <div *ngIf="tutorialMode === 5" class="tutorial-wrap" id="tutorial-end-or-restart">
         <div class="tutorial-wrap-content">
             <div>
                 <div class="tutorial-header">
@@ -74,6 +72,5 @@
             </div>
         </div>
     </div>
-
 
 </div>
