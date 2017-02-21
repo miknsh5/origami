@@ -126,10 +126,10 @@
     max-width: 500px;
     background-color: #fafafa;
     background-color: var(--white);
-    -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
-    --webkit-box-shadow: 0 0 10px var(--black-80);
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
-    box-shadow: 0 0 10px var(--black-80);
+    -webkit-box-shadow: 0 1px 5px rgba(0, 0, 0, 0.8);
+    --webkit-box-shadow: 0 1px 5px var(--black-80);
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.8);
+    box-shadow: 0 1px 5px var(--black-80);
     stroke: none;
     top: 79vh
 }
@@ -142,13 +142,13 @@
     margin-left: -5px;
     /*border-width: 15px;*/
     border-bottom-width: 0;
-    border-top-width: 10px;
-    border-left-width: 27px;
-    border-right-width: 27px;
+    border-top-width: 12px;
+    border-left-width: 24px;
+    border-right-width: 24px;
     border-style: solid;
     border-color: #fafafa transparent transparent transparent;
-    -webkit-filter: drop-shadow(0px 2px 1px rgba(0, 0, 0, 0.08));
-    filter: drop-shadow(0px 2px 1px rgba(0, 0, 0, 0.08));
+    -webkit-filter: drop-shadow(0px 3px 1px rgba(0, 0, 0, 0.37));
+    filter: drop-shadow(0px 3px 1px rgba(0, 0, 0, 0.37));
 }
 
 .smart-bar-tip::after {
@@ -156,15 +156,15 @@
     position: absolute;
     top: 50%;
     left: 100%;
-    margin: -6px;
+    margin: -2px;
     border-bottom-width: 0px;
-    border-top-width: 8px;
-    border-left-width: 6px;
-    border-right-width: 26px;
+    border-top-width: 13px;
+    border-left-width: 1px;
+    border-right-width: 24px;
     border-style: solid;
     border-color: #fafafa transparent transparent transparent;
-    -webkit-filter: drop-shadow(0px 2px 1px rgba(0, 0, 0, 0.08));
-    filter: drop-shadow(0px 2px 1px rgba(0, 0, 0, 0.08));
+    -webkit-filter: drop-shadow(0px 3px 1px rgba(0, 0, 0, 0.37));
+    filter: drop-shadow(0px 3px 1px rgba(0, 0, 0, 0.37));
 }
 
 .tip::after {
@@ -176,22 +176,31 @@
     border: 0;
     border-style: solid;
     border-color: #fafafa transparent transparent transparent;
-    -webkit-filter: drop-shadow(0px 2px 1px rgba(0, 0, 0, 0.08));
-    filter: drop-shadow(0px 2px 1px rgba(0, 0, 0, 0.08));
+    -webkit-filter: drop-shadow(0px 3px 1px rgba(0, 0, 0, 0.37));
+    filter: drop-shadow(0px 3px 1px rgba(0, 0, 0, 0.37));
 }
 
 .smart-bar-tutorial .actionlbl,
 .smart-bar-tip .actionlbl,
 .tip .actionlbl {
-    color: #0097FF;
+    color: #17A0FF;
     line-height: 0.8rem;
+    font-size: 0.9rem;
+    font-weight: 500;
 }
 
-.smart-bar-tutorial .headerlbl,
-.smart-bar-tip .headerlbl,
-.tip .headerlbl {
+.headerlbl {
     font-size: 0.9rem;
-    line-height: 1px;
+}
+
+.smart-bar-tutorial p {
+    margin: 0;
+    color: #5A6D76;
+}
+
+.headerlbl img,
+.actionlbl img {
+    margin: 1px 5px;
 }
 
 .instruction {

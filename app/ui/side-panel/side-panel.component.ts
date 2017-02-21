@@ -95,8 +95,8 @@ export class SidePanelComponent implements OnInit, OnChanges {
         this.deleteOrClose = DELETE_ICON;
         this.isEditOrDeleteDisabled = false;
         this.isHorizontalTree = false;
-        this.verticalSlider = { min: 90, max: 360, value: 95 };
-        this.horizontalSlider = { min: 90, max: 360, value: 120 };
+        this.verticalSlider = { min: 50, max: 360, value: 70 };
+        this.horizontalSlider = { min: 50, max: 360, value: 70 };
         this.verticalSpaceValue.emit(this.verticalSlider.value);
         this.horizontalSpaceValue.emit(this.horizontalSlider.value);
     }
@@ -169,6 +169,8 @@ export class SidePanelComponent implements OnInit, OnChanges {
             this.enableTabControl();
             this.isHorizontalViewEnabled.emit(false);
             this.isHorizontalTree = false;
+            this.verticalSpaceValue.emit(this.verticalSlider.value);
+            this.horizontalSpaceValue.emit(this.horizontalSlider.value);
         }
     }
 
@@ -258,8 +260,8 @@ export class SidePanelComponent implements OnInit, OnChanges {
         this.verticalSpaceValue.emit(this.verticalSlider.value);
     }
     onReset() {
-        this.verticalSlider = { min: 90, max: 360, value: 95 };
-        this.horizontalSlider = { min: 90, max: 360, value: 120 };
+        this.verticalSlider = { min: 50, max: 360, value: 70 };
+        this.horizontalSlider = { min: 50, max: 360, value: 70 };
         this.verticalSpaceValue.emit(this.verticalSlider.value);
         this.horizontalSpaceValue.emit(this.horizontalSlider.value);
     }

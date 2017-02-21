@@ -107,11 +107,11 @@ export class TutorialComponent implements OnChanges {
                             this.popupTitle.innerHTML = tutorialPopupTitle.step6;
                             this.popupContent.innerHTML = tutorialPopupContent.emptyString;
                             this.smartBarTip = TIP;
-                            this.setTop(120, SMARTBAR, tutorailElementName.smartBarTooltip);
+                            this.setTop(130, SMARTBAR, tutorailElementName.smartBarTooltip);
 
                             setTimeout(() => {
                                 this.modeChanged.emit(TutorialMode.Ended);
-                            }, 1500);
+                            }, 3000);
                         }
                     }
                     else {

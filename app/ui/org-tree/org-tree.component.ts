@@ -1053,7 +1053,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
         }
 
         node.select(G_LABEL + " text[data-id='description']").text((d) => {
-            if (d.Description.length > 15) {
+            if (d.Description.length > 15 && !this.isReportMode()) {
                 return d.Description.substring(0, 15) + "..";
             }
             return d.Description;
