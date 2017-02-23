@@ -38,7 +38,7 @@ const tutorialPopupContent = {
     step1: ">Type Donald Duck",
     step2: ">with Donald Duck selected, press enter to select",
     step3: ">Type Designer and press enter",
-    step5: `>Press right <img src="assets/images/rightarrow.png"> to add a direct report, try "Roger Rabit" and make Roger a "Front End Dev"`,
+    step5: `>Press right <img src="assets/images/rightarrow.png"> to add a direct report, try "Roger Rabbit" and make Roger a "Front End Dev"`,
     emptyString: ""
 };
 
@@ -61,6 +61,7 @@ export class TutorialComponent implements OnChanges {
     @Input() selectedOrgNode: OrgNodeModel;
     @Input() jsonData: any;
     @Input() tutorialEnabled: boolean;
+    @Input() isDetailPanelClosed: boolean;
 
     @Output() modeChanged = new EventEmitter<TutorialMode>();
     @Output() deleteNode = new EventEmitter<boolean>();
@@ -101,7 +102,21 @@ export class TutorialComponent implements OnChanges {
                     this.setTop(95, SMARTBAR, tutorailElementName.smartBarTooltip);
                 }
             } else if (this.tutorialNodeState === TutorialNodeState.NodeAdded) {
-                setTimeout(() => {
+                if (this.jsonData[0] && !this.isDetailPanelClosed) {
+                    if (this.jsonData[0] && (this.jsonData[0].NodeID !== -1 || this.jsonData.NodeID === -1) && this.jsonData[0].NodeID !== this.selectedOrgNode.ParentNodeID) {
+                        this.popupTitle.innerHTML = tutorialPopupTitle.step4;
+                        this.popupContent.innerHTML = tutorialPopupContent.emptyString;
+                        this.smartBarTip = SMARTBARTIP;
+
+                        let leftElement = jQuery("#menuPanel").offset();
+                        if (leftElement) {
+                            let left = (leftElement.left - 770);
+                            this.domHelper.setLeft(tutorailElementName.smartBarTooltip, left);
+                        }
+
+                        this.setTop(200, SMARTBAR, tutorailElementName.smartBarTooltip);
+                    }
+                } else {
                     if (this.selectedOrgNode && this.selectedOrgNode.NodeID !== -1 && this.jsonData[0] && this.jsonData[0].NodeID !== this.selectedOrgNode.NodeID) {
                         if (this.selectedOrgNode.ParentNodeID === this.jsonData[0].NodeID) {
                             this.popupTitle.innerHTML = tutorialPopupTitle.step6;
@@ -111,38 +126,21 @@ export class TutorialComponent implements OnChanges {
 
                             setTimeout(() => {
                                 this.modeChanged.emit(TutorialMode.Ended);
-                            }, 3000);
+                            }, 5000);
                         }
                     }
                     else {
-                        setTimeout(() => {
-                            if (this.jsonData[0] && (this.jsonData[0].NodeID !== -1 || this.jsonData.NodeID === -1) && this.jsonData[0].NodeID !== this.selectedOrgNode.ParentNodeID) {
-                                this.popupTitle.innerHTML = tutorialPopupTitle.step4;
-                                this.popupContent.innerHTML = tutorialPopupContent.emptyString;
-                                this.smartBarTip = SMARTBARTIP;
-
-                                let leftElement = jQuery("#menuPanel").offset();
-                                if (leftElement) {
-                                    let left = (leftElement.left - 540);
-                                    this.domHelper.setLeft(tutorailElementName.smartBarTooltip, left);
-                                }
-
-                                this.setTop(200, SMARTBAR, tutorailElementName.smartBarTooltip);
-                            }
-                            setTimeout(() => {
-                                this.popupTitle.innerHTML = tutorialPopupTitle.step5;
-                                this.popupContent.innerHTML = tutorialPopupContent.step5;
-                                this.smartBarTip = SMARTBARTUTORIAL;
-                                let leftElement = jQuery("input[name=multiInTerm]").offset();
-                                if (leftElement) {
-                                    let left = (leftElement.left);
-                                    this.domHelper.setLeft(tutorailElementName.smartBarTooltip, left);
-                                }
-                                this.setTop(115, SMARTBAR, tutorailElementName.smartBarTooltip);
-                            }, 2700);
-                        }, 200);
+                        this.popupTitle.innerHTML = tutorialPopupTitle.step5;
+                        this.popupContent.innerHTML = tutorialPopupContent.step5;
+                        this.smartBarTip = SMARTBARTUTORIAL;
+                        let leftElement = jQuery("input[name=multiInTerm]").offset();
+                        if (leftElement) {
+                            let left = (leftElement.left);
+                            this.domHelper.setLeft(tutorailElementName.smartBarTooltip, left);
+                        }
+                        this.setTop(115, SMARTBAR, tutorailElementName.smartBarTooltip);
                     }
-                }, 200);
+                }
             }
         }
     }
@@ -187,6 +185,7 @@ export class TutorialComponent implements OnChanges {
             this.popupContent = this.elementRef.nativeElement.querySelector(tutorailElementName.tutorialContent) as HTMLElement;
             this.popupTitle.innerHTML = tutorialPopupTitle.step1;
             this.popupContent.innerHTML = tutorialPopupContent.step1;
+            this.smartBarTip = SMARTBARTUTORIAL;
             let element = jQuery("input[name=multiInTerm]").offset();
             if (element) {
                 let top = (element.top - 85);

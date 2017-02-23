@@ -51,6 +51,7 @@ export class OrgComponent implements OnDestroy {
     @Output() verticalSpaceForNode: number;
     @Output() tutorialStatus: TutorialMode;
     @Output() orgCurrentState: TutorialNodeState;
+    @Output() isDetailPanelClosed: boolean;
 
     constructor(private orgService: OrgService) {
         this.currentChartMode = ChartMode.build;
@@ -311,6 +312,10 @@ export class OrgComponent implements OnDestroy {
         }
     }
 
+    detailPanelClosedStatus(data: boolean) {
+        this.isDetailPanelClosed = data;
+    }
+
     onNodeDeleted(deleted) {
         this.currentOrgNodeStatus = OrgNodeStatus.None;
         this.isAddOrEditMode = false;
@@ -457,7 +462,7 @@ export class OrgComponent implements OnDestroy {
         } else if (data === TutorialMode.Continued) {
             if (!this.isTutorialModeEnabled)
                 this.isTutorialModeEnabled = true;
-            this.changedStateForTutorial(TutorialNodeState.None)
+                this.changedStateForTutorial(TutorialNodeState.None);
         }
         this.tutorialStatus = data;
     }

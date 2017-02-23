@@ -55,6 +55,7 @@ export class SamrtBarComponent implements OnChanges {
     @Output() isNodeMoveDisabled = new EventEmitter<boolean>();
     @Output() moveNode = new EventEmitter<DraggedNode>();
     @Output() currentSmartbarStatus = new EventEmitter<TutorialNodeState>();
+    @Output() tutorialCurrentStatus = new EventEmitter<TutorialMode>();
 
     constructor(private elementRef: ElementRef, private domHelper: DOMHelper, private renderer: Renderer, private orgService: OrgService) {
         this.searchHeader = `BY ${HeaderTitle}`;
@@ -201,6 +202,9 @@ export class SamrtBarComponent implements OnChanges {
         if (this.selectedOrgNode && this.selectedOrgNode.IsStaging) {
             // left arrow
             if ((event as KeyboardEvent).keyCode === 37 && !this.selectedOrgNode.IsNewRoot) {
+                if (this.tutorialStatus === TutorialMode.Continued && this.selectedOrgNode && this.selectedOrgNode.ParentNodeID !== null) {
+                    this.tutorialCurrentStatus.emit(TutorialMode.Interupted);
+                }
                 this.deleteNode.emit(this.selectedOrgNode);
             }
             // right arrow
@@ -269,6 +273,9 @@ export class SamrtBarComponent implements OnChanges {
         // esc
         else if ((event as KeyboardEvent).keyCode === 27) {
             if (this.selectedOrgNode) {
+                if (this.tutorialStatus === TutorialMode.Continued && this.selectedOrgNode && this.selectedOrgNode.ParentNodeID !== null) {
+                    this.tutorialCurrentStatus.emit(TutorialMode.Interupted);
+                }
                 if (this.isNodeMoveEnabledOrDisabled) {
                     this.searchTerm = this.multiInTerm = EMPTYSTRING;
                     this.isNodeMoveDisabled.emit(false);

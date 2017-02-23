@@ -349,15 +349,11 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                     if (parentNode != null) {
                         this.highlightAndCenterNode(parentNode);
                     } else {
-                        switch (this.tutorialStatus) {
-                            case TutorialMode.Ended:
-                            case TutorialMode.Skiped:
-                                this.addNewRootNode(this.root);
-                                break;
-                            case TutorialMode.Started:
-                            case TutorialMode.Continued:
-                                this.tutorialCurrentStatus.emit(TutorialMode.Interupted);
-                                break;
+                        if (this.tutorialStatus === TutorialMode.Skiped) {
+                            this.addNewRootNode(this.root);
+                        }
+                        else if (this.tutorialStatus === TutorialMode.Continued) {
+                            this.tutorialCurrentStatus.emit(TutorialMode.Interupted);
                         }
                     }
                 } else if (this.isExploreMode()) {
