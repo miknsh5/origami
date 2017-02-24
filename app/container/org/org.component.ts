@@ -105,22 +105,17 @@ export class OrgComponent implements OnDestroy {
                 this.enableViewModesNav(ChartMode.build);
                 this.disablePan();
             } else {
-                switch (this.tutorialStatus) {
-                    case TutorialMode.Ended:
-                    case TutorialMode.Skiped:
-                        if (viewMode === ChartMode.report) {
-                            this.currentChartMode = ChartMode.report;
-                        } else {
-                            this.currentChartMode = ChartMode.explore;
-                        }
-                        this.enableViewModesNav(this.currentChartMode);
-                        this.enableLabels();
-                        this.enablePan();
-                        break;
-                    case TutorialMode.Continued:
-                    case TutorialMode.Started:
-                        this.onTutorialModeChanged(TutorialMode.Interupted);
-                        break;
+                if (this.tutorialStatus === TutorialMode.Continued) {
+                    if (viewMode === ChartMode.report) {
+                        this.currentChartMode = ChartMode.report;
+                    } else {
+                        this.currentChartMode = ChartMode.explore;
+                    }
+                    this.enableViewModesNav(this.currentChartMode);
+                    this.enableLabels();
+                    this.enablePan();
+                } else {
+                    this.onTutorialModeChanged(TutorialMode.Interupted);
                 }
             }
             if (this.isNodeMoveEnabled) {
@@ -212,6 +207,10 @@ export class OrgComponent implements OnDestroy {
 
     onAddOrEditModeValueSet(value: boolean) {
         this.isAddOrEditMode = value;
+        if (this.tutorialStatus === TutorialMode.Continued) {
+            this.enableViewModesNav(ChartMode.tutorial);
+            return;
+        }
         if (value) {
             this.disableViewAndExploreModesNav();
         } else {
@@ -459,16 +458,22 @@ export class OrgComponent implements OnDestroy {
         if (data === TutorialMode.Skiped) {
             this.isTutorialModeEnabled = false;
             this.changedStateForTutorial(TutorialNodeState.None);
+            this.enableViewModesNav(this.currentChartMode);
         } else if (data === TutorialMode.Continued) {
-            if (!this.isTutorialModeEnabled)
+            this.enableViewModesNav(ChartMode.tutorial);
+            if (!this.isTutorialModeEnabled) {
                 this.isTutorialModeEnabled = true;
+            }
+            if (this.tutorialStatus !== TutorialMode.Interupted) {
                 this.changedStateForTutorial(TutorialNodeState.None);
+            }
         }
         this.tutorialStatus = data;
     }
 
     onTutorialEnable(data: boolean) {
         this.isTutorialModeEnabled = data;
+        this.enableViewModesNav(ChartMode.tutorial);
         if (this.isTutorialModeEnabled)
             this.tutorialStatus = TutorialMode.Started;
     }
@@ -482,6 +487,10 @@ export class OrgComponent implements OnDestroy {
             this.buildView = "";
             this.exploreView = "";
             this.reportView = "active";
+        } else if (viewMode === ChartMode.tutorial) {
+            this.buildView = "";
+            this.exploreView = "";
+            this.reportView = "";
         } else {
             this.buildView = "active";
             this.reportView = "";

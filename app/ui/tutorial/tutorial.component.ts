@@ -71,58 +71,48 @@ export class TutorialComponent implements OnChanges {
     }
 
     ngOnChanges(changes: { [propertyName: string]: SimpleChange }) {
-        if (this.tutorialEnabled) {
+        if (this.tutorialEnabled && this.selectedOrgNode) {
             if (this.tutorialNodeState === TutorialNodeState.None && this.tutorialMode === TutorialMode.Continued) {
                 this.setToStep1();
             }
             else if (this.tutorialNodeState === TutorialNodeState.AddName) {
                 if (this.jsonData[0] && (this.jsonData[0].NodeID === -1 || this.jsonData.NodeID === -1)) {
-                    this.popupTitle.innerHTML = tutorialPopupTitle.step2;
-                    this.popupContent.innerHTML = tutorialPopupContent.step2;
+                    this.setStep(tutorialPopupTitle.step2, tutorialPopupContent.step2);
                 }
 
                 if ((this.selectedOrgNode && this.selectedOrgNode.NodeFirstName !== "")) {
-                    this.setTop(85, SEARCH_CONTAINER, tutorailElementName.smartBarTooltip);
-                } else if (this.selectedOrgNode && this.selectedOrgNode.Description === "" && this.popupTitle.innerHTML === tutorialPopupTitle.step5) {
-                    this.setTop(95, SMARTBAR, tutorailElementName.smartBarTooltip);
+                    this.setTop(SEARCH_CONTAINER, tutorailElementName.smartBarTooltip);
+                } else if (this.selectedOrgNode && this.selectedOrgNode.Description === "" && this.popupTitle && this.popupTitle.innerHTML === tutorialPopupTitle.step5) {
+                    this.setTop(SMARTBAR, tutorailElementName.smartBarTooltip);
                 } else {
-                    this.setTop(95, SMARTBAR, tutorailElementName.smartBarTooltip);
+                    this.setTop(SMARTBAR, tutorailElementName.smartBarTooltip);
                 }
             } else if (this.tutorialNodeState === TutorialNodeState.AddJobTitle) {
                 if (this.jsonData[0] && (this.jsonData[0].NodeID === -1 || this.jsonData.NodeID === -1)) {
-                    this.popupTitle.innerHTML = tutorialPopupTitle.step3;
-                    this.popupContent.innerHTML = tutorialPopupContent.step3;
+                    this.setStep(tutorialPopupTitle.step3, tutorialPopupContent.step3);
                 }
-                if ((this.selectedOrgNode && this.selectedOrgNode.Description !== "") || this.popupTitle.innerHTML === tutorialPopupTitle.step5) {
-                    if (this.selectedOrgNode && this.selectedOrgNode.Description === "" && this.popupTitle.innerHTML === tutorialPopupTitle.step5) {
-                        this.setTop(95, SMARTBAR, tutorailElementName.smartBarTooltip);
+                if ((this.selectedOrgNode && this.selectedOrgNode.Description !== "") || (this.popupTitle && this.popupTitle.innerHTML === tutorialPopupTitle.step5)) {
+                    if (this.selectedOrgNode && this.selectedOrgNode.Description === "" && this.popupTitle && this.popupTitle.innerHTML === tutorialPopupTitle.step5) {
+                        this.setTop(SMARTBAR, tutorailElementName.smartBarTooltip);
                     }
-                    this.setTop(85, TITLE_SEARCH_CONTAINER, tutorailElementName.smartBarTooltip);
+                    this.setTop(TITLE_SEARCH_CONTAINER, tutorailElementName.smartBarTooltip);
                 } else {
-                    this.setTop(95, SMARTBAR, tutorailElementName.smartBarTooltip);
+                    this.setTop(SMARTBAR, tutorailElementName.smartBarTooltip);
                 }
             } else if (this.tutorialNodeState === TutorialNodeState.NodeAdded) {
                 if (this.jsonData[0] && !this.isDetailPanelClosed) {
                     if (this.jsonData[0] && (this.jsonData[0].NodeID !== -1 || this.jsonData.NodeID === -1) && this.jsonData[0].NodeID !== this.selectedOrgNode.ParentNodeID) {
-                        this.popupTitle.innerHTML = tutorialPopupTitle.step4;
-                        this.popupContent.innerHTML = tutorialPopupContent.emptyString;
+                        this.setStep(tutorialPopupTitle.step4, tutorialPopupContent.emptyString);
                         this.smartBarTip = SMARTBARTIP;
-
-                        let leftElement = jQuery("#menuPanel").offset();
-                        if (leftElement) {
-                            let left = (leftElement.left - 770);
-                            this.domHelper.setLeft(tutorailElementName.smartBarTooltip, left);
-                        }
-
-                        this.setTop(200, SMARTBAR, tutorailElementName.smartBarTooltip);
+                        this.setTop(SMARTBAR, tutorailElementName.smartBarTooltip, 200);
                     }
                 } else {
                     if (this.selectedOrgNode && this.selectedOrgNode.NodeID !== -1 && this.jsonData[0] && this.jsonData[0].NodeID !== this.selectedOrgNode.NodeID) {
                         if (this.selectedOrgNode.ParentNodeID === this.jsonData[0].NodeID) {
-                            this.popupTitle.innerHTML = tutorialPopupTitle.step6;
-                            this.popupContent.innerHTML = tutorialPopupContent.emptyString;
+                            this.setStep(tutorialPopupTitle.step1, tutorialPopupContent.step1);
+                            this.setStep(tutorialPopupTitle.step6, tutorialPopupContent.emptyString);
                             this.smartBarTip = TIP;
-                            this.setTop(130, SMARTBAR, tutorailElementName.smartBarTooltip);
+                            this.setTop(SMARTBAR, tutorailElementName.smartBarTooltip, 130);
 
                             setTimeout(() => {
                                 this.modeChanged.emit(TutorialMode.Ended);
@@ -130,15 +120,14 @@ export class TutorialComponent implements OnChanges {
                         }
                     }
                     else {
-                        this.popupTitle.innerHTML = tutorialPopupTitle.step5;
-                        this.popupContent.innerHTML = tutorialPopupContent.step5;
+                        this.setStep(tutorialPopupTitle.step5, tutorialPopupContent.step5);
                         this.smartBarTip = SMARTBARTUTORIAL;
                         let leftElement = jQuery("input[name=multiInTerm]").offset();
                         if (leftElement) {
                             let left = (leftElement.left);
                             this.domHelper.setLeft(tutorailElementName.smartBarTooltip, left);
                         }
-                        this.setTop(115, SMARTBAR, tutorailElementName.smartBarTooltip);
+                        this.setTop(SMARTBAR, tutorailElementName.smartBarTooltip);
                     }
                 }
             }
@@ -149,7 +138,7 @@ export class TutorialComponent implements OnChanges {
     onResize(event: any) {
     }
 
-    setTop(distance, container, popup) {
+    setTop(container, popup, distance = 95) {
         let element = jQuery(container).offset();
         if (element) {
             let top = (element.top - distance);
@@ -171,6 +160,7 @@ export class TutorialComponent implements OnChanges {
 
     continueTutorial() {
         this.modeChanged.emit(TutorialMode.Continued);
+        this.domHelper.hideElements(tutorailElementName.tutorialSkipOrContinue);
     }
 
     restartTutorial() {
@@ -179,18 +169,24 @@ export class TutorialComponent implements OnChanges {
         this.startTutorial(null);
     }
 
-    private setToStep1() {
-        setTimeout(() => {
+    setStep(stepTitle, stepContent) {
+        if (this.tutorialMode !== TutorialMode.Interupted) {
             this.popupTitle = this.elementRef.nativeElement.querySelector(tutorailElementName.tutorialTitle) as HTMLElement;
-            this.popupContent = this.elementRef.nativeElement.querySelector(tutorailElementName.tutorialContent) as HTMLElement;
-            this.popupTitle.innerHTML = tutorialPopupTitle.step1;
-            this.popupContent.innerHTML = tutorialPopupContent.step1;
-            this.smartBarTip = SMARTBARTUTORIAL;
-            let element = jQuery("input[name=multiInTerm]").offset();
-            if (element) {
-                let top = (element.top - 85);
-                this.domHelper.setTop(tutorailElementName.smartBarTooltip, top);
+            if (this.popupTitle) {
+                this.popupContent = this.elementRef.nativeElement.querySelector(tutorailElementName.tutorialContent) as HTMLElement;
+                this.popupTitle.innerHTML = stepTitle;
+                this.popupContent.innerHTML = stepContent;
+            } else {
+                setTimeout(() => {
+                    this.setStep(stepTitle, stepContent);
+                }, 500);
             }
-        }, 200);
+
+        }
+    }
+
+    private setToStep1() {
+        this.setStep(tutorialPopupTitle.step1, tutorialPopupContent.step1);
+        this.smartBarTip = SMARTBARTUTORIAL;
     }
 }

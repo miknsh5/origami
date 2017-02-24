@@ -204,8 +204,9 @@ export class SamrtBarComponent implements OnChanges {
             if ((event as KeyboardEvent).keyCode === 37 && !this.selectedOrgNode.IsNewRoot) {
                 if (this.tutorialStatus === TutorialMode.Continued && this.selectedOrgNode && this.selectedOrgNode.ParentNodeID !== null) {
                     this.tutorialCurrentStatus.emit(TutorialMode.Interupted);
+                } else {
+                    this.deleteNode.emit(this.selectedOrgNode);
                 }
-                this.deleteNode.emit(this.selectedOrgNode);
             }
             // right arrow
             else if ((event as KeyboardEvent).keyCode === 39 && this.selectedOrgNode.children) {
@@ -273,8 +274,9 @@ export class SamrtBarComponent implements OnChanges {
         // esc
         else if ((event as KeyboardEvent).keyCode === 27) {
             if (this.selectedOrgNode) {
-                if (this.tutorialStatus === TutorialMode.Continued && this.selectedOrgNode && this.selectedOrgNode.ParentNodeID !== null) {
+                if (this.tutorialStatus === TutorialMode.Continued) {
                     this.tutorialCurrentStatus.emit(TutorialMode.Interupted);
+                    return;
                 }
                 if (this.isNodeMoveEnabledOrDisabled) {
                     this.searchTerm = this.multiInTerm = EMPTYSTRING;
@@ -572,6 +574,13 @@ export class SamrtBarComponent implements OnChanges {
     }
 
     private onInputMultiSearch(event: Event) {
+        if (this.tutorialStatus !== TutorialMode.Skiped && this.selectedOrgNode && this.selectedOrgNode.NodeID !== -1) {
+            if (!this.newNodeValue && this.multiInTerm)
+                this.tutorialCurrentStatus.emit(TutorialMode.Interupted);
+
+            this.clearSearch();
+            return;
+        }
         if (!this.newNodeValue || (this.newNodeValue && this.newNodeValue.length < 1)) {
             this.placeholderText = `${AddResource}`;
         } else if (this.newNodeValue && this.newNodeValue.length === 1) {
