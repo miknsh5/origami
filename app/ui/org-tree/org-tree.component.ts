@@ -106,6 +106,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
     @Input() verticalSpaceForNode: number;
     @Input() horizontalSpaceForNode: number;
     @Input() tutorialStatus: TutorialMode;
+    @Input() isDetailPanelClosed: boolean;
 
     @Output() selectNode = new EventEmitter<OrgNodeModel>();
     @Output() addNode = new EventEmitter<OrgNodeModel>();
@@ -310,7 +311,7 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
     @HostListener("window:click", ["$event"])
     bodyClicked(event: any) {
-        if (event.defaultPrevented) return; // click suppressed
+        if (event.defaultPrevented || this.tutorialStatus === TutorialMode.Continued) return; // click suppressed
         if (this.isBuildMode() && !this.isAddOrEditModeEnabled && !this.isNodeMoved) {
             if (event.target.nodeName === "svg") {
                 if (!this.isAddOrEditModeEnabled && this.selectedOrgNode) {
@@ -335,6 +336,9 @@ export class OrgTreeComponent implements OnInit, OnChanges {
 
             // esc
             if ((event as KeyboardEvent).keyCode === 27) {
+                if (this.tutorialStatus === TutorialMode.Continued) {
+                    return;
+                }
                 if (!this.isNodeMoved && !this.isNodedragStarted) {
                     this.deselectNode();
                     this.selectNode.emit(this.selectedOrgNode);
@@ -349,15 +353,11 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                     if (parentNode != null) {
                         this.highlightAndCenterNode(parentNode);
                     } else {
-                        switch (this.tutorialStatus) {
-                            case TutorialMode.Ended:
-                            case TutorialMode.Skiped:
-                                this.addNewRootNode(this.root);
-                                break;
-                            case TutorialMode.Started:
-                            case TutorialMode.Continued:
-                                this.tutorialCurrentStatus.emit(TutorialMode.Interupted);
-                                break;
+                        if (this.tutorialStatus === TutorialMode.Skiped) {
+                            this.addNewRootNode(this.root);
+                        }
+                        else if (this.tutorialStatus === TutorialMode.Continued) {
+                            this.tutorialCurrentStatus.emit(TutorialMode.Interupted);
                         }
                     }
                 } else if (this.isExploreMode()) {
@@ -369,20 +369,24 @@ export class OrgTreeComponent implements OnInit, OnChanges {
             }
             // right arrow
             else if ((event as KeyboardEvent).keyCode === 39) {
-                let childNode = null;
-                if (this.selectedOrgNode.children && this.selectedOrgNode.children.length > 0) {
-                    childNode = this.selectedOrgNode.children[0];
-                }
-                if (this.isBuildMode() && !this.isFeedbackInEditMode && !this.draggingNode) {
-                    if (childNode != null) {
-                        this.highlightAndCenterNode(childNode);
-                    } else {
-                        this.addNewNode(this.selectedOrgNode);
+                if (this.tutorialStatus === TutorialMode.Continued && !this.isDetailPanelClosed) {
+                    this.tutorialCurrentStatus.emit(TutorialMode.Interupted);
+                } else {
+                    let childNode = null;
+                    if (this.selectedOrgNode.children && this.selectedOrgNode.children.length > 0) {
+                        childNode = this.selectedOrgNode.children[0];
                     }
-                } else if (this.isExploreMode()) {
-                    if (childNode != null) {
-                        this.highlightSelectedNode(childNode);
-                        this.render(childNode);
+                    if (this.isBuildMode() && !this.isFeedbackInEditMode && !this.draggingNode) {
+                        if (childNode != null) {
+                            this.highlightAndCenterNode(childNode);
+                        } else {
+                            this.addNewNode(this.selectedOrgNode);
+                        }
+                    } else if (this.isExploreMode()) {
+                        if (childNode != null) {
+                            this.highlightSelectedNode(childNode);
+                            this.render(childNode);
+                        }
                     }
                 }
             }

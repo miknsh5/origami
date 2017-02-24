@@ -37,6 +37,8 @@ export class MenuBarComponent implements OnInit, OnChanges {
     private isImport: boolean;
     private groupSelectedMode: any;
     private isImportDisabled: boolean;
+    private isTutorialInitated: boolean;
+    private lastDefaultGroup: OrgGroupModel;
 
 
     @Input() tutorialMode: TutorialMode;
@@ -57,6 +59,7 @@ export class MenuBarComponent implements OnInit, OnChanges {
         this.domHelper.hideElements(MenuElement.downloadTemplate);
         this.isImport = false;
         this.groupSettingTitle = "Settings";
+        this.isTutorialInitated = false;
     }
 
     ngOnInit() {
@@ -74,18 +77,26 @@ export class MenuBarComponent implements OnInit, OnChanges {
             if (this.selectedCompany && this.selectedGroup && this.tutorialMode === TutorialMode.Skiped) {
                 if (this.selectedCompany.OrgGroups && this.selectedCompany.OrgGroups.length > 1) {
                     if (this.selectedGroup.GroupName === "Tutorial Demo Organization")
-                        this.groupDeletion(this.selectedGroup);
-                } else {
-                    this.getAllNodes(this.selectedGroup.OrgGroupID);
+                        this.selectedCompany.OrgNodeCounts = this.selectedCompany.OrgNodeCounts - this.selectedGroup.OrgNodeCounts;
+                    this.selectedCompany.OrgGroups.forEach((group, index) => {
+                        if (this.compareGroupID(group, this.selectedGroup)) {
+                            this.selectedCompany.OrgGroups.splice(index, 1);
+                        }
+                    });
+                    if (this.lastDefaultGroup) {
+                        this.selectedGroup = this.lastDefaultGroup;
+                        this.getAllNodes(this.selectedGroup.OrgGroupID);
+                    }
+                    this.isTutorialInitated = false;
                 }
                 if (this.tutorialMode === TutorialMode.Skiped) {
-                    this.cookie.setCookie(this.userModel.UserID, true, 365);
+                    this.cookie.setCookie("user", this.userModel.UserID, 365);
                 }
             } else if (this.tutorialMode === TutorialMode.Continued) {
                 this.selectedCompany.OrgNodeCounts = 0;
                 this.selectedGroup.OrgNodeCounts = 0;
-            } else if (this.tutorialMode === TutorialMode.Started) {
-                if (!this.cookie.checkCookie(this.userModel.UserID)) {
+            } else if (this.tutorialMode === TutorialMode.Started && !this.isTutorialInitated) {
+                if (this.cookie.checkCookie("user") && this.userModel.UserID === this.cookie.getCookie("user")) {
                     this.addTutorialGroup();
                 }
             }
@@ -122,8 +133,10 @@ export class MenuBarComponent implements OnInit, OnChanges {
 
     private activateTutorial() {
         if (this.tutorialMode === TutorialMode.Skiped) {
+            this.lastDefaultGroup = this.selectedGroup;
+            this.isTutorialInitated = true;
             this.addTutorialGroup();
-            this.tutorialModeChanged.emit(TutorialMode.Continued);
+            this.tutorialEnabled.emit(true);
         }
     }
 
@@ -185,18 +198,10 @@ export class MenuBarComponent implements OnInit, OnChanges {
             this.orgCompanyGroups = groups;
             this.selectedGroup = null;
             if (this.orgCompanyGroups.length && this.orgCompanyGroups.length > 0) {
-                if (this.orgCompanyGroups.length === 1) {
-                    if (this.orgCompanyGroups[0].OrgNodeCounts === 0) {
-                        this.tutorialModeChanged.emit(TutorialMode.Started);
-                    } else {
-                        this.tutorialModeChanged.emit(TutorialMode.Skiped);
-                    }
-                } else {
-                    this.tutorialModeChanged.emit(TutorialMode.Skiped);
-                }
                 this.orgCompanyGroups.forEach((group) => {
                     if (group.IsDefaultGroup) {
                         this.selectedGroup = group;
+                        this.lastDefaultGroup = this.selectedGroup;
                     }
                 });
 
@@ -230,11 +235,13 @@ export class MenuBarComponent implements OnInit, OnChanges {
             if (data.OrgNodes && data.OrgNodes.length === 0) {
                 this.domHelper.showElements(MenuElement.downloadTemplate);
                 this.domHelper.hideElements(MenuElement.exportData);
-                if (this.cookie.checkCookie(this.userModel.UserID)) {
-                    this.tutorialModeChanged.emit(TutorialMode.Skiped);
-                    this.tutorialEnabled.emit(false);
-                } else {
-                    this.tutorialEnabled.emit(true);
+                if (!this.isTutorialInitated) {
+                    if (this.cookie.checkCookie("user") && this.userModel.UserID === this.cookie.getCookie("user")) {
+                        this.tutorialModeChanged.emit(TutorialMode.Skiped);
+                        this.tutorialEnabled.emit(false);
+                    } else {
+                        this.activateTutorial();
+                    }
                 }
             } else {
                 this.domHelper.showElements(MenuElement.exportData);

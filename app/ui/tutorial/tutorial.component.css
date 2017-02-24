@@ -115,7 +115,6 @@
 }
 
 .smart-bar-tutorial,
-.smart-bar-tip,
 .tip {
     padding: 10px 20px 12px 40px;
     position: absolute;
@@ -131,7 +130,25 @@
     box-shadow: 0 1px 5px rgba(0, 0, 0, 0.8);
     box-shadow: 0 1px 5px var(--black-80);
     stroke: none;
-    top: 79vh
+    top: 78vh;
+}
+
+.smart-bar-tip {
+    padding: 10px 20px 12px 40px;
+    position: absolute;
+    height: auto;
+    right: 275px;
+    width: 55%;
+    min-width: 340px;
+    max-width: 500px;
+    background-color: #fafafa;
+    background-color: var(--white);
+    -webkit-box-shadow: 0 1px 5px rgba(0, 0, 0, 0.8);
+    --webkit-box-shadow: 0 1px 5px var(--black-80);
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.8);
+    box-shadow: 0 1px 5px var(--black-80);
+    stroke: none;
+    top: 65%;
 }
 
 .smart-bar-tutorial::after {
@@ -156,11 +173,11 @@
     position: absolute;
     top: 50%;
     left: 100%;
-    margin: -2px;
+    margin: 0px;
     border-bottom-width: 0px;
-    border-top-width: 13px;
-    border-left-width: 1px;
-    border-right-width: 24px;
+    border-top-width: 11px;
+    border-left-width: 0px;
+    border-right-width: 26px;
     border-style: solid;
     border-color: #fafafa transparent transparent transparent;
     -webkit-filter: drop-shadow(0px 3px 1px rgba(0, 0, 0, 0.37));
@@ -236,5 +253,18 @@
         padding: 5px 0 9px 14px;
         left: 10px;
         min-width: 316px;
+    }
+}
+
+@media only screen and (min-width: 1600px) {
+    .smart-bar-tip {
+        right: 350px;
+    }
+    .smart-bar-tutorial {
+        left: 21.5%;
+    }
+    .smart-bar-tutorial,
+    .tip {
+        top: 88%;
     }
 }

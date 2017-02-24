@@ -4,33 +4,35 @@
     </menu-bar>
     <div *ngIf="orgGroup">
         <div>
-            <pt-tutorial [tutorialEnabled]="isTutorialModeEnabled" [jsonData]="treeJson" [isOrgNodeEmpty]="isOrgNodeEmpty" [tutorialMode]="tutorialStatus" (modeChanged)="onTutorialModeChanged($event)" [tutorialNodeState]="orgCurrentState" 
-            [selectedOrgNode]="selectedOrgNode" (deleteNode)="deleteTutorialNodes($event)"></pt-tutorial>
+            <pt-tutorial [tutorialEnabled]="isTutorialModeEnabled" [jsonData]="treeJson" [isOrgNodeEmpty]="isOrgNodeEmpty" [tutorialMode]="tutorialStatus" (modeChanged)="onTutorialModeChanged($event)" [tutorialNodeState]="orgCurrentState" [selectedOrgNode]="selectedOrgNode"
+                (deleteNode)="deleteTutorialNodes($event)" [isDetailPanelClosed]="isDetailPanelClosed"></pt-tutorial>
         </div>
         <div class="modes_wrap">
             <ul>
                 <li [ngClass]="buildView" class="nav_build" (click)="changeViewModeNav(1)"><a> Build</a></li>
                 <!--<li [ngClass]="exploreView" class="nav_explore" (click)="changeViewModeNav(2)"><a>Explore (Beta)</a></li>-->
                 <li [ngClass]="reportView" class="nav_report" (click)="changeViewModeNav(3)"><a>Report</a> </li>
+                <li *ngIf="tutorialStatus === 3" class="nav_quit" (click)="onTutorialModeChanged(4)"> <a>Quit Demo</a> </li>
             </ul>
         </div>
         <div class="main_canvas" (window:resize)="onResize($event)">
             <org-tree [treeData]="treeJson" [width]="svgWidth" [height]="svgHeight" [currentMode]="currentChartMode" [isAddOrEditModeEnabled]="isAddOrEditMode" (selectNode)="onNodeSelected($event)" (switchToAddMode)="onSwitchedToAddMode($event)" [showFirstNameLabel]="displayFirstNameLabel"
                 [showLastNameLabel]="displayLastNameLabel" [showDescriptionLabel]="displayDescriptionLabel" [orgGroupID]="orgGroup.OrgGroupID" [CompanyID]="companyID" [isMenuSettingsEnabled]="isMenuSettingsEnabled" [searchNode]="searchedNode" (moveNode)="onNodeMoved($event)"
                 [isNodeMoveEnabledOrDisabled]="isNodeMoveEnabled" (isNodeMoveDisabled)=" onNodeMoveEnabledOrDisabled($event)" [isFeedbackInEditMode]="isFeedbackInEditMode" [isHorizontalViewEnabled]="isHorizontalViewEnabled" [verticalSpaceForNode]="verticalSpaceForNode"
-                [horizontalSpaceForNode]="horizontalSpaceForNode" [tutorialStatus]="tutorialStatus" (tutorialCurrentStatus)="onTutorialModeChanged($event)">
+                [horizontalSpaceForNode]="horizontalSpaceForNode" [tutorialStatus]="tutorialStatus" (tutorialCurrentStatus)="onTutorialModeChanged($event)" [isDetailPanelClosed]="isDetailPanelClosed">
             </org-tree>
             <div *ngIf="currentChartMode===1">
                 <smart-bar [treeJsonData]="orgGroup.OrgNodes" (nodeSearched)="onNodeSearched($event)" [selectedOrgNode]="selectedOrgNode" [isEditModeEnabled]="isEditModeEnable" (deleteNode)="onNodeDeleted($event)" (updateNode)="onNodeUpdated($event)" (addNode)="onNodeAdded($event)"
                     (chartStructureUpdated)="onChartUpdated($event)" (isSmartBarEnabled)="smartBarEnabled($event)" [orgGroupID]="orgGroup.OrgGroupID" [isNodeMoveEnabledOrDisabled]="isNodeMoveEnabled" (isNodeMoveDisabled)=" onNodeMoveEnabledOrDisabled($event)"
-                    (moveNode)="onNodeMoved($event)" [isMenuSettingsEnabled]="isMenuSettingsEnabled" (currentSmartbarStatus)="changedStateForTutorial($event)" [tutorialStatus]="tutorialStatus">
+                    (moveNode)="onNodeMoved($event)" [isMenuSettingsEnabled]="isMenuSettingsEnabled" (currentSmartbarStatus)="changedStateForTutorial($event)" [tutorialStatus]="tutorialStatus" (tutorialCurrentStatus)="onTutorialModeChanged($event)">
                 </smart-bar>
             </div>
         </div>
         <side-panel [selectedOrgNode]="selectedOrgNode" [currentMode]="currentChartMode" [companyName]="orgGroup.GroupName" (showFirstNameLabel)="enableFirstNameLabel($event)" (showLastNameLabel)="enableLastNameLabel($event)" (showDescriptionLabel)="enableDescriptionLabel($event)"
             [svgWidth]="svgWidth" [svgHeight]="svgHeight" [orgChart]="orgGroup" (deleteNode)="onNodeDeleted($event)" (updateNode)="onNodeUpdated($event)" (updateNodeAndDeleteNode)="onUpdateNodeAndDeleteNode($event)" [isMenuSettingsEnabled]="isMenuSettingsEnabled"
             [isSmartBarAddEnabled]="isSmartBarEnabled" (isEditEnabled)="isEditEnabled($event)" (isNodeMoveEnabledOrDisabled)="onNodeMoveEnabledOrDisabled($event)" [isNodeMoveDisabled]="isNodeMoveEnabled" (isFeedbackInEditMode)="feedbackPanelInEditMode($event)"
-            (isHorizontalViewEnabled)="onHorizontalViewChanged($event)" (verticalSpaceValue)="verticalNodeSpace($event)" (horizontalSpaceValue)="horizontalNodeSpace($event)" [tutorialStatus]="tutorialStatus" (tutorialCurrentStatus)="onTutorialModeChanged($event)"></side-panel>
+            (isHorizontalViewEnabled)="onHorizontalViewChanged($event)" (verticalSpaceValue)="verticalNodeSpace($event)" (horizontalSpaceValue)="horizontalNodeSpace($event)" [tutorialStatus]="tutorialStatus" (tutorialCurrentStatus)="onTutorialModeChanged($event)"
+            (isDetailPanelClosed)="detailPanelClosedStatus($event)"></side-panel>
     </div>
     <div *ngIf="!orgGroup">
         <svg class="loader" width="38" height="38" viewBox="0 0 38 38" xmlns="http://www.w3.org/2000/svg" stroke="#0097FF">

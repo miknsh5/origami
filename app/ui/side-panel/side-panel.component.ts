@@ -85,6 +85,7 @@ export class SidePanelComponent implements OnInit, OnChanges {
     @Output() verticalSpaceValue = new EventEmitter<number>();
     @Output() horizontalSpaceValue = new EventEmitter<number>();
     @Output() tutorialCurrentStatus = new EventEmitter<TutorialMode>();
+    @Output() isDetailPanelClosed = new EventEmitter<boolean>();
 
     constructor(private orgService: OrgService, private domHelper: DOMHelper) {
         this.feedbackIcon = FEEDBACK_ICON_OPEN;
@@ -217,6 +218,9 @@ export class SidePanelComponent implements OnInit, OnChanges {
             this.domHelper.setWidth(MenuElement.sideNavfixed, "100%");
             this.domHelper.hideElements(MenuElement.publishData);
             this.domHelper.showElements(`${MenuElement.sidePanelExportData}, ${MenuElement.sendFeedback}`);
+            if (this.tutorialStatus === TutorialMode.Continued && this.selectedOrgNode && this.selectedOrgNode.NodeID !== -1) {
+                this.isDetailPanelClosed.emit(false);
+            }
         }
     }
 
@@ -234,6 +238,9 @@ export class SidePanelComponent implements OnInit, OnChanges {
         }
         this.isNodeMoveEnabledOrDisabled.emit(false);
         this.domHelper.hideElements(MenuElement.sendFeedback);
+        if (this.tutorialStatus === TutorialMode.Continued && this.selectedOrgNode && this.selectedOrgNode.NodeID !== -1) {
+            this.isDetailPanelClosed.emit(true);
+        }
     }
 
     private childCount(level, node) {

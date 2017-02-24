@@ -51,6 +51,16 @@
     background-image: url("assets/images/report-active.png");
 }
 
+.modes_wrap li.nav_quit {
+    background-image: url("assets/images/quit_icon.png");
+    font-weight: 800;
+}
+
+.modes_wrap li.nav_quit a {
+    width: 5.5rem;
+    font-weight: 800;
+}
+
 .modes_wrap li>a {
     /*width: 6.5rem;*/
     width: 2.5rem;
