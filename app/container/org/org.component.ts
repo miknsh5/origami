@@ -105,7 +105,7 @@ export class OrgComponent implements OnDestroy {
                 this.enableViewModesNav(ChartMode.build);
                 this.disablePan();
             } else {
-                if (this.tutorialStatus === TutorialMode.Continued) {
+                if (this.tutorialStatus === TutorialMode.Skiped) {
                     if (viewMode === ChartMode.report) {
                         this.currentChartMode = ChartMode.report;
                     } else {
