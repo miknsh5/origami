@@ -98,7 +98,7 @@ export class OrgComponent implements OnDestroy {
     }
 
     changeViewModeNav(viewMode) {
-        if (!this.isAddOrEditMode && this.selectedOrgNode) {
+        if (!this.isAddOrEditMode) {
             if (viewMode === ChartMode.build) {
                 this.enableLabels();
                 this.currentChartMode = ChartMode.build;
