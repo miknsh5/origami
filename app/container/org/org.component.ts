@@ -98,25 +98,25 @@ export class OrgComponent implements OnDestroy {
     }
 
     changeViewModeNav(viewMode) {
-        if (!this.isAddOrEditMode) {
+        if (this.tutorialStatus === TutorialMode.Continued) {
+            this.onTutorialModeChanged(TutorialMode.Interupted);
+            return;
+        }
+        if (!this.isAddOrEditMode && this.selectedOrgNode && this.selectedOrgNode.NodeID !== -1) {
             if (viewMode === ChartMode.build) {
                 this.enableLabels();
                 this.currentChartMode = ChartMode.build;
                 this.enableViewModesNav(ChartMode.build);
                 this.disablePan();
             } else {
-                if (this.tutorialStatus === TutorialMode.Skiped && this.selectedOrgNode && this.selectedOrgNode.NodeID !== -1) {
-                    if (viewMode === ChartMode.report) {
-                        this.currentChartMode = ChartMode.report;
-                    } else {
-                        this.currentChartMode = ChartMode.explore;
-                    }
-                    this.enableViewModesNav(this.currentChartMode);
-                    this.enableLabels();
-                    this.enablePan();
+                if (viewMode === ChartMode.report) {
+                    this.currentChartMode = ChartMode.report;
                 } else {
-                    this.onTutorialModeChanged(TutorialMode.Interupted);
+                    this.currentChartMode = ChartMode.explore;
                 }
+                this.enableViewModesNav(this.currentChartMode);
+                this.enableLabels();
+                this.enablePan();
             }
             if (this.isNodeMoveEnabled) {
                 this.isNodeMoveEnabled = false;
@@ -245,13 +245,6 @@ export class OrgComponent implements OnDestroy {
             this.orgNodes.push(newNode);
             return true;
         }
-    }
-
-    replacer(key, value) {
-        if (typeof key === "parent") {
-            return undefined;
-        }
-        return value;
     }
 
     removeCircularRef(node) {
