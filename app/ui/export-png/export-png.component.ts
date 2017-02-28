@@ -45,16 +45,16 @@ export class ExportPNGComponent {
 
             if (this.isHorizontalTree) {
                 let height = this.leftNodeInitials + this.rightNodeInitials + MIN_HEIGHT;
-                // sets default attributes of exporting.            
+                // sets default attributes of exporting.
                 this.setDefaultAttributes(this.treeLength, height);
             } else {
                 let width = this.leftNodeInitials + this.rightNodeInitials + MIN_HEIGHT;
-                // sets default attributes of exporting.            
+                // sets default attributes of exporting.
                 this.setDefaultAttributes(width, this.treeLength);
             }
 
             // exports svg to png
-            saveSvgAsPng.saveSvgAsPng(this.svg, `${this.orgName}.png`);
+            saveSvgAsPng.saveSvgAsPng(this.svg, `${this.orgName}.png`, { scale: 2 });
 
             // re assign's the previous attributes.
             this.setPrevAttributes();

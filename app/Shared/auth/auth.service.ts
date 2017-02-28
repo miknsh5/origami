@@ -33,7 +33,7 @@ export class AuthService {
 
     login() {
         this.clearStorage();
-        this.lock.show({ initialScreen: 'login' });
+        this.lock.show({ initialScreen: "login" });
     }
 
     signup() {
@@ -100,6 +100,6 @@ export class AuthService {
 
     private clearStorage() {
         // To log out, just remove the token and profile from local storage
-        localStorage.clear()
+        localStorage.clear();
     }
 }

@@ -216,8 +216,14 @@ button {
 }
 
 .sideNav #sidePanelExportData {
-    display: flex;
-    margin: 12px 15px;
+    margin: 15px 0;
+    text-align: center;
+    width: 92%;
+}
+
+.sideNav export-csv,
+.sideNav export-png{
+    display: inline-block;
 }
 
 [type="checkbox"].filled-in:checked+label:after {

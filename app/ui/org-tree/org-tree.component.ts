@@ -542,9 +542,6 @@ export class OrgTreeComponent implements OnInit, OnChanges {
                         x = (width - VIEWBOX_MAX_WIDTH) / 2;
                         width = VIEWBOX_MAX_WIDTH;
                     } else {
-                        if (width < 400) {
-                            x = -60;
-                        }
                         width = VIEWBOX_MIN_WIDTH;
                     }
                 }
