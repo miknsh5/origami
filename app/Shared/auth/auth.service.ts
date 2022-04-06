@@ -19,7 +19,7 @@ export class AuthService {
                 title: "",
             },
             theme: {
-                logo: "http://peopletree.io/images/pt-logo-square.png",
+                logo: "assets/images/pt-logo-square.png",
                 primaryColor: "#607D8B"
             },
             auth: {
